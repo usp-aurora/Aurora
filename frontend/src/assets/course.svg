@@ -1,0 +1,25 @@
+<svg width="136" height="136" viewBox="0 0 136 136" fill="none"
+    xmlns="http://www.w3.org/2000/svg">
+    <g class="card-background"> 
+        <path d="M0 8H136V128H0V8Z" fill="white"/>
+        <path d="M8 0H128V136H8V0Z" fill="white"/>
+        <path d="M4 4H132V132H4V4Z" fill="white"/>
+    </g>
+    <g class="card-inner-line">
+        <path d="M8 128H128V132H8V128Z" fill="#51A1E0"/>
+        <path d="M4 128V8H8V128H4Z" fill="#51A1E0"/>
+        <path d="M8 8H12V12H8V8Z" fill="#51A1E0"/>
+        <path d="M8 4H12V8H8V4Z" fill="#51A1E0"/>
+        <path d="M132 116H136V128H132V116Z" fill="#51A1E0"/>
+        <path d="M124 124H132V128H124V124Z" fill="#51A1E0"/>
+        <path d="M8 0H20V4H8V0Z" fill="#51A1E0"/>
+        <path d="M8 124H12V128H8V124Z" fill="#51A1E0"/>
+    </g> 
+    <g class="card-outer-line">
+        <path d="M8 132H128V136H8V132Z" fill="#17538D"/>
+        <path d="M0 128V8H4V128H0Z" fill="#17538D"/>
+        <path d="M4 128H8V132H4V128Z" fill="#17538D"/>
+        <path d="M4 4H8V8H4V4Z" fill="#17538D"/>
+        <path d="M128 128H132V132H128V128Z" fill="#17538D"/>
+    </g> 
+</svg>
