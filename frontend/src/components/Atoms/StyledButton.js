@@ -5,6 +5,11 @@ const ButtonContainer = styled.button`
   cursor: pointer;
   outline: none;  
   border: none;
+
+  &:active {
+    box-shadow: inset 0 3px 0 #1d7bc1; /* Invert shadow on click to simulate button press */
+    transform: translateY(2px);
+  }
 `;
 
 const ButtonContainerBackground = styled.div`

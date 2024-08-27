@@ -6,6 +6,8 @@ import NotFoundPage from './components/Development/NotFoundPage';
 import TestCompletionBar from './components/Development/TestCompletionBar';
 import Header from './components/Header/Header';
 import TestButtons from './components/Development/TestButtons'
+import AddDisciplinePopUp from './components/PopUps/AddDisciplinePopUp';
+import CoursePopUp from './components/PopUps/CoursePopUp'
 
 
 function App() {
@@ -18,6 +20,8 @@ function App() {
         <Route path="/header" element={<Header />} />
         <Route path="/*" element={< NotFoundPage />} />
         <Route path="/botao" element={<TestButtons />} />
+        <Route path="/popup" element={<AddDisciplinePopUp />} />
+        <Route path="/popup2" element={<CoursePopUp pokeball={"#C2DCF5"} pokemonURL="/pokemons/ditto.png" />} />
       </Routes>
     </Router>
   );

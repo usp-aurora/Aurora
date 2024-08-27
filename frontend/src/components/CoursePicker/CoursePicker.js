@@ -243,7 +243,7 @@ const Categories = styled.div`
   margin-top: 5%;
 `;
 
-const CoursePicker = () => {
+const CoursePicker = ({ onAddDisciplinePopUpToggle }) => {
   const categories = [
     {
       name: 'Ciência de dados',
@@ -773,6 +773,7 @@ const CoursePicker = () => {
     setFilter(filter ? false : true)
   }
 
+
   return (
     <CoursePickerContainer>
       <Title>
@@ -888,7 +889,7 @@ const CoursePicker = () => {
                 )
                 .map((course) => (
                   <Card colors={course.colors}>
-                    <CardContentCourse pokeball={course.pokeball} courseCode={course.code} courseTitle={course.title} pokemonURL="/pokemons/ditto.png">
+                    <CardContentCourse pokeball={course.pokeball} courseCode={course.code} courseTitle={course.title} pokemonURL="/ditto.png">
                     </CardContentCourse>
                   </Card>
                 ))}
