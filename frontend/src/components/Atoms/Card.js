@@ -9,6 +9,11 @@ const CardComponent = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
+
+  &:active {
+    transform: translateY(2px);
+  }
 `;
 
 const CardContent = styled.div`
@@ -26,9 +31,9 @@ const CardBackground = styled.div`
   top: 0;
 `;
 
-const Card = ({children, colors}) => {
+const Card = ({children, colors, onClick}) => {
   return (
-    <CardComponent>
+    <CardComponent onClick={onClick}>
       <CardContent>
         {children}
       </CardContent>

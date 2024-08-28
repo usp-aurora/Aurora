@@ -243,7 +243,7 @@ const Categories = styled.div`
   margin-top: 5%;
 `;
 
-const CoursePicker = ({ onAddDisciplinePopUpToggle }) => {
+const CoursePicker = ({ openCourse, openDisciplinePopUp }) => {
   const categories = [
     {
       name: 'Ciência de dados',
@@ -254,10 +254,10 @@ const CoursePicker = ({ onAddDisciplinePopUpToggle }) => {
           title: "Introdução à Computação", 
           colors: {
             background: "#FFFFFF",
-            innerLine: "#51A1E0",
-            outerLine: "#17538D",
+            innerLine: "#FFD12B",
+            outerLine: "#CC7F02",
           },
-          pokeball: "#C2DCF5"
+          pokeball: "#FFEA89"
         },
         {
           code: 'MAC0110', 
@@ -265,10 +265,10 @@ const CoursePicker = ({ onAddDisciplinePopUpToggle }) => {
           title: "Introdução à Computação", 
           colors: {
             background: "#FFFFFF",
-            innerLine: "#51A1E0",
-            outerLine: "#17538D",
+            innerLine: "#FFD12B",
+            outerLine: "#CC7F02",
           },
-          pokeball: "#C2DCF5"
+          pokeball: "#FFEA89"
         }, 
         {
           code: 'MAC0110', 
@@ -276,10 +276,10 @@ const CoursePicker = ({ onAddDisciplinePopUpToggle }) => {
           title: "Introdução à Computação", 
           colors: {
             background: "#FFFFFF",
-            innerLine: "#51A1E0",
-            outerLine: "#17538D",
+            innerLine: "#FFD12B",
+            outerLine: "#CC7F02",
           },
-          pokeball: "#C2DCF5"
+          pokeball: "#FFEA89"
         },
         {
           code: 'MAC0110', 
@@ -287,10 +287,10 @@ const CoursePicker = ({ onAddDisciplinePopUpToggle }) => {
           title: "Introdução à Computação", 
           colors: {
             background: "#FFFFFF",
-            innerLine: "#51A1E0",
-            outerLine: "#17538D",
+            innerLine: "#FFD12B",
+            outerLine: "#CC7F02",
           },
-          pokeball: "#C2DCF5"
+          pokeball: "#FFEA89"
         },
         {
           code: 'MAC0110', 
@@ -298,10 +298,10 @@ const CoursePicker = ({ onAddDisciplinePopUpToggle }) => {
           title: "Introdução à Computação", 
           colors: {
             background: "#FFFFFF",
-            innerLine: "#51A1E0",
-            outerLine: "#17538D",
+            innerLine: "#FFD12B",
+            outerLine: "#CC7F02",
           },
-          pokeball: "#C2DCF5"
+          pokeball: "#FFEA89"
         },
       ],
       color: '#FFD12B',
@@ -317,10 +317,10 @@ const CoursePicker = ({ onAddDisciplinePopUpToggle }) => {
           title: "Introdução à Computação", 
           colors: {
             background: "#FFFFFF",
-            innerLine: "#51A1E0",
-            outerLine: "#17538D",
+            innerLine: "#E83030",
+            outerLine: "#841818",
           },
-          pokeball: "#C2DCF5"
+          pokeball: "#FFA0A0"
         },
         {
           code: 'MAC0110', 
@@ -328,10 +328,10 @@ const CoursePicker = ({ onAddDisciplinePopUpToggle }) => {
           title: "Introdução à Computação", 
           colors: {
             background: "#FFFFFF",
-            innerLine: "#51A1E0",
-            outerLine: "#17538D",
+            innerLine: "#E83030",
+            outerLine: "#841818",
           },
-          pokeball: "#C2DCF5"
+          pokeball: "#FFA0A0"
         }, 
         {
           code: 'MAC0110', 
@@ -339,10 +339,10 @@ const CoursePicker = ({ onAddDisciplinePopUpToggle }) => {
           title: "Introdução à Computação", 
           colors: {
             background: "#FFFFFF",
-            innerLine: "#51A1E0",
-            outerLine: "#17538D",
+            innerLine: "#E83030",
+            outerLine: "#841818",
           },
-          pokeball: "#C2DCF5"
+          pokeball: "#FFA0A0"
         },
         {
           code: 'MAC0110', 
@@ -350,10 +350,10 @@ const CoursePicker = ({ onAddDisciplinePopUpToggle }) => {
           title: "Introdução à Computação", 
           colors: {
             background: "#FFFFFF",
-            innerLine: "#51A1E0",
-            outerLine: "#17538D",
+            innerLine: "#E83030",
+            outerLine: "#841818",
           },
-          pokeball: "#C2DCF5"
+          pokeball: "#FFA0A0"
         },
         {
           code: 'MAC0110', 
@@ -361,10 +361,10 @@ const CoursePicker = ({ onAddDisciplinePopUpToggle }) => {
           title: "Introdução à Computação", 
           colors: {
             background: "#FFFFFF",
-            innerLine: "#51A1E0",
-            outerLine: "#17538D",
+            innerLine: "#E83030",
+            outerLine: "#841818",
           },
-          pokeball: "#C2DCF5"
+          pokeball: "#FFA0A0"
         },
       ],
       color: '#E83030',
@@ -380,10 +380,10 @@ const CoursePicker = ({ onAddDisciplinePopUpToggle }) => {
           title: "Introdução à Computação", 
           colors: {
             background: "#FFFFFF",
-            innerLine: "#51A1E0",
-            outerLine: "#17538D",
+            innerLine: "#15B48F",
+            outerLine: "#095C4D",
           },
-          pokeball: "#C2DCF5"
+          pokeball: "#A9F1D7"
         },
         {
           code: 'MAC0110', 
@@ -391,10 +391,10 @@ const CoursePicker = ({ onAddDisciplinePopUpToggle }) => {
           title: "Introdução à Computação", 
           colors: {
             background: "#FFFFFF",
-            innerLine: "#51A1E0",
-            outerLine: "#17538D",
+            innerLine: "#15B48F",
+            outerLine: "#095C4D",
           },
-          pokeball: "#C2DCF5"
+          pokeball: "#A9F1D7"
         }, 
         {
           code: 'MAC0110', 
@@ -402,10 +402,10 @@ const CoursePicker = ({ onAddDisciplinePopUpToggle }) => {
           title: "Introdução à Computação", 
           colors: {
             background: "#FFFFFF",
-            innerLine: "#51A1E0",
-            outerLine: "#17538D",
+            innerLine: "#15B48F",
+            outerLine: "#095C4D",
           },
-          pokeball: "#C2DCF5"
+          pokeball: "#A9F1D7"
         },
         {
           code: 'MAC0110', 
@@ -413,10 +413,10 @@ const CoursePicker = ({ onAddDisciplinePopUpToggle }) => {
           title: "Introdução à Computação", 
           colors: {
             background: "#FFFFFF",
-            innerLine: "#51A1E0",
-            outerLine: "#17538D",
+            innerLine: "#15B48F",
+            outerLine: "#095C4D",
           },
-          pokeball: "#C2DCF5"
+          pokeball: "#A9F1D7"
         },
         {
           code: 'MAC0110', 
@@ -424,10 +424,10 @@ const CoursePicker = ({ onAddDisciplinePopUpToggle }) => {
           title: "Introdução à Computação", 
           colors: {
             background: "#FFFFFF",
-            innerLine: "#51A1E0",
-            outerLine: "#17538D",
+            innerLine: "#15B48F",
+            outerLine: "#095C4D",
           },
-          pokeball: "#C2DCF5"
+          pokeball: "#A9F1D7"
         },
       ],
       color: '#15B48F',
@@ -443,10 +443,10 @@ const CoursePicker = ({ onAddDisciplinePopUpToggle }) => {
           title: "Introdução à Computação", 
           colors: {
             background: "#FFFFFF",
-            innerLine: "#51A1E0",
-            outerLine: "#17538D",
+            innerLine: "#6762CD",
+            outerLine: "#3C3B74",
           },
-          pokeball: "#C2DCF5"
+          pokeball: "#B3BEEE"
         },
         {
           code: 'MAC0110', 
@@ -454,10 +454,10 @@ const CoursePicker = ({ onAddDisciplinePopUpToggle }) => {
           title: "Introdução à Computação", 
           colors: {
             background: "#FFFFFF",
-            innerLine: "#51A1E0",
-            outerLine: "#17538D",
+            innerLine: "#6762CD",
+            outerLine: "#3C3B74",
           },
-          pokeball: "#C2DCF5"
+          pokeball: "#B3BEEE"
         }, 
         {
           code: 'MAC0110', 
@@ -465,10 +465,10 @@ const CoursePicker = ({ onAddDisciplinePopUpToggle }) => {
           title: "Introdução à Computação", 
           colors: {
             background: "#FFFFFF",
-            innerLine: "#51A1E0",
-            outerLine: "#17538D",
+            innerLine: "#6762CD",
+            outerLine: "#3C3B74",
           },
-          pokeball: "#C2DCF5"
+          pokeball: "#B3BEEE"
         },
         {
           code: 'MAC0110', 
@@ -476,10 +476,10 @@ const CoursePicker = ({ onAddDisciplinePopUpToggle }) => {
           title: "Introdução à Computação", 
           colors: {
             background: "#FFFFFF",
-            innerLine: "#51A1E0",
-            outerLine: "#17538D",
+            innerLine: "#6762CD",
+            outerLine: "#3C3B74",
           },
-          pokeball: "#C2DCF5"
+          pokeball: "#B3BEEE"
         },
         {
           code: 'MAC0110', 
@@ -487,10 +487,10 @@ const CoursePicker = ({ onAddDisciplinePopUpToggle }) => {
           title: "Introdução à Computação", 
           colors: {
             background: "#FFFFFF",
-            innerLine: "#51A1E0",
-            outerLine: "#17538D",
+            innerLine: "#6762CD",
+            outerLine: "#3C3B74",
           },
-          pokeball: "#C2DCF5"
+          pokeball: "#B3BEEE"
         },
       ],
       color: '#6762CD',
@@ -506,10 +506,10 @@ const CoursePicker = ({ onAddDisciplinePopUpToggle }) => {
           title: "Introdução à Computação", 
           colors: {
             background: "#FFFFFF",
-            innerLine: "#51A1E0",
-            outerLine: "#17538D",
+            innerLine: "#EA7F38",
+            outerLine: "#90381C",
           },
-          pokeball: "#C2DCF5"
+          pokeball: "#F8D6B0"
         },
         {
           code: 'MAC0110', 
@@ -517,10 +517,10 @@ const CoursePicker = ({ onAddDisciplinePopUpToggle }) => {
           title: "Introdução à Computação", 
           colors: {
             background: "#FFFFFF",
-            innerLine: "#51A1E0",
-            outerLine: "#17538D",
+            innerLine: "#EA7F38",
+            outerLine: "#90381C",
           },
-          pokeball: "#C2DCF5"
+          pokeball: "#F8D6B0"
         }, 
         {
           code: 'MAC0110', 
@@ -528,10 +528,10 @@ const CoursePicker = ({ onAddDisciplinePopUpToggle }) => {
           title: "Introdução à Computação", 
           colors: {
             background: "#FFFFFF",
-            innerLine: "#51A1E0",
-            outerLine: "#17538D",
+            innerLine: "#EA7F38",
+            outerLine: "#90381C",
           },
-          pokeball: "#C2DCF5"
+          pokeball: "#F8D6B0"
         },
         {
           code: 'MAC0110', 
@@ -539,10 +539,10 @@ const CoursePicker = ({ onAddDisciplinePopUpToggle }) => {
           title: "Introdução à Computação", 
           colors: {
             background: "#FFFFFF",
-            innerLine: "#51A1E0",
-            outerLine: "#17538D",
+            innerLine: "#EA7F38",
+            outerLine: "#90381C",
           },
-          pokeball: "#C2DCF5"
+          pokeball: "#F8D6B0"
         },
         {
           code: 'MAC0110', 
@@ -550,10 +550,10 @@ const CoursePicker = ({ onAddDisciplinePopUpToggle }) => {
           title: "Introdução à Computação", 
           colors: {
             background: "#FFFFFF",
-            innerLine: "#51A1E0",
-            outerLine: "#17538D",
+            innerLine: "#EA7F38",
+            outerLine: "#90381C",
           },
-          pokeball: "#C2DCF5"
+          pokeball: "#F8D6B0"
         },
       ],
       color: '#EA7F38',
@@ -569,10 +569,10 @@ const CoursePicker = ({ onAddDisciplinePopUpToggle }) => {
           title: "Introdução à Computação", 
           colors: {
             background: "#FFFFFF",
-            innerLine: "#51A1E0",
-            outerLine: "#17538D",
+            innerLine: "#09DE5A",
+            outerLine: "#0A7132",
           },
-          pokeball: "#C2DCF5"
+          pokeball: "#B2FFCE"
         },
         {
           code: 'MAC0110', 
@@ -580,10 +580,10 @@ const CoursePicker = ({ onAddDisciplinePopUpToggle }) => {
           title: "Introdução à Computação", 
           colors: {
             background: "#FFFFFF",
-            innerLine: "#51A1E0",
-            outerLine: "#17538D",
+            innerLine: "#09DE5A",
+            outerLine: "#0A7132",
           },
-          pokeball: "#C2DCF5"
+          pokeball: "#B2FFCE"
         }, 
         {
           code: 'MAC0110', 
@@ -591,10 +591,10 @@ const CoursePicker = ({ onAddDisciplinePopUpToggle }) => {
           title: "Introdução à Computação", 
           colors: {
             background: "#FFFFFF",
-            innerLine: "#51A1E0",
-            outerLine: "#17538D",
+            innerLine: "#09DE5A",
+            outerLine: "#0A7132",
           },
-          pokeball: "#C2DCF5"
+          pokeball: "#B2FFCE"
         },
         {
           code: 'MAC0110', 
@@ -602,10 +602,10 @@ const CoursePicker = ({ onAddDisciplinePopUpToggle }) => {
           title: "Introdução à Computação", 
           colors: {
             background: "#FFFFFF",
-            innerLine: "#51A1E0",
-            outerLine: "#17538D",
+            innerLine: "#09DE5A",
+            outerLine: "#0A7132",
           },
-          pokeball: "#C2DCF5"
+          pokeball: "#B2FFCE"
         },
         {
           code: 'MAC0110', 
@@ -613,10 +613,10 @@ const CoursePicker = ({ onAddDisciplinePopUpToggle }) => {
           title: "Introdução à Computação", 
           colors: {
             background: "#FFFFFF",
-            innerLine: "#51A1E0",
-            outerLine: "#17538D",
+            innerLine: "#09DE5A",
+            outerLine: "#0A7132",
           },
-          pokeball: "#C2DCF5"
+          pokeball: "#B2FFCE"
         },
       ],
       color: '#09DE5A',
@@ -632,10 +632,10 @@ const CoursePicker = ({ onAddDisciplinePopUpToggle }) => {
           title: "Introdução à Computação", 
           colors: {
             background: "#FFFFFF",
-            innerLine: "#51A1E0",
-            outerLine: "#17538D",
+            innerLine: "#F73EF6",
+            outerLine: "#95138E",
           },
-          pokeball: "#C2DCF5"
+          pokeball: "#FDCEFF"
         },
         {
           code: 'MAC0110', 
@@ -643,10 +643,10 @@ const CoursePicker = ({ onAddDisciplinePopUpToggle }) => {
           title: "Introdução à Computação", 
           colors: {
             background: "#FFFFFF",
-            innerLine: "#51A1E0",
-            outerLine: "#17538D",
+            innerLine: "#F73EF6",
+            outerLine: "#95138E",
           },
-          pokeball: "#C2DCF5"
+          pokeball: "#FDCEFF"
         }, 
         {
           code: 'MAC0110', 
@@ -654,10 +654,10 @@ const CoursePicker = ({ onAddDisciplinePopUpToggle }) => {
           title: "Introdução à Computação", 
           colors: {
             background: "#FFFFFF",
-            innerLine: "#51A1E0",
-            outerLine: "#17538D",
+            innerLine: "#F73EF6",
+            outerLine: "#95138E",
           },
-          pokeball: "#C2DCF5"
+          pokeball: "#FDCEFF"
         },
         {
           code: 'MAC0110', 
@@ -665,10 +665,10 @@ const CoursePicker = ({ onAddDisciplinePopUpToggle }) => {
           title: "Introdução à Computação", 
           colors: {
             background: "#FFFFFF",
-            innerLine: "#51A1E0",
-            outerLine: "#17538D",
+            innerLine: "#F73EF6",
+            outerLine: "#95138E",
           },
-          pokeball: "#C2DCF5"
+          pokeball: "#FDCEFF"
         },
         {
           code: 'MAC0110', 
@@ -676,10 +676,10 @@ const CoursePicker = ({ onAddDisciplinePopUpToggle }) => {
           title: "Introdução à Computação", 
           colors: {
             background: "#FFFFFF",
-            innerLine: "#51A1E0",
-            outerLine: "#17538D",
+            innerLine: "#F73EF6",
+            outerLine: "#95138E",
           },
-          pokeball: "#C2DCF5"
+          pokeball: "#FDCEFF"
         },
       ],
       color: '#F73EF6',
@@ -693,10 +693,10 @@ const CoursePicker = ({ onAddDisciplinePopUpToggle }) => {
           title: "Introdução à Computação", 
           colors: {
             background: "#FFFFFF",
-            innerLine: "#51A1E0",
-            outerLine: "#17538D",
+            innerLine: "#8E7143",
+            outerLine: "#533F30",
           },
-          pokeball: "#C2DCF5"
+          pokeball: "#C4B580"
         },
         {
           code: 'MAC0110', 
@@ -704,10 +704,10 @@ const CoursePicker = ({ onAddDisciplinePopUpToggle }) => {
           title: "Introdução à Computação", 
           colors: {
             background: "#FFFFFF",
-            innerLine: "#51A1E0",
-            outerLine: "#17538D",
+            innerLine: "#8E7143",
+            outerLine: "#533F30",
           },
-          pokeball: "#C2DCF5"
+          pokeball: "#C4B580"
         }, 
         {
           code: 'MAC0110', 
@@ -715,10 +715,10 @@ const CoursePicker = ({ onAddDisciplinePopUpToggle }) => {
           title: "Introdução à Computação", 
           colors: {
             background: "#FFFFFF",
-            innerLine: "#51A1E0",
-            outerLine: "#17538D",
+            innerLine: "#8E7143",
+            outerLine: "#533F30",
           },
-          pokeball: "#C2DCF5"
+          pokeball: "#C4B580"
         },
         {
           code: 'MAC0110', 
@@ -726,10 +726,10 @@ const CoursePicker = ({ onAddDisciplinePopUpToggle }) => {
           title: "Introdução à Computação", 
           colors: {
             background: "#FFFFFF",
-            innerLine: "#51A1E0",
-            outerLine: "#17538D",
+            innerLine: "#8E7143",
+            outerLine: "#533F30",
           },
-          pokeball: "#C2DCF5"
+          pokeball: "#C4B580"
         },
         {
           code: 'MAC0110', 
@@ -737,10 +737,10 @@ const CoursePicker = ({ onAddDisciplinePopUpToggle }) => {
           title: "Introdução à Computação", 
           colors: {
             background: "#FFFFFF",
-            innerLine: "#51A1E0",
-            outerLine: "#17538D",
+            innerLine: "#8E7143",
+            outerLine: "#533F30",
           },
-          pokeball: "#C2DCF5"
+          pokeball: "#C4B580"
         },
       ],
       color: '#533F30'
@@ -778,8 +778,8 @@ const CoursePicker = ({ onAddDisciplinePopUpToggle }) => {
     <CoursePickerContainer>
       <Title>
         <span>Adicionar Disciplinas</span>
-        <StyledButton>
-          <svg width="25" height="25" viewBox="0 0 16 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <StyledButton onClick={openDisciplinePopUp} background_image={"/assets/a2.png"}>
+          <svg width="70%" height="70%" viewBox="0 0 16 15" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M10.1071 1.71498L10.1071 0.964982L9.35712 0.964983L6.78502 0.964983L6.03502 0.964983L6.03502 1.71498L6.03502 5.46395L2.28605 5.46395L1.53605 5.46395V6.21395V8.78605V9.53605L2.28605 9.53605L6.03502 9.53605L6.03502 13.285L6.03502 14.035L6.78502 14.035L9.35712 14.035L10.1071 14.035L10.1071 13.285L10.1071 9.53605H13.8561L14.6061 9.53605L14.6061 8.78605V6.21395L14.6061 5.46395L13.8561 5.46395H10.1071L10.1071 1.71498Z" fill="white" stroke="#1B68AE" stroke-width="1.5"/>
           </svg>
         </StyledButton>
@@ -888,8 +888,8 @@ const CoursePicker = ({ onAddDisciplinePopUpToggle }) => {
                   course.code.toLowerCase().includes(searchTerm.toLowerCase())
                 )
                 .map((course) => (
-                  <Card colors={course.colors}>
-                    <CardContentCourse pokeball={course.pokeball} courseCode={course.code} courseTitle={course.title} pokemonURL="/ditto.png">
+                  <Card colors={course.colors} onClick={openCourse}>
+                    <CardContentCourse pokeball={course.pokeball} courseCode={course.code} courseTitle={course.title} pokemonURL="/pokemons/ditto.png">
                     </CardContentCourse>
                   </Card>
                 ))}

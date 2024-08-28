@@ -24,14 +24,25 @@ const ContentContainer = styled.div`
 
 const Home = () => {
 
+  const [addDisciplineActive, setAddDisciplineActive] = useState(false);
+  const [coursePopUpActive, setCoursePopUpActive] = useState(false);
+
+  const toggleDiscipline = () => {
+    setAddDisciplineActive(!addDisciplineActive);
+  }
+
+  const toggleCourse = () => {
+    setCoursePopUpActive(!coursePopUpActive);
+  }
+
   return (
     <AppContainer>
-      {/* <AddDisciplinePopUp /> */}
-      {/* <CoursePopUp /> */}
+      <AddDisciplinePopUp isOpen={addDisciplineActive} onClose={toggleDiscipline} />
+      <CoursePopUp isOpen={coursePopUpActive} onClose={toggleCourse} pokeball={"red"} pokemonURL={"/pokemons/ditto.png"}/>
       <Header />
       <ContentContainer>
-        <Semester />
-        <CoursePicker/>
+        <Semester openCourse={toggleCourse} />
+        <CoursePicker openCourse={toggleCourse} openDisciplinePopUp={toggleDiscipline} />
       </ContentContainer>
     </AppContainer>
   );

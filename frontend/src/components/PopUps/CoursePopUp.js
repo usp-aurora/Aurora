@@ -1,19 +1,20 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import StyledButton from '../Atoms/StyledButton';
 import CourseTag from '../Atoms/CourseTag';
 import Pokeball from '../Atoms/Pokeball';
 
 const CoursePopUpBackground = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100vw;
-  height: 100vh;
-  
-  position: absolute;
-  z-index: 2;
-  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
 `;
 
 const CoursePopUpContainer = styled.div `
@@ -189,10 +190,12 @@ const TreeButtons = styled.div`
   align-items: center;
 `;
 
-const CoursePopUp = ({pokeball, pokemonURL}) => {
+const CoursePopUp = ({isOpen, onClose, pokeball, pokemonURL}) => {
+  if (!isOpen) return null;
+
   return (
-    <CoursePopUpBackground>
-      <CoursePopUpContainer>
+    <CoursePopUpBackground onClick={onClose}>
+      <CoursePopUpContainer onClick={(e) => e.stopPropagation()}>
         <CoursePopUpHeader>
 
           <Pokeball pokeball={pokeball} pokemonURL={pokemonURL}/>
@@ -203,8 +206,10 @@ const CoursePopUp = ({pokeball, pokemonURL}) => {
           </CoursePopUpHeaderInfos>
 
           <Button>
-            <StyledButton>
-
+            <StyledButton onClick={onClose} background_image={"/assets/botao_vermelho.png"}>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M13.5303 5.34908L14.0607 4.81875L13.5303 4.28842L11.7116 2.46967L11.1812 1.93934L10.6509 2.46967L8 5.12059L5.34908 2.46967L4.81875 1.93934L4.28842 2.46967L2.46967 4.28842L1.93934 4.81875L2.46967 5.34908L5.12059 8L2.46967 10.6509L1.93934 11.1812L2.46967 11.7116L4.28842 13.5303L4.81875 14.0607L5.34908 13.5303L8 10.8794L10.6509 13.5303L11.1812 14.0607L11.7116 13.5303L13.5303 11.7116L14.0607 11.1812L13.5303 10.6509L10.8794 8L13.5303 5.34908Z" fill="white" stroke="#A01414" stroke-width="1.5"/>
+              </svg>
             </StyledButton>
           </Button>
           
