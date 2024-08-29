@@ -1,8 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import StyledButton from '../Atoms/StyledButton';
+import {fadeIn, fadeOut} from '../Atoms/Animations'
 
 const AddDisciplinePopUpBackground = styled.div`
+  animation: ${props => (props.open ? fadeIn : fadeOut)} 1s ease-in-out -0.3s;
   position: fixed;
   top: 0;
   left: 0;
@@ -194,7 +196,7 @@ const AddDisciplinePopUp = ({isOpen, onClose}) => {
   if (!isOpen) return null;
 
   return (
-    <AddDisciplinePopUpBackground onClick={onClose}>
+    <AddDisciplinePopUpBackground onClick={onClose} open={isOpen}>
       <AddDisciplinePopUpContainer onClick={(e) => e.stopPropagation()}>
           <AddDisciplinePopUpHeader>
               <h1>ADICIONAR DISCIPLINA</h1>

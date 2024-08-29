@@ -3,36 +3,7 @@ import styled, { keyframes } from 'styled-components';
 import CardContentCourse from '../Atoms/CardContentCourse';
 import Card from '../Atoms/Card';
 import StyledButton from '../Atoms/StyledButton';
-
-const bounce = keyframes`
-  0%, 20%, 53%, 80%, 100% {
-    transform: translateY(0);
-  }
-  40%, 43% {
-    transform: translateY(-30px);
-  }
-  70% {
-    transform: translateY(-15px);
-  }
-  90% {
-    transform: translateY(-4px);
-  }
-`;
-
-const bounceBack = keyframes`
-  0%, 20%, 53%, 80%, 100% {
-    transform: translateY(0);
-  }
-  40%, 43% {
-    transform: translateY(15px);
-  }
-  70% {
-    transform: translateY(8px);
-  }
-  90% {
-    transform: translateY(2px);
-  }
-`;
+import {slideIn, slideOut, bounce, bounceBack} from '../Atoms/Animations';
 
 const SemestersContainer = styled.div`
   flex-grow: 1;
@@ -61,8 +32,8 @@ const SemestersContainerHeaderView = styled.div`
 `;
 
 const SemesterContainer = styled.div`
-  animation: ${props => props.isOpen ? bounceBack : bounce} 2s ease-in-out 0s;
-  animation-fill-mode: both;
+  // animation: ${props => props.isOpen ? bounceBack : bounce} 2s ease-in-out -0.5s;
+  // animation-fill-mode: both;
   width: 100%;
   padding: 2%;
   margin-bottom: 2%;
@@ -123,13 +94,17 @@ const SemesterCreditsAndIcon = styled.div`
 `;
 
 const CoursesList = styled.ul`
-  margin-top: 1%;
+  margin-top: ${props => (props.expanded ? '1%' : '0')};
   list-style: none;
   padding: 0;
-  display: ${props => (props.expanded ? 'flex' : 'none')};
+  overflow: hidden;  /* Importante para esconder o conteúdo quando fechado */
+  display: flex;
+  max-height: ${props => (props.expanded ? '500px' : '0')}; /* Define o limite de altura */
+  animation: ${props => (props.expanded ? slideIn : slideOut)} 1s ease-in-out ${props => (props.expanded ? '-0.1s' : '-0.6s')};
   flex-wrap: wrap;
   gap: 10px;
 `;
+
 
 const CourseContainer = styled.li`
   width: 100px;

@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import CardContentCourse from '../Atoms/CardContentCourse';
 import Card from '../Atoms/Card';
 import StyledButton from '../Atoms/StyledButton';
+import {slideIn, slideIn2, slideOut, slideOut2} from '../Atoms/Animations'
 
 import { ReactComponent as ThinButtonBlueBackgroundSVG } from '../../assets/ThinButtonBlueBackground.svg';
 import { ReactComponent as AplicarTextIconSVG } from '../../assets/AplicarTextIcon.svg';
@@ -108,11 +109,14 @@ const FilterOpener = styled.button`
 `;
 
 const Filter = styled.div`
-  display: ${props => (props.state ? 'flex' : 'none')};
+  display: flex;  
+  max-height: ${props => (props.state ? '500px' : '0')}; /* Define o limite de altura */
+  animation: ${props => (props.state ? slideIn : slideOut)} 1s ease-in-out ${props => (props.state ? '-0.1s' : '-0.6s')};
+
   width: 100%;
   height: 196px;
 
-  margin-top: 2%;
+  margin-top: ${props => (props.state ? '1%' : '0')};
 
   background-color: #FFFFFF;
 
@@ -224,10 +228,13 @@ const CategoryHeaderBackground = styled.div`
 `;
 
 const CoursesGrid = styled.div`
-  display: ${props => (props.expanded ? 'grid' : 'none')};
+  display: grid;
+  overflow: hidden;
   grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
   gap: 50px;
-  padding: 10px;
+  margin: 5px;
+  max-height: ${props => (props.expanded ? '500px' : '0')}; /* Define o limite de altura */
+  animation: ${props => (props.expanded ? slideIn2 : slideOut2)} 1s ease-in-out ${props => (props.expanded ? '-0.1s' : '-0.6s')};
 `;
 
 const CourseCard = styled.div`

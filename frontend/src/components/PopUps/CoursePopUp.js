@@ -3,8 +3,10 @@ import styled from 'styled-components';
 import StyledButton from '../Atoms/StyledButton';
 import CourseTag from '../Atoms/CourseTag';
 import Pokeball from '../Atoms/Pokeball';
+import {fadeIn, fadeOut } from '../Atoms/Animations'
 
 const CoursePopUpBackground = styled.div`
+  animation: ${props => (props.open ? fadeIn : fadeOut)} 1s ease-in-out -0.3s;
   position: fixed;
   top: 0;
   left: 0;
@@ -194,7 +196,7 @@ const CoursePopUp = ({isOpen, onClose, pokeball, pokemonURL}) => {
   if (!isOpen) return null;
 
   return (
-    <CoursePopUpBackground onClick={onClose}>
+    <CoursePopUpBackground onClick={onClose} open={isOpen}>
       <CoursePopUpContainer onClick={(e) => e.stopPropagation()}>
         <CoursePopUpHeader>
 
@@ -244,11 +246,11 @@ const CoursePopUp = ({isOpen, onClose, pokeball, pokemonURL}) => {
               </SearchFieldContainer>
 
               <TreeButtons>
-                <StyledButton>
+                <StyledButton background_image={"/assets/a2.png"}>
 
                 </StyledButton>
 
-                <StyledButton>
+                <StyledButton background_image={"/assets/a2.png"}>
 
                 </StyledButton>
               </TreeButtons>
