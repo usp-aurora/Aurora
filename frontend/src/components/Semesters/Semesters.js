@@ -161,7 +161,7 @@ const NewSemester = styled.div`
   cursor: pointer;
 `;
 
-const Semesters = ({ openCourse }) => {
+const Semesters = ({ openCourse, changeCourseDisplay }) => {
   const [courses] = useState([
     {
       code: 'MAC0110', 
@@ -172,7 +172,19 @@ const Semesters = ({ openCourse }) => {
         innerLine: "#51A1E0",
         outerLine: "#17538D",
       },
-      pokeball: "#C2DCF5"
+      tags: [
+        {
+          color: '#FFFFFF',
+          name: 'Sistemas de Software'
+        },
+        {
+          color: '#000000',
+          name: 'Ciência de dados'
+        }
+      ],  
+      credits: [4, 2],
+      pokeball: "#C2DCF5",
+      desc: 'AOBA'
     },
     {
       code: 'MAC0110', 
@@ -183,7 +195,19 @@ const Semesters = ({ openCourse }) => {
         innerLine: "#51A1E0",
         outerLine: "#17538D",
       },
-      pokeball: "#C2DCF5"
+      tags: [
+        {
+          color: '#FFFFFF',
+          name: 'Sistemas de Software'
+        },
+        {
+          color: '#000000',
+          name: 'Ciência de dados'
+        }
+      ],  
+      credits: [4, 2],
+      pokeball: "#C2DCF5",
+      desc: 'AOBA'
     },
     {
       code: 'MAC0110', 
@@ -194,7 +218,19 @@ const Semesters = ({ openCourse }) => {
         innerLine: "#51A1E0",
         outerLine: "#17538D",
       },
-      pokeball: "#C2DCF5"
+      tags: [
+        {
+          color: '#FFFFFF',
+          name: 'Sistemas de Software'
+        },
+        {
+          color: '#000000',
+          name: 'Ciência de dados'
+        }
+      ],  
+      credits: [4, 2],
+      pokeball: "#C2DCF5",
+      desc: 'AOBA'
     },
     {
       code: 'MAC0110', 
@@ -205,40 +241,111 @@ const Semesters = ({ openCourse }) => {
         innerLine: "#51A1E0",
         outerLine: "#17538D",
       },
-      pokeball: "#C2DCF5"
+      tags: [
+        {
+          color: '#FFFFFF',
+          name: 'Sistemas de Software'
+        },
+        {
+          color: '#000000',
+          name: 'Ciência de dados'
+        }
+      ],  
+      credits: [4, 2],
+      pokeball: "#C2DCF5",
+      desc: 'AOBA'
     },
     {
       code: 'MAC0110', 
-      semester: 2, 
+      semester: 1, 
       title: "Introdução à Computação", 
       colors: {
         background: "#FFFFFF",
         innerLine: "#51A1E0",
         outerLine: "#17538D",
       },
-      pokeball: "#C2DCF5"
+      tags: [
+        {
+          color: '#FFFFFF',
+          name: 'Sistemas de Software'
+        },
+        {
+          color: '#000000',
+          name: 'Ciência de dados'
+        }
+      ],  
+      credits: [4, 2],
+      pokeball: "#C2DCF5",
+      desc: 'AOBA'
     },
     {
       code: 'MAC0110', 
-      semester: 3, 
+      semester: 1, 
       title: "Introdução à Computação", 
       colors: {
         background: "#FFFFFF",
         innerLine: "#51A1E0",
         outerLine: "#17538D",
       },
-      pokeball: "#C2DCF5"
+      tags: [
+        {
+          color: '#FFFFFF',
+          name: 'Sistemas de Software'
+        },
+        {
+          color: '#000000',
+          name: 'Ciência de dados'
+        }
+      ],  
+      credits: [4, 2],
+      pokeball: "#C2DCF5",
+      desc: 'AOBA'
     },
     {
       code: 'MAC0110', 
-      semester: 4, 
+      semester: 1, 
       title: "Introdução à Computação", 
       colors: {
         background: "#FFFFFF",
         innerLine: "#51A1E0",
         outerLine: "#17538D",
       },
-      pokeball: "#C2DCF5"
+      tags: [
+        {
+          color: '#FFFFFF',
+          name: 'Sistemas de Software'
+        },
+        {
+          color: '#000000',
+          name: 'Ciência de dados'
+        }
+      ],  
+      credits: [4, 2],
+      pokeball: "#C2DCF5",
+      desc: 'AOBA'
+    },
+    {
+      code: 'MAC0110', 
+      semester: 1, 
+      title: "Introdução à Computação", 
+      colors: {
+        background: "#FFFFFF",
+        innerLine: "#51A1E0",
+        outerLine: "#17538D",
+      },
+      tags: [
+        {
+          color: '#FFFFFF',
+          name: 'Sistemas de Software'
+        },
+        {
+          color: '#000000',
+          name: 'Ciência de dados'
+        }
+      ],  
+      credits: [4, 2],
+      pokeball: "#C2DCF5",
+      desc: 'AOBA'
     },
     {
       code: 'MAC0110', 
@@ -249,33 +356,52 @@ const Semesters = ({ openCourse }) => {
         innerLine: "#51A1E0",
         outerLine: "#17538D",
       },
-      pokeball: "#C2DCF5"
-    },
-    {
-      code: 'MAC0110', 
-      semester: 5, 
-      title: "Introdução à Computação", 
-      colors: {
-        background: "#FFFFFF",
-        innerLine: "#51A1E0",
-        outerLine: "#17538D",
-      },
-      pokeball: "#C2DCF5"
+      tags: [
+        {
+          color: '#FFFFFF',
+          name: 'Sistemas de Software'
+        },
+        {
+          color: '#000000',
+          name: 'Ciência de dados'
+        }
+      ],  
+      credits: [4, 2],
+      pokeball: "#C2DCF5",
+      desc: 'AOBA'
     },
   ]);
 
   const semesters = [
-    {id: 1, classCredits: 18, workCredits: 2},
-    {id: 2, classCredits: 22},
-    {id: 3, classCredits: 12, workCredits: 4},
-    {id: 4, classCredits: 24},
-    {id: 5, classCredits: 20, workCredits: 2},
-    {id: 6, classCredits: 10, workCredits: 2},
-    {id: 7, classCredits: 16},
-    {id: 8, classCredits: 12},
+    {id: 1},
+    {id: 2},
+    {id: 3},
+    {id: 4},
+    {id: 5},
+    {id: 6},
+    {id: 7},
+    {id: 8},
   ];
 
-  const [lastSemester, setLastSemester] = useState(8);
+  const [semestersCredits, setSemestersCredits] = useState(
+    semesters.reduce((credits, semester) => {
+      credits[semester.id] = {
+        classCredits: 0,
+        workCredits: 0
+      }
+      return credits;
+    }, {})
+  );
+
+  const addCreditsToSemester = (semesterId, classCredits, workCredits) => {
+    setSemestersCredits((prev) => ({
+      ...prev,
+      [semesterId]: {
+        classCredits: prev[semesterId].classCredits + classCredits,
+        workCredits: prev[semesterId].workCredits + workCredits
+      },
+    }));
+  } 
 
   const [expandedSemesters, setExpandedSemesters] = useState(
     semesters.reduce((acc, semester) => {
@@ -290,14 +416,6 @@ const Semesters = ({ openCourse }) => {
       [semesterId]: !prev[semesterId],
     }));
   };
-
-  const addSemester = () => {
-    // semesters.push({
-    //   id: 9,
-    //   classCredits: 0, 
-    //   workCredits: 0
-    // })
-  }
 
   return (
     <SemestersContainer>
@@ -339,13 +457,17 @@ const Semesters = ({ openCourse }) => {
                 <img style={{paddingRight: '5px'}} src='/icons/warning_yellow.png' />
                 <p style={{color: "#ECA706"}}>Provável conflito de horário.</p>
               </SemesterWarnings>
-              <SemesterWarnings>
-                <img style={{paddingRight: '5px'}} src='/icons/warning.png'/>
-                <p style={{color: "#C11414"}}>Máximo de 40 créditos por período.</p>
-              </SemesterWarnings>
+              {
+                semestersCredits[semester.id].classCredits + semestersCredits[semester.id].workCredits > 40 ?
+                <SemesterWarnings>
+                  <img style={{paddingRight: '5px'}} src='/icons/warning.png'/>
+                  <p style={{color: "#C11414"}}>Máximo de 40 créditos por período.</p>
+                </SemesterWarnings>
+                : null
+              }
             </SemesterInfos>
             <SemesterCreditsAndIcon>
-              <p style={{color: "#757575"}}>{semester.classCredits} {semester.workCredits ? '+' : ''} {semester.workCredits} {semester.classCredits || semester.workCredits ? 'créditos' : ''}</p>
+              <p style={{color: "#757575"}}>{semestersCredits[semester.id].classCredits ? semestersCredits[semester.id].classCredits : ''} {semestersCredits[semester.id].workCredits ? '+' : ''} {semestersCredits[semester.id].workCredits ? semestersCredits[semester.id].workCredits : ''} {semestersCredits[semester.id].classCredits || semestersCredits[semester.id].workCredits ? 'créditos' : ''}</p>
               <span>{expandedSemesters[semester.id] ? '▼' : '▶'}</span>
             </SemesterCreditsAndIcon>
           </SemesterHeader>
@@ -353,7 +475,10 @@ const Semesters = ({ openCourse }) => {
             {courses
               .filter(course => course.semester === semester.id)
               .map(course => (
-                <Card colors={course.colors} onClick={openCourse} >
+                <Card colors={course.colors} onCreate={() => addCreditsToSemester(semester.id, course.credits[0], course.credits[1])} onClick={() => {
+                  openCourse();
+                  changeCourseDisplay(course.pokeball, "/pokemons/ditto.png", course.title, course.code, course.tags, course.credits, course.desc)
+                }}>
                   <CardContentCourse pokeball={course.pokeball} courseCode={course.code} courseTitle={course.title} pokemonURL="/pokemons/ditto.png">
                   </CardContentCourse>
                 </Card>
@@ -369,7 +494,7 @@ const Semesters = ({ openCourse }) => {
         innerLine: "#51A1E0",
         outerLine: "#17538D",
       }}>
-        <NewSemester onClick={addSemester()}>
+        <NewSemester>
           <h1 style={{fontSize: "60px", marginBottom: "10px"}}>+</h1>
           <p>Adicionar período</p>
         </NewSemester>

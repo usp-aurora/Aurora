@@ -250,7 +250,7 @@ const Categories = styled.div`
   margin-top: 5%;
 `;
 
-const CoursePicker = ({ openCourse, openDisciplinePopUp }) => {
+const CoursePicker = ({ openCourse, changeCourseDisplay, openDisciplinePopUp }) => {
   const categories = [
     {
       name: 'Ciência de dados',
@@ -264,7 +264,19 @@ const CoursePicker = ({ openCourse, openDisciplinePopUp }) => {
             innerLine: "#FFD12B",
             outerLine: "#CC7F02",
           },
-          pokeball: "#FFEA89"
+          tags: [
+            {
+              color: '#FFFFFF',
+              name: 'Sistemas de Software'
+            },
+            {
+              color: '#000000',
+              name: 'Ciência de dados'
+            }
+          ],
+          credits: [4, 2],
+          pokeball: "#FFEA89",
+          desc: 'AOBA'
         },
         {
           code: 'MAC0110', 
@@ -275,7 +287,19 @@ const CoursePicker = ({ openCourse, openDisciplinePopUp }) => {
             innerLine: "#FFD12B",
             outerLine: "#CC7F02",
           },
-          pokeball: "#FFEA89"
+          tags: [
+            {
+              color: '#FFFFFF',
+              name: 'Sistemas de Software'
+            },
+            {
+              color: '#000000',
+              name: 'Ciência de dados'
+            }
+          ],
+          credits: [4, 2],
+          pokeball: "#FFEA89",
+          desc: 'AOBA'
         }, 
         {
           code: 'MAC0110', 
@@ -286,7 +310,19 @@ const CoursePicker = ({ openCourse, openDisciplinePopUp }) => {
             innerLine: "#FFD12B",
             outerLine: "#CC7F02",
           },
-          pokeball: "#FFEA89"
+          tags: [
+            {
+              color: '#FFFFFF',
+              name: 'Sistemas de Software'
+            },
+            {
+              color: '#000000',
+              name: 'Ciência de dados'
+            }
+          ],
+          credits: [4, 2],
+          pokeball: "#FFEA89",
+          desc: 'AOBA'
         },
         {
           code: 'MAC0110', 
@@ -297,7 +333,19 @@ const CoursePicker = ({ openCourse, openDisciplinePopUp }) => {
             innerLine: "#FFD12B",
             outerLine: "#CC7F02",
           },
-          pokeball: "#FFEA89"
+          tags: [
+            {
+              color: '#FFFFFF',
+              name: 'Sistemas de Software'
+            },
+            {
+              color: '#000000',
+              name: 'Ciência de dados'
+            }
+          ],
+          credits: [4, 2],
+          pokeball: "#FFEA89",
+          desc: 'AOBA'
         },
         {
           code: 'MAC0110', 
@@ -308,7 +356,19 @@ const CoursePicker = ({ openCourse, openDisciplinePopUp }) => {
             innerLine: "#FFD12B",
             outerLine: "#CC7F02",
           },
-          pokeball: "#FFEA89"
+          tags: [
+            {
+              color: '#FFFFFF',
+              name: 'Sistemas de Software'
+            },
+            {
+              color: '#000000',
+              name: 'Ciência de dados'
+            }
+          ],
+          credits: [4, 2],
+          pokeball: "#FFEA89",
+          desc: 'AOBA'
         },
       ],
       color: '#FFD12B',
@@ -327,7 +387,19 @@ const CoursePicker = ({ openCourse, openDisciplinePopUp }) => {
             innerLine: "#E83030",
             outerLine: "#841818",
           },
-          pokeball: "#FFA0A0"
+          tags: [
+            {
+              color: '#FFFFFF',
+              name: 'Sistemas de Software'
+            },
+            {
+              color: '#000000',
+              name: 'Ciência de dados'
+            }
+          ],
+          credits: [4, 2],
+          pokeball: "#FFA0A0",
+          desc: 'AOBA'
         },
         {
           code: 'MAC0110', 
@@ -338,7 +410,19 @@ const CoursePicker = ({ openCourse, openDisciplinePopUp }) => {
             innerLine: "#E83030",
             outerLine: "#841818",
           },
-          pokeball: "#FFA0A0"
+          tags: [
+            {
+              color: '#FFFFFF',
+              name: 'Sistemas de Software'
+            },
+            {
+              color: '#000000',
+              name: 'Ciência de dados'
+            }
+          ],
+          credits: [4, 2],
+          pokeball: "#FFA0A0",
+          desc: 'AOBA'
         }, 
         {
           code: 'MAC0110', 
@@ -349,7 +433,19 @@ const CoursePicker = ({ openCourse, openDisciplinePopUp }) => {
             innerLine: "#E83030",
             outerLine: "#841818",
           },
-          pokeball: "#FFA0A0"
+          tags: [
+            {
+              color: '#FFFFFF',
+              name: 'Sistemas de Software'
+            },
+            {
+              color: '#000000',
+              name: 'Ciência de dados'
+            }
+          ],
+          credits: [4, 2],
+          pokeball: "#FFA0A0",
+          desc: 'AOBA'
         },
         {
           code: 'MAC0110', 
@@ -360,7 +456,19 @@ const CoursePicker = ({ openCourse, openDisciplinePopUp }) => {
             innerLine: "#E83030",
             outerLine: "#841818",
           },
-          pokeball: "#FFA0A0"
+          tags: [
+            {
+              color: '#FFFFFF',
+              name: 'Sistemas de Software'
+            },
+            {
+              color: '#000000',
+              name: 'Ciência de dados'
+            }
+          ],
+          credits: [4, 2],
+          pokeball: "#FFA0A0",
+          desc: 'AOBA'
         },
         {
           code: 'MAC0110', 
@@ -371,7 +479,19 @@ const CoursePicker = ({ openCourse, openDisciplinePopUp }) => {
             innerLine: "#E83030",
             outerLine: "#841818",
           },
-          pokeball: "#FFA0A0"
+          tags: [
+            {
+              color: '#FFFFFF',
+              name: 'Sistemas de Software'
+            },
+            {
+              color: '#000000',
+              name: 'Ciência de dados'
+            }
+          ],
+          credits: [4, 2],
+          pokeball: "#FFA0A0",
+          desc: 'AOBA'
         },
       ],
       color: '#E83030',
@@ -390,7 +510,19 @@ const CoursePicker = ({ openCourse, openDisciplinePopUp }) => {
             innerLine: "#15B48F",
             outerLine: "#095C4D",
           },
-          pokeball: "#A9F1D7"
+          tags: [
+            {
+              color: '#FFFFFF',
+              name: 'Sistemas de Software'
+            },
+            {
+              color: '#000000',
+              name: 'Ciência de dados'
+            }
+          ],
+          credits: [4, 2],
+          pokeball: "#A9F1D7",
+          desc: 'AOBA'
         },
         {
           code: 'MAC0110', 
@@ -401,7 +533,19 @@ const CoursePicker = ({ openCourse, openDisciplinePopUp }) => {
             innerLine: "#15B48F",
             outerLine: "#095C4D",
           },
-          pokeball: "#A9F1D7"
+          tags: [
+            {
+              color: '#FFFFFF',
+              name: 'Sistemas de Software'
+            },
+            {
+              color: '#000000',
+              name: 'Ciência de dados'
+            }
+          ],
+          credits: [4, 2],
+          pokeball: "#A9F1D7",
+          desc: 'AOBA'
         }, 
         {
           code: 'MAC0110', 
@@ -412,7 +556,19 @@ const CoursePicker = ({ openCourse, openDisciplinePopUp }) => {
             innerLine: "#15B48F",
             outerLine: "#095C4D",
           },
-          pokeball: "#A9F1D7"
+          tags: [
+            {
+              color: '#FFFFFF',
+              name: 'Sistemas de Software'
+            },
+            {
+              color: '#000000',
+              name: 'Ciência de dados'
+            }
+          ],
+          credits: [4, 2],
+          pokeball: "#A9F1D7",
+          desc: 'AOBA'
         },
         {
           code: 'MAC0110', 
@@ -423,7 +579,19 @@ const CoursePicker = ({ openCourse, openDisciplinePopUp }) => {
             innerLine: "#15B48F",
             outerLine: "#095C4D",
           },
-          pokeball: "#A9F1D7"
+          tags: [
+            {
+              color: '#FFFFFF',
+              name: 'Sistemas de Software'
+            },
+            {
+              color: '#000000',
+              name: 'Ciência de dados'
+            }
+          ],
+          credits: [4, 2],
+          pokeball: "#A9F1D7",
+          desc: 'AOBA'
         },
         {
           code: 'MAC0110', 
@@ -434,7 +602,19 @@ const CoursePicker = ({ openCourse, openDisciplinePopUp }) => {
             innerLine: "#15B48F",
             outerLine: "#095C4D",
           },
-          pokeball: "#A9F1D7"
+          tags: [
+            {
+              color: '#FFFFFF',
+              name: 'Sistemas de Software'
+            },
+            {
+              color: '#000000',
+              name: 'Ciência de dados'
+            }
+          ],
+          credits: [4, 2],
+          pokeball: "#A9F1D7",
+          desc: 'AOBA'
         },
       ],
       color: '#15B48F',
@@ -453,7 +633,19 @@ const CoursePicker = ({ openCourse, openDisciplinePopUp }) => {
             innerLine: "#6762CD",
             outerLine: "#3C3B74",
           },
-          pokeball: "#B3BEEE"
+          tags: [
+            {
+              color: '#FFFFFF',
+              name: 'Sistemas de Software'
+            },
+            {
+              color: '#000000',
+              name: 'Ciência de dados'
+            }
+          ],
+          credits: [4, 2],
+          pokeball: "#B3BEEE",
+          desc: 'AOBA'
         },
         {
           code: 'MAC0110', 
@@ -464,7 +656,19 @@ const CoursePicker = ({ openCourse, openDisciplinePopUp }) => {
             innerLine: "#6762CD",
             outerLine: "#3C3B74",
           },
-          pokeball: "#B3BEEE"
+          tags: [
+            {
+              color: '#FFFFFF',
+              name: 'Sistemas de Software'
+            },
+            {
+              color: '#000000',
+              name: 'Ciência de dados'
+            }
+          ],
+          credits: [4, 2],
+          pokeball: "#B3BEEE",
+          desc: 'AOBA'
         }, 
         {
           code: 'MAC0110', 
@@ -475,7 +679,19 @@ const CoursePicker = ({ openCourse, openDisciplinePopUp }) => {
             innerLine: "#6762CD",
             outerLine: "#3C3B74",
           },
-          pokeball: "#B3BEEE"
+          tags: [
+            {
+              color: '#FFFFFF',
+              name: 'Sistemas de Software'
+            },
+            {
+              color: '#000000',
+              name: 'Ciência de dados'
+            }
+          ],
+          credits: [4, 2],
+          pokeball: "#B3BEEE",
+          desc: 'AOBA'
         },
         {
           code: 'MAC0110', 
@@ -486,7 +702,19 @@ const CoursePicker = ({ openCourse, openDisciplinePopUp }) => {
             innerLine: "#6762CD",
             outerLine: "#3C3B74",
           },
-          pokeball: "#B3BEEE"
+          tags: [
+            {
+              color: '#FFFFFF',
+              name: 'Sistemas de Software'
+            },
+            {
+              color: '#000000',
+              name: 'Ciência de dados'
+            }
+          ],
+          credits: [4, 2],
+          pokeball: "#B3BEEE",
+          desc: 'AOBA'
         },
         {
           code: 'MAC0110', 
@@ -497,7 +725,19 @@ const CoursePicker = ({ openCourse, openDisciplinePopUp }) => {
             innerLine: "#6762CD",
             outerLine: "#3C3B74",
           },
-          pokeball: "#B3BEEE"
+          tags: [
+            {
+              color: '#FFFFFF',
+              name: 'Sistemas de Software'
+            },
+            {
+              color: '#000000',
+              name: 'Ciência de dados'
+            }
+          ],
+          credits: [4, 2],
+          pokeball: "#B3BEEE",
+          desc: 'AOBA'
         },
       ],
       color: '#6762CD',
@@ -516,7 +756,19 @@ const CoursePicker = ({ openCourse, openDisciplinePopUp }) => {
             innerLine: "#EA7F38",
             outerLine: "#90381C",
           },
-          pokeball: "#F8D6B0"
+          tags: [
+            {
+              color: '#FFFFFF',
+              name: 'Sistemas de Software'
+            },
+            {
+              color: '#000000',
+              name: 'Ciência de dados'
+            }
+          ],
+          credits: [4, 2],
+          pokeball: "#F8D6B0",
+          desc: 'AOBA'
         },
         {
           code: 'MAC0110', 
@@ -527,7 +779,19 @@ const CoursePicker = ({ openCourse, openDisciplinePopUp }) => {
             innerLine: "#EA7F38",
             outerLine: "#90381C",
           },
-          pokeball: "#F8D6B0"
+          tags: [
+            {
+              color: '#FFFFFF',
+              name: 'Sistemas de Software'
+            },
+            {
+              color: '#000000',
+              name: 'Ciência de dados'
+            }
+          ],
+          credits: [4, 2],
+          pokeball: "#F8D6B0",
+          desc: 'AOBA'
         }, 
         {
           code: 'MAC0110', 
@@ -538,7 +802,19 @@ const CoursePicker = ({ openCourse, openDisciplinePopUp }) => {
             innerLine: "#EA7F38",
             outerLine: "#90381C",
           },
-          pokeball: "#F8D6B0"
+          tags: [
+            {
+              color: '#FFFFFF',
+              name: 'Sistemas de Software'
+            },
+            {
+              color: '#000000',
+              name: 'Ciência de dados'
+            }
+          ],
+          credits: [4, 2],
+          pokeball: "#F8D6B0",
+          desc: 'AOBA'
         },
         {
           code: 'MAC0110', 
@@ -549,7 +825,19 @@ const CoursePicker = ({ openCourse, openDisciplinePopUp }) => {
             innerLine: "#EA7F38",
             outerLine: "#90381C",
           },
-          pokeball: "#F8D6B0"
+          tags: [
+            {
+              color: '#FFFFFF',
+              name: 'Sistemas de Software'
+            },
+            {
+              color: '#000000',
+              name: 'Ciência de dados'
+            }
+          ],
+          credits: [4, 2],
+          pokeball: "#F8D6B0",
+          desc: 'AOBA'
         },
         {
           code: 'MAC0110', 
@@ -560,7 +848,19 @@ const CoursePicker = ({ openCourse, openDisciplinePopUp }) => {
             innerLine: "#EA7F38",
             outerLine: "#90381C",
           },
-          pokeball: "#F8D6B0"
+          tags: [
+            {
+              color: '#FFFFFF',
+              name: 'Sistemas de Software'
+            },
+            {
+              color: '#000000',
+              name: 'Ciência de dados'
+            }
+          ],
+          credits: [4, 2],
+          pokeball: "#F8D6B0",
+          desc: 'AOBA'
         },
       ],
       color: '#EA7F38',
@@ -579,10 +879,22 @@ const CoursePicker = ({ openCourse, openDisciplinePopUp }) => {
             innerLine: "#09DE5A",
             outerLine: "#0A7132",
           },
-          pokeball: "#B2FFCE"
+          tags: [
+            {
+              color: '#FFFFFF',
+              name: 'Sistemas de Software'
+            },
+            {
+              color: '#000000',
+              name: 'Ciência de dados'
+            }
+          ],  
+          credits: [4, 2],
+          pokeball: "#B2FFCE",
+          desc: 'AOBA'
         },
         {
-          code: 'MAC0110', 
+          code: 'MAC0110',
           semester: 1, 
           title: "Introdução à Computação", 
           colors: {
@@ -590,7 +902,19 @@ const CoursePicker = ({ openCourse, openDisciplinePopUp }) => {
             innerLine: "#09DE5A",
             outerLine: "#0A7132",
           },
-          pokeball: "#B2FFCE"
+          tags: [
+            {
+              color: '#FFFFFF',
+              name: 'Sistemas de Software'
+            },
+            {
+              color: '#000000',
+              name: 'Ciência de dados'
+            }
+          ],
+          credits: [4, 2],
+          pokeball: "#B2FFCE",
+          desc: 'AOBA'
         }, 
         {
           code: 'MAC0110', 
@@ -601,7 +925,19 @@ const CoursePicker = ({ openCourse, openDisciplinePopUp }) => {
             innerLine: "#09DE5A",
             outerLine: "#0A7132",
           },
-          pokeball: "#B2FFCE"
+          tags: [
+            {
+              color: '#FFFFFF',
+              name: 'Sistemas de Software'
+            },
+            {
+              color: '#000000',
+              name: 'Ciência de dados'
+            }
+          ],
+          credits: [4, 2],
+          pokeball: "#B2FFCE",
+          desc: 'AOBA'
         },
         {
           code: 'MAC0110', 
@@ -612,7 +948,19 @@ const CoursePicker = ({ openCourse, openDisciplinePopUp }) => {
             innerLine: "#09DE5A",
             outerLine: "#0A7132",
           },
-          pokeball: "#B2FFCE"
+          tags: [
+            {
+              color: '#FFFFFF',
+              name: 'Sistemas de Software'
+            },
+            {
+              color: '#000000',
+              name: 'Ciência de dados'
+            }
+          ],
+          credits: [4, 2],
+          pokeball: "#B2FFCE",
+          desc: 'AOBA'
         },
         {
           code: 'MAC0110', 
@@ -623,7 +971,19 @@ const CoursePicker = ({ openCourse, openDisciplinePopUp }) => {
             innerLine: "#09DE5A",
             outerLine: "#0A7132",
           },
-          pokeball: "#B2FFCE"
+          tags: [
+            {
+              color: '#FFFFFF',
+              name: 'Sistemas de Software'
+            },
+            {
+              color: '#000000',
+              name: 'Ciência de dados'
+            }
+          ],
+          credits: [4, 2],
+          pokeball: "#B2FFCE",
+          desc: 'AOBA'
         },
       ],
       color: '#09DE5A',
@@ -642,7 +1002,19 @@ const CoursePicker = ({ openCourse, openDisciplinePopUp }) => {
             innerLine: "#F73EF6",
             outerLine: "#95138E",
           },
-          pokeball: "#FDCEFF"
+          tags: [
+            {
+              color: '#FFFFFF',
+              name: 'Sistemas de Software'
+            },
+            {
+              color: '#000000',
+              name: 'Ciência de dados'
+            }
+          ],
+          credits: [4, 2],
+          pokeball: "#FDCEFF",
+          desc: 'AOBA'
         },
         {
           code: 'MAC0110', 
@@ -653,7 +1025,19 @@ const CoursePicker = ({ openCourse, openDisciplinePopUp }) => {
             innerLine: "#F73EF6",
             outerLine: "#95138E",
           },
-          pokeball: "#FDCEFF"
+          tags: [
+            {
+              color: '#FFFFFF',
+              name: 'Sistemas de Software'
+            },
+            {
+              color: '#000000',
+              name: 'Ciência de dados'
+            }
+          ],
+          credits: [4, 2],
+          pokeball: "#FDCEFF",
+          desc: 'AOBA'
         }, 
         {
           code: 'MAC0110', 
@@ -664,7 +1048,19 @@ const CoursePicker = ({ openCourse, openDisciplinePopUp }) => {
             innerLine: "#F73EF6",
             outerLine: "#95138E",
           },
-          pokeball: "#FDCEFF"
+          tags: [
+            {
+              color: '#FFFFFF',
+              name: 'Sistemas de Software'
+            },
+            {
+              color: '#000000',
+              name: 'Ciência de dados'
+            }
+          ],
+          credits: [4, 2],
+          pokeball: "#FDCEFF",
+          desc: 'AOBA'
         },
         {
           code: 'MAC0110', 
@@ -675,7 +1071,19 @@ const CoursePicker = ({ openCourse, openDisciplinePopUp }) => {
             innerLine: "#F73EF6",
             outerLine: "#95138E",
           },
-          pokeball: "#FDCEFF"
+          tags: [
+            {
+              color: '#FFFFFF',
+              name: 'Sistemas de Software'
+            },
+            {
+              color: '#000000',
+              name: 'Ciência de dados'
+            }
+          ],
+          credits: [4, 2],
+          pokeball: "#FDCEFF",
+          desc: 'AOBA'
         },
         {
           code: 'MAC0110', 
@@ -686,7 +1094,19 @@ const CoursePicker = ({ openCourse, openDisciplinePopUp }) => {
             innerLine: "#F73EF6",
             outerLine: "#95138E",
           },
-          pokeball: "#FDCEFF"
+          tags: [
+            {
+              color: '#FFFFFF',
+              name: 'Sistemas de Software'
+            },
+            {
+              color: '#000000',
+              name: 'Ciência de dados'
+            }
+          ],
+          credits: [4, 2],
+          pokeball: "#FDCEFF",
+          desc: 'AOBA'
         },
       ],
       color: '#F73EF6',
@@ -703,7 +1123,19 @@ const CoursePicker = ({ openCourse, openDisciplinePopUp }) => {
             innerLine: "#8E7143",
             outerLine: "#533F30",
           },
-          pokeball: "#C4B580"
+          tags: [
+            {
+              color: '#FFFFFF',
+              name: 'Sistemas de Software'
+            },
+            {
+              color: '#000000',
+              name: 'Ciência de dados'
+            }
+          ],
+          credits: [4, 2],
+          pokeball: "#C4B580",
+          desc: 'AOBA'
         },
         {
           code: 'MAC0110', 
@@ -714,7 +1146,19 @@ const CoursePicker = ({ openCourse, openDisciplinePopUp }) => {
             innerLine: "#8E7143",
             outerLine: "#533F30",
           },
-          pokeball: "#C4B580"
+          tags: [
+            {
+              color: '#FFFFFF',
+              name: 'Sistemas de Software'
+            },
+            {
+              color: '#000000',
+              name: 'Ciência de dados'
+            }
+          ],
+          credits: [4, 2],
+          pokeball: "#C4B580",
+          desc: 'AOBA'
         }, 
         {
           code: 'MAC0110', 
@@ -725,7 +1169,19 @@ const CoursePicker = ({ openCourse, openDisciplinePopUp }) => {
             innerLine: "#8E7143",
             outerLine: "#533F30",
           },
-          pokeball: "#C4B580"
+          tags: [
+            {
+              color: '#FFFFFF',
+              name: 'Sistemas de Software'
+            },
+            {
+              color: '#000000',
+              name: 'Ciência de dados'
+            }
+          ],
+          credits: [4, 2],
+          pokeball: "#C4B580",
+          desc: 'AOBA'
         },
         {
           code: 'MAC0110', 
@@ -736,7 +1192,19 @@ const CoursePicker = ({ openCourse, openDisciplinePopUp }) => {
             innerLine: "#8E7143",
             outerLine: "#533F30",
           },
-          pokeball: "#C4B580"
+          tags: [
+            {
+              color: '#FFFFFF',
+              name: 'Sistemas de Software'
+            },
+            {
+              color: '#000000',
+              name: 'Ciência de dados'
+            }
+          ],
+          credits: [4, 2],
+          pokeball: "#C4B580",
+          desc: 'AOBA'
         },
         {
           code: 'MAC0110', 
@@ -747,7 +1215,19 @@ const CoursePicker = ({ openCourse, openDisciplinePopUp }) => {
             innerLine: "#8E7143",
             outerLine: "#533F30",
           },
-          pokeball: "#C4B580"
+          tags: [
+            {
+              color: '#FFFFFF',
+              name: 'Sistemas de Software'
+            },
+            {
+              color: '#000000',
+              name: 'Ciência de dados'
+            }
+          ],
+          credits: [4, 2],
+          pokeball: "#C4B580",
+          desc: 'AOBA'
         },
       ],
       color: '#533F30'
@@ -895,7 +1375,10 @@ const CoursePicker = ({ openCourse, openDisciplinePopUp }) => {
                   course.code.toLowerCase().includes(searchTerm.toLowerCase())
                 )
                 .map((course) => (
-                  <Card colors={course.colors} onClick={openCourse}>
+                  <Card colors={course.colors} onClick={() => {
+                    openCourse();
+                    changeCourseDisplay(course.pokeball, "/pokemons/ditto.png", course.title, course.code, course.tags, course.credits, course.desc)
+                  }}>
                     <CardContentCourse pokeball={course.pokeball} courseCode={course.code} courseTitle={course.title} pokemonURL="/pokemons/ditto.png">
                     </CardContentCourse>
                   </Card>

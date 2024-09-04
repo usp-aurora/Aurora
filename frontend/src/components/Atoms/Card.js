@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 
 const CardComponent = styled.div`
@@ -31,9 +31,9 @@ const CardBackground = styled.div`
   top: 0;
 `;
 
-const Card = ({children, colors, onClick}) => {
+const Card = ({children, colors, onClick, onCreate}) => {
   return (
-    <CardComponent onClick={onClick}>
+    <CardComponent onClick={onClick} onLoad={onCreate}>
       <CardContent>
         {children}
       </CardContent>

@@ -56,8 +56,15 @@ const CoursePopUpHeader = styled.div`
   flex: 10;
   width: 100%;
   display: flex;
-  justify-content: space-evenly;
+  justify-content: space-between;
   margin-bottom: 2%;
+`;
+
+const HeaderInfo = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
 `;
 
 
@@ -192,7 +199,7 @@ const TreeButtons = styled.div`
   align-items: center;
 `;
 
-const CoursePopUp = ({isOpen, onClose, pokeball, pokemonURL}) => {
+const CoursePopUp = ({isOpen, onClose, pokeball_color, pokemonURL, title, code, tags, credits, desc}) => {
   if (!isOpen) return null;
 
   return (
@@ -200,12 +207,14 @@ const CoursePopUp = ({isOpen, onClose, pokeball, pokemonURL}) => {
       <CoursePopUpContainer onClick={(e) => e.stopPropagation()}>
         <CoursePopUpHeader>
 
-          <Pokeball pokeball={pokeball} pokemonURL={pokemonURL}/>
+          <HeaderInfo>
+            <Pokeball pokeball={pokeball_color} pokemonURL={pokemonURL}/>
 
-          <CoursePopUpHeaderInfos>
-            <h1>ÁLGEBRA BOOLEANA E APLICAÇÕES NO PROJETO DE ARQUITETURA DE COMPUTADORES</h1>
-            <h3>MAC0216</h3>
-          </CoursePopUpHeaderInfos>
+            <CoursePopUpHeaderInfos>
+              <h1>{title.toUpperCase()}</h1>
+              <h3>{code.toUpperCase()}</h3>
+            </CoursePopUpHeaderInfos>
+          </HeaderInfo>
 
           <Button>
             <StyledButton onClick={onClose} background_image={"/assets/botao_vermelho.png"}>
@@ -220,13 +229,15 @@ const CoursePopUp = ({isOpen, onClose, pokeball, pokemonURL}) => {
         <CoursePopUpBody>
 
           <CourseTags>
-            <CourseTag color={'#095C4D'} name={"Sistemas de Software"}></CourseTag>
-            <CourseTag color={'#17538D'} name={"Obrigatória"}></CourseTag>
-            <h3>4 + 2 créditos</h3>
+            {tags
+              .map(tag => (
+                <CourseTag color={tag.color} name={tag.name} />
+              ))}
+            <h3>{credits[0]} {credits[1] > 0 ? '+' : ''} {credits[1]} créditos</h3>
           </CourseTags>
 
           <CourseDesc>
-            <p style={{fontSize: "12px"}}>Conceitos básicos de arquitetura de computadores. Linguagem de montagem e montadores, ligação de código objeto, interface com hardware e com linguagens de alto nível. Interação com o sistema operacional no nível do shell: streams, entrada e saída padrão, redirecionamento e pipes. Shell scripts. Gerenciamento de compilação de programas e bibliotecas com ferramentas como make. Modularização de código. Ligação de módulos, estática e dinâmica. Construção de bibliotecas. Técnicas de depuração e teste de programas. Técnicas e ferramentas de controle de versão. Construção de um sistema em uma linguagem procedimental (por exemplo, C). Estudo de uma linguagem dinâmica de script (por exemplo, Python ou Ruby). Introdução aos conceitos de orientação a objetos no âmbito de linguagens dinâmicas ... Ver mais</p>
+            <p style={{fontSize: "12px"}}>{desc}</p>
           </CourseDesc>
 
           <Tree>

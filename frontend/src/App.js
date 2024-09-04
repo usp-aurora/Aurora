@@ -8,6 +8,7 @@ import Header from './components/Header/Header';
 import TestButtons from './components/Development/TestButtons'
 import AddDisciplinePopUp from './components/PopUps/AddDisciplinePopUp';
 import CoursePopUp from './components/PopUps/CoursePopUp'
+import DragAndDrop from './components/Development/DragAndDrop';
 
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
         <Route path="/botao" element={<TestButtons />} />
         <Route path="/popup" element={<AddDisciplinePopUp />} />
         <Route path="/popup2" element={<CoursePopUp pokeball={"#C2DCF5"} pokemonURL="/pokemons/ditto.png" />} />
+        <Route path="/drag" element={<DragAndDrop />} />
       </Routes>
     </Router>
   );

@@ -31,18 +31,51 @@ const Home = () => {
     setAddDisciplineActive(!addDisciplineActive);
   }
 
-  const toggleCourse = () => {
+  const toggleCoursePopUp = () => {
     setCoursePopUpActive(!coursePopUpActive);
+  }
+
+  const [course, setCourse] = useState({
+    pokeball_color: '',
+    pokemonURL: '',
+    title: '',
+    code: '',
+    tags: [{
+      color: '',
+      name: ''
+    }],
+    credits: [0,0],
+    desc: ''
+  })
+
+  const toggleCourse = (p_color, p_url, title, code, tags, credits, desc) => {
+    setCourse({
+      pokeball_color: p_color,
+      pokemonURL: p_url,
+      title: title,
+      code: code,
+      tags: tags,
+      credits: credits,
+      desc: desc
+    })
   }
 
   return (
     <AppContainer>
       <AddDisciplinePopUp isOpen={addDisciplineActive} onClose={toggleDiscipline} />
-      <CoursePopUp isOpen={coursePopUpActive} onClose={toggleCourse} pokeball={"red"} pokemonURL={"/pokemons/ditto.png"}/>
+      <CoursePopUp isOpen={coursePopUpActive} onClose={toggleCoursePopUp} 
+                    pokeball_color={course.pokeball_color} 
+                    pokemonURL={course.pokemonURL}
+                    title={course.title}
+                    code={course.code}
+                    tags={course.tags}
+                    credits={course.credits}
+                    desc={course.desc}
+      />
       <Header />
       <ContentContainer>
-        <Semester openCourse={toggleCourse} />
-        <CoursePicker openCourse={toggleCourse} openDisciplinePopUp={toggleDiscipline} />
+        <Semester openCourse={toggleCoursePopUp} changeCourseDisplay={toggleCourse} />
+        <CoursePicker openCourse={toggleCoursePopUp} changeCourseDisplay={toggleCourse} openDisciplinePopUp={toggleDiscipline} />
       </ContentContainer>
     </AppContainer>
   );
