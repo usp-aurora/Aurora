@@ -13,12 +13,6 @@ class PlanSeeder extends Seeder
      */
     public function run(): void
     {
-        $plan = [
-            'user_id' => 1,
-            'subject_id' => 1,
-            'semester' => 1
-        ];
-        Plan::create($plan);
-        Plan::factory(150)->create();
+        Plan::factory(50)->create();
     }
 }
