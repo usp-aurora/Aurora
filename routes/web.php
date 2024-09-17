@@ -8,5 +8,8 @@ Route::get('/', function () {
     return Inertia::render('Home');
 });
 
-Route::get('/test', [PlansController::class, 'test']);
-Route::resource('/plans', PlansController::class);
+Route::get('/test', function() {
+    return Inertia::render('Development/Teste');
+});
+
+Route::resource('/', PlansController::class);

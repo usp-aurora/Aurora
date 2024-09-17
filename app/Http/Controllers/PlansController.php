@@ -9,27 +9,29 @@ use Inertia\Inertia;
 
 class PlansController extends Controller
 {
-    public function test(){
-        return Inertia::render('Development/Teste');
+    // temporary function until the login system is implemented 
+    private function getUserId() {
+        return auth()->check() ? auth()->user()->id : 1;
     }
 
-    /**
-     * Display a listing of the resource.
-     */
+    // Sends to frontend all plans by the user     
     public function index()
     {
-        $user_id = 1;
-        $plans =  Plan::where('user_id', $user_id)->orderBy('semester')->get();
+        $plans =  Plan::where('user_id', $this->getUserId())
+                       ->orderBy('semester')->get();
 
-        return view('plans.index', ['plans' => $plans]);
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Plan $plan)
-    {
-        return view('plans.show', ['plan' => $plan]);
+        return Inertia::render('Home', [
+            'plans' => $plans->map(function ($plan) {
+                return [
+                    'id' => $plan->id,
+                    'code' => $plan->subject->code,
+                    'semester' => $plan->semester,
+                    'title' => $plan->subject->name,
+                    'lecture_credits' => $plan->subject->lecture_credits,
+                    'work_credits' => $plan->subject->work_credits,
+                ];
+            })
+        ]);
     }
 
     /**
@@ -52,8 +54,7 @@ class PlansController extends Controller
             'semester' => 'required|integer',
         ]);
         
-        // $request['user_id'] =  auth()->user->id;
-        $request['user_id'] = 1;
+        $request['user_id'] = getUserId();
 
         $plan = Plan::create($request->all());
         request()->session()->flash('alert-info','Plano cadastrado com sucesso');
@@ -82,7 +83,7 @@ class PlansController extends Controller
         $plan->semester = $request->semester;
         $plan->update();
         
-        request()->session()->flash('alert-info','Livro atualizado com sucesso');
+        request()->session()->flash('alert-info','Plano atualizado com sucesso');
         return redirect("/plans/{$plan->id}");
     }
     
