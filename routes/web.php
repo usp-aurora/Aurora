@@ -9,3 +9,4 @@ Route::get('/', function () {
 });
 
 Route::get('/test', [PlansController::class, 'test']);
+Route::resource('/plans', PlansController::class);
