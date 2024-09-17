@@ -19,12 +19,12 @@ const ContentContainer = styled.div`
 `;
 
 
-const Home = () => {
+const Home = ({ plans }) => {
   return (
     <AppContainer>
       <Header />
       <ContentContainer>
-        <Semester />
+        <Semester plans={plans}/>
         <CoursePicker />
       </ContentContainer>
     </AppContainer>

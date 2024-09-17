@@ -155,8 +155,19 @@ const NewSemester = styled.div`
   cursor: pointer;
 `;
 
-const Semesters = () => {
-  const [courses] = useState([
+const Semesters = ({ plans }) => {
+  const [courses] = useState(plans.map(plan => ({
+    ...plan,  // Inclui os outros campos do plano original
+    colors: {
+      background: "#FFFFFF",
+      innerLine: "#51A1E0",
+      outerLine: "#17538D",
+    },
+    pokeball: "#C2DCF5"
+  })));
+
+  /* 
+    const [courses] = useState([
     {
       code: 'MAC0110', 
       semester: 1, 
@@ -257,6 +268,7 @@ const Semesters = () => {
       pokeball: "#C2DCF5"
     },
   ]);
+  */
 
   const semesters = [
     {id: 1, classCredits: 18, workCredits: 2},
