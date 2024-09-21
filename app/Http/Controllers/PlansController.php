@@ -14,7 +14,7 @@ class PlansController extends Controller
         return auth()->check() ? auth()->user()->id : 1;
     }
 
-    // Sends to frontend all plans by the user     
+    // Show all plans by user.
     public function index()
     {
         $plans =  Plan::where('user_id', $this->getUserId())
@@ -24,76 +24,68 @@ class PlansController extends Controller
             'plans' => $plans->map(function ($plan) {
                 return [
                     'id' => $plan->id,
+                    'title' => $plan->subject->name,
                     'code' => $plan->subject->code,
                     'semester' => $plan->semester,
-                    'title' => $plan->subject->name,
-                    'lecture_credits' => $plan->subject->lecture_credits,
-                    'work_credits' => $plan->subject->work_credits,
+                    'subject_id' => $plan->subject->id,
                 ];
             })
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        return view('plans.create',[
-            'plan' => new Plan,
-        ]);
-    }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    // Store a newly created resource in storage.
     public function store(Request $request)
     {
         $request->validate([
             'subject_id' => 'required',
-            'semester' => 'required|integer',
+            'semester' => 'required',
         ]);
-        
-        $request['user_id'] = getUserId();
 
-        $plan = Plan::create($request->all());
-        request()->session()->flash('alert-info','Plano cadastrado com sucesso');
-        return redirect("/plans");
+        $plan = Plan::create([
+            'user_id' => getUserId(),
+            'subject_id' => $request->subject_id,
+            'semester' => $request->semester,
+        ]);
+
+        return response()->json(['success' => 'Plan created successfully!', 'plan' => $plan], 201);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Plan $plan)
-    {
-        return view('plans.edit',[
-            'plan' => $plan
-        ]);
-    }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Plan $plan)
+    // Update the specified resource in storage.
+    public function update(Request $request, $id)
     {
         $request->validate([
-            'semester' => 'required|integer',
+            'subject_id' => 'required',
+            'semester' => 'required',
         ]);
-        // only one atributte changes
-        $plan->semester = $request->semester;
-        $plan->update();
+
+        // Find the plan, create if not found
+        $plan = Plan::find($id) ?? $this->store($request);    
         
-        request()->session()->flash('alert-info','Plano atualizado com sucesso');
-        return redirect("/plans/{$plan->id}");
+        $plan->update([
+            'subject_id' => $request->subject_id,
+            'semester' => $request->semester,
+        ]);
+
+        return response()->json(['success' => 'Plan successfully updated!', 'plan' => $plan], 200); 
     }
     
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Plan $plan)
-    {
-        $plan->delete();
-        return redirect('/plans');
+    // Remove the specified resource from storage.
+    public function destroy($id) {
+        try {
+            // Find the plan, if not found, consider it already deleted
+            $plan = Plan::find($id);
+
+            if ($plan) {
+                $plan->delete();
+            }
+
+            return response()->json(['success' => 'Plan successfully deleted!'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error deleting the plan'], 500);
+        }
     }
+
 }

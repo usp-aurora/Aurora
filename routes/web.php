@@ -12,4 +12,10 @@ Route::get('/test', function() {
     return Inertia::render('Development/Teste');
 });
 
-Route::resource('/', PlansController::class);
+Route::get('/', [PlansController::class, 'index']);
+
+Route::prefix('plans')->group(function () {
+    Route::post('/store', [PlansController::class, 'store'])->name('plans.store');
+    Route::post('/update/{id}', [PlansController::class, 'update'])->name('plans.update');
+    Route::delete('/delete/{id}', [PlansController::class, 'destroy'])->name('plans.destroy');
+});
