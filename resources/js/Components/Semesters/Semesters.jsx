@@ -1,9 +1,14 @@
-import {DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import CardContentCourse from '../Atoms/CardContentCourse';
 import Card from '../Atoms/Card';
+import SortableItem from '../Atoms/SortableItem';
 import StyledButton from '../Atoms/StyledButton';
+import CardContentCourse from '../Atoms/CardContentCourse';
+import {
+  arrayMove,
+  SortableContext,
+  rectSortingStrategy
+} from '@dnd-kit/sortable'
 
 const SemestersContainer = styled.div`
   flex-grow: 1;
@@ -152,16 +157,7 @@ const NewSemester = styled.div`
   cursor: pointer;
 `;
 
-const Semesters = ({ plans }) => {
-  const [courses, setCourses] = useState(plans.map(plan => ({
-    ...plan,  // Inclui os outros campos do plano original
-    colors: {
-      background: "#FFFFFF",
-      innerLine: "#51A1E0",
-      outerLine: "#17538D",
-    },
-    pokeball: "#C2DCF5"
-  })));
+const Semesters = ({ courses }) => {
 
   const semesters = [
     {id: 1, classCredits: 18, workCredits: 2},
@@ -197,33 +193,8 @@ const Semesters = ({ plans }) => {
     //   workCredits: 0
     // })
   }
-  
-  const handleDragEnd = (result) => {
-    if (!result.destination) return; // No valid drop destination
-
-    const { source, destination, draggableId, index } = result;
-
- 
-    const updatedCourses = () => {
-    // Remove course from source semester and add to destination semester
-    if (index !== -1) {
-        const movedCourse = courses[index];
-        const newSemester = destination.droppableId; // Extract new semester ID
-        movedCourse.semester = newSemester;
-
-        courses.splice(index, 0, movedCourse);
-      }
-      return courses;
-    }
-    // Update state
-    setCourses(updatedSemesters);
-
-    // Optionally, send data to backend
-    updateSemester(updatedSemesters);
-  };
 
   return (
-    <DragDropContext onDragEnd={handleDragEnd}>
     <SemestersContainer>
       <SemestersContainerHeader>
         <SemestersContainerHeaderPages>
@@ -255,74 +226,53 @@ const Semesters = ({ plans }) => {
       </SemestersContainerHeader>
 
       {semesters.map(semester => (
-        <SemesterContainer key={semester.id}>
-          <SemesterHeader onClick={() => {toggleSemester(semester.id)}}>
-            <SemesterInfos>
-              <h1 style={{marginRight: "20px"}}>{semester.id}º Período</h1>
-              <SemesterWarnings>
-                <img style={{paddingRight: '5px'}} src='/icons/warning_yellow.png' />
-                <p style={{color: "#ECA706"}}>Provável conflito de horário.</p>
-              </SemesterWarnings>
-              <SemesterWarnings>
-                <img style={{paddingRight: '5px'}} src='/icons/warning.png'/>
-                <p style={{color: "#C11414"}}>Máximo de 40 créditos por período.</p>
-              </SemesterWarnings>
-            </SemesterInfos>
-            <SemesterCreditsAndIcon>
-              <p style={{color: "#757575"}}>{semester.classCredits} {semester.workCredits ? '+' : ''} {semester.workCredits} {semester.classCredits || semester.workCredits ? 'créditos' : ''}</p>
-              <span>{expandedSemesters[semester.id] ? '▼' : '▶'}</span>
-            </SemesterCreditsAndIcon>
-          </SemesterHeader>
-          <Droppable droppableId={semester.id}>
-            {(provided) => (
-              <CoursesList 
-                expanded={expandedSemesters[semester.id]} 
-                {...provided.droppableProps} 
-                ref={provided.innerRef}
-              >
-                {courses
-                  .filter(course => course.semester === semester.id)
-                  .map((course, index) => (    
-                    <Draggable key={course.id} draggableId={`course: ${course.id}`} index={index}>
-                      {(provided) => (
-                        <CourseContainer
-                          ref={provided.innerRef} 
-                          {...provided.draggableProps} 
-                          {...provided.dragHandleProps}
-                        >
-                          <Card colors={course.colors}>
-                            <CardContentCourse 
-                              pokeball={course.pokeball} 
-                              courseCode={course.code} 
-                              courseTitle={course.title} 
-                              pokemonURL="/pokemons/ditto.png"
-                            />
-                          </Card> 
-                        </CourseContainer>
-                      )}
-                    </Draggable>
-                  ))}
-                {provided.placeholder}
-                <NewCard>
-                  <p>Arraste uma disciplina</p>
-                </NewCard>
-              </CoursesList>
-            )}
-          </Droppable>
-        </SemesterContainer>
+        <SortableContext items={courses} strategy={rectSortingStrategy}>
+          <SemesterContainer key={semester.id} id='semester {semester.id}' >
+            <SemesterHeader onClick={() => {toggleSemester(semester.id)}}>
+              <SemesterInfos>
+                <h1 style={{marginRight: "20px"}}>{semester.id}º Período</h1>
+                <SemesterWarnings>
+                  <img style={{paddingRight: '5px'}} src='/icons/warning_yellow.png' />
+                  <p style={{color: "#ECA706"}}>Provável conflito de horário.</p>
+                </SemesterWarnings>
+                <SemesterWarnings>
+                  <img style={{paddingRight: '5px'}} src='/icons/warning.png'/>
+                  <p style={{color: "#C11414"}}>Máximo de 40 créditos por período.</p>
+                </SemesterWarnings>
+              </SemesterInfos>
+              <SemesterCreditsAndIcon>
+                <p style={{color: "#757575"}}>{semester.classCredits} {semester.workCredits ? '+' : ''} {semester.workCredits} {semester.classCredits || semester.workCredits ? 'créditos' : ''}</p>
+                <span>{expandedSemesters[semester.id] ? '▼' : '▶'}</span>
+              </SemesterCreditsAndIcon>
+            </SemesterHeader>
+            <CoursesList expanded={expandedSemesters[semester.id]}>
+              {courses
+                .filter(course => course.semester === semester.id)
+                .map((course) => (    
+                  <SortableItem id={course.id} key={course.id} course={course} />
+                ))}
+              <NewCard>
+                <p>Arraste uma disciplina</p>
+              </NewCard>
+            </CoursesList>
+          </SemesterContainer>    
+        </SortableContext>
+
       ))}
+
+        
+
       <Card colors={{
-        background: "#E4EEFA",
-        innerLine: "#51A1E0",
-        outerLine: "#17538D",
-      }}>
-        <NewSemester onClick={addSemester()}>
-          <h1 style={{fontSize: "60px", marginBottom: "10px"}}>+</h1>
-          <p>Adicionar período</p>
-        </NewSemester>
-      </Card>
+          background: "#E4EEFA",
+          innerLine: "#51A1E0",
+          outerLine: "#17538D",
+        }}>
+          <NewSemester onClick={addSemester()}>
+            <h1 style={{fontSize: "60px", marginBottom: "10px"}}>+</h1>
+            <p>Adicionar período</p>
+          </NewSemester>
+        </Card>
     </SemestersContainer>
-    </DragDropContext>
   );
 };
 
