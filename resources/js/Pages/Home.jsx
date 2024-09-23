@@ -1,3 +1,4 @@
+import {DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import styled from 'styled-components';
 import Header from '../Components/Header/Header';
 import Semester from '../Components/Semesters/Semesters';
@@ -19,14 +20,14 @@ const ContentContainer = styled.div`
 `;
 
 
-const Home = ({ plans }) => {
+const Home = ({ initialPlans }) => {
   return (
     <AppContainer>
       <Header />
-      <ContentContainer>
-        <Semester plans={plans}/>
-        <CoursePicker />
-      </ContentContainer>
+        <ContentContainer>
+          <Semester plans={initialPlans}/>
+          <CoursePicker />
+        </ContentContainer>
     </AppContainer>
   );
 };

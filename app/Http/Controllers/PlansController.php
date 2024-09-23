@@ -21,7 +21,7 @@ class PlansController extends Controller
                        ->orderBy('semester')->get();
 
         return Inertia::render('Home', [
-            'plans' => $plans->map(function ($plan) {
+            'initialPlans' => $plans->map(function ($plan) {
                 return [
                     'id' => $plan->id,
                     'title' => $plan->subject->name,

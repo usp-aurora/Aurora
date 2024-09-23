@@ -1,3 +1,4 @@
+import {DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import CardContentCourse from '../Atoms/CardContentCourse';
@@ -101,12 +102,8 @@ const CoursesList = styled.ul`
 `;
 
 const CourseContainer = styled.li`
-  width: 100px;
-  height: 100px;
-  background-color: gray;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  ...provided.draggableProps.style;
+  z-index: provided.snapshot.isDragging ? 1000 : 'auto';
 `;
 
 const NewCard = styled.div`
@@ -156,7 +153,7 @@ const NewSemester = styled.div`
 `;
 
 const Semesters = ({ plans }) => {
-  const [courses] = useState(plans.map(plan => ({
+  const [courses, setCourses] = useState(plans.map(plan => ({
     ...plan,  // Inclui os outros campos do plano original
     colors: {
       background: "#FFFFFF",
@@ -165,110 +162,6 @@ const Semesters = ({ plans }) => {
     },
     pokeball: "#C2DCF5"
   })));
-
-  /* 
-    const [courses] = useState([
-    {
-      code: 'MAC0110', 
-      semester: 1, 
-      title: "Introdução à Computação", 
-      colors: {
-        background: "#FFFFFF",
-        innerLine: "#51A1E0",
-        outerLine: "#17538D",
-      },
-      pokeball: "#C2DCF5"
-    },
-    {
-      code: 'MAC0110', 
-      semester: 1, 
-      title: "Introdução à Computação", 
-      colors: {
-        background: "#FFFFFF",
-        innerLine: "#51A1E0",
-        outerLine: "#17538D",
-      },
-      pokeball: "#C2DCF5"
-    },
-    {
-      code: 'MAC0110', 
-      semester: 1, 
-      title: "Introdução à Computação", 
-      colors: {
-        background: "#FFFFFF",
-        innerLine: "#51A1E0",
-        outerLine: "#17538D",
-      },
-      pokeball: "#C2DCF5"
-    },
-    {
-      code: 'MAC0110', 
-      semester: 1, 
-      title: "Introdução à Computação", 
-      colors: {
-        background: "#FFFFFF",
-        innerLine: "#51A1E0",
-        outerLine: "#17538D",
-      },
-      pokeball: "#C2DCF5"
-    },
-    {
-      code: 'MAC0110', 
-      semester: 2, 
-      title: "Introdução à Computação", 
-      colors: {
-        background: "#FFFFFF",
-        innerLine: "#51A1E0",
-        outerLine: "#17538D",
-      },
-      pokeball: "#C2DCF5"
-    },
-    {
-      code: 'MAC0110', 
-      semester: 3, 
-      title: "Introdução à Computação", 
-      colors: {
-        background: "#FFFFFF",
-        innerLine: "#51A1E0",
-        outerLine: "#17538D",
-      },
-      pokeball: "#C2DCF5"
-    },
-    {
-      code: 'MAC0110', 
-      semester: 4, 
-      title: "Introdução à Computação", 
-      colors: {
-        background: "#FFFFFF",
-        innerLine: "#51A1E0",
-        outerLine: "#17538D",
-      },
-      pokeball: "#C2DCF5"
-    },
-    {
-      code: 'MAC0110', 
-      semester: 5, 
-      title: "Introdução à Computação", 
-      colors: {
-        background: "#FFFFFF",
-        innerLine: "#51A1E0",
-        outerLine: "#17538D",
-      },
-      pokeball: "#C2DCF5"
-    },
-    {
-      code: 'MAC0110', 
-      semester: 5, 
-      title: "Introdução à Computação", 
-      colors: {
-        background: "#FFFFFF",
-        innerLine: "#51A1E0",
-        outerLine: "#17538D",
-      },
-      pokeball: "#C2DCF5"
-    },
-  ]);
-  */
 
   const semesters = [
     {id: 1, classCredits: 18, workCredits: 2},
@@ -304,8 +197,33 @@ const Semesters = ({ plans }) => {
     //   workCredits: 0
     // })
   }
+  
+  const handleDragEnd = (result) => {
+    if (!result.destination) return; // No valid drop destination
+
+    const { source, destination, draggableId, index } = result;
+
+ 
+    const updatedCourses = () => {
+    // Remove course from source semester and add to destination semester
+    if (index !== -1) {
+        const movedCourse = courses[index];
+        const newSemester = destination.droppableId; // Extract new semester ID
+        movedCourse.semester = newSemester;
+
+        courses.splice(index, 0, movedCourse);
+      }
+      return courses;
+    }
+    // Update state
+    setCourses(updatedSemesters);
+
+    // Optionally, send data to backend
+    updateSemester(updatedSemesters);
+  };
 
   return (
+    <DragDropContext onDragEnd={handleDragEnd}>
     <SemestersContainer>
       <SemestersContainerHeader>
         <SemestersContainerHeaderPages>
@@ -355,19 +273,42 @@ const Semesters = ({ plans }) => {
               <span>{expandedSemesters[semester.id] ? '▼' : '▶'}</span>
             </SemesterCreditsAndIcon>
           </SemesterHeader>
-          <CoursesList expanded={expandedSemesters[semester.id]}>
-            {courses
-              .filter(course => course.semester === semester.id)
-              .map(course => (
-                <Card colors={course.colors}>
-                  <CardContentCourse pokeball={course.pokeball} courseCode={course.code} courseTitle={course.title} pokemonURL="/pokemons/ditto.png">
-                  </CardContentCourse>
-                </Card>
-              ))}
-            <NewCard>
-              <p>Arraste uma disciplina</p>
-            </NewCard>
-          </CoursesList>
+          <Droppable droppableId={semester.id}>
+            {(provided) => (
+              <CoursesList 
+                expanded={expandedSemesters[semester.id]} 
+                {...provided.droppableProps} 
+                ref={provided.innerRef}
+              >
+                {courses
+                  .filter(course => course.semester === semester.id)
+                  .map((course, index) => (    
+                    <Draggable key={course.id} draggableId={`course: ${course.id}`} index={index}>
+                      {(provided) => (
+                        <CourseContainer
+                          ref={provided.innerRef} 
+                          {...provided.draggableProps} 
+                          {...provided.dragHandleProps}
+                        >
+                          <Card colors={course.colors}>
+                            <CardContentCourse 
+                              pokeball={course.pokeball} 
+                              courseCode={course.code} 
+                              courseTitle={course.title} 
+                              pokemonURL="/pokemons/ditto.png"
+                            />
+                          </Card> 
+                        </CourseContainer>
+                      )}
+                    </Draggable>
+                  ))}
+                {provided.placeholder}
+                <NewCard>
+                  <p>Arraste uma disciplina</p>
+                </NewCard>
+              </CoursesList>
+            )}
+          </Droppable>
         </SemesterContainer>
       ))}
       <Card colors={{
@@ -381,6 +322,7 @@ const Semesters = ({ plans }) => {
         </NewSemester>
       </Card>
     </SemestersContainer>
+    </DragDropContext>
   );
 };
 
