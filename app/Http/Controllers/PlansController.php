@@ -17,19 +17,39 @@ class PlansController extends Controller
     // Show all plans by user.
     public function index()
     {
-        $plans =  Plan::where('user_id', $this->getUserId())
-                       ->orderBy('semester')->get();
+        $plans =  Plan::where('user_id', $this->getUserId())->get();
+
+        $maxSemester = max($plans->max('semester'), 8); 
+        $groupedPlans = [];
+
+         for ($semester = 1; $semester <= $maxSemester; $semester++) {
+            
+            $semesterPlans = $plans->filter(function ($plan) use ($semester) {
+                return $plan->semester == $semester;
+            });
+            
+            $groupedPlans[] = [
+                'id' => $semester,
+                'alias' => 'Semester ' . $semester,
+                'courses' => $semesterPlans->map(function ($plan) {
+                        return [
+                            'id'   => $plan->subject->id,
+                            'code' => $plan->subject->code,
+                            'title' => $plan->subject->name,
+                            'plan' => $plan->id,
+                            'colors' => [
+                                'background' => '#FFFFFF',
+                                'innerLine' => '#51A1E0',
+                                'outerLine' => '#17538D'
+                            ],
+                            'pokeball' => '#C2DCF5',
+                        ];
+                    })->values()->all() // make sure we return an array here, not a collection
+            ];
+        }
 
         return Inertia::render('Home', [
-            'plans' => $plans->map(function ($plan) {
-                return [
-                    'id' => $plan->id,
-                    'title' => $plan->subject->name,
-                    'code' => $plan->subject->code,
-                    'semester' => $plan->semester,
-                    'subject_id' => $plan->subject->id,
-                ];
-            })
+            'plans' => $groupedPlans
         ]);
     }
 
