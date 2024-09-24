@@ -24,7 +24,7 @@ const PokemonCard = () => {
         <CardCourseCourse pokeball = "blue"
                         courseCode = "MAC0110" 
                         courseTitle = "Introdução à computação"
-                        pokemonURL = "/ditto.png"
+                        pokemonURL = "/pokemons/ditto.png"
                         />
       </Card> 
     </AppContainer>
