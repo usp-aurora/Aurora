@@ -2,17 +2,16 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Card from '../Atoms/Card';
 import CardContentCourse from '../Atoms/CardContentCourse';
-import Droppable from '../Dnd/Droppable';
 import SortableItem from '../Dnd/SortableItem';
 import StyledButton from '../Atoms/StyledButton';
-
+import Droppable from '../Dnd/Droppable';
 import {
-  arrayMove,
   SortableContext,
-  rectSortingStrategy
+  rectSortingStrategy,
 } from '@dnd-kit/sortable';
 
 const SemestersContainer = styled.div`
+  width: 60vw;
   flex-grow: 1;
   padding: 20px;
 `;
@@ -204,6 +203,10 @@ const Semesters = ({ semesters, sendDataToParent }) => {
       courses: [],
     };
 
+    setExpandedSemesters((prev) => ({
+      ...prev,
+      [newId]: false,
+    }));
     sendDataToParent([...semesters, newSemester]);
   };
 
@@ -239,27 +242,33 @@ const Semesters = ({ semesters, sendDataToParent }) => {
       </SemestersContainerHeader>
 
       {semesters.map(semester => (
-        <SortableContext items={semester.courses} strategy={rectSortingStrategy}>
-            <SemesterContainer key={semester.id} id={semester.alias}>
-              <SemesterHeader onClick={() => {toggleSemester(semester.id)}}>
-                <SemesterInfos>
-                  <h1 style={{marginRight: "20px"}}>{semester.id}º Período</h1>
-                  <SemesterWarnings>
-                    <img style={{paddingRight: '5px'}} src='/icons/warning_yellow.png' />
-                    <p style={{color: "#ECA706"}}>Provável conflito de horário.</p>
-                  </SemesterWarnings>
-                  <SemesterWarnings>
-                    <img style={{paddingRight: '5px'}} src='/icons/warning.png'/>
-                    <p style={{color: "#C11414"}}>Máximo de 40 créditos por período.</p>
-                  </SemesterWarnings>
-                </SemesterInfos>
-                <SemesterCreditsAndIcon>
-                  <p style={{color: "#757575"}}>{semester.classCredits} {semester.workCredits ? '+ ' : ''} {semester.workCredits} {semester.classCredits || semester.workCredits ? 'créditos' : ''}</p>
-                  <span>{expandedSemesters[semester.id] ? '▼' : '▶'}</span>
-                </SemesterCreditsAndIcon>
-              </SemesterHeader>
+        <Droppable id={semester.alias} enabled={expandedSemesters[semester.id]}>
+          <SemesterContainer key={semester.id} id={semester.alias}>
+            <SemesterHeader onClick={() => {toggleSemester(semester.id)}}>
+              <SemesterInfos>
+                <h1 style={{marginRight: "20px"}}>{semester.id}º Período</h1>
+                <SemesterWarnings>
+                  <img style={{paddingRight: '5px'}} src='/icons/warning_yellow.png' />
+                  <p style={{color: "#ECA706"}}>Provável conflito de horário.</p>
+                </SemesterWarnings>
+                <SemesterWarnings>
+                  <img style={{paddingRight: '5px'}} src='/icons/warning.png'/>
+                  <p style={{color: "#C11414"}}>Máximo de 40 créditos por período.</p>
+                </SemesterWarnings>
+              </SemesterInfos>
+              <SemesterCreditsAndIcon>
+                <p style={{color: "#757575"}}>{semester.classCredits} {semester.workCredits ? '+ ' : ''} {semester.workCredits} {semester.classCredits || semester.workCredits ? 'créditos' : ''}</p>
+                <span>{expandedSemesters[semester.id] ? '▼' : '▶'}</span>
+              </SemesterCreditsAndIcon>
+            </SemesterHeader>
+            <SortableContext items={semester.courses} strategy={rectSortingStrategy}>
               <CoursesList expanded={expandedSemesters[semester.id]}>
-                {semester.courses.map((course)  => (    
+                {!semester.courses.length ?
+                  <NewCard>
+                    <p>Arraste uma disciplina</p>
+                  </NewCard>
+                :
+                  semester.courses.map((course)  => (
                     <SortableItem id={course.id} key={course.id}>
                       <Card colors={course.colors}>
                         <CardContentCourse 
@@ -271,12 +280,10 @@ const Semesters = ({ semesters, sendDataToParent }) => {
                       </Card> 
                     </SortableItem>
                   ))}
-                  <NewCard>
-                    <p>Arraste uma disciplina</p>
-                  </NewCard>
               </CoursesList>
-            </SemesterContainer>
-        </SortableContext>
+            </SortableContext>
+          </SemesterContainer>
+        </Droppable>
 
       ))}
 

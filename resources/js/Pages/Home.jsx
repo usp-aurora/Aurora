@@ -13,7 +13,6 @@ import {
   useSensor,
   useSensors,
   closestCenter,
-  closestCorners, 
 } from '@dnd-kit/core';
 import {arrayMove, sortableKeyboardCoordinates} from '@dnd-kit/sortable';
 import { restrictToWindowEdges } from '@dnd-kit/modifiers';
@@ -35,21 +34,33 @@ const ContentContainer = styled.div`
 `;
 
 
-const Home = ({ plans }) => {
+const Home = ({ userPlans }) => {
   const [activeId, setActiveId] = useState();
   const [activeCourse, setActiveCourse] = useState();
-  const [curriculum, setCurriculum] = useState(plans);
-
-
+  const [plans, setPlans] = useState(
+    userPlans.map(semester => ({
+      ...semester,
+      courses: semester.courses.map(course => ({
+        ...course,
+        colors: {
+          background: "#FFFFFF",
+          innerLine: "#51A1E0",
+          outerLine: "#17538D",
+        },
+        pokeball: "#C2DCF5"
+      }))
+    }))
+  );
+  
   const courseMap = useMemo(() => {
     const newCourseMap = new Map();
-    curriculum.forEach(semester => {
+    plans.forEach(semester => {
       semester.courses.forEach(course => {
-        newCourseMap.set(course.id, { course, semester });
+        newCourseMap.set(course.id, { course, semester: semester.id });
       });
     });
     return newCourseMap;
-  }, [curriculum]);
+  }, [plans]);
 
 
   const sensors = useSensors(
@@ -66,16 +77,17 @@ const Home = ({ plans }) => {
     }
   
     if (courseMap.has(id)) {
-      return courseMap.get(id).semester;
+      const semester = courseMap.get(id).semester;
+      return (semester ? plans.find((sem) => sem.id === courseMap.get(id).semester) : 'coursePicker');
     }
-  
-    return curriculum.find((sem) => sem.alias === id);
-  }, [courseMap, curriculum]);
+    
+    return plans.find((sem) => sem.alias === id);
+  }, [courseMap, plans]);
 
 
   // Handler when 'Semesters' sends data
   function handleDataFromSemesters(data) {
-    setCurriculum(data);
+    setPlans(data);
   }
 
   // Handler when drag starts
@@ -94,6 +106,7 @@ const Home = ({ plans }) => {
     const { id: activeId } = active;
     const { id: overId } = over;
 
+  
     const activeContainer = findContainer(activeId);
     const overContainer = findContainer(overId);
 
@@ -101,29 +114,33 @@ const Home = ({ plans }) => {
       return;
     }
 
-    setCurriculum((prev) => {
+    if (overId === 'coursePicker') {
+      return;
+    }
+
+    setPlans((prevPlans) => {
+
       const activeItems = activeContainer.courses;
       const overItems = overContainer.courses;
 
       const activeIndex = activeItems.findIndex(course => course.id === activeId);
       const overIndex = overItems.findIndex(course => course.id === overId);
 
-      console.log(overId);
       let newIndex;
-      if (overId in prev) {
-        newIndex = overItems.length + 1;
+      if (overId in prevPlans) {
+        newIndex = overItems.length;
       } else {
-          const isAfterLastItem = over && (
+          const isAfterLastItem = over && draggingRect && (
             (overIndex === overItems.length - 1 && 
               draggingRect.offsetTop > over.rect.offsetTop + over.rect.height) ||
             (overIndex === overItems.length - 1 && 
               draggingRect.offsetLeft > over.rect.offsetLeft + over.rect.width)  
           );
         
-        newIndex = overIndex >= 0 ? overIndex + (isAfterLastItem ? 1 : 0) : overItems.length + 1;
+        newIndex = overIndex >= 0 ? overIndex + (isAfterLastItem ? 1 : 0) : overItems.length;
       }
 
-      return prev.map(semester => {
+      return prevPlans.map(semester => {
         if (semester.id === activeContainer.id) {
           return {
             ...semester,
@@ -152,6 +169,7 @@ const Home = ({ plans }) => {
     const { id } = active;
     const { id: overId } = over;
 
+    
     const activeContainer = findContainer(id);
     const overContainer = findContainer(overId);
 
@@ -164,8 +182,8 @@ const Home = ({ plans }) => {
 
 
     if (activeIndex !== overIndex) {
-      setCurriculum((curriculum) =>
-        curriculum.map(semester => {
+      setPlans((prevPlans) =>
+        prevPlans.map(semester => {
           if (semester.id === overContainer.id) {
             const updatedCourses = arrayMove(semester.courses, activeIndex, overIndex);
             return { ...semester, courses: updatedCourses };
@@ -189,8 +207,8 @@ const Home = ({ plans }) => {
         onDragEnd={handleDragEnd}
       >
         <ContentContainer>
-          <Semester semesters={curriculum} sendDataToParent={handleDataFromSemesters} />
-          <CoursePicker id="coursePicker"/>
+          <Semester semesters={plans} sendDataToParent={handleDataFromSemesters} />
+          <CoursePicker />
         </ContentContainer>
         
         <DragOverlay modifiers={[restrictToWindowEdges]}> {activeId ?

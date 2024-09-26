@@ -37,19 +37,13 @@ class PlansController extends Controller
                             'code' => $plan->subject->code,
                             'title' => $plan->subject->name,
                             'plan' => $plan->id,
-                            'colors' => [
-                                'background' => '#FFFFFF',
-                                'innerLine' => '#51A1E0',
-                                'outerLine' => '#17538D'
-                            ],
-                            'pokeball' => '#C2DCF5',
                         ];
                     })->values()->all() // make sure we return an array here, not a collection
             ];
         }
 
         return Inertia::render('Home', [
-            'plans' => $groupedPlans
+            'userPlans' => $groupedPlans
         ]);
     }
 

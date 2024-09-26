@@ -14,8 +14,8 @@ const SortableItem = (props) => {
 
     const style = {
         transform: CSS.Transform.toString(transform),
-        transition,
-        opacity: isDragging ? 0.25 : 1,
+        transition: 'transform 0.3s ease, opacity 0.3s ease',
+        opacity: isDragging ? 0.2 : 1,
     };
 
     return (
