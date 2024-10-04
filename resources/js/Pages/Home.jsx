@@ -22,7 +22,7 @@ const ContentContainer = styled.div`
 `;
 
 
-const Home = () => {
+const Home = ({ plans }) => {
 
   const [addDisciplineActive, setAddDisciplineActive] = useState(false);
   const [coursePopUpActive, setCoursePopUpActive] = useState(false);
@@ -74,7 +74,7 @@ const Home = () => {
       />
       <Header />
       <ContentContainer>
-        <Semester openCourse={toggleCoursePopUp} changeCourseDisplay={toggleCourse} />
+        <Semester plans={plans} openCourse={toggleCoursePopUp} changeCourseDisplay={toggleCourse} />
         <CoursePicker openCourse={toggleCoursePopUp} changeCourseDisplay={toggleCourse} openDisciplinePopUp={toggleDiscipline} />
       </ContentContainer>
     </AppContainer>
