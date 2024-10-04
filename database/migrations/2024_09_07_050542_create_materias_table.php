@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('codigo');
             $table->string('ementa');
             $table->string('creditos_aula');
-            $table->string('credito_trabalho');
+            $table->string('creditos_trabalho');
             $table->timestamps();
         });
     }
