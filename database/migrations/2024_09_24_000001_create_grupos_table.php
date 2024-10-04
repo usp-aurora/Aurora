@@ -13,13 +13,15 @@ return new class extends Migration
     {
         Schema::create('grupos', function ($table) {
             $table->id();
-            $table->unsignedBigInteger('id_grupo_pai');
+            $table->string('titulo');
+            $table->string('descricao');
+            $table->unsignedBigInteger('id_grupo_pai')->nullable();
             $table->timestamp('updated_at');
             $table->timestamp('created_at');
         });
 
         Schema::table('grupos', function (Blueprint $table) {
-            $table->foreign('id_grupo_pai')->references('id')->on('grupos')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('id_grupo_pai')->references('id')->on('grupos')->onUpdate('cascade');
         });
     }
 

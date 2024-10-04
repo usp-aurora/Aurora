@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('tipo');
             $table->string('valor_completude');
-            $table->foreignId('id_grupo')->references('id')->on('subjects')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('id_grupo')->references('id')->on('grupos')->onUpdate('cascade');
             $table->timestamp('updated_at');
             $table->timestamp('created_at');
         });
