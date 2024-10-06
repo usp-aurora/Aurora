@@ -48,6 +48,9 @@ class PlansController extends Controller
     }
 
 
+    // To avoid conflicts, we might have to make this only 
+    // callable by the update method.
+    
     // Store a newly created resource in storage.
     public function store(Request $request)
     {
@@ -57,7 +60,7 @@ class PlansController extends Controller
         ]);
 
         $plan = Plan::create([
-            'user_id' => getUserId(),
+            'user_id' => $this->getUserId(),
             'subject_id' => $request->subject_id,
             'semester' => $request->semester,
         ]);

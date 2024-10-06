@@ -9,7 +9,7 @@ const HeaderContainer = styled.div`
     align-items: center;
     
     gap: 16px;
-    padding: 16px;
+    padding: 16px 16px 0 16px;
 `
 
 const Header = () => {

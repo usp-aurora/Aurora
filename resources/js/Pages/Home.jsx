@@ -1,10 +1,13 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import styled from 'styled-components';
+import React, { useState } from 'react';
 import Card from '../Components/Atoms/Card';
 import CardContentCourse from '../Components/Atoms/CardContentCourse';
-import Header from '../Components/Header/Header';
-import Semester from '../Components/Semesters/Semesters';
-import CoursePicker from '../Components/CoursePicker/CoursePicker';
+import Header from '../Components/Header/Header.jsx';
+import Semester from '../Components/Semesters/Semesters.jsx';
+import CoursePicker from '../Components/CoursePicker/CoursePicker.jsx';
+import AddDisciplinePopUp from '../Components/PopUps/AddDisciplinePopUp.jsx';
+import CoursePopUp from '../Components/PopUps/CoursePopUp.jsx';
 import {
   DndContext, 
   DragOverlay,
@@ -196,8 +199,55 @@ const Home = ({ userPlans }) => {
   };
 
 
+
+  const [addDisciplineActive, setAddDisciplineActive] = useState(false);
+  const [coursePopUpActive, setCoursePopUpActive] = useState(false);
+
+  const toggleDiscipline = () => {
+    setAddDisciplineActive(!addDisciplineActive);
+  }
+
+  const toggleCoursePopUp = () => {
+    setCoursePopUpActive(!coursePopUpActive);
+  }
+
+  const [course, setCourse] = useState({
+    pokeball_color: '',
+    pokemonURL: '',
+    title: '',
+    code: '',
+    tags: [{
+      color: '',
+      name: ''
+    }],
+    credits: [0,0],
+    desc: ''
+  })
+
+  const toggleCourse = (p_color, p_url, title, code, tags, credits, desc) => {
+    setCourse({
+      pokeball_color: p_color,
+      pokemonURL: p_url,
+      title: title,
+      code: code,
+      tags: tags,
+      credits: credits,
+      desc: desc
+    })
+  }
+
   return (
     <AppContainer>
+      <AddDisciplinePopUp isOpen={addDisciplineActive} onClose={toggleDiscipline} />
+      <CoursePopUp isOpen={coursePopUpActive} onClose={toggleCoursePopUp} 
+                    pokeball_color={course.pokeball_color} 
+                    pokemonURL={course.pokemonURL}
+                    title={course.title}
+                    code={course.code}
+                    tags={course.tags}
+                    credits={course.credits}
+                    desc={course.desc}
+      />
       <Header />
       <DndContext
         sensors={sensors}
@@ -207,8 +257,8 @@ const Home = ({ userPlans }) => {
         onDragEnd={handleDragEnd}
       >
         <ContentContainer>
-          <Semester semesters={plans} sendDataToParent={handleDataFromSemesters} />
-          <CoursePicker />
+          <Semester semesters={plans} openCourse={toggleCoursePopUp} changeCourseDisplay={toggleCourse}  sendDataToParent={handleDataFromSemesters} />
+          <CoursePicker openCourse={toggleCoursePopUp} changeCourseDisplay={toggleCourse} openDisciplinePopUp={toggleDiscipline} />
         </ContentContainer>
         
         <DragOverlay modifiers={[restrictToWindowEdges]}> {activeId ?
