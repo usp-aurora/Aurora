@@ -17,12 +17,14 @@ class PlansController extends Controller
     // Show all plans by user.
     public function index()
     {
-        $plans =  Plan::where('user_id', $this->getUserId())->get();
+        $plans =  Plan::where('user_id', $this->getUserId())
+                        ->join('subjects', 'plans.subject_id', '=', 'subjects.id')
+                        ->select('plans.*', 'subjects.code', 'subjects.name', 'subjects.syllabus', 'subjects.lecture_credits', 'subjects.work_credits')
+                        ->get();
 
-        $maxSemester = max($plans->max('semester'), 8); 
         $groupedPlans = [];
 
-         for ($semester = 1; $semester <= $maxSemester; $semester++) {
+         for ($semester = 1; $semester <= max($plans->max('semester'), 8); $semester++) {
             
             $semesterPlans = $plans->filter(function ($plan) use ($semester) {
                 return $plan->semester == $semester;
@@ -31,12 +33,15 @@ class PlansController extends Controller
             $groupedPlans[] = [
                 'id' => $semester,
                 'alias' => 'Semester ' . $semester,
+                'credits' => [$semesterPlans->sum('lecture_credits'), $semesterPlans->sum('work_credits')],
                 'courses' => $semesterPlans->map(function ($plan) {
                         return [
-                            'id'   => $plan->subject->id,
-                            'code' => $plan->subject->code,
-                            'title' => $plan->subject->name,
                             'plan' => $plan->id,
+                            'id'   => $plan->subject_id,
+                            'code' => $plan->code,
+                            'title' => $plan->name,
+                            'desc'  => $plan->syllabus,
+                            'credits' => [$plan->lecture_credits, $plan->work_credits]
                         ];
                     })->values()->all() // make sure we return an array here, not a collection
             ];
