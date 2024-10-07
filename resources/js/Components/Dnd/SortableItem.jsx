@@ -14,12 +14,12 @@ const SortableItem = (props) => {
 
     const style = {
         transform: CSS.Transform.toString(transform),
-        transition: 'transform 0.3s ease, opacity 0.3s ease',
+        transition: transition || 'transform 0.3s ease, opacity 0.3s ease',
         opacity: isDragging ? 0.2 : 1,
     };
 
     return (
-        <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+        <div ref={props.disable? null : setNodeRef} style={style} {...attributes} {...listeners}>
           {props.children}
         </div>
     );

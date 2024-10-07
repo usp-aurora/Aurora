@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import Card from '../Atoms/Card';
 import CardContentCourse from '../Atoms/CardContentCourse';
@@ -168,32 +168,7 @@ const NewSemester = styled.div`
   cursor: pointer;
 `;
 
-const Semesters = ({ semesters, sendDataToParent }) => {
-
-  useEffect(() => {
-    const credits = [
-      {id: 1, classCredits: 18, workCredits: 2},
-      {id: 2, classCredits: 22},
-      {id: 3, classCredits: 12, workCredits: 4},
-      {id: 4, classCredits: 24},
-      {id: 5, classCredits: 20, workCredits: 2},
-      {id: 6, classCredits: 10, workCredits: 2},
-      {id: 7, classCredits: 16},
-      {id: 8, classCredits: 12},
-    ];
-
-    sendDataToParent(semesters.map((semester) => {
-      const credit = credits.find(c => c.id === semester.id) || {};
-      return {
-        ...semester,
-        classCredits: credit.classCredits,
-        workCredits: credit.workCredits
-      };
-    }));
-  }, []);
-
-
-  const [lastSemester, setLastSemester] = useState(8);
+const Semesters = ({ semesters, setSemesters, openCourse, changeCourseDisplay }) => {
 
   const [expandedSemesters, setExpandedSemesters] = useState(
     semesters.reduce((acc, semester) => {
@@ -215,6 +190,7 @@ const Semesters = ({ semesters, sendDataToParent }) => {
     const newSemester = {
       id: newId,
       alias: `Semester ${newId}`,
+      credits: [0, 0],
       courses: [],
     };
 
@@ -222,7 +198,7 @@ const Semesters = ({ semesters, sendDataToParent }) => {
       ...prev,
       [newId]: false,
     }));
-    sendDataToParent([...semesters, newSemester]);
+    setSemesters([...semesters, newSemester]);
   };
 
   return (
@@ -257,7 +233,7 @@ const Semesters = ({ semesters, sendDataToParent }) => {
       </SemestersContainerHeader>
 
       {semesters.map(semester => (
-        <Droppable id={semester.alias} enabled={expandedSemesters[semester.id]}>
+        <Droppable id={semester.alias} disable={!expandedSemesters[semester.id]}>
           <SemesterContainer key={semester.id} id={semester.alias}>
             <SemesterHeader onClick={() => {toggleSemester(semester.id)}}>
               <SemesterInfos>
@@ -266,13 +242,22 @@ const Semesters = ({ semesters, sendDataToParent }) => {
                   <img style={{paddingRight: '5px'}} src='/icons/warning_yellow.png' />
                   <p style={{color: "#ECA706"}}>Provável conflito de horário.</p>
                 </SemesterWarnings>
-                <SemesterWarnings>
-                  <img style={{paddingRight: '5px'}} src='/icons/warning.png'/>
-                  <p style={{color: "#C11414"}}>Máximo de 40 créditos por período.</p>
-                </SemesterWarnings>
-              </SemesterInfos>
+                {
+                  semester.credits[0] + semester.credits[1] > 40 ?
+                  <SemesterWarnings>
+                    <img style={{paddingRight: '5px'}} src='/icons/warning.png'/>
+                    <p style={{color: "#C11414"}}>Máximo de 40 créditos por período.</p>
+                  </SemesterWarnings>
+                  : semester.credits[0] + semester.credits[1] < 12 ?
+                  <SemesterWarnings>
+                    <img style={{paddingRight: '5px'}} src='/icons/warning.png'/>
+                    <p style={{color: "#C11414"}}>Mínimo de 12 créditos por período.</p>
+                  </SemesterWarnings>
+                  : null
+                }
+                </SemesterInfos>
               <SemesterCreditsAndIcon>
-                <p style={{color: "#757575"}}>{semester.classCredits} {semester.workCredits ? '+ ' : ''} {semester.workCredits} {semester.classCredits || semester.workCredits ? 'créditos' : ''}</p>
+                <p style={{color: "#757575"}}>{semester.credits[0] ? semester.credits[0] : ''} {semester.credits[0] && semester.credits[1] ? '+ ' : ''} {semester.credits[1] ? semester.credits[1] : ''} {semester.credits[0] || semester.credits[1] ? 'créditos' : ''}</p>
                 <span>{expandedSemesters[semester.id] ? '▼' : '▶'}</span>
               </SemesterCreditsAndIcon>
             </SemesterHeader>
@@ -284,8 +269,11 @@ const Semesters = ({ semesters, sendDataToParent }) => {
                   </NewCard>
                 :
                   semester.courses.map((course)  => (
-                    <SortableItem id={course.id} key={course.id}>
-                      <Card colors={course.colors}>
+                    <SortableItem id={course.id} key={course.id} disable={!expandedSemesters[semester.id]}>
+                      <Card colors={course.colors} onClick={() => {
+                        openCourse();
+                        changeCourseDisplay(course.pokeball, "/pokemons/ditto.png", course.title, course.code, course.tags, course.credits, course.desc)
+                      }}>
                         <CardContentCourse 
                           pokeball={course.pokeball} 
                           courseCode={course.code} 

@@ -1,6 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import styled from 'styled-components';
-import React, { useState } from 'react';
 import Card from '../Components/Atoms/Card';
 import CardContentCourse from '../Components/Atoms/CardContentCourse';
 import Header from '../Components/Header/Header.jsx';
@@ -39,12 +38,18 @@ const ContentContainer = styled.div`
 
 const Home = ({ userPlans }) => {
   const [activeId, setActiveId] = useState();
-  const [activeCourse, setActiveCourse] = useState();
+  const [activeCourse, setActiveCourse] = useState()
+  
+  const [addDisciplineActive, setAddDisciplineActive] = useState(false);
+  const [coursePopUpActive, setCoursePopUpActive] = useState(false);
+
+
   const [plans, setPlans] = useState(
     userPlans.map(semester => ({
       ...semester,
       courses: semester.courses.map(course => ({
         ...course,
+        tags: [],
         colors: {
           background: "#FFFFFF",
           innerLine: "#51A1E0",
@@ -66,8 +71,47 @@ const Home = ({ userPlans }) => {
   }, [plans]);
 
 
+  const toggleDiscipline = () => {
+    setAddDisciplineActive(!addDisciplineActive);
+  }
+
+  const toggleCoursePopUp = () => {
+    console.log('click')
+    setCoursePopUpActive(!coursePopUpActive);
+  }
+
+  const [course, setCourse] = useState({
+    pokeball_color: '',
+    pokemonURL: '',
+    title: '',
+    code: '',
+    tags: [{
+      color: '',
+      name: ''
+    }],
+    credits: [0,0],
+    desc: ''
+  })
+
+  const toggleCourse = (p_color, p_url, title, code, tags, credits, desc) => {
+    setCourse({
+      pokeball_color: p_color,
+      pokemonURL: p_url,
+      title: title,
+      code: code,
+      tags: tags,
+      credits: credits,
+      desc: desc
+    })
+  }
+
+
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 3, // importante para possibilitar o evento onClick
+      },
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     }),
@@ -86,12 +130,6 @@ const Home = ({ userPlans }) => {
     
     return plans.find((sem) => sem.alias === id);
   }, [courseMap, plans]);
-
-
-  // Handler when 'Semesters' sends data
-  function handleDataFromSemesters(data) {
-    setPlans(data);
-  }
 
   // Handler when drag starts
   const handleDragStart = (event) => {
@@ -121,6 +159,7 @@ const Home = ({ userPlans }) => {
       return;
     }
 
+
     setPlans((prevPlans) => {
 
       const activeItems = activeContainer.courses;
@@ -147,12 +186,21 @@ const Home = ({ userPlans }) => {
         if (semester.id === activeContainer.id) {
           return {
             ...semester,
+
+            credits: [
+              Number(semester.credits[0]) - Number(activeCourse.credits[0]), // Subtrai créditos de aula
+              Number(semester.credits[1]) - Number(activeCourse.credits[1]), // Subtrai créditos de trabalho
+            ],
             courses: semester.courses.filter(course => course.id !== activeId),
           };
         }
         if (semester.id === overContainer.id) {
           return {
             ...semester,
+            credits: [
+              Number(semester.credits[0]) + Number(activeCourse.credits[0]), // Subtrai créditos de aula
+              Number(semester.credits[1]) + Number(activeCourse.credits[1]), // Subtrai créditos de trabalho
+            ],
             courses: [
               ...semester.courses.slice(0, newIndex),
               activeItems[activeIndex],
@@ -199,43 +247,6 @@ const Home = ({ userPlans }) => {
   };
 
 
-
-  const [addDisciplineActive, setAddDisciplineActive] = useState(false);
-  const [coursePopUpActive, setCoursePopUpActive] = useState(false);
-
-  const toggleDiscipline = () => {
-    setAddDisciplineActive(!addDisciplineActive);
-  }
-
-  const toggleCoursePopUp = () => {
-    setCoursePopUpActive(!coursePopUpActive);
-  }
-
-  const [course, setCourse] = useState({
-    pokeball_color: '',
-    pokemonURL: '',
-    title: '',
-    code: '',
-    tags: [{
-      color: '',
-      name: ''
-    }],
-    credits: [0,0],
-    desc: ''
-  })
-
-  const toggleCourse = (p_color, p_url, title, code, tags, credits, desc) => {
-    setCourse({
-      pokeball_color: p_color,
-      pokemonURL: p_url,
-      title: title,
-      code: code,
-      tags: tags,
-      credits: credits,
-      desc: desc
-    })
-  }
-
   return (
     <AppContainer>
       <AddDisciplinePopUp isOpen={addDisciplineActive} onClose={toggleDiscipline} />
@@ -257,7 +268,7 @@ const Home = ({ userPlans }) => {
         onDragEnd={handleDragEnd}
       >
         <ContentContainer>
-          <Semester semesters={plans} openCourse={toggleCoursePopUp} changeCourseDisplay={toggleCourse}  sendDataToParent={handleDataFromSemesters} />
+          <Semester semesters={plans} openCourse={toggleCoursePopUp} changeCourseDisplay={toggleCourse} setSemesters={setPlans} />
           <CoursePicker openCourse={toggleCoursePopUp} changeCourseDisplay={toggleCourse} openDisciplinePopUp={toggleDiscipline} />
         </ContentContainer>
         

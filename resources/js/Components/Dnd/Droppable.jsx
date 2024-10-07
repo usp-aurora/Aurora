@@ -1,14 +1,14 @@
 import React from 'react';
 import {useDroppable} from '@dnd-kit/core';
 
-const Droppable = ({id, children, enabled = true}) => {
-  const {isOver, setNodeRef} = useDroppable({
-    id: id,
+const Droppable = (props) => {
+  const {setNodeRef} = useDroppable({
+    id: props.id,
   });
   
   return (
-    <div ref={enabled? setNodeRef : null} style={{minHeight: children.offsetHeight}}>     
-      {children}
+    <div ref={props.disable ? null : setNodeRef} style={{minHeight: props.children.offsetHeight}}>     
+      {props.children}
     </div>
   );
 
