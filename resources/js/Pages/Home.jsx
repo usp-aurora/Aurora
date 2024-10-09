@@ -36,10 +36,23 @@ const ContentContainer = styled.div`
 `;
 
 
+const CourseOverlay = ({course}) => {
+
+  return (  
+    <Card colors={course.colors}>
+      <CardContentCourse 
+        pokeball={course.pokeball} 
+        courseCode={course.code} 
+        courseTitle={course.title} 
+        pokemonURL="/pokemons/ditto.png"
+      />
+    </Card> 
+  );
+}
+
 const Home = ({ userPlans }) => {
-  const [activeId, setActiveId] = useState();
-  const [activeCourse, setActiveCourse] = useState()
-  
+
+  const [dragObject, setDragObject] = useState(null);
   const [addDisciplineActive, setAddDisciplineActive] = useState(false);
   const [coursePopUpActive, setCoursePopUpActive] = useState(false);
 
@@ -60,6 +73,7 @@ const Home = ({ userPlans }) => {
     }))
   );
   
+
   const courseMap = useMemo(() => {
     const newCourseMap = new Map();
     plans.forEach(semester => {
@@ -76,7 +90,6 @@ const Home = ({ userPlans }) => {
   }
 
   const toggleCoursePopUp = () => {
-    console.log('click')
     setCoursePopUpActive(!coursePopUpActive);
   }
 
@@ -109,7 +122,7 @@ const Home = ({ userPlans }) => {
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        distance: 3, // importante para possibilitar o evento onClick
+        distance: 3, // importante para identificar o evento onClick
       },
     }),
     useSensor(KeyboardSensor, {
@@ -136,8 +149,10 @@ const Home = ({ userPlans }) => {
     const { active } = event;
     const { id } = active;
     
-    setActiveCourse(courseMap.get(id).course);
-    setActiveId(id);
+    setDragObject({
+      id: id,
+      course: courseMap.get(id).course,
+    });
 
   };
 
@@ -188,8 +203,8 @@ const Home = ({ userPlans }) => {
             ...semester,
 
             credits: [
-              Number(semester.credits[0]) - Number(activeCourse.credits[0]), // Subtrai créditos de aula
-              Number(semester.credits[1]) - Number(activeCourse.credits[1]), // Subtrai créditos de trabalho
+              Number(semester.credits[0]) - Number(dragObject.course.credits[0]), // Subtrai créditos de aula
+              Number(semester.credits[1]) - Number(dragObject.course.credits[1]), // Subtrai créditos de trabalho
             ],
             courses: semester.courses.filter(course => course.id !== activeId),
           };
@@ -198,8 +213,8 @@ const Home = ({ userPlans }) => {
           return {
             ...semester,
             credits: [
-              Number(semester.credits[0]) + Number(activeCourse.credits[0]), // Subtrai créditos de aula
-              Number(semester.credits[1]) + Number(activeCourse.credits[1]), // Subtrai créditos de trabalho
+              Number(semester.credits[0]) + Number(dragObject.course.credits[0]), // Subtrai créditos de aula
+              Number(semester.credits[1]) + Number(dragObject.course.credits[1]), // Subtrai créditos de trabalho
             ],
             courses: [
               ...semester.courses.slice(0, newIndex),
@@ -243,7 +258,7 @@ const Home = ({ userPlans }) => {
         })
       );
     }
-    setActiveId(null);
+    setDragObject(null);
   };
 
 
@@ -272,16 +287,11 @@ const Home = ({ userPlans }) => {
           <CoursePicker openCourse={toggleCoursePopUp} changeCourseDisplay={toggleCourse} openDisciplinePopUp={toggleDiscipline} />
         </ContentContainer>
         
-        <DragOverlay modifiers={[restrictToWindowEdges]}> {activeId ?
-          <Card colors={activeCourse.colors}>
-            <CardContentCourse 
-              pokeball={activeCourse.pokeball} 
-              courseCode={activeCourse.code} 
-              courseTitle={activeCourse.title} 
-              pokemonURL="/pokemons/ditto.png"
-            />
-          </Card> 
-          : null} 
+        <DragOverlay modifiers={[restrictToWindowEdges]}> 
+          { dragObject ?
+            <CourseOverlay course={dragObject.course} />  
+            : null
+          } 
         </DragOverlay>
       </DndContext>
     </AppContainer>

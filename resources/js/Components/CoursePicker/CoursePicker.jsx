@@ -5,7 +5,7 @@ import Card from '../Atoms/Card';
 import StyledButton from '../Atoms/StyledButton';
 import {slideIn, slideIn2, slideOut, slideOut2} from '../Atoms/Animations'
 import Droppable from '../Dnd/Droppable';
-import Draggable from '../Dnd/Draggable';
+import SortableItem from '../Dnd/SortableItem';
 // import { ReactComponent as ThinButtonBlueBackgroundSVG } from '../../assets/ThinButtonBlueBackground.svg';
 // import { ReactComponent as AplicarTextIconSVG } from '../../assets/AplicarTextIcon.svg';
 
