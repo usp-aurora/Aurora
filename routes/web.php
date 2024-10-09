@@ -10,7 +10,7 @@ use App\Http\Controllers\LoginController;
 Route::get('/', function () {
   return Inertia::render('Home');
 });
-#Route::get('/', [IndexController::class, 'index']);
+Route::get('/teste-login', [IndexController::class, 'index']);
 Route::get('login', [LoginController::class, 'redirectToProvider']);
 Route::get('callback', [LoginController::class, 'handleProviderCallback']);
 Route::get('logout', [LoginController::class, 'logout']);
