@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Subject>
  */
-class SubjectFactory extends Factory
+class GrupoFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -17,11 +17,10 @@ class SubjectFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->generateName(),
-            'code' => $this->generateCustomCode(),
-            'syllabus' => $this->faker->paragraph(),
-            'lecture_credits' => $this->faker->numberBetween(2, 4),
-            'work_credits' => $this->faker->numberBetween(0, 2)
+            'titulo' => $this->generateName(),
+            'descricao' => $this->faker->paragraph(),
+            //'id_grupo_pai' => $this->faker->numberBetween(1, 20)
+            'id_grupo_pai' => null
         ];
     }
     
