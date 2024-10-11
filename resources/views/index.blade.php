@@ -1,6 +1,6 @@
 @auth
-	Logado <br>
-	<a href="/logado">Logado</a>
+Logout <br>
+	<a href="/logout">Logout</a>
 @else
 	Login <br>
 	<a href="/login">Login</a>
