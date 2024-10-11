@@ -11,28 +11,104 @@ use App\Models\MateriasGrupo;
 class CarregaMaterias extends Controller 
 {
 
+    // Função principal que recebe o id de um curso, carrega os grupos e devolve o json
     public function index($id_curso) {
-        $ids = [$id_curso];
+        $curso = new \stdClass();
+        $curso->grupos = [];
+        $curso->materias = [];
+        $this->carregaGrupos($id_curso, $curso);
+        return response()->json($curso);
+    
+    // Função recursiva que processa os grupos (e seus subgrupos) 
+    private function carregaGrupos($id_grupo, &$curso)
         
-        // Consulta à tabela 'grupos' e armazena em $reqs o título e seus filhos
-        $reqs = DB::table('grupos')
-                  ->where('grupos.id', '=', $id_curso)
-                  ->select(["titulo", "filhos"])->get();
+        $grupos = DB::table('grupos')
+                    ->where('grupos.id', '=', $id_grupo)
+                    ->select(["titulo", "descricao", "id"])->get();
         
-        $curso->titulo = $reqs[0]->titulo;
-        
-        // Recursão para acessar cada subgrupo (e seus subgrupos)
-        while(!null($ids)) {
-            $id = array_shift($ids);
-            $reqs = DB::table('grupos')
-                      ->where('grupos.id_grupo_pai', '=', $id) 
-                      ->select(["titulo", "filhos"])->get();
+        foreach ($grupos as $grupo) {
+            $disciplinas = DB::table('materias_grupo')
+                             ->where('materias_grupo.id_grupo', '=', $grupo->id)
+                             ->join('materia', 'materias_grupo.id_materia', '=', 'materia.id')
+                             ->select(["materia.codigo_materia", "materia.nome", "materia.ementa", "materia.creditos_aula", "materia.creditos_trabalho", ])->get();
             
-            // Alimentamos o JSON
+            $grupoAtual = [
+                'titulo' => $grupo->titulo,
+                'descricao' => $grupo->descricao,
+                'materias' => [],
+                'subgrupos' => []
+            ];
             
-            $ids.append($reqs->ids)
-        
+            foreach  ($disciplinas as $disciplina) {
+                $grupoAtual['materias'][] = [
+                    'codigo_materia' => $disciplina->codigo_material,
+                    'nome' => $disciplina->nome,
+                    'ementa' => $disciplina->ementa,
+                    'creditos_aula' => $disciplina->creditos_aula,
+                    'creditos_trabalho' => $disciplina->creditos_trabalho
+                ];
+            }
+            
+            $subgrupos = DB::table('grupos')
+                           ->where('grupos.id_grupo_pai', '=', $grupo->id)
+                           ->select("id")->get();
+                           
+            foreach ($subgrupos as $subgrupo) {
+                $grupoAtual['subgrupos'][] = $this->carregaGruposRecursivo($subgrupo->id);
+            }
+            
+            $curso->grupos[] = $grupoAtual;
+            
+        }
     }
     
+    private function carregaGruposRecursivo($id_grupo_pai) {
+    
+        $grupos = DB::table('grupos')
+                    ->where('grupos.id', '=', $id_grupo_pai)
+                    ->select(["titulo", "descricao", "id"])->get();
+                    
+        $grupoEstrutura = [];
+        
+        foreach ($grupos as $grupo) {
+            $disciplinas = DB::table('materias_grupo')
+                             ->where('materias_grupo.id_grupo', '=', $grupo->id)
+                             ->join('materia', 'materias_grupo.id_materia', '=', 'materia.id')
+                             ->select(["materia.codigo_materia", "materia.nome", "materia.ementa", "materia.creditos_aula", "materia.creditos_trabalho", ])->get();
+            
+            $subgrupo = [
+                'titulo' => $grupo->titulo,
+                'descricao' => $grupo->descricao,
+                'materias' => [],
+                'subgrupos' => []
+            ];
+            
+            foreach  ($disciplinas as $disciplina) {
+                $subgrupo['materias'][] = [
+                    'codigo_materia' => $disciplina->codigo_material,
+                    'nome' => $disciplina->nome,
+                    'ementa' => $disciplina->ementa,
+                    'creditos_aula' => $disciplina->creditos_aula,
+                    'creditos_trabalho' => $disciplina->creditos_trabalho
+                ];
+            }
+            
+            $subsubgrupos = DB::table('grupos')
+                           ->where('grupos.id_grupo_pai', '=', $grupo->id)
+                           ->select("id")->get();
+                           
+            foreach ($subsubgrupos as $subsubgrupo) {
+                $subgrupo['subgrupos'][] = $this->carregaGruposRecursivo($subsubgrupo->id);
+            }
+            
+            $grupoEstrutura[] = $subgrupo;
+            
+        }
+        
+        return $grupoEstrutura;
+    
+    }
     
 }
+
+
