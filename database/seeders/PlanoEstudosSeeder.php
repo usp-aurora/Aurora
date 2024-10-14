@@ -4,9 +4,9 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use \App\Models\Plan;
+use \App\Models\PlanoEstudos;
 
-class PlanSeeder extends Seeder
+class PlanoEstudosSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,12 +14,12 @@ class PlanSeeder extends Seeder
     public function run(): void
     {
         $plan = [
-            'semester' => 1,
-            'subject_id' => 1,
-            'user_id' => 1,
+            'id_usuario' => 1,
+            'id_materia' => 1,
+            'semestre' => 1,
         ];
 
-        Plan::create($plan);
-        Plan::factory(45)->create();
+        PlanoEstudos::create($plan);
+        PlanoEstudos::factory(45)->create();
     }
 }
