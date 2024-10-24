@@ -7,6 +7,10 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use Database\Seeders\MateriaSeeder;
 use Database\Seeders\PlanoEstudosSeeder;
+use Database\Seeders\MateriasGrupoSeeder;
+use Database\Seeders\CriteriosCompletudeSeeder;
+use Database\Seeders\GrupoSeeder;
+use Database\Seeders\PlanSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -17,14 +21,19 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
+        /*User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
-        ]);
+        ]);*/
 
         $this->call([
             MateriaSeeder::class,
             PlanoEstudosSeeder::class
+             GrupoSeeder::class,
+             MateriaSeeder::class,
+             PlanSeeder::class,
+             MateriasGrupoSeeder::class,
+             CriteriosCompletudeSeeder::class
         ]);
     }
 }

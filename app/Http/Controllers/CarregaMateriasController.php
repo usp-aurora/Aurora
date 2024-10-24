@@ -7,9 +7,9 @@ use App\Models\CriteriosCompletude;
 use App\Models\Grupo;
 use App\Models\Materia;
 use App\Models\MateriasGrupo;
+use Illuminate\Support\Facades\DB;
 
-class CarregaMaterias extends Controller 
-{
+class CarregaMateriasController extends Controller {
 
     // Função principal que recebe o id de um curso, carrega os grupos e devolve o json
     public function index($id_curso) {
@@ -18,9 +18,10 @@ class CarregaMaterias extends Controller
         $curso->materias = [];
         $this->carregaGrupos($id_curso, $curso);
         return response()->json($curso);
+    }
     
     // Função recursiva que processa os grupos (e seus subgrupos) 
-    private function carregaGrupos($id_grupo, &$curso)
+    private function carregaGrupos($id_grupo, &$curso) {
         
         $grupos = DB::table('grupos')
                     ->where('grupos.id', '=', $id_grupo)
@@ -29,8 +30,8 @@ class CarregaMaterias extends Controller
         foreach ($grupos as $grupo) {
             $disciplinas = DB::table('materias_grupo')
                              ->where('materias_grupo.id_grupo', '=', $grupo->id)
-                             ->join('materia', 'materias_grupo.id_materia', '=', 'materia.id')
-                             ->select(["materia.codigo_materia", "materia.nome", "materia.ementa", "materia.creditos_aula", "materia.creditos_trabalho", ])->get();
+                             ->join('materias', 'materias_grupo.id_materia', '=', 'materias.id')
+                             ->select(["materias.codigo_materia", "materias.nome", "materias.ementa", "materias.creditos_aula", "materias.creditos_trabalho", ])->get();
             
             $grupoAtual = [
                 'titulo' => $grupo->titulo,

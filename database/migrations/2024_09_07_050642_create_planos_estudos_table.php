@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('id_usuario')->references('id')->on('users')->constrained();
             $table->foreignId('id_materia')->references('id')->on('materias')->constrained();
             $table->integer('semestre');
+
         });
     }
 
