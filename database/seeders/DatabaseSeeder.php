@@ -28,12 +28,12 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             MateriaSeeder::class,
-            PlanoEstudosSeeder::class
-             GrupoSeeder::class,
-             MateriaSeeder::class,
-             PlanSeeder::class,
-             MateriasGrupoSeeder::class,
-             CriteriosCompletudeSeeder::class
+            PlanoEstudosSeeder::class,
+            GrupoSeeder::class,
+            MateriaSeeder::class,
+            PlanSeeder::class,
+            MateriasGrupoSeeder::class,
+            CriteriosCompletudeSeeder::class
         ]);
     }
 }
