@@ -60,7 +60,7 @@ class PlansController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'subject_id' => 'required',
+            'subject_id' => 'required|exists:subjects,id',
             'semester' => 'required',
         ]);
 
@@ -78,19 +78,19 @@ class PlansController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'subject_id' => 'required',
+            'subject_id' => 'required|exists:subjects,id',
             'semester' => 'required',
         ]);
 
         // Find the plan, create if not found
-        $plan = Plan::find($id) ?? $this->store($request);    
+        $plan = Plan::findOrFail($id);    
         
         $plan->update([
             'subject_id' => $request->subject_id,
             'semester' => $request->semester,
         ]);
 
-        return response()->json(['success' => 'Plan successfully updated!', 'plan' => $plan], 200); 
+        return response()->json(['success' => 'Plan successfully updated!'], 200); 
     }
     
 

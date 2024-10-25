@@ -233,7 +233,7 @@ const Semesters = ({ semesters, setSemesters, openCourse, changeCourseDisplay })
       </SemestersContainerHeader>
 
       {semesters.map(semester => (
-        <Droppable id={semester.alias} disable={!expandedSemesters[semester.id]}>
+        <Droppable key={semester.alias} id={semester.alias} disable={!expandedSemesters[semester.id]}>
           <SemesterContainer key={semester.id} id={semester.alias}>
             <SemesterHeader onClick={() => {toggleSemester(semester.id)}}>
               <SemesterInfos>
@@ -289,8 +289,6 @@ const Semesters = ({ semesters, setSemesters, openCourse, changeCourseDisplay })
         </Droppable>
 
       ))}
-
-        
 
       <Card colors={{
           background: "#E4EEFA",

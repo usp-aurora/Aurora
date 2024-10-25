@@ -1,24 +1,21 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import Card from '../Components/Atoms/Card';
-import CardContentCourse from '../Components/Atoms/CardContentCourse';
 import Header from '../Components/Header/Header.jsx';
 import Semester from '../Components/Semesters/Semesters.jsx';
 import CoursePicker from '../Components/CoursePicker/CoursePicker.jsx';
 import AddDisciplinePopUp from '../Components/PopUps/AddDisciplinePopUp.jsx';
 import CoursePopUp from '../Components/PopUps/CoursePopUp.jsx';
+import DragOverlayComponent from '../Components/Dnd/DragOverlayComponent.jsx';
+import { handleDragStart, handleDragOver, handleDragEnd } from '../Handlers/DragHandlers.jsx';
 import {
   DndContext, 
-  DragOverlay,
   KeyboardSensor,
   PointerSensor,
   useSensor,
   useSensors,
   closestCenter,
 } from '@dnd-kit/core';
-import {arrayMove, sortableKeyboardCoordinates} from '@dnd-kit/sortable';
-import { restrictToWindowEdges } from '@dnd-kit/modifiers';
-
+import {sortableKeyboardCoordinates} from '@dnd-kit/sortable';
 
 const AppContainer = styled.div`
   /* display: flex;
@@ -36,53 +33,187 @@ const ContentContainer = styled.div`
 `;
 
 
-const CourseOverlay = ({course}) => {
+const categories = [
+  {
+    name: 'Ciência de dados',
+    courses: [
+      {id: 1},
+      {id: 2},
+      {id: 3},
+      {id: 4},
+      {id: 5},
+    ],
+    color: '#FFD12B',
+  },
+  {
+    name: 'Inteligência Artificial',
+    courses: [
+      {id: 6},
+      {id: 1},
+      {id: 8},
+      {id: 9},
+      {id: 10},
+    ],
+    color: '#E83030',
+  },
+  {
+    name: 'Sistemas de Software',
+    courses: [      
+      {id: 6},
+      {id: 5},
+      {id: 11},
+      {id: 22},
+      {id: 7},,
+    ],
+    color: '#15B48F',
+  },
+  {
+    name: 'Teoria da Computação',
+    courses: [
+      {id: 30},
+      {id: 27},
+      {id: 41},
+      {id: 52},
+      {id: 4},
+    ],
+    color: '#6762CD',
+  },
+  {
+    name: 'Optativa de Estatística',
+    courses: [
+      {id: 10},
+      {id: 16},
+      {id: 20},
+      {id: 19},
+      {id: 25},
+    ],
+    color: '#EA7F38',
+  },
+  {
+    name: 'Optativa de Ciências',
+    courses: [
+      {id: 49},
+      {id: 64},
+      {id: 81},
+      {id: 100},
+      {id: 36},
+    ],
+    color: '#09DE5A',
+  },
+  {
+    name: 'Outras Optativas Eletivas',
+    courses: [
+      {id: 1},
+      {id: 2},
+      {id: 3},
+      {id: 4},
+      {id: 5},
+    ],
+    color: '#F73EF6',
+  },
+  {
+    name: 'Optativas Livres',
+    courses: [
+     
+      {id: 44},
+      {id: 55},
+      {id: 33},
+      {id: 22},
+      {id: 11},
+    ],
+    color: '#533F30'
+  },
+];
 
-  return (  
-    <Card colors={course.colors}>
-      <CardContentCourse 
-        pokeball={course.pokeball} 
-        courseCode={course.code} 
-        courseTitle={course.title} 
-        pokemonURL="/pokemons/ditto.png"
-      />
-    </Card> 
-  );
-}
 
 const Home = ({ userPlans }) => {
-
   const [dragObject, setDragObject] = useState(null);
   const [addDisciplineActive, setAddDisciplineActive] = useState(false);
   const [coursePopUpActive, setCoursePopUpActive] = useState(false);
 
 
+  const createInitialCourseMap = (plans, categories) => {
+    const newMap = new Map();
+
+    categories.forEach((category) => {
+      category.courses.forEach((course) => {
+        if (newMap.has(course.id)) {
+          const existingEntry = newMap.get(course.id);
+          newMap.set(course.id, {
+            ...existingEntry,
+            tags: [
+              ...existingEntry.tags,
+              {
+                name: category.name,
+                color: category.color,
+              }
+            ]
+          });
+        } else {
+          newMap.set(course.id, {
+            id: course.id,
+            // course: {
+            // code: course.code,
+            // title: course.title,
+            // desc: course.desc,
+            // credits: course.credits,},          
+            tags: [{
+              name: category.name,
+              color: category.color,
+            }]
+          });
+        }
+      });
+    });
+
+    plans.forEach((semester) => {
+      semester.courses.forEach((course) => {
+        if (newMap.has(course.id)) {
+          const existingEntry = newMap.get(course.id);
+          newMap.set(course.id, {
+            ...existingEntry,
+            course,
+            tags: existingEntry.tags,
+            semester: semester.id,
+          });
+        } else {
+          newMap.set(course.id, {
+            course,
+            tags: [],
+            semester: semester.id,
+          });
+        }
+      });
+    });
+
+    return newMap;
+  };
+
+  const [courseMap, setCourseMap] = useState(() =>
+    createInitialCourseMap(userPlans, categories)
+  );
+
   const [plans, setPlans] = useState(
-    userPlans.map(semester => ({
+    userPlans.map((semester) => ({
       ...semester,
-      courses: semester.courses.map(course => ({
+      courses: semester.courses.map((course) => ({
         ...course,
-        tags: [],
+        tags: courseMap.get(course.id)?.tags || [],
         colors: {
           background: "#FFFFFF",
           innerLine: "#51A1E0",
           outerLine: "#17538D",
         },
-        pokeball: "#C2DCF5"
-      }))
+        pokeball: "#C2DCF5",
+      })),
     }))
   );
-  
 
-  const courseMap = useMemo(() => {
-    const newCourseMap = new Map();
-    plans.forEach(semester => {
-      semester.courses.forEach(course => {
-        newCourseMap.set(course.id, { course, semester: semester.id });
-      });
-    });
-    return newCourseMap;
-  }, [plans]);
+  // update courseMap when plans or categories changes
+  useEffect(() => {
+    const updatedCourseMap = createInitialCourseMap(plans, categories);
+    setCourseMap(updatedCourseMap);
+  }, [plans, categories]);
 
 
   const toggleDiscipline = () => {
@@ -131,136 +262,6 @@ const Home = ({ userPlans }) => {
   );
 
 
-  const findContainer = useCallback((id) => {
-    if (id === 'coursePicker') {
-      return id;
-    }
-  
-    if (courseMap.has(id)) {
-      const semester = courseMap.get(id).semester;
-      return (semester ? plans.find((sem) => sem.id === courseMap.get(id).semester) : 'coursePicker');
-    }
-    
-    return plans.find((sem) => sem.alias === id);
-  }, [courseMap, plans]);
-
-  // Handler when drag starts
-  const handleDragStart = (event) => {
-    const { active } = event;
-    const { id } = active;
-    
-    setDragObject({
-      id: id,
-      course: courseMap.get(id).course,
-    });
-
-  };
-
-  // Handler when drag is over another element
-  const handleDragOver = (event) => {
-    const { active, over, draggingRect } = event;
-    const { id: activeId } = active;
-    const { id: overId } = over;
-
-  
-    const activeContainer = findContainer(activeId);
-    const overContainer = findContainer(overId);
-
-    if (!activeContainer || !overContainer || activeContainer === overContainer) {
-      return;
-    }
-
-    if (overId === 'coursePicker') {
-      return;
-    }
-
-
-    setPlans((prevPlans) => {
-
-      const activeItems = activeContainer.courses;
-      const overItems = overContainer.courses;
-
-      const activeIndex = activeItems.findIndex(course => course.id === activeId);
-      const overIndex = overItems.findIndex(course => course.id === overId);
-
-      let newIndex;
-      if (overId in prevPlans) {
-        newIndex = overItems.length;
-      } else {
-          const isAfterLastItem = over && draggingRect && (
-            (overIndex === overItems.length - 1 && 
-              draggingRect.offsetTop > over.rect.offsetTop + over.rect.height) ||
-            (overIndex === overItems.length - 1 && 
-              draggingRect.offsetLeft > over.rect.offsetLeft + over.rect.width)  
-          );
-        
-        newIndex = overIndex >= 0 ? overIndex + (isAfterLastItem ? 1 : 0) : overItems.length;
-      }
-
-      return prevPlans.map(semester => {
-        if (semester.id === activeContainer.id) {
-          return {
-            ...semester,
-
-            credits: [
-              Number(semester.credits[0]) - Number(dragObject.course.credits[0]), // Subtrai créditos de aula
-              Number(semester.credits[1]) - Number(dragObject.course.credits[1]), // Subtrai créditos de trabalho
-            ],
-            courses: semester.courses.filter(course => course.id !== activeId),
-          };
-        }
-        if (semester.id === overContainer.id) {
-          return {
-            ...semester,
-            credits: [
-              Number(semester.credits[0]) + Number(dragObject.course.credits[0]), // Subtrai créditos de aula
-              Number(semester.credits[1]) + Number(dragObject.course.credits[1]), // Subtrai créditos de trabalho
-            ],
-            courses: [
-              ...semester.courses.slice(0, newIndex),
-              activeItems[activeIndex],
-              ...semester.courses.slice(newIndex),
-            ],
-          };
-        }
-        return semester;
-      });
-    });
-
-  };
-
-  // Handler when drag ends
-  const handleDragEnd = (event) => {
-    const { active, over } = event;
-    const { id } = active;
-    const { id: overId } = over;
-
-    
-    const activeContainer = findContainer(id);
-    const overContainer = findContainer(overId);
-
-    if (!activeContainer || !overContainer || activeContainer.id !== overContainer.id) {
-      return;
-    }
-
-    const activeIndex = activeContainer.courses.findIndex((course) => course.id === id);
-    const overIndex = overContainer.courses.findIndex((course) => course.id === overId);
-
-
-    if (activeIndex !== overIndex) {
-      setPlans((prevPlans) =>
-        prevPlans.map(semester => {
-          if (semester.id === overContainer.id) {
-            const updatedCourses = arrayMove(semester.courses, activeIndex, overIndex);
-            return { ...semester, courses: updatedCourses };
-          }
-          return semester;
-        })
-      );
-    }
-    setDragObject(null);
-  };
-
 
   return (
     <AppContainer>
@@ -278,21 +279,15 @@ const Home = ({ userPlans }) => {
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
-        onDragStart={handleDragStart}
-        onDragOver={handleDragOver}
-        onDragEnd={handleDragEnd}
+        onDragStart={(event) => handleDragStart(event, courseMap, setDragObject)}
+        onDragOver={(event) => handleDragOver(event, courseMap, plans, setPlans, dragObject)}
+        onDragEnd={(event) => handleDragEnd(event, courseMap, plans, setPlans, dragObject, setDragObject)}
       >
         <ContentContainer>
           <Semester semesters={plans} openCourse={toggleCoursePopUp} changeCourseDisplay={toggleCourse} setSemesters={setPlans} />
           <CoursePicker openCourse={toggleCoursePopUp} changeCourseDisplay={toggleCourse} openDisciplinePopUp={toggleDiscipline} />
         </ContentContainer>
-        
-        <DragOverlay modifiers={[restrictToWindowEdges]}> 
-          { dragObject ?
-            <CourseOverlay course={dragObject.course} />  
-            : null
-          } 
-        </DragOverlay>
+        <DragOverlayComponent dragObject={dragObject} />
       </DndContext>
     </AppContainer>
   );

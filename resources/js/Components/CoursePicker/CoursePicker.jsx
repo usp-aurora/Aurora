@@ -1365,7 +1365,7 @@ const CoursePicker = ({ openCourse, changeCourseDisplay, openDisciplinePopUp }) 
                       <path d="M8 36H456V40H8V36Z" fill={category.color}/>
                       <path d="M4 8H8V4H4V8Z" fill="#C2DCF5"/>
                       <path d="M4 8H0V28H4V8Z" fill="#C2DCF5"/>
-                      <path fill-rule="evenodd" clip-rule="evenodd" d="M4 8H464V32H456H4V28V8Z" fill="#C2DCF5"/>
+                      <path fillRule="evenodd" clipRule="evenodd" d="M4 8H464V32H456H4V28V8Z" fill="#C2DCF5"/>
                       <path d="M0 32H4V28H0V32Z" fill={category.color}/>
                       <path d="M460 32H456V36H460V32Z" fill="#C2DCF5"/>
                     </svg>
