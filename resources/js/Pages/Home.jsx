@@ -7,6 +7,7 @@ import AddDisciplinePopUp from '../Components/PopUps/AddDisciplinePopUp.jsx';
 import CoursePopUp from '../Components/PopUps/CoursePopUp.jsx';
 import DragOverlayComponent from '../Components/Dnd/DragOverlayComponent.jsx';
 import { handleDragStart, handleDragOver, handleDragEnd } from '../Handlers/DragHandlers.jsx';
+import { syncPlans } from '../Handlers/PlanHandlers.jsx';
 import {
   DndContext, 
   KeyboardSensor,
@@ -16,6 +17,7 @@ import {
   closestCenter,
 } from '@dnd-kit/core';
 import {sortableKeyboardCoordinates} from '@dnd-kit/sortable';
+
 
 const AppContainer = styled.div`
   /* display: flex;
@@ -126,74 +128,53 @@ const categories = [
 ];
 
 
-const Home = ({ userPlans }) => {
+const Home = ({ userPlans, subjects }) => {
   const [dragObject, setDragObject] = useState(null);
   const [addDisciplineActive, setAddDisciplineActive] = useState(false);
   const [coursePopUpActive, setCoursePopUpActive] = useState(false);
 
-
-  const createInitialCourseMap = (plans, categories) => {
-    const newMap = new Map();
+  const [courseMap, setCourseMap] = useState(() => {
+    const initialCourseMap = new Map(
+      subjects.map((subject) => [
+        subject.id,
+        {
+          ...subject,
+          tags: [], // init tags
+          plan_id: null, // init with plan_id as null
+          semester: null, // init with semester as null
+          // init card data
+          colors: {
+            background: "#FFFFFF",
+            innerLine: "#51A1E0",
+            outerLine: "#17538D",
+          },
+          pokeball: "#C2DCF5",
+        },
+      ])
+    );
 
     categories.forEach((category) => {
       category.courses.forEach((course) => {
-        if (newMap.has(course.id)) {
-          const existingEntry = newMap.get(course.id);
-          newMap.set(course.id, {
+        const existingEntry = initialCourseMap.get(course.id);
+        if (existingEntry) {
+          initialCourseMap.set(course.id, {
             ...existingEntry,
             tags: [
               ...existingEntry.tags,
               {
                 name: category.name,
                 color: category.color,
-              }
-            ]
-          });
-        } else {
-          newMap.set(course.id, {
-            id: course.id,
-            // course: {
-            // code: course.code,
-            // title: course.title,
-            // desc: course.desc,
-            // credits: course.credits,},          
-            tags: [{
-              name: category.name,
-              color: category.color,
-            }]
+              },
+            ],
           });
         }
       });
     });
 
-    plans.forEach((semester) => {
-      semester.courses.forEach((course) => {
-        if (newMap.has(course.id)) {
-          const existingEntry = newMap.get(course.id);
-          newMap.set(course.id, {
-            ...existingEntry,
-            course,
-            tags: existingEntry.tags,
-            semester: semester.id,
-          });
-        } else {
-          newMap.set(course.id, {
-            course,
-            tags: [],
-            semester: semester.id,
-          });
-        }
-      });
-    });
+    return initialCourseMap;
+  });
 
-    return newMap;
-  };
-
-  const [courseMap, setCourseMap] = useState(() =>
-    createInitialCourseMap(userPlans, categories)
-  );
-
-  const [plans, setPlans] = useState(
+  const [plans, setPlans] = useState(() =>
     userPlans.map((semester) => ({
       ...semester,
       courses: semester.courses.map((course) => ({
@@ -208,14 +189,7 @@ const Home = ({ userPlans }) => {
       })),
     }))
   );
-
-  // update courseMap when plans or categories changes
-  useEffect(() => {
-    const updatedCourseMap = createInitialCourseMap(plans, categories);
-    setCourseMap(updatedCourseMap);
-  }, [plans, categories]);
-
-
+  
   const toggleDiscipline = () => {
     setAddDisciplineActive(!addDisciplineActive);
   }
@@ -249,11 +223,10 @@ const Home = ({ userPlans }) => {
     })
   }
 
-
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        distance: 3, // importante para identificar o evento onClick
+        distance: 5, // importante para identificar o evento onClick
       },
     }),
     useSensor(KeyboardSensor, {
@@ -261,7 +234,45 @@ const Home = ({ userPlans }) => {
     }),
   );
 
+   // update courseMap when plans changes
+   useEffect(() => {
+    const updatedCourseMap = new Map(courseMap);
 
+    plans.forEach((semester) => {
+      semester.courses.forEach((course) => {
+        const existingEntry = updatedCourseMap.get(course.id);
+        if (existingEntry) {
+          updatedCourseMap.set(course.id, {
+            ...existingEntry,
+            plan_id: course.plan,
+            semester: semester.id, 
+          });
+        }
+      });
+    });
+
+    setCourseMap(updatedCourseMap);
+  }, [plans]);
+
+  // update database
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      syncPlans(courseMap, setPlans);
+    }, 60000); // 1 minuto (60000 ms)
+
+    const handleBeforeUnload = (event) => {
+      syncPlans(courseMap, setPlans);
+      event.preventDefault();
+      event.returnValue = '';
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      clearInterval(intervalId);
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [courseMap]); 
+ 
 
   return (
     <AppContainer>
@@ -281,7 +292,7 @@ const Home = ({ userPlans }) => {
         collisionDetection={closestCenter}
         onDragStart={(event) => handleDragStart(event, courseMap, setDragObject)}
         onDragOver={(event) => handleDragOver(event, courseMap, plans, setPlans, dragObject)}
-        onDragEnd={(event) => handleDragEnd(event, courseMap, plans, setPlans, dragObject, setDragObject)}
+        onDragEnd={(event) => handleDragEnd(event, courseMap, plans, setPlans, setDragObject)}
       >
         <ContentContainer>
           <Semester semesters={plans} openCourse={toggleCoursePopUp} changeCourseDisplay={toggleCourse} setSemesters={setPlans} />

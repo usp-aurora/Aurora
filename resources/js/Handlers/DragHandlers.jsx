@@ -1,4 +1,3 @@
-import { createPlan, updatePlan, deletePlan } from './PlanHandlers';
 import {arrayMove} from '@dnd-kit/sortable';
 
 const findContainer = (id, courseMap, plans) => {
@@ -24,7 +23,7 @@ export const handleDragStart = (event, courseMap, setDragObject) => {
   
     setDragObject({
       id: id,
-      course: courseMap.get(id).course,
+      course: courseMap.get(id),
     });
 };
 
@@ -99,7 +98,7 @@ export const handleDragOver = (event, courseMap, plans, setPlans, dragObject) =>
 
 
 // Handler when drag ends
-export const handleDragEnd = (event, courseMap, plans, setPlans, dragObject, setDragObject) => {
+export const handleDragEnd = (event, courseMap, plans, setPlans, setDragObject) => {
     const { active, over } = event;
     const { id } = active;
     const { id: overId } = over;
@@ -125,11 +124,6 @@ export const handleDragEnd = (event, courseMap, plans, setPlans, dragObject, set
         })
         );
     }
-
-    updatePlan(dragObject.course.plan, {
-        subject_id: dragObject.course.id,
-        semester: overContainer.id,
-    });
 
     setDragObject(null);
 };

@@ -269,7 +269,7 @@ const Semesters = ({ semesters, setSemesters, openCourse, changeCourseDisplay })
                   </NewCard>
                 :
                   semester.courses.map((course)  => (
-                    <SortableItem id={course.id} key={course.id} disable={!expandedSemesters[semester.id]}>
+                    <SortableItem id={course.id} key={course.id} disable={expandedSemesters[semester.id] ? null : true}>
                       <Card colors={course.colors} onClick={() => {
                         openCourse();
                         changeCourseDisplay(course.pokeball, "/pokemons/ditto.png", course.title, course.code, course.tags, course.credits, course.desc)

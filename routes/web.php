@@ -2,9 +2,12 @@
 
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use App\Http\Controllers\PlansController;
 
-Route::get('/', [PlansController::class, 'index']);
+use App\Http\Controllers\PlansController;
+use App\Http\Controllers\HomeController;
+
+
+Route::get('/', [HomeController::class, 'index']);
 
 Route::prefix('plans')->group(function () {
     Route::post('/store', [PlansController::class, 'store'])->name('plans.store');

@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Foundation\Auth;
 use Illuminate\Http\Request;
 use App\Models\Plan;
-use Inertia\Inertia;
 
 class PlansController extends Controller
 {
@@ -14,7 +13,7 @@ class PlansController extends Controller
         return auth()->check() ? auth()->user()->id : 1;
     }
 
-    // Show all plans by user.
+    // Returns all plans by user.
     public function index()
     {
         $plans =  Plan::where('user_id', $this->getUserId())
@@ -47,9 +46,7 @@ class PlansController extends Controller
             ];
         }
 
-        return Inertia::render('Home', [
-            'userPlans' => $groupedPlans
-        ]);
+        return $groupedPlans;
     }
 
 
