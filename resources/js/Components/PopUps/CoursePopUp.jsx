@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import StyledButton from '../Atoms/StyledButton';
 import CourseTag from '../Atoms/CourseTag';
-import Pokeball from '../Atoms/Pokeball';
+// import Pokeball from '../Atoms/Pokeball';
 import {fadeIn, fadeOut } from '../Atoms/Animations'
 
 const CoursePopUpBackground = styled.div`
@@ -208,7 +208,7 @@ const CoursePopUp = ({isOpen, onClose, pokeball_color, pokemonURL, title, code, 
         <CoursePopUpHeader>
 
           <HeaderInfo>
-            <Pokeball pokeball={pokeball_color} pokemonURL={pokemonURL}/>
+            {/* <Pokeball pokeball={pokeball_color} pokemonURL={pokemonURL}/> */}
 
             <CoursePopUpHeaderInfos>
               <h1>{title.toUpperCase()}</h1>

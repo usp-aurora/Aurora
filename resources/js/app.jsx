@@ -2,7 +2,7 @@ import './bootstrap';
 
 import { createInertiaApp } from '@inertiajs/react'
 import { createRoot } from 'react-dom/client'
-import GlobalStyles from './GlobalStyles.jsx'
+import GlobalStyles from './styles/GlobalStyles.jsx'
 
 createInertiaApp({
   resolve: name => {

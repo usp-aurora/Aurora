@@ -19,18 +19,22 @@ class PlansController extends Controller
     {
         $plans =  Plan::where('user_id', $this->getUserId())
                        ->orderBy('semester')->get();
-
-        return Inertia::render('Home', [
+        
+        $plansTest = [
             'plans' => $plans->map(function ($plan) {
                 return [
                     'id' => $plan->id,
                     'title' => $plan->subject->name,
                     'code' => $plan->subject->code,
                     'semester' => $plan->semester,
-                    'subject_id' => $plan->subject->id,
+                    'subjectId' => $plan->subject->id,
+                    'lectureCredits' => $plan->subject->lecture_credits,
+                    'workCredits' => $plan->subject->work_credits,
                 ];
             })
-        ]);
+        ];
+
+        return Inertia::render('Home', $plansTest);
     }
 
 

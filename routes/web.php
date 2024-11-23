@@ -26,9 +26,14 @@ Route::get('/test', function() {
     return Inertia::render('Development/Teste');
 });
 
-Route::get('/pokemon-card', function () {
-    return Inertia::render('Development/PokemonCard');
+Route::get('/card', function () {
+    return Inertia::render('Development/CardTest');
 });
+
+Route::get('/cards', function () {
+    return Inertia::render('Development/CardsTest');
+});
+
 
 Route::get('/completion-bar', function () {
     return Inertia::render('Development/TestCompletionBar');

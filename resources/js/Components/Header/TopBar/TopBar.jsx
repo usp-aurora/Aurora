@@ -53,20 +53,25 @@ const LogOutButtonBox = styled.div`
 //     width: 70%;
 // `
 
+const Logo = styled.h1`
+    font-size: 40px;
+    color: white;
+`
 
 const TopBar = () => {
     const userName = "João das Couves da Silva Santos"
 
     return (
         <TopBarContainer>
-            <UspDexLogo src='./logo/LogoUspDex.png'/>
+            <Logo> AURORA </Logo>
+            {/* <UspDexLogo src='./logo/LogoUspDex.png'/>
             <RightBox>
                 <UserInfoText>{userName}</UserInfoText>
                 <LogOutButtonBox>
-                    {/* <LogOutButtonBackground />
-                    <SairTextIcon /> */}
+                    <LogOutButtonBackground />
+                    <SairTextIcon />
                 </LogOutButtonBox>
-            </RightBox>
+            </RightBox> */}
         </TopBarContainer>
     );
 };

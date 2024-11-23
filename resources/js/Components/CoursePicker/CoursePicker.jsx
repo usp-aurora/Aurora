@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import CardContentCourse from '../Atoms/CardContentCourse';
-import Card from '../Atoms/Card';
+// import CardContentCourse from '../Atoms/Card/CardContentCourse';
+import Card from '../Atoms/Card/SubjectCard';
 import StyledButton from '../Atoms/StyledButton';
 import {slideIn, slideIn2, slideOut, slideOut2} from '../Atoms/Animations'
 
