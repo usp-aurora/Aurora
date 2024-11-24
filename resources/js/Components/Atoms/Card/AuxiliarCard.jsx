@@ -41,10 +41,6 @@ const CardIcon = styled.img`
 
 
 const Card = ({iconURL, message, onClick, onCreate}) => {
-  useEffect(() => {
-    console.log('iconURL:', iconURL);
-  }, [iconURL]);
-
   return (
     <CardComponent onClick={onClick} onLoad={onCreate}>
       <CardContainer>

@@ -19,7 +19,6 @@ const getUniqueSemesters = (plans) => {
 
 const getSemesterData = (plans, semester) => {
   let semesterData = { "semester": semester, "courses": plans.filter(plan => plan.semester === semester) };
-  console.log(semesterData); // fix
   return semesterData;
 }
 

@@ -13,7 +13,7 @@ const SemesterHeaderContainer = styled.div`
 const SemesterInfos = styled.div`
   flex: 85;
   display: flex;
-  justify-content: align-left;
+  justify-content: space-between;
   align-items: center;  
 `;
 
@@ -35,20 +35,22 @@ const SemesterCreditsAndIcon = styled.div`
 const SemesterHeader = ({ semesterData, expanded, onClick}) => {
     let workCredits = 0;
     let lectureCredits = 0;
-    let totalCredits = lectureCredits + workCredits;
-  
+    
     semesterData.courses.forEach(course => {
       workCredits += parseInt(course.workCredits, 10);
       lectureCredits += parseInt(course.lectureCredits, 10);
     });
-
+    
+    let totalCredits = lectureCredits + workCredits;
 
     const warnings = totalCredits > 40 && (
         <SemesterWarnings>
-            <img style={{ paddingRight: '5px' }} src='/icons/warning.png' />
-            <p style={{ color: "#C11414" }}>Máximo de 40 créditos por período.</p>
+            <img src='/icons/warning.png' />
+            {/* <p style={{ color: "#C11414" }}>Máximo de 40 créditos por período.</p> */}
         </SemesterWarnings>
     );
+
+    console.log(warnings);
 
     const creditsText = (
         <p>
@@ -62,7 +64,7 @@ const SemesterHeader = ({ semesterData, expanded, onClick}) => {
     return (
         <SemesterHeaderContainer onClick={onClick}>
             <SemesterInfos>
-                <h1 style={{ marginRight: "20px" }}>{semesterData.semester}º Período</h1>
+                <h1>{semesterData.semester}º Período</h1>
                 {warnings}
             </SemesterInfos>
             <SemesterCreditsAndIcon>
