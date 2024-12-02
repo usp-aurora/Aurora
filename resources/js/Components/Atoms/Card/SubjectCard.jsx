@@ -2,6 +2,8 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import glassmorphismStyle from '../../../styles/glassmorphism';
 
+import Planet from '../Planet';
+
 const CardComponent = styled.div`
   width: 104px;
   height: 104px;
@@ -36,11 +38,9 @@ const CardContent = styled.div`
   transform: translateY(-10px);
 `;
 
-const CardIcon = styled.img`
+const CardIconContainer = styled.div`
   width: 48px;
   height: 48px;
-  box-shadow: -4px 4px 8px rgba(26, 27, 35, 0.15);
-  border-radius: 24px;
 `
 
 const CardTextCode = styled.h2`
@@ -59,7 +59,9 @@ const SubjectCard = ({courseCode, courseTitle, planetURL, onClick, onCreate}) =>
     <CardComponent onClick={onClick} onLoad={onCreate}>
       <CardContainer>
         <CardContent>
-          <CardIcon src={planetURL}/>
+          <CardIconContainer>
+            <Planet src={planetURL}/>
+          </CardIconContainer>
           <CardTextCode> {courseCode} </CardTextCode>
           <p>{truncateText(courseTitle, 25)}</p>
         </CardContent>

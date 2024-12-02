@@ -44,10 +44,8 @@ const Card = ({iconURL, message, onClick, onCreate}) => {
   return (
     <CardComponent onClick={onClick} onLoad={onCreate}>
       <CardContainer>
-        {/* <CardContent> */}
           <CardIcon src={iconURL}/>
           <p>{message}</p>
-        {/* </CardContent> */}
       </CardContainer>
     </CardComponent>
   );
