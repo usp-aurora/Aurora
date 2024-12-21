@@ -51,6 +51,8 @@ const HeaderInfo = styled.div`
   align-items: center;
   width: 100%;
   gap: 1em;
+
+  overflow: hidden;
 `;
 
 const HeaderIconAndCode = styled.div`
@@ -98,30 +100,47 @@ const CourseTags = styled.div`
 `;
 
 const CourseDescContainer = styled.div`
-  padding: 1.5%;
-  max-height: ${props => (props.expanded ? 'none' : '100px')}; /* Set the maximum height */
-  overflow: hidden; /* Hide the overflow text */
-  position: relative; /* Position relative for the read more link */
+
 `;
 
-const ReadMoreLink = styled.span`
-  color: blue;
-  cursor: pointer;
-  /* position: absolute;
-  bottom: 10px;
-  right: 10px; */
-  background: white;
-  padding: 0 5px;
+const CourseDescText = styled.div`
+  max-height: 3lh;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  transition: max-height 0.5s;
 `;
 
-const ReadLessLink = styled.span`
-  color: blue;
+const ReadMoreLabel = styled.label`
   cursor: pointer;
-  /* position: absolute;
-  bottom: 10px;
-  right: 10px; */
-  background: white;
-  padding: 0 5px;
+  font-size: 1em;
+  color: #2A85CD;
+  text-decoration: underline;
+`;
+
+const ReadMoreCheckbox = styled.input`
+  bottom: 0;
+  clip: rect(0);
+  height: 1px;
+  width: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+
+  &:checked + ${CourseDescText} {
+    -webkit-line-clamp: unset;
+    max-height: 100lh;
+  }
+
+  &:not(:checked) ~ ${ReadMoreLabel}::after {
+    content: "Ver mais";
+  }
+  
+  &:checked ~ ${ReadMoreLabel}:after {
+    content: "Ver menos";
+  }
 `;
 
 const CourseReqsPlaceholder = styled.div`
@@ -135,20 +154,20 @@ const CourseReqsPlaceholder = styled.div`
   align-items: center;
   justify-content: center;
   color:white;
-`
+`;
 
 const ActionsButtonsContainer = styled.div`
   display: flex;
   justify-content: flex-end; /* Align items to the right */
   width: 100%; /* Ensure it takes the full width */
   padding: 10px; /* Add some padding for visibility */
-`
+`;
 
 const ButtonPlaceholder = styled.div`
   width: 30px;
   height: 30px;
-  background-color: red; /* Use background-color instead of color */
-`
+  background-color: red;
+`;
 
 const CoursePopUp = ({ isOpen, onClose, title, code, tags, credits, desc }) => {
 
@@ -184,11 +203,16 @@ const CoursePopUp = ({ isOpen, onClose, title, code, tags, credits, desc }) => {
               color="white" 
               name={credits["lectureCredits"] + " + " + credits["workCredits"] + " créditos"}/>
           </CourseTags>
+          
 
           <CourseDescContainer>
-            <p>{desc}</p>
+            <ReadMoreCheckbox type="checkbox" name="read-more" id="read-more"/>
+            <CourseDescText>
+              <p>{desc}</p>
+            </CourseDescText>
+            <ReadMoreLabel for="read-more" />
           </CourseDescContainer>
-          
+
           <CourseReqsPlaceholder>
             Aqui vai o lindo código do João e do Pedro.
           </CourseReqsPlaceholder>
