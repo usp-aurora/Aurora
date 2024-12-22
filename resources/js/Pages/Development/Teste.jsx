@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { useState } from 'react';
-import CoursePopUp from '../../Components/PopUps/CoursePopUp';
+import CourseInfo from '../../Components/CourseInfo/CourseInfo';
 
 const AppContainer = styled.div`
   display: flex;
@@ -15,10 +15,8 @@ const AppContainer = styled.div`
 const Teste = () => {
   return (
     <AppContainer>
-      <CoursePopUp isOpen={true} onClose={() => { }}
-        pokeball_color={"#FF0000"}
-        pokemonURL={"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png"}
-        title={"Título Levemente Maior"}
+      <CourseInfo isOpen={true} onClose={() => { }}
+        title={"Álgebra Booleana e Aplicações no Projeto de Arquitetura de Computadores"}
         code={"MAC0329"}
         tags={[{"color": "#51A1E0", "name":"Obrigatória"}, {"color": "#51A1E0", "name":"Obrigatória"}, {"color": "#51A1E0", "name":"Obrigatória"}]}
         credits={{

@@ -4,7 +4,7 @@ import Header from '../Components/Header/Header.jsx';
 import Semesters from '../Components/Semesters/Semesters.jsx';
 import CoursePicker from '../Components/CoursePicker/CoursePicker.jsx';
 import AddDisciplinePopUp from '../Components/PopUps/AddDisciplinePopUp.jsx';
-import CoursePopUp from '../Components/PopUps/CoursePopUp.jsx';
+// import CoursePopUp from '../Components/PopUps/CoursePopUp.jsx';
 
 
 
@@ -91,7 +91,7 @@ const Home = ({ plans }) => {
     <AppContainer>
       <Background />
       <AddDisciplinePopUp isOpen={addDisciplineActive} onClose={toggleDiscipline} />
-      <CoursePopUp isOpen={coursePopUpActive} onClose={toggleCoursePopUp} 
+      {/* <CoursePopUp isOpen={coursePopUpActive} onClose={toggleCoursePopUp} 
           pokeball_color={course.pokeball_color} 
           pokemonURL={course.pokemonURL}
           title={course.title}
@@ -99,7 +99,7 @@ const Home = ({ plans }) => {
           tags={course.tags}
           credits={course.credits}
           desc={course.desc}
-      />
+      /> */}
       <Header />
       <ContentContainer>
         <Semesters plans={plans} openCourse={toggleCoursePopUp} changeCourseDisplay={toggleCourse} />
