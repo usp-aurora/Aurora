@@ -42,3 +42,10 @@ Route::get('/completion-bar', function () {
 Route::get('/botao', function () {
     return Inertia::render('Development/TestButtons');
 });
+
+
+Route::get('/test-model-requisitos', function () {
+    $requisitos = new App\Models\Requisitos();
+    // dd($requisitos);
+    return $requisitos->limit(10)->get();
+});
