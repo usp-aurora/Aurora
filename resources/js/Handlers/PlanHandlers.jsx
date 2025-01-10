@@ -1,7 +1,5 @@
 import axios from 'axios';
 
-const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
 export const loadPlans = async () => {
   const unsyncedPlans = localStorage.getItem('unsyncedPlans');
     if (unsyncedPlans) {
