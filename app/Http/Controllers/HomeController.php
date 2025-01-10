@@ -15,7 +15,6 @@ class HomeController extends Controller
         $subjectController = new SubjectController();
 
         return Inertia::render('Home', [
-            'userPlans'   => $plansController->index(),
             'subjects' => $subjectController->index(),
         ]);
     }

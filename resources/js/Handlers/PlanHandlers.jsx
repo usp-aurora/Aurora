@@ -1,53 +1,51 @@
 import axios from 'axios';
 
-const createPlan = async (newPlan, setPlans) => {
-  try {
-    const response = await axios.post('/plans/store', newPlan);
-    // setPlans((prevPlans) => [...prevPlans, response.data]);
-  } catch (error) {
-    console.error('Erro ao criar o plano:', error);
-  }
-};
 
-const updatePlan = async (id, updatedData) => {
-  try {
-    await axios.post(`/plans/update/${id}`, updatedData);
-  } catch (error) {
-    console.error('Erro ao atualizar o plano:', error);
-  }
-};
+export const loadPlans = async () => {
+  const unsyncedPlans = localStorage.getItem('unsyncedPlans');
+    if (unsyncedPlans) {
+      const response = await axios.post('api/plans/sync', unsyncedPlans);
 
-const deletePlan = async (id) => {
-  try {
-    await axios.delete(`/plans/delete/${id}`);
-  } catch (error) {
-    console.error('Erro ao deletar o plano:', error);
+      if (response.status === 200) {
+        localStorage.removeItem('unsyncedPlans');
+      } else {
+        console.error('Erro ao sincronizar planos:', response.data);
+    }
   }
-};
+}
+
+export const storePlans = (updatedData) => {
+  const payload = JSON.stringify( Array.from(updatedData).map(([key, val]) => {
+    return {
+      id: val.plan_id,
+      subject_id: key,
+      semester: val.semester,
+    };
+  })
+  );
+  localStorage.setItem('unsyncedPlans', payload);
+}
 
 export const syncPlans = async (updatedData, setData) => {
-  console.log("Iniciando sincronização...");
-  
   try {
-    updatedData.forEach((subject, key) => {
-      if (subject.plan_id && subject.semester) {
-        return updatePlan(subject.plan_id, {
-          subject_id: subject.id,
-          semester: subject.semester,
-        });
-      } else if (subject.semester) {
-        return createPlan({ 
-          subject_id: subject.id, 
-          semester: subject.semester
-        }, setData);
-      } else if (subject.plan_id) {
-        return deletePlan(subject.plan_id);
-      }
-  
-      return null; 
-    });
-    console.log("Sincronização concluída!");
+    const payload = JSON.stringify(
+      Array.from(updatedData).map(([key, val]) => {
+        return {
+          id: val.plan_id,
+          subject_id: key,
+          semester: val.semester,
+        };
+      })
+    );
+    
+    const response = await axios.post('/api/plans/sync', payload);
+
+    if (response.status === 200) {
+      console.log("Sincronização concluída com sucesso!");
+    } else {
+      console.error("Erro ao sincronizar:", response.data);
+    }
   } catch (error) {
-    console.error("Erro ao sincronizar:", error);
+    console.error("Erro na comunicação com o servidor:", error);
   }
 };

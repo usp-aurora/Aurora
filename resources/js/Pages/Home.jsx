@@ -7,7 +7,7 @@ import AddDisciplinePopUp from '../Components/PopUps/AddDisciplinePopUp.jsx';
 import CoursePopUp from '../Components/PopUps/CoursePopUp.jsx';
 import DragOverlayComponent from '../Components/Dnd/DragOverlayComponent.jsx';
 import { handleDragStart, handleDragOver, handleDragEnd } from '../Handlers/DragHandlers.jsx';
-import { syncPlans } from '../Handlers/PlanHandlers.jsx';
+import { loadPlans, storePlans, syncPlans } from '../Handlers/PlanHandlers.jsx';
 import {
   DndContext, 
   KeyboardSensor,
@@ -128,10 +128,20 @@ const categories = [
 ];
 
 
-const Home = ({ userPlans, subjects }) => {
+const Home = ({ subjects }) => {
+
+  window.addEventListener('load', loadPlans());
+  
+  window.addEventListener('beforeunload', () => {
+    if (unsavedChanges)
+        storePlans(courseMap);
+  });
+
+  const [plans, setPlans] = useState([]); // Inicializa com um array vazio
   const [dragObject, setDragObject] = useState(null);
   const [addDisciplineActive, setAddDisciplineActive] = useState(false);
   const [coursePopUpActive, setCoursePopUpActive] = useState(false);
+  const [unsavedChanges, setUnsavedChanges] = useState(false);
 
   const [courseMap, setCourseMap] = useState(() => {
     const initialCourseMap = new Map(
@@ -174,22 +184,6 @@ const Home = ({ userPlans, subjects }) => {
     return initialCourseMap;
   });
 
-  const [plans, setPlans] = useState(() =>
-    userPlans.map((semester) => ({
-      ...semester,
-      courses: semester.courses.map((course) => ({
-        ...course,
-        tags: courseMap.get(course.id)?.tags || [],
-        colors: {
-          background: "#FFFFFF",
-          innerLine: "#51A1E0",
-          outerLine: "#17538D",
-        },
-        pokeball: "#C2DCF5",
-      })),
-    }))
-  );
-  
   const toggleDiscipline = () => {
     setAddDisciplineActive(!addDisciplineActive);
   }
@@ -234,6 +228,37 @@ const Home = ({ userPlans, subjects }) => {
     }),
   );
 
+  // set plans's colors/tags/pokeball only once
+  useEffect(() => {
+    const fetchPlans = async () => {
+      try {
+        const response = await fetch("/api/plans/index"); // Endpoint para buscar os planos
+        const data = await response.json();
+
+        // Atualiza os planos com os dados processados
+        const processedPlans = data.plans.map((semester) => ({
+          ...semester,
+          courses: semester.courses.map((course) => ({
+            ...course,
+            tags: courseMap.get(course.id)?.tags || [],
+            colors: {
+              background: "#FFFFFF",
+              innerLine: "#51A1E0",
+              outerLine: "#17538D",
+            },
+            pokeball: "#C2DCF5",
+          })),
+        }));
+
+        setPlans(processedPlans);
+      } catch (error) {
+        console.error("Erro ao carregar planos:", error);
+      }
+    };
+
+    fetchPlans();
+  }, []);
+
    // update courseMap when plans changes
    useEffect(() => {
     const updatedCourseMap = new Map(courseMap);
@@ -250,7 +275,7 @@ const Home = ({ userPlans, subjects }) => {
         }
       });
     });
-
+    setUnsavedChanges(true);
     setCourseMap(updatedCourseMap);
   }, [plans]);
 
@@ -258,21 +283,12 @@ const Home = ({ userPlans, subjects }) => {
   useEffect(() => {
     const intervalId = setInterval(() => {
       syncPlans(courseMap, setPlans);
-    }, 60000); // 1 minuto (60000 ms)
+      setUnsavedChanges(false);
+    }, 30000); // Sincroniza a cada 30 segundos
+  
+    return () => { clearInterval(intervalId) };
+  }, [courseMap]);  
 
-    const handleBeforeUnload = (event) => {
-      syncPlans(courseMap, setPlans);
-      event.preventDefault();
-      event.returnValue = '';
-    };
-    window.addEventListener('beforeunload', handleBeforeUnload);
-
-    return () => {
-      clearInterval(intervalId);
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-    };
-  }, [courseMap]); 
- 
 
   return (
     <AppContainer>

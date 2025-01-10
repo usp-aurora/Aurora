@@ -9,10 +9,9 @@ use App\Http\Controllers\HomeController;
 
 Route::get('/', [HomeController::class, 'index']);
 
-Route::prefix('plans')->group(function () {
-    Route::post('/store', [PlansController::class, 'store'])->name('plans.store');
-    Route::post('/update/{id}', [PlansController::class, 'update'])->name('plans.update');
-    Route::delete('/delete/{id}', [PlansController::class, 'destroy'])->name('plans.destroy');
+Route::prefix('api/plans')->group(function () {
+    Route::get('/index', [PlansController::class, 'index'])->name('plans.index');
+    Route::post('/sync', [PlansController::class, 'sync'])->name('plans.sync');
 });
 
 // Routing para as páginas que estamos utilizando pra desenvolvimento

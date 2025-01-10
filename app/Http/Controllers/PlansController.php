@@ -46,15 +46,48 @@ class PlansController extends Controller
             ];
         }
 
-        return $groupedPlans;
+        return response()->json(['plans' => $groupedPlans,], 200);
     }
 
+    public function sync(Request $request)
+    {
+        
+        $data = $request->json()->all();
+        
+        try {
+            foreach ($data as $subject) {
+                if (isset($subject['id']) && isset($subject['semester'])) {
+                    // Atualizar plano existente
+                    $this->update(new Request([
+                        'subject_id' => $subject['subject_id'],
+                        'semester' => $subject['semester'],
+                    ]), $subject['id']);
+                } elseif (isset($subject['semester'])) {
+                    // Criar novo plano
+                    $this->store(new Request([
+                        'subject_id' => $subject['subject_id'],
+                        'semester' => $subject['semester'],
+                    ]));
+                    
+                } elseif (isset($subject['id'])) {
+                    // Deletar plano existente
+                    $this->destroy($subject['id']);
+                }
+            }
+            
+            return response()->json(['status' => 'success', 'newData' => $this->index()], 200);
+        } catch (\Exception $e) {
+            // Log de erro para investigação futura
+            \Log::error('Erro ao sincronizar planos:', ['error' => $e->getMessage()]);
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
+        }
+    }
 
     // To avoid conflicts, we might have to make this only 
     // callable by the update method.
     
     // Store a newly created resource in storage.
-    public function store(Request $request)
+    private function store(Request $request)
     {
         $request->validate([
             'subject_id' => 'required|exists:subjects,id',
@@ -72,7 +105,7 @@ class PlansController extends Controller
 
 
     // Update the specified resource in storage.
-    public function update(Request $request, $id)
+    private function update(Request $request, $id)
     {
         $request->validate([
             'subject_id' => 'required|exists:subjects,id',
@@ -86,13 +119,12 @@ class PlansController extends Controller
             'subject_id' => $request->subject_id,
             'semester' => $request->semester,
         ]);
-
         return response()->json(['success' => 'Plan successfully updated!'], 200); 
     }
     
 
     // Remove the specified resource from storage.
-    public function destroy($id) {
+    private function destroy($id) {
         try {
             // Find the plan, if not found, consider it already deleted
             $plan = Plan::find($id);
