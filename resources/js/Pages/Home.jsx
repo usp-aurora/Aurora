@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { ClipLoader } from "react-spinners";
 import styled from 'styled-components';
 import Header from '../Components/Header/Header.jsx';
 import Semester from '../Components/Semesters/Semesters.jsx';
@@ -7,7 +8,7 @@ import AddDisciplinePopUp from '../Components/PopUps/AddDisciplinePopUp.jsx';
 import CoursePopUp from '../Components/PopUps/CoursePopUp.jsx';
 import DragOverlayComponent from '../Components/Dnd/DragOverlayComponent.jsx';
 import { handleDragStart, handleDragOver, handleDragEnd } from '../Handlers/DragHandlers.jsx';
-import { loadPlans, storePlans, syncPlans } from '../Handlers/PlanHandlers.jsx';
+import { fetchPlans, loadPlans, storePlans, syncPlans } from '../Handlers/PlanHandlers.jsx';
 import {
   DndContext, 
   KeyboardSensor,
@@ -32,6 +33,15 @@ const AppContainer = styled.div`
 const ContentContainer = styled.div`
   display: flex;
   flex-grow: 1;
+`;
+
+const LoadingContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 1.5em;
+  color: #555;
 `;
 
 
@@ -129,19 +139,24 @@ const categories = [
 
 
 const Home = ({ subjects }) => {
+  const [plans, setPlans] = useState([]); 
+  const [isLoading, setIsLoading] = useState(true);
+  const [dragObject, setDragObject] = useState(null);
+  const [addDisciplineActive, setAddDisciplineActive] = useState(false);
+  const [coursePopUpActive, setCoursePopUpActive] = useState(false);
+  const [unsavedChanges, setUnsavedChanges] = useState(false);
 
-  window.addEventListener('load', loadPlans());
+  
+  window.addEventListener('load', () => {
+    loadPlans();
+    fetchPlans(setPlans, setIsLoading);
+  });
   
   window.addEventListener('beforeunload', () => {
     if (unsavedChanges)
         storePlans(courseMap);
   });
 
-  const [plans, setPlans] = useState([]); // Inicializa com um array vazio
-  const [dragObject, setDragObject] = useState(null);
-  const [addDisciplineActive, setAddDisciplineActive] = useState(false);
-  const [coursePopUpActive, setCoursePopUpActive] = useState(false);
-  const [unsavedChanges, setUnsavedChanges] = useState(false);
 
   const [courseMap, setCourseMap] = useState(() => {
     const initialCourseMap = new Map(
@@ -228,37 +243,6 @@ const Home = ({ subjects }) => {
     }),
   );
 
-  // set plans's colors/tags/pokeball only once
-  useEffect(() => {
-    const fetchPlans = async () => {
-      try {
-        const response = await fetch("/api/plans/index"); // Endpoint para buscar os planos
-        const data = await response.json();
-
-        // Atualiza os planos com os dados processados
-        const processedPlans = data.plans.map((semester) => ({
-          ...semester,
-          courses: semester.courses.map((course) => ({
-            ...course,
-            tags: courseMap.get(course.id)?.tags || [],
-            colors: {
-              background: "#FFFFFF",
-              innerLine: "#51A1E0",
-              outerLine: "#17538D",
-            },
-            pokeball: "#C2DCF5",
-          })),
-        }));
-
-        setPlans(processedPlans);
-      } catch (error) {
-        console.error("Erro ao carregar planos:", error);
-      }
-    };
-
-    fetchPlans();
-  }, []);
-
    // update courseMap when plans changes
    useEffect(() => {
     const updatedCourseMap = new Map(courseMap);
@@ -282,13 +266,21 @@ const Home = ({ subjects }) => {
   // update database
   useEffect(() => {
     const intervalId = setInterval(() => {
-      syncPlans(courseMap, setPlans);
+      syncPlans(courseMap);
+      fetchPlans(setPlans);
       setUnsavedChanges(false);
-    }, 30000); // Sincroniza a cada 30 segundos
-  
+    }, 60000); // Sincroniza a cada 1min
+
     return () => { clearInterval(intervalId) };
   }, [courseMap]);  
 
+  if (isLoading) {
+    return (
+      <LoadingContainer>
+         <ClipLoader color="#51A1E0" size={50} />
+      </LoadingContainer>
+    );
+  } 
 
   return (
     <AppContainer>
@@ -311,7 +303,7 @@ const Home = ({ subjects }) => {
         onDragEnd={(event) => handleDragEnd(event, courseMap, plans, setPlans, setDragObject)}
       >
         <ContentContainer>
-          <Semester semesters={plans} openCourse={toggleCoursePopUp} changeCourseDisplay={toggleCourse} setSemesters={setPlans} />
+          <Semester semesters={plans} setSemesters={setPlans} openCourse={toggleCoursePopUp} changeCourseDisplay={toggleCourse} map={courseMap} />
           <CoursePicker openCourse={toggleCoursePopUp} changeCourseDisplay={toggleCourse} openDisciplinePopUp={toggleDiscipline} />
         </ContentContainer>
         <DragOverlayComponent dragObject={dragObject} />

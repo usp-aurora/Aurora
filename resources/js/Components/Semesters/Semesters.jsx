@@ -168,7 +168,7 @@ const NewSemester = styled.div`
   cursor: pointer;
 `;
 
-const Semesters = ({ semesters, setSemesters, openCourse, changeCourseDisplay }) => {
+const Semesters = ({ semesters, setSemesters, openCourse, changeCourseDisplay, map }) => {
 
   const [expandedSemesters, setExpandedSemesters] = useState(
     semesters.reduce((acc, semester) => {
@@ -268,21 +268,24 @@ const Semesters = ({ semesters, setSemesters, openCourse, changeCourseDisplay })
                     <p>Arraste uma disciplina</p>
                   </NewCard>
                 :
-                  semester.courses.map((course)  => (
+                semester.courses.map((course) => {
+                  const courseData = map.get(course.id);
+                  return (
                     <SortableItem id={course.id} key={course.id} disable={expandedSemesters[semester.id] ? null : true}>
-                      <Card colors={course.colors} onClick={() => {
-                        openCourse();
-                        changeCourseDisplay(course.pokeball, "/pokemons/ditto.png", course.title, course.code, course.tags, course.credits, course.desc)
+                      <Card colors={courseData.colors} onClick={() => {
+                          openCourse();
+                          changeCourseDisplay(courseData?.pokeball, "/pokemons/ditto.png", course.title, course.code, courseData?.tags || [], course.credits, course.desc);
                       }}>
                         <CardContentCourse 
-                          pokeball={course.pokeball} 
+                          pokeball={courseData?.pokeball} 
                           courseCode={course.code} 
                           courseTitle={course.title} 
                           pokemonURL="/pokemons/ditto.png"
                         />
-                      </Card> 
+                      </Card>
                     </SortableItem>
-                  ))}
+                  );
+                })}
               </CoursesList>
             </SortableContext>
           </SemesterContainer>

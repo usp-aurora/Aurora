@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 export const loadPlans = async () => {
   const unsyncedPlans = localStorage.getItem('unsyncedPlans');
@@ -26,7 +27,19 @@ export const storePlans = (updatedData) => {
   localStorage.setItem('unsyncedPlans', payload);
 }
 
-export const syncPlans = async (updatedData, setData) => {
+export const fetchPlans = async (setData, isFetching) => {
+  try {
+    const response = await fetch("/api/plans/index"); // Endpoint para buscar os planos
+    const data = await response.json();
+    setData(data.plans);
+  } catch (error) {
+    console.error("Erro ao carregar planos:", error);
+  } finally {
+    isFetching(false);
+  }
+};
+
+export const syncPlans = async (updatedData) => {
   try {
     const payload = JSON.stringify(
       Array.from(updatedData).map(([key, val]) => {
