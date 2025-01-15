@@ -4,7 +4,9 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\PlanoEstudosController;
 use App\Http\Controllers\PlansController;
-use App\Http\Controllers\CarregaMateriasController;
+use App\Http\Controllers\IndexController;
+use App\Http\Controllers\LoginController;
+
 
 Route::get('/', [PlanoEstudosController::class, 'index']);
 
@@ -13,6 +15,11 @@ Route::prefix('planos')->group(function () {
     Route::post('/update/{id}', [PlanoEstudosController::class, 'update'])->name('plans.update');
     Route::delete('/delete/{id}', [PlanoEstudosController::class, 'destroy'])->name('plans.destroy');
 });
+Route::get('/teste-login', [IndexController::class, 'index']);
+Route::get('login', [LoginController::class, 'redirectToProvider']);
+Route::get('callback', [LoginController::class, 'handleProviderCallback']);
+Route::get('logout', [LoginController::class, 'logout']);
+
 
 Route::get('/json-grupos/{id_curso}', [CarregaMateriasController::class, 'index']);
 
