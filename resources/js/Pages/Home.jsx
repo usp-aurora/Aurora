@@ -143,8 +143,8 @@ const categories = [
 const Home = ({ subjects }) => {
   const [plans, setPlans] = useState([]); 
   const [isLoading, setIsLoading] = useState(true);
+  const [overlayObject, setOverlayObject] = useState(null);
   const [dragObject, setDragObject] = useState(null);
-  const [dragContainer, setDragContainer] = useState(null);
   const [addDisciplineActive, setAddDisciplineActive] = useState(false);
   const [coursePopUpActive, setCoursePopUpActive] = useState(false);
   const [unsavedChanges, setUnsavedChanges] = useState(false);
@@ -302,15 +302,18 @@ const Home = ({ subjects }) => {
       <DndContext
         sensors={sensors}
         collisionDetection={(props) => customCollisionDetectionAlgorithm(props)}
-        onDragStart={(event) => handleDragStart(event, courseMap, plans, setDragObject, setDragContainer)}
-        onDragOver={(event) => handleDragOver(event, courseMap, plans, setPlans, dragObject, dragContainer, setDragContainer)}
-        onDragEnd={(event) => handleDragEnd(event, courseMap, setCourseMap, plans, dragObject, setDragObject)}
-      >
+        onDragStart={(event) => handleDragStart(event, courseMap, setOverlayObject, setDragObject)}
+        onDragOver={(event) => handleDragOver(event, courseMap, setPlans, dragObject, setDragObject)}
+        onDragEnd={(event) => {
+          handleDragEnd(event, courseMap, setCourseMap, dragObject, setDragObject);
+          setOverlayObject(null);
+          setUnsavedChanges(true);
+      }}>
         <ContentContainer>
           <Semester semesters={plans} setSemesters={setPlans} openCourse={toggleCoursePopUp} changeCourseDisplay={toggleCourse} map={courseMap} />
           <CoursePicker openCourse={toggleCoursePopUp} changeCourseDisplay={toggleCourse} openDisciplinePopUp={toggleDiscipline} map={courseMap}/>
         </ContentContainer>
-        <DragOverlayComponent dragObject={dragObject} />
+        <DragOverlayComponent course={overlayObject} />
       </DndContext>
     </AppContainer>
   );
