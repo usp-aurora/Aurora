@@ -7,7 +7,7 @@ const Droppable = (props) => {
   });
   
   return (
-    <div ref={props.disable? null : setNodeRef} style={{minHeight: props.children.offsetHeight}}>     
+    <div ref={props.disable? undefined : setNodeRef} style={{minHeight: props.children.offsetHeight, minWidth: props.children.offsetWidth}}>     
       {props.children}
     </div>
   );
