@@ -6,6 +6,10 @@ import StyledButton from '../Atoms/StyledButton';
 import {slideIn, slideIn2, slideOut, slideOut2} from '../Atoms/Animations'
 import Droppable from '../Dnd/Droppable';
 import SortableItem from '../Dnd/SortableItem';
+import {
+  SortableContext,
+  rectSortingStrategy,
+} from '@dnd-kit/sortable';
 // import { ReactComponent as ThinButtonBlueBackgroundSVG } from '../../assets/ThinButtonBlueBackground.svg';
 // import { ReactComponent as AplicarTextIconSVG } from '../../assets/AplicarTextIcon.svg';
 
@@ -251,126 +255,16 @@ const Categories = styled.div`
   margin-top: 5%;
 `;
 
-const CoursePicker = ({ openCourse, changeCourseDisplay, openDisciplinePopUp }) => {
+const CoursePicker = ({ openCourse, changeCourseDisplay, openDisciplinePopUp, map }) => {
   const categories = [
     {
       name: 'Ciência de dados',
       courses: [
-        {
-          code: 'MAC0110', 
-          semester: 1, 
-          title: "Introdução à Computação", 
-          colors: {
-            background: "#FFFFFF",
-            innerLine: "#FFD12B",
-            outerLine: "#CC7F02",
-          },
-          tags: [
-            {
-              color: '#FFFFFF',
-              name: 'Sistemas de Software'
-            },
-            {
-              color: '#000000',
-              name: 'Ciência de dados'
-            }
-          ],
-          credits: [4, 2],
-          pokeball: "#FFEA89",
-          desc: 'AOBA'
-        },
-        {
-          code: 'MAC0110', 
-          semester: 1, 
-          title: "Introdução à Computação", 
-          colors: {
-            background: "#FFFFFF",
-            innerLine: "#FFD12B",
-            outerLine: "#CC7F02",
-          },
-          tags: [
-            {
-              color: '#FFFFFF',
-              name: 'Sistemas de Software'
-            },
-            {
-              color: '#000000',
-              name: 'Ciência de dados'
-            }
-          ],
-          credits: [4, 2],
-          pokeball: "#FFEA89",
-          desc: 'AOBA'
-        }, 
-        {
-          code: 'MAC0110', 
-          semester: 1, 
-          title: "Introdução à Computação", 
-          colors: {
-            background: "#FFFFFF",
-            innerLine: "#FFD12B",
-            outerLine: "#CC7F02",
-          },
-          tags: [
-            {
-              color: '#FFFFFF',
-              name: 'Sistemas de Software'
-            },
-            {
-              color: '#000000',
-              name: 'Ciência de dados'
-            }
-          ],
-          credits: [4, 2],
-          pokeball: "#FFEA89",
-          desc: 'AOBA'
-        },
-        {
-          code: 'MAC0110', 
-          semester: 1, 
-          title: "Introdução à Computação", 
-          colors: {
-            background: "#FFFFFF",
-            innerLine: "#FFD12B",
-            outerLine: "#CC7F02",
-          },
-          tags: [
-            {
-              color: '#FFFFFF',
-              name: 'Sistemas de Software'
-            },
-            {
-              color: '#000000',
-              name: 'Ciência de dados'
-            }
-          ],
-          credits: [4, 2],
-          pokeball: "#FFEA89",
-          desc: 'AOBA'
-        },
-        {
-          code: 'MAC0110', 
-          semester: 1, 
-          title: "Introdução à Computação", 
-          colors: {
-            background: "#FFFFFF",
-            innerLine: "#FFD12B",
-            outerLine: "#CC7F02",
-          },
-          tags: [
-            {
-              color: '#FFFFFF',
-              name: 'Sistemas de Software'
-            },
-            {
-              color: '#000000',
-              name: 'Ciência de dados'
-            }
-          ],
-          credits: [4, 2],
-          pokeball: "#FFEA89",
-          desc: 'AOBA'
-        },
+        { id: 1 },
+        { id: 2 }, 
+        { id: 3 },
+        { id: 4 },
+        { id: 5 },
       ],
       color: '#FFD12B',
       completed: 0,
@@ -379,121 +273,11 @@ const CoursePicker = ({ openCourse, changeCourseDisplay, openDisciplinePopUp }) 
     {
       name: 'Inteligência Artificial',
       courses: [
-        {
-          code: 'MAC0110', 
-          semester: 1, 
-          title: "Introdução à Computação", 
-          colors: {
-            background: "#FFFFFF",
-            innerLine: "#E83030",
-            outerLine: "#841818",
-          },
-          tags: [
-            {
-              color: '#FFFFFF',
-              name: 'Sistemas de Software'
-            },
-            {
-              color: '#000000',
-              name: 'Ciência de dados'
-            }
-          ],
-          credits: [4, 2],
-          pokeball: "#FFA0A0",
-          desc: 'AOBA'
-        },
-        {
-          code: 'MAC0110', 
-          semester: 1, 
-          title: "Introdução à Computação", 
-          colors: {
-            background: "#FFFFFF",
-            innerLine: "#E83030",
-            outerLine: "#841818",
-          },
-          tags: [
-            {
-              color: '#FFFFFF',
-              name: 'Sistemas de Software'
-            },
-            {
-              color: '#000000',
-              name: 'Ciência de dados'
-            }
-          ],
-          credits: [4, 2],
-          pokeball: "#FFA0A0",
-          desc: 'AOBA'
-        }, 
-        {
-          code: 'MAC0110', 
-          semester: 1, 
-          title: "Introdução à Computação", 
-          colors: {
-            background: "#FFFFFF",
-            innerLine: "#E83030",
-            outerLine: "#841818",
-          },
-          tags: [
-            {
-              color: '#FFFFFF',
-              name: 'Sistemas de Software'
-            },
-            {
-              color: '#000000',
-              name: 'Ciência de dados'
-            }
-          ],
-          credits: [4, 2],
-          pokeball: "#FFA0A0",
-          desc: 'AOBA'
-        },
-        {
-          code: 'MAC0110', 
-          semester: 1, 
-          title: "Introdução à Computação", 
-          colors: {
-            background: "#FFFFFF",
-            innerLine: "#E83030",
-            outerLine: "#841818",
-          },
-          tags: [
-            {
-              color: '#FFFFFF',
-              name: 'Sistemas de Software'
-            },
-            {
-              color: '#000000',
-              name: 'Ciência de dados'
-            }
-          ],
-          credits: [4, 2],
-          pokeball: "#FFA0A0",
-          desc: 'AOBA'
-        },
-        {
-          code: 'MAC0110', 
-          semester: 1, 
-          title: "Introdução à Computação", 
-          colors: {
-            background: "#FFFFFF",
-            innerLine: "#E83030",
-            outerLine: "#841818",
-          },
-          tags: [
-            {
-              color: '#FFFFFF',
-              name: 'Sistemas de Software'
-            },
-            {
-              color: '#000000',
-              name: 'Ciência de dados'
-            }
-          ],
-          credits: [4, 2],
-          pokeball: "#FFA0A0",
-          desc: 'AOBA'
-        },
+        { id: 6 },
+        { id: 7 },
+        { id: 8 },
+        { id: 9 },
+        { id: 10 },
       ],
       color: '#E83030',
       completed: 0,
@@ -502,121 +286,11 @@ const CoursePicker = ({ openCourse, changeCourseDisplay, openDisciplinePopUp }) 
     {
       name: 'Sistemas de Software',
       courses: [
-        {
-          code: 'MAC0110', 
-          semester: 1, 
-          title: "Introdução à Computação", 
-          colors: {
-            background: "#FFFFFF",
-            innerLine: "#15B48F",
-            outerLine: "#095C4D",
-          },
-          tags: [
-            {
-              color: '#FFFFFF',
-              name: 'Sistemas de Software'
-            },
-            {
-              color: '#000000',
-              name: 'Ciência de dados'
-            }
-          ],
-          credits: [4, 2],
-          pokeball: "#A9F1D7",
-          desc: 'AOBA'
-        },
-        {
-          code: 'MAC0110', 
-          semester: 1, 
-          title: "Introdução à Computação", 
-          colors: {
-            background: "#FFFFFF",
-            innerLine: "#15B48F",
-            outerLine: "#095C4D",
-          },
-          tags: [
-            {
-              color: '#FFFFFF',
-              name: 'Sistemas de Software'
-            },
-            {
-              color: '#000000',
-              name: 'Ciência de dados'
-            }
-          ],
-          credits: [4, 2],
-          pokeball: "#A9F1D7",
-          desc: 'AOBA'
-        }, 
-        {
-          code: 'MAC0110', 
-          semester: 1, 
-          title: "Introdução à Computação", 
-          colors: {
-            background: "#FFFFFF",
-            innerLine: "#15B48F",
-            outerLine: "#095C4D",
-          },
-          tags: [
-            {
-              color: '#FFFFFF',
-              name: 'Sistemas de Software'
-            },
-            {
-              color: '#000000',
-              name: 'Ciência de dados'
-            }
-          ],
-          credits: [4, 2],
-          pokeball: "#A9F1D7",
-          desc: 'AOBA'
-        },
-        {
-          code: 'MAC0110', 
-          semester: 1, 
-          title: "Introdução à Computação", 
-          colors: {
-            background: "#FFFFFF",
-            innerLine: "#15B48F",
-            outerLine: "#095C4D",
-          },
-          tags: [
-            {
-              color: '#FFFFFF',
-              name: 'Sistemas de Software'
-            },
-            {
-              color: '#000000',
-              name: 'Ciência de dados'
-            }
-          ],
-          credits: [4, 2],
-          pokeball: "#A9F1D7",
-          desc: 'AOBA'
-        },
-        {
-          code: 'MAC0110', 
-          semester: 1, 
-          title: "Introdução à Computação", 
-          colors: {
-            background: "#FFFFFF",
-            innerLine: "#15B48F",
-            outerLine: "#095C4D",
-          },
-          tags: [
-            {
-              color: '#FFFFFF',
-              name: 'Sistemas de Software'
-            },
-            {
-              color: '#000000',
-              name: 'Ciência de dados'
-            }
-          ],
-          credits: [4, 2],
-          pokeball: "#A9F1D7",
-          desc: 'AOBA'
-        },
+        { id: 11 },
+        { id: 12 }, 
+        { id: 13 },
+        { id: 14 },
+        { id: 15 },
       ],
       color: '#15B48F',
       completed: 0,
@@ -625,121 +299,10 @@ const CoursePicker = ({ openCourse, changeCourseDisplay, openDisciplinePopUp }) 
     {
       name: 'Teoria da Computação',
       courses: [
-        {
-          code: 'MAC0110', 
-          semester: 1, 
-          title: "Introdução à Computação", 
-          colors: {
-            background: "#FFFFFF",
-            innerLine: "#6762CD",
-            outerLine: "#3C3B74",
-          },
-          tags: [
-            {
-              color: '#FFFFFF',
-              name: 'Sistemas de Software'
-            },
-            {
-              color: '#000000',
-              name: 'Ciência de dados'
-            }
-          ],
-          credits: [4, 2],
-          pokeball: "#B3BEEE",
-          desc: 'AOBA'
-        },
-        {
-          code: 'MAC0110', 
-          semester: 1, 
-          title: "Introdução à Computação", 
-          colors: {
-            background: "#FFFFFF",
-            innerLine: "#6762CD",
-            outerLine: "#3C3B74",
-          },
-          tags: [
-            {
-              color: '#FFFFFF',
-              name: 'Sistemas de Software'
-            },
-            {
-              color: '#000000',
-              name: 'Ciência de dados'
-            }
-          ],
-          credits: [4, 2],
-          pokeball: "#B3BEEE",
-          desc: 'AOBA'
-        }, 
-        {
-          code: 'MAC0110', 
-          semester: 1, 
-          title: "Introdução à Computação", 
-          colors: {
-            background: "#FFFFFF",
-            innerLine: "#6762CD",
-            outerLine: "#3C3B74",
-          },
-          tags: [
-            {
-              color: '#FFFFFF',
-              name: 'Sistemas de Software'
-            },
-            {
-              color: '#000000',
-              name: 'Ciência de dados'
-            }
-          ],
-          credits: [4, 2],
-          pokeball: "#B3BEEE",
-          desc: 'AOBA'
-        },
-        {
-          code: 'MAC0110', 
-          semester: 1, 
-          title: "Introdução à Computação", 
-          colors: {
-            background: "#FFFFFF",
-            innerLine: "#6762CD",
-            outerLine: "#3C3B74",
-          },
-          tags: [
-            {
-              color: '#FFFFFF',
-              name: 'Sistemas de Software'
-            },
-            {
-              color: '#000000',
-              name: 'Ciência de dados'
-            }
-          ],
-          credits: [4, 2],
-          pokeball: "#B3BEEE",
-          desc: 'AOBA'
-        },
-        {
-          code: 'MAC0110', 
-          semester: 1, 
-          title: "Introdução à Computação", 
-          colors: {
-            background: "#FFFFFF",
-            innerLine: "#6762CD",
-            outerLine: "#3C3B74",
-          },
-          tags: [
-            {
-              color: '#FFFFFF',
-              name: 'Sistemas de Software'
-            },
-            {
-              color: '#000000',
-              name: 'Ciência de dados'
-            }
-          ],
-          credits: [4, 2],
-          pokeball: "#B3BEEE",
-          desc: 'AOBA'
-        },
+        { id: 16 },
+        { id: 17 }, 
+        { id: 18 },
+        { id: 19 },
       ],
       color: '#6762CD',
       completed: 0,
@@ -748,121 +311,11 @@ const CoursePicker = ({ openCourse, changeCourseDisplay, openDisciplinePopUp }) 
     {
       name: 'Optativa de Estatística',
       courses: [
-        {
-          code: 'MAC0110', 
-          semester: 1, 
-          title: "Introdução à Computação", 
-          colors: {
-            background: "#FFFFFF",
-            innerLine: "#EA7F38",
-            outerLine: "#90381C",
-          },
-          tags: [
-            {
-              color: '#FFFFFF',
-              name: 'Sistemas de Software'
-            },
-            {
-              color: '#000000',
-              name: 'Ciência de dados'
-            }
-          ],
-          credits: [4, 2],
-          pokeball: "#F8D6B0",
-          desc: 'AOBA'
-        },
-        {
-          code: 'MAC0110', 
-          semester: 1, 
-          title: "Introdução à Computação", 
-          colors: {
-            background: "#FFFFFF",
-            innerLine: "#EA7F38",
-            outerLine: "#90381C",
-          },
-          tags: [
-            {
-              color: '#FFFFFF',
-              name: 'Sistemas de Software'
-            },
-            {
-              color: '#000000',
-              name: 'Ciência de dados'
-            }
-          ],
-          credits: [4, 2],
-          pokeball: "#F8D6B0",
-          desc: 'AOBA'
-        }, 
-        {
-          code: 'MAC0110', 
-          semester: 1, 
-          title: "Introdução à Computação", 
-          colors: {
-            background: "#FFFFFF",
-            innerLine: "#EA7F38",
-            outerLine: "#90381C",
-          },
-          tags: [
-            {
-              color: '#FFFFFF',
-              name: 'Sistemas de Software'
-            },
-            {
-              color: '#000000',
-              name: 'Ciência de dados'
-            }
-          ],
-          credits: [4, 2],
-          pokeball: "#F8D6B0",
-          desc: 'AOBA'
-        },
-        {
-          code: 'MAC0110', 
-          semester: 1, 
-          title: "Introdução à Computação", 
-          colors: {
-            background: "#FFFFFF",
-            innerLine: "#EA7F38",
-            outerLine: "#90381C",
-          },
-          tags: [
-            {
-              color: '#FFFFFF',
-              name: 'Sistemas de Software'
-            },
-            {
-              color: '#000000',
-              name: 'Ciência de dados'
-            }
-          ],
-          credits: [4, 2],
-          pokeball: "#F8D6B0",
-          desc: 'AOBA'
-        },
-        {
-          code: 'MAC0110', 
-          semester: 1, 
-          title: "Introdução à Computação", 
-          colors: {
-            background: "#FFFFFF",
-            innerLine: "#EA7F38",
-            outerLine: "#90381C",
-          },
-          tags: [
-            {
-              color: '#FFFFFF',
-              name: 'Sistemas de Software'
-            },
-            {
-              color: '#000000',
-              name: 'Ciência de dados'
-            }
-          ],
-          credits: [4, 2],
-          pokeball: "#F8D6B0",
-          desc: 'AOBA'
-        },
+        { id: 21 },
+        { id: 22 }, 
+        { id: 23 },
+        { id: 24 },
+        { id: 25 },
       ],
       color: '#EA7F38',
       completed: 0,
@@ -871,121 +324,11 @@ const CoursePicker = ({ openCourse, changeCourseDisplay, openDisciplinePopUp }) 
     {
       name: 'Optativa de Ciências',
       courses: [
-        {
-          code: 'MAC0110', 
-          semester: 1, 
-          title: "Introdução à Computação", 
-          colors: {
-            background: "#FFFFFF",
-            innerLine: "#09DE5A",
-            outerLine: "#0A7132",
-          },
-          tags: [
-            {
-              color: '#FFFFFF',
-              name: 'Sistemas de Software'
-            },
-            {
-              color: '#000000',
-              name: 'Ciência de dados'
-            }
-          ],  
-          credits: [4, 2],
-          pokeball: "#B2FFCE",
-          desc: 'AOBA'
-        },
-        {
-          code: 'MAC0110',
-          semester: 1, 
-          title: "Introdução à Computação", 
-          colors: {
-            background: "#FFFFFF",
-            innerLine: "#09DE5A",
-            outerLine: "#0A7132",
-          },
-          tags: [
-            {
-              color: '#FFFFFF',
-              name: 'Sistemas de Software'
-            },
-            {
-              color: '#000000',
-              name: 'Ciência de dados'
-            }
-          ],
-          credits: [4, 2],
-          pokeball: "#B2FFCE",
-          desc: 'AOBA'
-        }, 
-        {
-          code: 'MAC0110', 
-          semester: 1, 
-          title: "Introdução à Computação", 
-          colors: {
-            background: "#FFFFFF",
-            innerLine: "#09DE5A",
-            outerLine: "#0A7132",
-          },
-          tags: [
-            {
-              color: '#FFFFFF',
-              name: 'Sistemas de Software'
-            },
-            {
-              color: '#000000',
-              name: 'Ciência de dados'
-            }
-          ],
-          credits: [4, 2],
-          pokeball: "#B2FFCE",
-          desc: 'AOBA'
-        },
-        {
-          code: 'MAC0110', 
-          semester: 1, 
-          title: "Introdução à Computação", 
-          colors: {
-            background: "#FFFFFF",
-            innerLine: "#09DE5A",
-            outerLine: "#0A7132",
-          },
-          tags: [
-            {
-              color: '#FFFFFF',
-              name: 'Sistemas de Software'
-            },
-            {
-              color: '#000000',
-              name: 'Ciência de dados'
-            }
-          ],
-          credits: [4, 2],
-          pokeball: "#B2FFCE",
-          desc: 'AOBA'
-        },
-        {
-          code: 'MAC0110', 
-          semester: 1, 
-          title: "Introdução à Computação", 
-          colors: {
-            background: "#FFFFFF",
-            innerLine: "#09DE5A",
-            outerLine: "#0A7132",
-          },
-          tags: [
-            {
-              color: '#FFFFFF',
-              name: 'Sistemas de Software'
-            },
-            {
-              color: '#000000',
-              name: 'Ciência de dados'
-            }
-          ],
-          credits: [4, 2],
-          pokeball: "#B2FFCE",
-          desc: 'AOBA'
-        },
+        { id: 26 },
+        { id: 27 }, 
+        { id: 28 },
+        { id: 29 },
+        { id: 30 },
       ],
       color: '#09DE5A',
       completed: 0,
@@ -994,242 +337,22 @@ const CoursePicker = ({ openCourse, changeCourseDisplay, openDisciplinePopUp }) 
     {
       name: 'Outras Optativas Eletivas',
       courses: [
-        {
-          code: 'MAC0110', 
-          semester: 1, 
-          title: "Introdução à Computação", 
-          colors: {
-            background: "#FFFFFF",
-            innerLine: "#F73EF6",
-            outerLine: "#95138E",
-          },
-          tags: [
-            {
-              color: '#FFFFFF',
-              name: 'Sistemas de Software'
-            },
-            {
-              color: '#000000',
-              name: 'Ciência de dados'
-            }
-          ],
-          credits: [4, 2],
-          pokeball: "#FDCEFF",
-          desc: 'AOBA'
-        },
-        {
-          code: 'MAC0110', 
-          semester: 1, 
-          title: "Introdução à Computação", 
-          colors: {
-            background: "#FFFFFF",
-            innerLine: "#F73EF6",
-            outerLine: "#95138E",
-          },
-          tags: [
-            {
-              color: '#FFFFFF',
-              name: 'Sistemas de Software'
-            },
-            {
-              color: '#000000',
-              name: 'Ciência de dados'
-            }
-          ],
-          credits: [4, 2],
-          pokeball: "#FDCEFF",
-          desc: 'AOBA'
-        }, 
-        {
-          code: 'MAC0110', 
-          semester: 1, 
-          title: "Introdução à Computação", 
-          colors: {
-            background: "#FFFFFF",
-            innerLine: "#F73EF6",
-            outerLine: "#95138E",
-          },
-          tags: [
-            {
-              color: '#FFFFFF',
-              name: 'Sistemas de Software'
-            },
-            {
-              color: '#000000',
-              name: 'Ciência de dados'
-            }
-          ],
-          credits: [4, 2],
-          pokeball: "#FDCEFF",
-          desc: 'AOBA'
-        },
-        {
-          code: 'MAC0110', 
-          semester: 1, 
-          title: "Introdução à Computação", 
-          colors: {
-            background: "#FFFFFF",
-            innerLine: "#F73EF6",
-            outerLine: "#95138E",
-          },
-          tags: [
-            {
-              color: '#FFFFFF',
-              name: 'Sistemas de Software'
-            },
-            {
-              color: '#000000',
-              name: 'Ciência de dados'
-            }
-          ],
-          credits: [4, 2],
-          pokeball: "#FDCEFF",
-          desc: 'AOBA'
-        },
-        {
-          code: 'MAC0110', 
-          semester: 1, 
-          title: "Introdução à Computação", 
-          colors: {
-            background: "#FFFFFF",
-            innerLine: "#F73EF6",
-            outerLine: "#95138E",
-          },
-          tags: [
-            {
-              color: '#FFFFFF',
-              name: 'Sistemas de Software'
-            },
-            {
-              color: '#000000',
-              name: 'Ciência de dados'
-            }
-          ],
-          credits: [4, 2],
-          pokeball: "#FDCEFF",
-          desc: 'AOBA'
-        },
+        { id: 31 },
+        { id: 32 }, 
+        { id: 33 },
+        { id: 34 },
+        { id: 35 },
       ],
       color: '#F73EF6',
     },
     {
       name: 'Optativas Livres',
       courses: [
-        {
-          code: 'MAC0110', 
-          semester: 1, 
-          title: "Introdução à Computação", 
-          colors: {
-            background: "#FFFFFF",
-            innerLine: "#8E7143",
-            outerLine: "#533F30",
-          },
-          tags: [
-            {
-              color: '#FFFFFF',
-              name: 'Sistemas de Software'
-            },
-            {
-              color: '#000000',
-              name: 'Ciência de dados'
-            }
-          ],
-          credits: [4, 2],
-          pokeball: "#C4B580",
-          desc: 'AOBA'
-        },
-        {
-          code: 'MAC0110', 
-          semester: 1, 
-          title: "Introdução à Computação", 
-          colors: {
-            background: "#FFFFFF",
-            innerLine: "#8E7143",
-            outerLine: "#533F30",
-          },
-          tags: [
-            {
-              color: '#FFFFFF',
-              name: 'Sistemas de Software'
-            },
-            {
-              color: '#000000',
-              name: 'Ciência de dados'
-            }
-          ],
-          credits: [4, 2],
-          pokeball: "#C4B580",
-          desc: 'AOBA'
-        }, 
-        {
-          code: 'MAC0110', 
-          semester: 1, 
-          title: "Introdução à Computação", 
-          colors: {
-            background: "#FFFFFF",
-            innerLine: "#8E7143",
-            outerLine: "#533F30",
-          },
-          tags: [
-            {
-              color: '#FFFFFF',
-              name: 'Sistemas de Software'
-            },
-            {
-              color: '#000000',
-              name: 'Ciência de dados'
-            }
-          ],
-          credits: [4, 2],
-          pokeball: "#C4B580",
-          desc: 'AOBA'
-        },
-        {
-          code: 'MAC0110', 
-          semester: 1, 
-          title: "Introdução à Computação", 
-          colors: {
-            background: "#FFFFFF",
-            innerLine: "#8E7143",
-            outerLine: "#533F30",
-          },
-          tags: [
-            {
-              color: '#FFFFFF',
-              name: 'Sistemas de Software'
-            },
-            {
-              color: '#000000',
-              name: 'Ciência de dados'
-            }
-          ],
-          credits: [4, 2],
-          pokeball: "#C4B580",
-          desc: 'AOBA'
-        },
-        {
-          code: 'MAC0110', 
-          semester: 1, 
-          title: "Introdução à Computação", 
-          colors: {
-            background: "#FFFFFF",
-            innerLine: "#8E7143",
-            outerLine: "#533F30",
-          },
-          tags: [
-            {
-              color: '#FFFFFF',
-              name: 'Sistemas de Software'
-            },
-            {
-              color: '#000000',
-              name: 'Ciência de dados'
-            }
-          ],
-          credits: [4, 2],
-          pokeball: "#C4B580",
-          desc: 'AOBA'
-        },
+        { id: 36 },
+        { id: 37 }, 
+        { id: 38 },
+        { id: 39 },
+        { id: 40 },
       ],
       color: '#533F30'
     },
@@ -1372,19 +495,24 @@ const CoursePicker = ({ openCourse, changeCourseDisplay, openDisciplinePopUp }) 
                   </CategoryHeaderBackground>
               </CategoryHeader>
               <CoursesGrid expanded={expandedCategories[category.name]}>
-                {category.courses
-                  .filter((course) =>
-                    course.code.toLowerCase().includes(searchTerm.toLowerCase())
-                  )
-                  .map((course) => (
-                    <Card colors={course.colors} onClick={() => {
-                      openCourse();
-                      changeCourseDisplay(course.pokeball, "/pokemons/ditto.png", course.title, course.code, course.tags, course.credits, course.desc)
-                    }}>
-                      <CardContentCourse pokeball={course.pokeball} courseCode={course.code} courseTitle={course.title} pokemonURL="/pokemons/ditto.png">
-                      </CardContentCourse>
-                    </Card>
-                  ))}
+                <SortableContext items={category.courses} strategy={rectSortingStrategy}>            
+                  {category.courses
+                    .filter((course) =>
+                      map.get(course?.id).code.toLowerCase().includes(searchTerm.toLowerCase())
+                    )
+                    .map((course) => {
+                      const courseData = map.get(course?.id);
+                      return (
+                      <SortableItem id={`${courseData.id}@${category.name}`} key={`${courseData.id}@${category.name}`} disable={expandedCategories[category.name] ? null : true}>
+                        <Card colors={courseData.colors} onClick={() => {
+                          openCourse();
+                          changeCourseDisplay(courseData.pokeball, "/pokemons/ditto.png", courseData.title, courseData.code, courseData.tags, courseData.credits, courseData.desc)
+                        }}>
+                          <CardContentCourse pokeball={courseData.pokeball} courseCode={courseData.code} courseTitle={courseData.title} pokemonURL="/pokemons/ditto.png"/>
+                        </Card>
+                      </SortableItem>
+                    )})}
+                </SortableContext> 
               </CoursesGrid>
             </CategoryContainer>
           ))}

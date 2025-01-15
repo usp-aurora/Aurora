@@ -16,7 +16,7 @@ export const loadPlans = async () => {
 export const storePlans = (updatedData) => {
   const payload = JSON.stringify( Array.from(updatedData).map(([key, val]) => {
     return {
-      id: val.plan_id,
+      id: val.plan,
       subject_id: key,
       semester: val.semester,
     };
@@ -41,8 +41,7 @@ export const syncPlans = async (updatedData) => {
   try {
     const payload = JSON.stringify(
       Array.from(updatedData).map(([key, val]) => {
-        return {
-          id: val.plan_id,
+        return { id: val.plan,
           subject_id: key,
           semester: val.semester,
         };

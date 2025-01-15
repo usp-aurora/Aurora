@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { ClipLoader } from "react-spinners";
 import styled from 'styled-components';
 import Header from '../Components/Header/Header.jsx';
 import Semester from '../Components/Semesters/Semesters.jsx';
@@ -16,9 +15,12 @@ import {
   useSensor,
   useSensors,
   closestCenter,
+  rectIntersection,
+  closestCorners,
+  pointerWithin,
 } from '@dnd-kit/core';
 import {sortableKeyboardCoordinates} from '@dnd-kit/sortable';
-
+import { ClipLoader } from "react-spinners";
 
 const AppContainer = styled.div`
   /* display: flex;
@@ -142,13 +144,14 @@ const Home = ({ subjects }) => {
   const [plans, setPlans] = useState([]); 
   const [isLoading, setIsLoading] = useState(true);
   const [dragObject, setDragObject] = useState(null);
+  const [dragContainer, setDragContainer] = useState(null);
   const [addDisciplineActive, setAddDisciplineActive] = useState(false);
   const [coursePopUpActive, setCoursePopUpActive] = useState(false);
   const [unsavedChanges, setUnsavedChanges] = useState(false);
 
   
   window.addEventListener('load', () => {
-    loadPlans();
+    // loadPlans();
     fetchPlans(setPlans, setIsLoading);
   });
   
@@ -165,7 +168,7 @@ const Home = ({ subjects }) => {
         {
           ...subject,
           tags: [], // init tags
-          plan_id: null, // init with plan_id as null
+          plan: null, // init with plan as null
           semester: null, // init with semester as null
           // init card data
           colors: {
@@ -173,8 +176,7 @@ const Home = ({ subjects }) => {
             innerLine: "#51A1E0",
             outerLine: "#17538D",
           },
-          pokeball: "#C2DCF5",
-        },
+          pokeball: "#C2DCF5" },
       ])
     );
 
@@ -243,27 +245,28 @@ const Home = ({ subjects }) => {
     }),
   );
 
-   // update courseMap when plans changes
-   useEffect(() => {
-    const updatedCourseMap = new Map(courseMap);
-
-    plans.forEach((semester) => {
-      semester.courses.forEach((course) => {
-        const existingEntry = updatedCourseMap.get(course.id);
-        if (existingEntry) {
-          updatedCourseMap.set(course.id, {
-            ...existingEntry,
-            plan_id: course.plan,
-            semester: semester.id, 
-          });
-        }
-      });
+  
+  const customCollisionDetectionAlgorithm = ({ droppableContainers, ...args}) => {
+    // First, let's see if the `trash` droppable rect is intersecting
+    const rectIntersectionCollisions = pointerWithin({
+      ...args,
+      droppableContainers: droppableContainers
     });
-    setUnsavedChanges(true);
-    setCourseMap(updatedCourseMap);
-  }, [plans]);
+    
+    // Collision detection algorithms return an array of collisions
+    if (rectIntersectionCollisions.length > 0) {
+      return rectIntersectionCollisions;
+    }
+    
+    // Compute other collisions
+    return closestCenter({
+      ...args,
+      droppableContainers: droppableContainers.filter(({id}) => id !== 'coursePicker')
+    });
+  };
 
   // update database
+  /*
   useEffect(() => {
     const intervalId = setInterval(() => {
       syncPlans(courseMap);
@@ -273,6 +276,7 @@ const Home = ({ subjects }) => {
 
     return () => { clearInterval(intervalId) };
   }, [courseMap]);  
+  */
 
   if (isLoading) {
     return (
@@ -297,14 +301,14 @@ const Home = ({ subjects }) => {
       <Header />
       <DndContext
         sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragStart={(event) => handleDragStart(event, courseMap, setDragObject)}
-        onDragOver={(event) => handleDragOver(event, courseMap, plans, setPlans, dragObject)}
-        onDragEnd={(event) => handleDragEnd(event, courseMap, plans, setPlans, setDragObject)}
+        collisionDetection={(props) => customCollisionDetectionAlgorithm(props)}
+        onDragStart={(event) => handleDragStart(event, courseMap, plans, setDragObject, setDragContainer)}
+        onDragOver={(event) => handleDragOver(event, courseMap, plans, setPlans, dragObject, dragContainer, setDragContainer)}
+        onDragEnd={(event) => handleDragEnd(event, courseMap, setCourseMap, plans, dragObject, setDragObject)}
       >
         <ContentContainer>
           <Semester semesters={plans} setSemesters={setPlans} openCourse={toggleCoursePopUp} changeCourseDisplay={toggleCourse} map={courseMap} />
-          <CoursePicker openCourse={toggleCoursePopUp} changeCourseDisplay={toggleCourse} openDisciplinePopUp={toggleDiscipline} />
+          <CoursePicker openCourse={toggleCoursePopUp} changeCourseDisplay={toggleCourse} openDisciplinePopUp={toggleDiscipline} map={courseMap}/>
         </ContentContainer>
         <DragOverlayComponent dragObject={dragObject} />
       </DndContext>

@@ -269,17 +269,17 @@ const Semesters = ({ semesters, setSemesters, openCourse, changeCourseDisplay, m
                   </NewCard>
                 :
                 semester.courses.map((course) => {
-                  const courseData = map.get(course.id);
+                  const courseData = map.get(course?.id);
                   return (
-                    <SortableItem id={course.id} key={course.id} disable={expandedSemesters[semester.id] ? null : true}>
+                    <SortableItem id={`${courseData.id}@Semesters`} key={`${courseData.id}@Semesters`} disable={expandedSemesters[semester.id] ? undefined : true}>
                       <Card colors={courseData.colors} onClick={() => {
                           openCourse();
-                          changeCourseDisplay(courseData?.pokeball, "/pokemons/ditto.png", course.title, course.code, courseData?.tags || [], course.credits, course.desc);
+                          changeCourseDisplay(courseData?.pokeball, "/pokemons/ditto.png", courseData?.title, courseData?.code, courseData?.tags, courseData?.credits, courseData?.desc);
                       }}>
                         <CardContentCourse 
                           pokeball={courseData?.pokeball} 
-                          courseCode={course.code} 
-                          courseTitle={course.title} 
+                          courseCode={courseData?.code} 
+                          courseTitle={courseData?.title} 
                           pokemonURL="/pokemons/ditto.png"
                         />
                       </Card>
@@ -290,7 +290,6 @@ const Semesters = ({ semesters, setSemesters, openCourse, changeCourseDisplay, m
             </SortableContext>
           </SemesterContainer>
         </Droppable>
-
       ))}
 
       <Card colors={{
