@@ -51,9 +51,9 @@ class PlansController extends Controller
 
     public function sync(Request $request)
     {
-        
         $data = $request->json()->all();
-        
+        $deletedCourses = []; // Lista para armazenar os IDs dos cursos deletados
+
         try {
             foreach ($data as $subject) {
                 if (isset($subject['id']) && isset($subject['semester'])) {
@@ -68,14 +68,19 @@ class PlansController extends Controller
                         'subject_id' => $subject['subject_id'],
                         'semester' => $subject['semester'],
                     ]));
-                    
                 } elseif (isset($subject['id'])) {
-                    // Deletar plano existente
-                    $this->destroy($subject['id']);
+                    $plan = Plan::find($subject['id']);
+                    if ($plan) {
+                        $deletedCourses[] = $plan->subject_id; // Adiciona o subject_id à lista
+                        $this->destroy($subject['id']);
+                    }
                 }
             }
-            
-            return response()->json(['status' => 'success', 'newData' => $this->index()], 200);
+
+            return response()->json([
+                'status' => 'success', 
+                'deletedCourses' => $deletedCourses // Retorna os IDs dos cursos deletados
+            ], 200);
         } catch (\Exception $e) {
             // Log de erro para investigação futura
             \Log::error('Erro ao sincronizar planos:', ['error' => $e->getMessage()]);
@@ -83,9 +88,7 @@ class PlansController extends Controller
         }
     }
 
-    // To avoid conflicts, we might have to make this only 
-    // callable by the update method.
-    
+ 
     // Store a newly created resource in storage.
     private function store(Request $request)
     {
