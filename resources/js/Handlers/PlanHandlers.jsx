@@ -37,11 +37,12 @@ export const fetchPlans = async (setData, isFetching) => {
   }
 };
 
-export const syncPlans = async (updatedData) => {
+export const syncPlans = async (updatedData, setData) => {
   try {
     const payload = JSON.stringify(
       Array.from(updatedData).map(([key, val]) => {
-        return { id: val.plan,
+        return { 
+          id: val.plan,
           subject_id: key,
           semester: val.semester,
         };
@@ -51,6 +52,15 @@ export const syncPlans = async (updatedData) => {
     const response = await axios.post('/api/plans/sync', payload);
 
     if (response.status === 200) {
+      if (response.data.deletedCourses != [])
+        setData((prev) => {
+          const data = new Map(prev); 
+          response.data.deletedCourses.forEach((id) => data.set(id, {
+              ...data.get(id),
+              plan: null, 
+            }));
+          return data;
+        });
       console.log("Sincronização concluída com sucesso!");
     } else {
       console.error("Erro ao sincronizar:", response.data);

@@ -15,8 +15,6 @@ import {
   useSensor,
   useSensors,
   closestCenter,
-  rectIntersection,
-  closestCorners,
   pointerWithin,
 } from '@dnd-kit/core';
 import {sortableKeyboardCoordinates} from '@dnd-kit/sortable';
@@ -160,7 +158,7 @@ const Home = ({ subjects }) => {
 
   
   window.addEventListener('load', () => {
-    // loadPlans();
+    loadPlans();
     fetchPlans(setPlans, setIsLoading);
   });
   
@@ -243,6 +241,36 @@ const Home = ({ subjects }) => {
     })
   }
 
+  // update courseMap when plans changes
+  useEffect(() => {
+    const updatedCourseMap = new Map(courseMap);
+
+    plans.forEach((semester) => {
+      semester.courses.forEach((course) => {
+        const existingEntry = updatedCourseMap.get(course.id);
+        if (existingEntry) {
+          updatedCourseMap.set(course.id, {
+            ...existingEntry,
+            plan: course.plan,
+            semester: semester.id, 
+          });
+        }
+      });
+    });
+    setCourseMap(updatedCourseMap);
+  }, [plans]);
+
+  // update database
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      syncPlans(courseMap, setCourseMap);
+      fetchPlans(setPlans, setIsLoading);
+      setUnsavedChanges(false);
+    }, 60000); // Sincroniza a cada 1min
+
+    return () => { clearInterval(intervalId) };
+  }, [courseMap]);
+
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -254,17 +282,16 @@ const Home = ({ subjects }) => {
     }),
   );
 
-  
-  const customCollisionDetectionAlgorithm = ({ droppableContainers, ...args}) => {
+  const collisionAlgorithm = ({ droppableContainers, ...args}) => {
     // First, let's see if the `trash` droppable rect is intersecting
-    const rectIntersectionCollisions = pointerWithin({
+    const pointerCollisions = pointerWithin({
       ...args,
       droppableContainers: droppableContainers
     });
     
     // Collision detection algorithms return an array of collisions
-    if (rectIntersectionCollisions.length > 0) {
-      return rectIntersectionCollisions;
+    if (pointerCollisions.length > 0) {
+      return pointerCollisions;
     }
     
     // Compute other collisions
@@ -273,38 +300,6 @@ const Home = ({ subjects }) => {
       droppableContainers: droppableContainers.filter(({id}) => id !== 'coursePicker')
     });
   };
-
-     // update courseMap when plans changes
-     useEffect(() => {
-      const updatedCourseMap = new Map(courseMap);
-  
-      plans.forEach((semester) => {
-        semester.courses.forEach((course) => {
-          const existingEntry = updatedCourseMap.get(course.id);
-          if (existingEntry) {
-            updatedCourseMap.set(course.id, {
-              ...existingEntry,
-              plan: course.plan,
-              semester: semester.id, 
-            });
-          }
-        });
-      });
-      setCourseMap(updatedCourseMap);
-    }, [plans]);
-
-  // update database
-  /*
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      syncPlans(courseMap);
-      fetchPlans(setPlans);
-      setUnsavedChanges(false);
-    }, 60000); // Sincroniza a cada 1min
-
-    return () => { clearInterval(intervalId) };
-  }, [courseMap]);  
-  */
 
   if (isLoading) {
     return (
@@ -329,7 +324,7 @@ const Home = ({ subjects }) => {
       <Header />
       <DndContext
         sensors={sensors}
-        collisionDetection={(props) => customCollisionDetectionAlgorithm(props)}
+        collisionDetection={(props) => collisionAlgorithm(props)}
         onDragStart={(event) => handleDragStart(event, courseMap, setOverlayObject, setDragObject)}
         onDragOver={(event) => handleDragOver(event, courseMap, setPlans, dragObject, setDragObject)}
         onDragEnd={(event) => {

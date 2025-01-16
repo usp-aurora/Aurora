@@ -94,7 +94,7 @@ export const handleDragOver = (event, courseMap, setPlans, dragObject, setDragOb
         return {
           ...prev,
           container: overContainer
-        }});
+    }});
   };
   
   
@@ -105,7 +105,14 @@ export const handleDragEnd = (event, courseMap, setCourseMap, plans, setPlans, d
   
   const overContainer = findContainer(overId, courseMap);
   
+  // update courseMap
+  const updatedMap = new Map(courseMap);  
+  const semesterId = (dragObject.container == 'coursePicker') ? null : Number(overContainer.split(' ')[1]);
+  updatedMap.set(dragObject.id, {...courseMap.get(dragObject.id), semester: semesterId});
+  setCourseMap(updatedMap);
+
   if (!dragObject.container || !overContainer || dragObject.container !== overContainer) {
+    setDragObject(null);
     return;
   }
 
@@ -122,11 +129,5 @@ export const handleDragEnd = (event, courseMap, setCourseMap, plans, setPlans, d
       );
   }
 
-  // update courseMap
-  const updatedMap = new Map(courseMap);  
-  const semesterId = (overContainer === 'coursePicker') ? null : Number(overContainer.split(' ')[1]);
-  updatedMap.set(dragObject.id, {...courseMap.get(dragObject.id), semester: semesterId});
-
-  setCourseMap(updatedMap);
   setDragObject(null);
 };  
