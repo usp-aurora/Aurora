@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 const NodeContainerView = styled.div`
-    position: absolute;
+	position: absolute;
 `
 
 function NodeView({x=0,y=0,onMouseDown,children}) {
