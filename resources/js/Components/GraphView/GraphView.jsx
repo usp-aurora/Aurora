@@ -1,5 +1,6 @@
-import "./GraphView.css"
 import { useState, useEffect, useRef, useMemo } from "react"
+import styled from 'styled-components';
+
 import NodeView from "./NodeView"
 import LinkView from "./LinkView"
 import { getAdjacencyLists, getLayers } from "./TraversalUtils"
@@ -47,6 +48,31 @@ function applyLayerForce(positions, velocities, layers, layerStart, layerSeparat
 	}
 }
 
+const GraphBodyView = styled.div`
+	position: relative;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	cursor: grab;
+	touch-action: none;
+`
+
+const LinkContainerView = styled.svg`
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+`
+
+const NodeContainerView = styled.div`
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+`
+
 function GraphView({
 	nodes,
 	links,
@@ -60,7 +86,7 @@ function GraphView({
 	layerStart = 0,
 	layerSeparation = 250,
 	layerStrength = 5,
-	
+
 	vertical = false
 }) {
 
@@ -183,7 +209,7 @@ function GraphView({
 	function handleTouch(e) {
 		const touches = e.changedTouches
 		const first = touches[0]
-		
+
 		const type = (
 			e.type == "touchstart" ? "mousedown" :
 			e.type == "touchmove" ? "mousemove" :
@@ -210,8 +236,7 @@ function GraphView({
 	}, [])
 
 	return (
-		<div
-			className="graph"
+		<GraphBodyView
 			onMouseDown={handleMouseDown}
 			onMouseUp={handleMouseUp}
 			onMouseMove={handleMouseMove}
@@ -222,25 +247,25 @@ function GraphView({
 			onTouchEnd={handleTouch}
 
 			style={mouseDown.current ? {cursor:"grabbing"} : {}}
-			
+
 			ref={outerDiv}
 		>
-			<svg className="link-nest" >
+			<LinkContainerView>
 				<filter id="glow">
 					<feDropShadow dx="0" dy="0" stdDeviation="2" floodColor="white" />
 				</filter>
-				<rect 
-					x="0" y="0" 
-					width={width} 
-					height={height} 
-					strokeWidth="0" fill="#112" 
+				<rect
+					x="0" y="0"
+					width={width}
+					height={height}
+					strokeWidth="0" fill="#112"
 				/>
 				{LinkViews}
-			</svg>
-			<div className="node-nest">
+			</LinkContainerView>
+			<NodeContainerView>
 				{NodeViews}
-			</div>
-		</div>
+			</NodeContainerView>
+		</GraphBodyView>
 	)
 }
 
