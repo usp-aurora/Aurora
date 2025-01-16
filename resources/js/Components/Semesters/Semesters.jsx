@@ -6,10 +6,7 @@ import SortableItem from '../Dnd/SortableItem';
 import StyledButton from '../Atoms/StyledButton';
 import {slideIn, slideOut, bounce, bounceBack} from '../Atoms/Animations';
 import Droppable from '../Dnd/Droppable';
-import {
-  SortableContext,
-  rectSortingStrategy,
-} from '@dnd-kit/sortable';
+import { rectSortingStrategy, SortableContext } from '@dnd-kit/sortable';
 
 const SemestersContainer = styled.div`
   width: 60vw;
@@ -168,7 +165,7 @@ const NewSemester = styled.div`
   cursor: pointer;
 `;
 
-const Semesters = ({ semesters, setSemesters, openCourse, changeCourseDisplay, map }) => {
+const Semesters = ({ semesters, setSemesters, openCourse, changeCourseDisplay, courseMap }) => {
 
   const [expandedSemesters, setExpandedSemesters] = useState(
     semesters.reduce((acc, semester) => {
@@ -269,9 +266,9 @@ const Semesters = ({ semesters, setSemesters, openCourse, changeCourseDisplay, m
                   </NewCard>
                 :
                 semester.courses.map((course) => {
-                  const courseData = map.get(course?.id);
+                  const courseData = courseMap.get(course?.id);
                   return (
-                    <SortableItem id={`${courseData.id}@Semesters`} key={`${courseData.id}@Semesters`} disable={expandedSemesters[semester.id] ? undefined : true}>
+                    <SortableItem id={`${courseData.id}@Semesters`} key={`${courseData.id}@Semesters`} disable={expandedSemesters[semester.id] ? null : true}>
                       <Card colors={courseData.colors} onClick={() => {
                           openCourse();
                           changeCourseDisplay(courseData?.pokeball, "/pokemons/ditto.png", courseData?.title, courseData?.code, courseData?.tags, courseData?.credits, courseData?.desc);

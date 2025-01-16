@@ -51,94 +51,103 @@ const categories = [
   {
     name: 'Ciência de dados',
     courses: [
-      {id: 1},
-      {id: 2},
-      {id: 3},
-      {id: 4},
-      {id: 5},
+      { id: 1 },
+      { id: 2 }, 
+      { id: 3 },
+      { id: 4 },
+      { id: 5 },
     ],
     color: '#FFD12B',
+    completed: 0,
+    total: 7,
   },
   {
     name: 'Inteligência Artificial',
     courses: [
-      {id: 6},
-      {id: 1},
-      {id: 8},
-      {id: 9},
-      {id: 10},
+      { id: 6 },
+      { id: 7 },
+      { id: 8 },
+      { id: 9 },
+      { id: 10 },
     ],
     color: '#E83030',
+    completed: 0,
+    total: 7,
   },
   {
     name: 'Sistemas de Software',
-    courses: [      
-      {id: 6},
-      {id: 5},
-      {id: 11},
-      {id: 22},
-      {id: 7},,
+    courses: [
+      { id: 11 },
+      { id: 12 }, 
+      { id: 13 },
+      { id: 14 },
+      { id: 15 },
     ],
     color: '#15B48F',
+    completed: 0,
+    total: 7,
   },
   {
     name: 'Teoria da Computação',
     courses: [
-      {id: 30},
-      {id: 27},
-      {id: 41},
-      {id: 52},
-      {id: 4},
+      { id: 16 },
+      { id: 17 }, 
+      { id: 18 },
+      { id: 19 },
     ],
     color: '#6762CD',
+    completed: 0,
+    total: 7,
   },
   {
     name: 'Optativa de Estatística',
     courses: [
-      {id: 10},
-      {id: 16},
-      {id: 20},
-      {id: 19},
-      {id: 25},
+      { id: 21 },
+      { id: 22 }, 
+      { id: 23 },
+      { id: 24 },
+      { id: 25 },
     ],
     color: '#EA7F38',
+    completed: 0,
+    total: 1,
   },
   {
     name: 'Optativa de Ciências',
     courses: [
-      {id: 49},
-      {id: 64},
-      {id: 81},
-      {id: 100},
-      {id: 36},
+      { id: 26 },
+      { id: 27 }, 
+      { id: 28 },
+      { id: 29 },
+      { id: 30 },
     ],
     color: '#09DE5A',
+    completed: 0,
+    total: 1,
   },
   {
     name: 'Outras Optativas Eletivas',
     courses: [
-      {id: 1},
-      {id: 2},
-      {id: 3},
-      {id: 4},
-      {id: 5},
+      { id: 31 },
+      { id: 32 }, 
+      { id: 33 },
+      { id: 34 },
+      { id: 35 },
     ],
     color: '#F73EF6',
   },
   {
     name: 'Optativas Livres',
     courses: [
-     
-      {id: 44},
-      {id: 55},
-      {id: 33},
-      {id: 22},
-      {id: 11},
+      { id: 36 },
+      { id: 37 }, 
+      { id: 38 },
+      { id: 39 },
+      { id: 40 },
     ],
     color: '#533F30'
   },
 ];
-
 
 const Home = ({ subjects }) => {
   const [plans, setPlans] = useState([]); 
@@ -265,6 +274,25 @@ const Home = ({ subjects }) => {
     });
   };
 
+     // update courseMap when plans changes
+     useEffect(() => {
+      const updatedCourseMap = new Map(courseMap);
+  
+      plans.forEach((semester) => {
+        semester.courses.forEach((course) => {
+          const existingEntry = updatedCourseMap.get(course.id);
+          if (existingEntry) {
+            updatedCourseMap.set(course.id, {
+              ...existingEntry,
+              plan: course.plan,
+              semester: semester.id, 
+            });
+          }
+        });
+      });
+      setCourseMap(updatedCourseMap);
+    }, [plans]);
+
   // update database
   /*
   useEffect(() => {
@@ -305,13 +333,13 @@ const Home = ({ subjects }) => {
         onDragStart={(event) => handleDragStart(event, courseMap, setOverlayObject, setDragObject)}
         onDragOver={(event) => handleDragOver(event, courseMap, setPlans, dragObject, setDragObject)}
         onDragEnd={(event) => {
-          handleDragEnd(event, courseMap, setCourseMap, dragObject, setDragObject);
+          handleDragEnd(event, courseMap, setCourseMap, plans, setPlans, dragObject, setDragObject);
           setOverlayObject(null);
           setUnsavedChanges(true);
       }}>
         <ContentContainer>
-          <Semester semesters={plans} setSemesters={setPlans} openCourse={toggleCoursePopUp} changeCourseDisplay={toggleCourse} map={courseMap} />
-          <CoursePicker openCourse={toggleCoursePopUp} changeCourseDisplay={toggleCourse} openDisciplinePopUp={toggleDiscipline} map={courseMap}/>
+          <Semester courseMap={courseMap} semesters={plans} setSemesters={setPlans} openCourse={toggleCoursePopUp} changeCourseDisplay={toggleCourse} />
+          <CoursePicker courseMap={courseMap} categories={categories} openCourse={toggleCoursePopUp} changeCourseDisplay={toggleCourse} openDisciplinePopUp={toggleDiscipline} />
         </ContentContainer>
         <DragOverlayComponent course={overlayObject} />
       </DndContext>

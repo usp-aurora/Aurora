@@ -1,3 +1,9 @@
+import {arrayMove} from '@dnd-kit/sortable';
+
+const getContainer = (semesterAlias, plans) => {
+  return plans.find((sem) => sem.alias === semesterAlias);
+}
+
 const findContainer = (id, courseMap) => {
     if (courseMap.has(Number(id))) {
       const semesterId = courseMap.get(Number(id)).semester;
@@ -7,14 +13,13 @@ const findContainer = (id, courseMap) => {
     return id;
 };
 
-
 // Handler when drag starts
 export const handleDragStart = (event, courseMap, setOverlayObject, setDragObject) => {
     const { active } = event;
     const courseId = active.id.split('@')[0];
   
     const course = courseMap.get(Number(courseId));
-    const containerAlias = course.semester ? `Semester ${course.semester}` : 'coursePicker';
+    const containerAlias = findContainer(courseId, courseMap);
 
     setOverlayObject({ 
       code: course.code, 
@@ -40,12 +45,10 @@ export const handleDragStart = (event, courseMap, setOverlayObject, setDragObjec
 
 // Handler when drag is over another element
 export const handleDragOver = (event, courseMap, setPlans, dragObject, setDragObject) => {
-    const { _active, over } = event;
+    const { _active, over, draggingRect } = event;
     const overId = over?.id.split('@')[0];
   
     const overContainer = findContainer(overId, courseMap);
-    console.log(`De: ${dragObject.container}`);
-    console.log(`Para: ${overContainer}`);
     if (!overContainer || dragObject.container === overContainer) {
       return;
     }
@@ -62,13 +65,25 @@ export const handleDragOver = (event, courseMap, setPlans, dragObject, setDragOb
             courses: semester.courses.filter((course) => course.id !== dragObject.id),
           };
         } else if (semester.alias === overContainer) {
+          const overItems = getContainer(overContainer, prevPlans).courses;
+          const overIndex = overItems.findIndex(course => course.id === Number(overId));
+          const isAfterLastItem = over && draggingRect &&
+            ((overIndex === overItems.length - 1 && draggingRect.offsetTop > over.rect.offsetTop + over.rect.height) ||
+             (overIndex === overItems.length - 1 && draggingRect.offsetLeft > over.rect.offsetLeft + over.rect.width));
+          
+          const newIndex = overIndex >= 0 ? overIndex + (isAfterLastItem ? 1 : 0) : overItems.length;
+          
           return {
             ...semester,
             credits: [
                 semester.courses.reduce((acc, course) => acc + Number(course.credits[0]), dragObject.course.credits[0]*(1)),
                 semester.courses.reduce((acc, course) => acc + Number(course.credits[1]), dragObject.course.credits[1]*(1)),
             ],
-            courses: [...semester.courses.filter((course) => course.id !== dragObject.id), dragObject.course],
+            courses: [
+              ...semester.courses.slice(0, newIndex).filter((course) => course.id !== dragObject),
+              dragObject.course,
+              ...semester.courses.slice(newIndex).filter((course) => course.id !== dragObject.id),
+            ],
           };
         }
         return semester;
@@ -76,26 +91,42 @@ export const handleDragOver = (event, courseMap, setPlans, dragObject, setDragOb
     );
   
     setDragObject((prev) => {
-      return {
-        ...prev,
-        container: overContainer
-      }});
+        return {
+          ...prev,
+          container: overContainer
+        }});
   };
   
   
 // Handler when drag ends
-export const handleDragEnd = (event, courseMap, setCourseMap, dragObject, setDragObject) => {
+export const handleDragEnd = (event, courseMap, setCourseMap, plans, setPlans, dragObject, setDragObject) => {
   const { _active, over } = event;
   const overId = over?.id.split('@')[0];
   
   const overContainer = findContainer(overId, courseMap);
   
-  console.log(`Destino: ${overContainer.alias? overContainer.alias : overContainer}`);
-  // update courseMap when plans changes
+  if (!dragObject.container || !overContainer || dragObject.container !== overContainer) {
+    return;
+  }
+
+  const activeIndex = getContainer(dragObject.container, plans)?.courses.findIndex((course) => course.id === dragObject.id);
+  const overIndex = getContainer(overContainer, plans)?.courses.findIndex((course) => course.id === Number(overId));
+
+  if (activeIndex !== overIndex) {
+      setPlans((prevPlans) =>
+      prevPlans.map(semester => {
+          if (semester.alias === overContainer) 
+            return { ...semester, courses: arrayMove(semester.courses, activeIndex, overIndex) };
+          return semester;
+      })
+      );
+  }
+
+  // update courseMap
   const updatedMap = new Map(courseMap);  
   const semesterId = (overContainer === 'coursePicker') ? null : Number(overContainer.split(' ')[1]);
   updatedMap.set(dragObject.id, {...courseMap.get(dragObject.id), semester: semesterId});
-  
+
   setCourseMap(updatedMap);
   setDragObject(null);
 };  
