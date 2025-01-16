@@ -4,7 +4,10 @@ import styled from 'styled-components';
 import NodeView from "./NodeView"
 import LinkView from "./LinkView"
 import { getAdjacencyLists, getLayers } from "./TraversalUtils"
-import { getHandleMouseDown, getHandleMouseMove, getHandleMouseLeave, getHandleMouseUp, handleTouch } from "./EventUtils"
+import {
+	getHandleMouseDown, getHandleMouseMove, getHandleMouseLeave, getHandleMouseUp,
+	getHandleMouseDownNode, handleTouch
+} from "./EventUtils"
 import getUpdate from "./UpdateUtils"
 
 const GraphBodyView = styled.div`
@@ -32,7 +35,7 @@ const NodeContainerView = styled.div`
 	height: 100%;
 `
 
-function GraphView({ nodes, links, root, vertical = false, forceStyle = {} }) {
+function GraphView({ nodes, links, root, interactive = false, vertical = false, forceStyle = {} }) {
 
 	const [inLists, outLists] = useMemo(() => getAdjacencyLists(nodes,links), [nodes, links])
 	const layers = useMemo(() => getLayers(inLists, outLists, root), [inLists, outLists, root])
@@ -59,11 +62,9 @@ function GraphView({ nodes, links, root, vertical = false, forceStyle = {} }) {
 		const pos = positions.get(key)
 		const x = pos.x-origin.x+width/2
 		const y = pos.y-origin.y+height/2
-		function handleMouseDownNode(e) {
-			e.preventDefault()
-			alphaNode.current = key
-			alphaStart.current = { x: pos.x-e.clientX, y: pos.y-e.clientY }
-		}
+		const handleMouseDownNode = interactive
+			? getHandleMouseDownNode(alphaNode, alphaStart, key, pos, x, y)
+			: undefined
 		return (
 			<NodeView key={key} x={x} y={y} onMouseDown={handleMouseDownNode} >
 				{node.content}

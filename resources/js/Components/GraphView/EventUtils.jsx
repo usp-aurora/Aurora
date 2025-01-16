@@ -46,6 +46,14 @@ function getHandleMouseUp(mouseDown, alphaNode) {
 	}
 }
 
+function getHandleMouseDownNode(alphaNode, alphaStart, key, pos, x, y) {
+	return e => {
+		e.preventDefault()
+		alphaNode.current = key
+		alphaStart.current = { x: pos.x-e.clientX, y: pos.y-e.clientY }
+	}
+}
+
 function handleTouch(e) {
 	const touches = e.changedTouches
 	const first = touches[0]
@@ -67,4 +75,11 @@ function handleTouch(e) {
 	first.target.dispatchEvent(simulatedEvent)
 }
 
-export { getHandleMouseDown, getHandleMouseMove, getHandleMouseLeave, getHandleMouseUp, handleTouch }
+export {
+	getHandleMouseDown,
+	getHandleMouseMove,
+	getHandleMouseLeave,
+	getHandleMouseUp,
+	getHandleMouseDownNode,
+	handleTouch
+}
