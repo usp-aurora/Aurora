@@ -8,12 +8,14 @@ function getHandleMouseDown(mouseDown, dragStart, origin) {
 function getHandleMouseMove(
 	setOrigin,
 	setPositions,
+	startUpdate,
 	mouseDown,
 	alphaNode,
 	dragStart,
 	alphaStart
 ) {
 	return e => {
+		e.preventDefault()
 		if(mouseDown.current) {
 			const alpha = alphaNode.current // alphaNode.current can become undefined
 			if(alpha == undefined) {
@@ -27,6 +29,7 @@ function getHandleMouseMove(
 					newPositions.set(alpha,{x:alphaX,y:alphaY})
 					return newPositions
 				})
+				startUpdate()
 			}
 		}
 	}

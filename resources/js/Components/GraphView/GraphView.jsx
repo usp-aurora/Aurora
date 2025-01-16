@@ -8,7 +8,7 @@ import {
 	getHandleMouseDown, getHandleMouseMove, getHandleMouseLeave, getHandleMouseUp,
 	getHandleMouseDownNode, handleTouch
 } from "./EventUtils"
-import getUpdate from "./UpdateUtils"
+import {getStartUpdate, stopUpdate, getInitialStablePositions} from "./UpdateUtils"
 
 const GraphBodyView = styled.div`
 	position: relative;
@@ -39,14 +39,22 @@ function GraphView({ nodes, links, root, interactive = false, vertical = false, 
 
 	const [inLists, outLists] = useMemo(() => getAdjacencyLists(nodes,links), [nodes, links])
 	const layers = useMemo(() => getLayers(inLists, outLists, root), [inLists, outLists, root])
+	const initialStablePositions = useMemo(
+		() => getInitialStablePositions(links,layers,vertical,forceStyle),
+		[links,layers]
+	)
 
+	const [positions, setPositions] = useState(initialStablePositions)
 	const [origin, setOrigin] = useState({ x: 0, y: 0 })
-	const [positions, setPositions] = useState(new Map(
-		Array.from(nodes.keys(), key => [key,{x:Math.random()*10, y:Math.random()*10}])
-	))
 
 	const animationRequest = useRef()
 	const animationTime = useRef()
+
+	const mouseMoveListener = useRef()
+	const mouseUpListener = useRef()
+	const mouseLeaveListener = useRef()
+	const touchMoveListener = useRef()
+	const touchEndListener = useRef()
 
 	const mouseDown = useRef(false)
 	const dragStart = useRef()
@@ -58,7 +66,7 @@ function GraphView({ nodes, links, root, interactive = false, vertical = false, 
 	const width = outerDiv.current ? outerDiv.current.clientWidth : 0
 	const height = outerDiv.current ? outerDiv.current.clientHeight : 0
 
-	const NodeViews = Array.from(nodes, ([key,node],_) => {
+	const NodeViews = Array.from(nodes, ([key,node],idx) => {
 		const pos = positions.get(key)
 		const x = pos.x-origin.x+width/2
 		const y = pos.y-origin.y+height/2
@@ -72,7 +80,7 @@ function GraphView({ nodes, links, root, interactive = false, vertical = false, 
 		)
 	})
 
-	const LinkViews = Array.from(links, ([key,link],_) => {
+	const LinkViews = Array.from(links, ([key,link],idx) => {
 		const pos1 = positions.get(link.a)
 		const pos2 = positions.get(link.b)
 		const x1 = pos1.x-origin.x+width/2
@@ -85,32 +93,44 @@ function GraphView({ nodes, links, root, interactive = false, vertical = false, 
 	})
 
 	useEffect(() => {
-		animationTime.current = Date.now()
-		animationRequest.current = requestAnimationFrame(getUpdate(
-			setPositions,
-			animationRequest, animationTime,
-			nodes, links, layers,
+		const startUpdate = getStartUpdate(
+			setPositions, animationRequest, animationTime,
+			links, layers,
 			mouseDown, alphaNode, vertical,
 			forceStyle
+		)
+		startUpdate()
+
+		mouseMoveListener.current = addEventListener("mousemove", getHandleMouseMove(
+			setOrigin, setPositions, startUpdate,
+			mouseDown, alphaNode, dragStart, alphaStart
 		))
+		mouseUpListener.current = addEventListener("mouseup", getHandleMouseUp(
+			mouseDown,alphaNode
+		))
+		mouseLeaveListener.current = addEventListener("mouseleave", getHandleMouseLeave(
+			mouseDown,alphaNode
+		))
+
+		touchMoveListener.current = addEventListener("touchmove", handleTouch)
+		touchEndListener.current = addEventListener("touchmove", handleTouch)
+
 		return () => {
-			cancelAnimationFrame(animationRequest.current)
+			stopUpdate(animationRequest)
+
+			removeEventListener("mousemove",mouseMoveListener.current)
+			removeEventListener("mouseup",mouseUpListener.current)
+			removeEventListener("mouseleave",mouseLeaveListener.current)
+
+			removeEventListener("touchmove",touchMoveListener.current)
+			removeEventListener("touchend",touchEndListener.current)
 		}
 	}, [])
 
 	return (
 		<GraphBodyView
 			onMouseDown={getHandleMouseDown(mouseDown,dragStart,origin)}
-			onMouseMove={getHandleMouseMove(
-				setOrigin, setPositions,
-				mouseDown, alphaNode, dragStart, alphaStart
-			)}
-			onMouseUp={getHandleMouseUp(mouseDown,alphaNode)}
-			onMouseLeave={getHandleMouseLeave(mouseDown,alphaNode)}
-
 			onTouchStart={handleTouch}
-			onTouchMove={handleTouch}
-			onTouchEnd={handleTouch}
 
 			style={mouseDown.current ? {cursor:"grabbing"} : {}}
 

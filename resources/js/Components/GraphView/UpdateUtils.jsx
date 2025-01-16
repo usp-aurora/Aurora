@@ -1,8 +1,8 @@
 import { applyRadialForce, applyLinkForce, applyLayerForce } from "./ForceUtils"
 
-function getVelocities(positions, nodes, links, layers, vertical, forceStyle) {
+function getVelocities(positions, links, layers, vertical, forceStyle = {}) {
 	const velocities = new Map(
-		Array.from(nodes, ([key,node],id) => [key,{x:0, y:0}])
+		Array.from(layers.keys(), key => [key,{x:0, y:0}])
 	)
 
 	applyRadialForce(positions, velocities, forceStyle)
@@ -12,8 +12,14 @@ function getVelocities(positions, nodes, links, layers, vertical, forceStyle) {
 	return velocities
 }
 
-function getNewPositions(mouseDown, alphaNode, deltaSeconds, positions, velocities) {
-	return new Map(Array.from(positions, ([key,position],_) => {
+function getNewPositions(
+	positions,
+	velocities,
+	deltaSeconds = 1,
+	mouseDown = {current: false},
+	alphaNode = {current: undefined}
+) {
+	return new Map(Array.from(positions, ([key,position], idx) => {
 		if(mouseDown.current && key == alphaNode.current) {
 			return [key, {x:position.x, y:position.y}]
 		}
@@ -25,17 +31,52 @@ function getNewPositions(mouseDown, alphaNode, deltaSeconds, positions, velociti
 	}))
 }
 
-function getUpdate (
+function getMax(values) {
+	return Math.max.apply(null, Array.from(values.values(), ({x,y}) => Math.max(
+		Math.abs(x),
+		Math.abs(y)
+	)))
+}
+
+function getStablePositions(
+	positions,
+	links,
+	layers,
+	vertical,
+	forceStyle,
+	deltaSeconds = 0.08,
+	maxIterations = 500
+) {
+	for(let i=0, maxVelocity=1; i<maxIterations && 1<=maxVelocity; ++i) {
+		const velocities = getVelocities(positions, links, layers, vertical, forceStyle)
+		positions = getNewPositions(positions, velocities, deltaSeconds)
+		maxVelocity = getMax(velocities)
+	}
+	return positions
+}
+
+function getInitialStablePositions(
+	links,
+	layers,
+	vertical,
+	forceStyle,
+	deltaSeconds,
+	maxIterations
+) {
+	const positions = new Map(Array.from(layers.keys(), (key,idx) => [key,{x:idx, y:idx}]))
+	return getStablePositions(positions,links,layers,vertical,forceStyle,deltaSeconds,maxIterations)
+}
+
+function getStartUpdate (
 	setPositions,
 	animationRequest,
 	animationTime,
-	nodes,
 	links,
 	layers,
 	mouseDown,
 	alphaNode,
-	vertical = false,
-	forceStyle = {}
+	vertical,
+	forceStyle
 ) {
 	const update = () => {
 		const currentTime = Date.now()
@@ -43,12 +84,26 @@ function getUpdate (
 		animationTime.current = currentTime
 
 		setPositions(positions => {
-			const velocities = getVelocities(positions, nodes, links, layers, vertical, forceStyle)
-			return getNewPositions(mouseDown, alphaNode, deltaSeconds, positions, velocities)
+			const velocities = getVelocities(positions, links, layers, vertical, forceStyle)
+			const maxVelocity = getMax(velocities)
+			if(maxVelocity < 1)
+				stopUpdate(animationRequest)
+			else
+				animationRequest.current = requestAnimationFrame(update)
+			return getNewPositions(positions, velocities, deltaSeconds, mouseDown, alphaNode)
 		})
-		animationRequest.current = requestAnimationFrame(update)
 	}
-	return update
+	return () => {
+		if(animationRequest.current == undefined) {
+			animationTime.current = Date.now()
+			animationRequest.current = requestAnimationFrame(update)
+		}
+	}
 }
 
-export default getUpdate
+function stopUpdate(animationRequest) {
+	cancelAnimationFrame(animationRequest.current)
+	animationRequest.current = undefined
+}
+
+export {getStartUpdate, stopUpdate, getInitialStablePositions}
