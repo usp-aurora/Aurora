@@ -255,110 +255,7 @@ const Categories = styled.div`
   margin-top: 5%;
 `;
 
-const CoursePicker = ({ openCourse, changeCourseDisplay, openDisciplinePopUp, map }) => {
-  const categories = [
-    {
-      name: 'Ciência de dados',
-      courses: [
-        { id: 1 },
-        { id: 2 }, 
-        { id: 3 },
-        { id: 4 },
-        { id: 5 },
-      ],
-      color: '#FFD12B',
-      completed: 0,
-      total: 7,
-    },
-    {
-      name: 'Inteligência Artificial',
-      courses: [
-        { id: 6 },
-        { id: 7 },
-        { id: 8 },
-        { id: 9 },
-        { id: 10 },
-      ],
-      color: '#E83030',
-      completed: 0,
-      total: 7,
-    },
-    {
-      name: 'Sistemas de Software',
-      courses: [
-        { id: 11 },
-        { id: 12 }, 
-        { id: 13 },
-        { id: 14 },
-        { id: 15 },
-      ],
-      color: '#15B48F',
-      completed: 0,
-      total: 7,
-    },
-    {
-      name: 'Teoria da Computação',
-      courses: [
-        { id: 16 },
-        { id: 17 }, 
-        { id: 18 },
-        { id: 19 },
-      ],
-      color: '#6762CD',
-      completed: 0,
-      total: 7,
-    },
-    {
-      name: 'Optativa de Estatística',
-      courses: [
-        { id: 21 },
-        { id: 22 }, 
-        { id: 23 },
-        { id: 24 },
-        { id: 25 },
-      ],
-      color: '#EA7F38',
-      completed: 0,
-      total: 1,
-    },
-    {
-      name: 'Optativa de Ciências',
-      courses: [
-        { id: 26 },
-        { id: 27 }, 
-        { id: 28 },
-        { id: 29 },
-        { id: 30 },
-      ],
-      color: '#09DE5A',
-      completed: 0,
-      total: 1,
-    },
-    {
-      name: 'Outras Optativas Eletivas',
-      courses: [
-        { id: 31 },
-        { id: 32 }, 
-        { id: 33 },
-        { id: 34 },
-        { id: 35 },
-      ],
-      color: '#F73EF6',
-    },
-    {
-      name: 'Optativas Livres',
-      courses: [
-        { id: 36 },
-        { id: 37 }, 
-        { id: 38 },
-        { id: 39 },
-        { id: 40 },
-      ],
-      color: '#533F30'
-    },
-    // Add more categories as needed
-  ];
-
+const CoursePicker = ({ categories, courseMap, openCourse, changeCourseDisplay, openDisciplinePopUp }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [expandedCategories, setExpandedCategories] = useState(
     categories.reduce((acc, category) => {
@@ -498,12 +395,12 @@ const CoursePicker = ({ openCourse, changeCourseDisplay, openDisciplinePopUp, ma
                 <SortableContext items={category.courses} strategy={rectSortingStrategy}>            
                   {category.courses
                     .filter((course) =>
-                      map.get(course?.id).code.toLowerCase().includes(searchTerm.toLowerCase())
+                      courseMap.get(course?.id).code.toLowerCase().includes(searchTerm.toLowerCase())
                     )
                     .map((course) => {
-                      const courseData = map.get(course?.id);
+                      const courseData = courseMap.get(course?.id);
                       return (
-                      <SortableItem id={`${courseData.id}@${category.name}`} key={`${courseData.id}@${category.name}`} disable={expandedCategories[category.name] ? null : true}>
+                      <SortableItem id={`${courseData.id}@${category.name}`} key={`${courseData.id}@${category.name}`} disable={!expandedCategories[category.name] || courseData.semester != null}>
                         <Card colors={courseData.colors} onClick={() => {
                           openCourse();
                           changeCourseDisplay(courseData.pokeball, "/pokemons/ditto.png", courseData.title, courseData.code, courseData.tags, courseData.credits, courseData.desc)
