@@ -400,12 +400,12 @@ const CoursePicker = ({ categories, courseMap, openCourse, changeCourseDisplay, 
                     .map((course) => {
                       const courseData = courseMap.get(course?.id);
                       return (
-                      <SortableItem id={`${courseData.id}@${category.name}`} key={`${courseData.id}@${category.name}`} disable={!expandedCategories[category.name] || courseData.semester != null}>
+                      <SortableItem id={courseData.id} key={`${courseData.id}@${category.name}`} disable={!expandedCategories[category.name]} status={courseData.semester != null}>
                         <Card colors={courseData.colors} onClick={() => {
                           openCourse();
-                          changeCourseDisplay(courseData.pokeball, "/pokemons/ditto.png", courseData.title, courseData.code, courseData.tags, courseData.credits, courseData.desc)
+                          changeCourseDisplay(courseData?.pokeball, "/pokemons/ditto.png", courseData?.title, courseData?.code, courseData?.tags, courseData?.credits, courseData?.desc)
                         }}>
-                          <CardContentCourse pokeball={courseData.pokeball} courseCode={courseData.code} courseTitle={courseData.title} pokemonURL="/pokemons/ditto.png"/>
+                          <CardContentCourse pokeball={courseData?.pokeball} courseCode={courseData?.code} courseTitle={courseData?.title} pokemonURL="/pokemons/ditto.png"/>
                         </Card>
                       </SortableItem>
                     )})}
