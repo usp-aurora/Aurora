@@ -5,19 +5,10 @@ import Semester from '../Components/Semesters/Semesters.jsx';
 import CoursePicker from '../Components/CoursePicker/CoursePicker.jsx';
 import AddDisciplinePopUp from '../Components/PopUps/AddDisciplinePopUp.jsx';
 import CoursePopUp from '../Components/PopUps/CoursePopUp.jsx';
-import DragOverlayComponent from '../Components/Dnd/DragOverlayComponent.jsx';
-import { handleDragStart, handleDragOver, handleDragEnd } from '../Handlers/DragHandlers.jsx';
-import { fetchPlans, loadPlans, storePlans, syncPlans } from '../Handlers/PlanHandlers.jsx';
-import {
-  DndContext, 
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-  closestCenter,
-  pointerWithin,
-} from '@dnd-kit/core';
-import {sortableKeyboardCoordinates} from '@dnd-kit/sortable';
+import { fetchPlans, loadPlans, storePlans, syncPlans } from '../Handlers/PlansHandlers.jsx';
+import { collisionAlgorithm, Monitor } from '../Components/Dnd/Utilities.jsx';
+import { DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import { ClipLoader } from "react-spinners";
 
 const AppContainer = styled.div`
@@ -150,8 +141,6 @@ const categories = [
 const Home = ({ subjects }) => {
   const [plans, setPlans] = useState([]); 
   const [isLoading, setIsLoading] = useState(true);
-  const [overlayObject, setOverlayObject] = useState(null);
-  const [dragObject, setDragObject] = useState(null);
   const [addDisciplineActive, setAddDisciplineActive] = useState(false);
   const [coursePopUpActive, setCoursePopUpActive] = useState(false);
   const [unsavedChanges, setUnsavedChanges] = useState(false);
@@ -208,6 +197,15 @@ const Home = ({ subjects }) => {
     return initialCourseMap;
   });
 
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: { distance: 5 } // it's important to trigger onClick events right
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
+  );
+  
   const toggleDiscipline = () => {
     setAddDisciplineActive(!addDisciplineActive);
   }
@@ -241,6 +239,19 @@ const Home = ({ subjects }) => {
     })
   }
 
+  const showCourseDetails = (course) => {
+    toggleCoursePopUp();
+    toggleCourse(
+      course?.pokeball, 
+      "/pokemons/ditto.png", 
+      course?.title, 
+      course?.code, 
+      course?.tags, 
+      course?.credits, 
+      course?.desc
+    );
+  };
+
   // update courseMap when plans changes
   useEffect(() => {
     const updatedCourseMap = new Map(courseMap);
@@ -258,6 +269,7 @@ const Home = ({ subjects }) => {
       });
     });
     setCourseMap(updatedCourseMap);
+    setUnsavedChanges(true);
   }, [plans]);
 
   // update database
@@ -271,35 +283,6 @@ const Home = ({ subjects }) => {
     return () => { clearInterval(intervalId) };
   }, [courseMap]);
 
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 5, // importante para identificar o evento onClick
-      },
-    }),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    }),
-  );
-
-  const collisionAlgorithm = ({ droppableContainers, ...args}) => {
-    // First, let's see if the `trash` droppable rect is intersecting
-    const pointerCollisions = pointerWithin({
-      ...args,
-      droppableContainers: droppableContainers
-    });
-    
-    // Collision detection algorithms return an array of collisions
-    if (pointerCollisions.length > 0) {
-      return pointerCollisions;
-    }
-    
-    // Compute other collisions
-    return closestCenter({
-      ...args,
-      droppableContainers: droppableContainers.filter(({id}) => id !== 'coursePicker')
-    });
-  };
 
   if (isLoading) {
     return (
@@ -322,21 +305,12 @@ const Home = ({ subjects }) => {
                     desc={course.desc}
       />
       <Header />
-      <DndContext
-        sensors={sensors}
-        collisionDetection={(props) => collisionAlgorithm(props)}
-        onDragStart={(event) => handleDragStart(event, courseMap, setOverlayObject, setDragObject)}
-        onDragOver={(event) => handleDragOver(event, courseMap, setPlans, dragObject, setDragObject)}
-        onDragEnd={(event) => {
-          handleDragEnd(event, courseMap, setCourseMap, plans, setPlans, dragObject, setDragObject);
-          setOverlayObject(null);
-          setUnsavedChanges(true);
-      }}>
+      <DndContext sensors={sensors} collisionDetection={(props) => collisionAlgorithm(props)}>
+        <Monitor  plans={plans} courseMap={courseMap} setPlans={setPlans} setCourseMap={setCourseMap}/>
         <ContentContainer>
-          <Semester courseMap={courseMap} semesters={plans} setSemesters={setPlans} openCourse={toggleCoursePopUp} changeCourseDisplay={toggleCourse} />
-          <CoursePicker courseMap={courseMap} categories={categories} openCourse={toggleCoursePopUp} changeCourseDisplay={toggleCourse} openDisciplinePopUp={toggleDiscipline} />
+          <Semester courseMap={courseMap} semesters={plans} setSemesters={setPlans} displayCourse={showCourseDetails} />
+          <CoursePicker courseMap={courseMap} categories={categories} displayCourse={showCourseDetails} openDisciplinePopUp={toggleDiscipline} />
         </ContentContainer>
-        <DragOverlayComponent course={overlayObject} />
       </DndContext>
     </AppContainer>
   );

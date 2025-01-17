@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import Card from '../Atoms/Card';
-import CardContentCourse from '../Atoms/CardContentCourse';
-import SortableItem from '../Dnd/SortableItem';
+import SortableCard from '../Dnd/SortableCard';
 import StyledButton from '../Atoms/StyledButton';
 import {slideIn, slideOut, bounce, bounceBack} from '../Atoms/Animations';
 import Droppable from '../Dnd/Droppable';
@@ -165,7 +164,7 @@ const NewSemester = styled.div`
   cursor: pointer;
 `;
 
-const Semesters = ({ semesters, setSemesters, openCourse, changeCourseDisplay, courseMap }) => {
+const Semesters = ({ semesters, setSemesters, displayCourse, courseMap }) => {
 
   const [expandedSemesters, setExpandedSemesters] = useState(
     semesters.reduce((acc, semester) => {
@@ -265,24 +264,16 @@ const Semesters = ({ semesters, setSemesters, openCourse, changeCourseDisplay, c
                     <p>Arraste uma disciplina</p>
                   </NewCard>
                 :
-                semester.courses.map((course) => {
-                  const courseData = courseMap.get(course?.id);
-                  return (
-                    <SortableItem id={courseData?.id} key={`${courseData?.id}@Semesters`} disable={!expandedSemesters[semester.id]}>
-                      <Card colors={courseData?.colors} onClick={() => {
-                          openCourse();
-                          changeCourseDisplay(courseData?.pokeball, "/pokemons/ditto.png", courseData?.title, courseData?.code, courseData?.tags, courseData?.credits, courseData?.desc);
-                      }}>
-                        <CardContentCourse 
-                          pokeball={courseData?.pokeball} 
-                          courseCode={courseData?.code} 
-                          courseTitle={courseData?.title} 
-                          pokemonURL="/pokemons/ditto.png"
-                        />
-                      </Card>
-                    </SortableItem>
-                  );
-                })}
+                semester.courses.map((course) => (
+                  <SortableCard
+                    id={course.id} 
+                    course={courseMap.get(course.id)}
+                    key={`${course.id}@Semesters`} 
+                    container={'Semesters'}
+                    disable={!expandedSemesters[semester.id]}
+                    handleClick={displayCourse}
+                  />
+                ))}
               </CoursesList>
             </SortableContext>
           </SemesterContainer>

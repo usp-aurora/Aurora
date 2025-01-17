@@ -1,15 +1,10 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import CardContentCourse from '../Atoms/CardContentCourse';
-import Card from '../Atoms/Card';
 import StyledButton from '../Atoms/StyledButton';
-import {slideIn, slideIn2, slideOut, slideOut2} from '../Atoms/Animations'
 import Droppable from '../Dnd/Droppable';
-import SortableItem from '../Dnd/SortableItem';
-import {
-  SortableContext,
-  rectSortingStrategy,
-} from '@dnd-kit/sortable';
+import SortableCard from '../Dnd/SortableCard';
+import {slideIn, slideIn2, slideOut, slideOut2} from '../Atoms/Animations'
+import { SortableContext, rectSortingStrategy,} from '@dnd-kit/sortable';
 // import { ReactComponent as ThinButtonBlueBackgroundSVG } from '../../assets/ThinButtonBlueBackground.svg';
 // import { ReactComponent as AplicarTextIconSVG } from '../../assets/AplicarTextIcon.svg';
 
@@ -255,7 +250,7 @@ const Categories = styled.div`
   margin-top: 5%;
 `;
 
-const CoursePicker = ({ categories, courseMap, openCourse, changeCourseDisplay, openDisciplinePopUp }) => {
+const CoursePicker = ({ categories, courseMap, displayCourse, openDisciplinePopUp }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [expandedCategories, setExpandedCategories] = useState(
     categories.reduce((acc, category) => {
@@ -397,18 +392,15 @@ const CoursePicker = ({ categories, courseMap, openCourse, changeCourseDisplay, 
                     .filter((course) =>
                       courseMap.get(course?.id).code.toLowerCase().includes(searchTerm.toLowerCase())
                     )
-                    .map((course) => {
-                      const courseData = courseMap.get(course?.id);
-                      return (
-                      <SortableItem id={courseData.id} key={`${courseData.id}@${category.name}`} disable={!expandedCategories[category.name]} status={courseData.semester != null}>
-                        <Card colors={courseData.colors} onClick={() => {
-                          openCourse();
-                          changeCourseDisplay(courseData?.pokeball, "/pokemons/ditto.png", courseData?.title, courseData?.code, courseData?.tags, courseData?.credits, courseData?.desc)
-                        }}>
-                          <CardContentCourse pokeball={courseData?.pokeball} courseCode={courseData?.code} courseTitle={courseData?.title} pokemonURL="/pokemons/ditto.png"/>
-                        </Card>
-                      </SortableItem>
-                    )})}
+                    .map((course) => (
+                      <SortableCard 
+                        id={course.id}
+                        course={courseMap.get(course?.id)}
+                        key={`${course.id}@${category.name}`} 
+                        container={category.name}
+                        disable={!expandedCategories[category.name]}
+                        handleClick={displayCourse}/>
+                    ))}
                 </SortableContext> 
               </CoursesGrid>
             </CategoryContainer>

@@ -1,22 +1,29 @@
 import {arrayMove} from '@dnd-kit/sortable';
 
-const getId = (id) => {
-  if (typeof(id) == 'number')
-    return id;
-  return id.split('@')[0];
-}
+const getId = (id) => (typeof id === 'number' ? id : id.split('@')[0]);
 
-const getContainer = (semesterAlias, plans) => {
-  return plans.find((sem) => sem.alias === semesterAlias);
-}
+const getContainer = (alias, plans) => plans.find((sem) => sem.alias === alias);
 
 const findContainer = (id, courseMap) => {
-    if (courseMap.has(Number(id))) {
-      const semesterId = courseMap.get(Number(id)).semester;
-      return semesterId ? `Semester ${semesterId}` : 'coursePicker';
-    }
-  
-    return id;
+  if (courseMap.has(Number(id))) {
+    const semesterId = courseMap.get(Number(id)).semester;
+    return semesterId ? `Semester ${semesterId}` : 'coursePicker';
+  }
+  return id;
+};
+
+const calculateNewIndex = (over, draggingRect, overItems, overId) => {
+  const overIndex = overItems.findIndex((course) => course.id === Number(overId));
+
+  if (overIndex === -1) {
+    return overItems.length;
+  }
+
+  const isAfterLastItem = over && draggingRect && overIndex === overItems.length - 1 &&
+    (draggingRect.offsetTop > over.rect.offsetTop + over.rect.height ||
+    draggingRect.offsetLeft > over.rect.offsetLeft + over.rect.width);
+
+  return overIndex + (isAfterLastItem ? 1 : 0);
 };
 
 // Handler when drag starts
@@ -51,7 +58,7 @@ export const handleDragStart = (event, courseMap, setOverlayObject, setDragObjec
 
 // Handler when drag is over another element
 export const handleDragOver = (event, courseMap, setPlans, dragObject, setDragObject) => {
-    const { _active, over, draggingRect } = event;
+    const { over, draggingRect } = event;
     const overId = getId(over?.id);
   
     const overContainer = findContainer(overId, courseMap);
@@ -64,27 +71,20 @@ export const handleDragOver = (event, courseMap, setPlans, dragObject, setDragOb
         if (semester.alias === dragObject.container) {
           return {
             ...semester,
-            credits: [ 
-                semester.courses.reduce((acc, course) => acc + Number(course.credits[0]), dragObject.course.credits[0]*(-1)),
-                semester.courses.reduce((acc, course) => acc + Number(course.credits[1]), dragObject.course.credits[1]*(-1)),
-            ],
+            credits: semester.credits.map(
+              (credit, i) => Number(credit) - Number(dragObject.course.credits[i])
+            ),
             courses: semester.courses.filter((course) => course.id !== dragObject.id),
           };
         } else if (semester.alias === overContainer) {
           const overItems = getContainer(overContainer, prevPlans).courses;
-          const overIndex = overItems.findIndex(course => course.id === Number(overId));
-          const isAfterLastItem = over && draggingRect &&
-            ((overIndex === overItems.length - 1 && draggingRect.offsetTop > over.rect.offsetTop + over.rect.height) ||
-             (overIndex === overItems.length - 1 && draggingRect.offsetLeft > over.rect.offsetLeft + over.rect.width));
-          
-          const newIndex = overIndex >= 0 ? overIndex + (isAfterLastItem ? 1 : 0) : overItems.length;
-          
+          const newIndex = calculateNewIndex(over, draggingRect, overItems, overId);
+
           return {
             ...semester,
-            credits: [
-                semester.courses.reduce((acc, course) => acc + Number(course.credits[0]), dragObject.course.credits[0]*(1)),
-                semester.courses.reduce((acc, course) => acc + Number(course.credits[1]), dragObject.course.credits[1]*(1)),
-            ],
+            credits: semester.credits.map(
+              (credit, i) => Number(credit) + Number(dragObject.course.credits[i])
+            ),
             courses: [
               ...semester.courses.slice(0, newIndex).filter((course) => course.id !== dragObject),
               dragObject.course,
@@ -106,7 +106,7 @@ export const handleDragOver = (event, courseMap, setPlans, dragObject, setDragOb
   
 // Handler when drag ends
 export const handleDragEnd = (event, courseMap, setCourseMap, plans, setPlans, dragObject, setDragObject) => {
-  const { _active, over } = event;
+  const { over } = event;
   const overId = getId(over?.id);
   
   const overContainer = findContainer(overId, courseMap);
