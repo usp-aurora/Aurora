@@ -3,6 +3,9 @@ import { CSS } from "@dnd-kit/utilities";
 
 const SortableItem = (props) => {
 
+    const disabled = props.disable || props.status;
+    const sortableId =  disabled? props.key : props.id;
+
     const {
         attributes,
         listeners,
@@ -10,16 +13,16 @@ const SortableItem = (props) => {
         transform,
         transition,
         isDragging,
-    } = useSortable({ id: props.id });
+    } = useSortable({ id: sortableId });
 
     const style = {
         transform: CSS.Transform.toString(transform),
         transition: transition || 'transform 0.3s ease, opacity 0.3s ease',
-        opacity: isDragging ? 0.2 : 1,
+        opacity: isDragging || disabled ? 0.2 : 1,
     };
 
     return (
-        <div ref={props.disable? null : setNodeRef} style={style} {...attributes} {...listeners}>
+        <div ref={disabled? null : setNodeRef} style={style} {...attributes} {...listeners}>
           {props.children}
         </div>
     );

@@ -268,8 +268,8 @@ const Semesters = ({ semesters, setSemesters, openCourse, changeCourseDisplay, c
                 semester.courses.map((course) => {
                   const courseData = courseMap.get(course?.id);
                   return (
-                    <SortableItem id={courseData.id} key={`${courseData.id}@Semesters`} disable={expandedSemesters[semester.id] ? null : true}>
-                      <Card colors={courseData.colors} onClick={() => {
+                    <SortableItem id={courseData?.id} key={`${courseData?.id}@Semesters`} disable={!expandedSemesters[semester.id]}>
+                      <Card colors={courseData?.colors} onClick={() => {
                           openCourse();
                           changeCourseDisplay(courseData?.pokeball, "/pokemons/ditto.png", courseData?.title, courseData?.code, courseData?.tags, courseData?.credits, courseData?.desc);
                       }}>
