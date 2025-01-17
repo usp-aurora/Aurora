@@ -231,7 +231,7 @@ const CoursePopUp = ({isOpen, onClose, pokeball_color, pokemonURL, title, code, 
           <CourseTags>
             {tags
               .map(tag => (
-                <CourseTag color={tag.color} name={tag.name} />
+                <CourseTag color={tag.color} key={tag.name} name={tag.name} />
               ))}
             <h3>{credits[0]} {credits[1] > 0 ? '+' : ''} {credits[1]} créditos</h3>
           </CourseTags>
