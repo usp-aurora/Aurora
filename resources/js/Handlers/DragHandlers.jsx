@@ -1,5 +1,11 @@
 import {arrayMove} from '@dnd-kit/sortable';
 
+const getId = (id) => {
+  if (typeof(id) == 'number')
+    return id;
+  return id.split('@')[0];
+}
+
 const getContainer = (semesterAlias, plans) => {
   return plans.find((sem) => sem.alias === semesterAlias);
 }
@@ -16,7 +22,7 @@ const findContainer = (id, courseMap) => {
 // Handler when drag starts
 export const handleDragStart = (event, courseMap, setOverlayObject, setDragObject) => {
     const { active } = event;
-    const courseId = active.id.split('@')[0];
+    const courseId = getId(active.id);
   
     const course = courseMap.get(Number(courseId));
     const containerAlias = findContainer(courseId, courseMap);
@@ -46,7 +52,7 @@ export const handleDragStart = (event, courseMap, setOverlayObject, setDragObjec
 // Handler when drag is over another element
 export const handleDragOver = (event, courseMap, setPlans, dragObject, setDragObject) => {
     const { _active, over, draggingRect } = event;
-    const overId = over?.id.split('@')[0];
+    const overId = getId(over?.id);
   
     const overContainer = findContainer(overId, courseMap);
     if (!overContainer || dragObject.container === overContainer) {
@@ -101,7 +107,7 @@ export const handleDragOver = (event, courseMap, setPlans, dragObject, setDragOb
 // Handler when drag ends
 export const handleDragEnd = (event, courseMap, setCourseMap, plans, setPlans, dragObject, setDragObject) => {
   const { _active, over } = event;
-  const overId = over?.id.split('@')[0];
+  const overId = getId(over?.id);
   
   const overContainer = findContainer(overId, courseMap);
   
