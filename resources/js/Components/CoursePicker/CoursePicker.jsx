@@ -4,7 +4,6 @@ import StyledButton from '../Atoms/StyledButton';
 import Droppable from '../Dnd/Droppable';
 import SortableCard from '../Dnd/SortableCard';
 import {slideIn, slideIn2, slideOut, slideOut2} from '../Atoms/Animations'
-import { SortableContext, rectSortingStrategy,} from '@dnd-kit/sortable';
 // import { ReactComponent as ThinButtonBlueBackgroundSVG } from '../../assets/ThinButtonBlueBackground.svg';
 // import { ReactComponent as AplicarTextIconSVG } from '../../assets/AplicarTextIcon.svg';
 
@@ -387,7 +386,6 @@ const CoursePicker = ({ categories, courseMap, displayCourse, openDisciplinePopU
                   </CategoryHeaderBackground>
               </CategoryHeader>
               <CoursesGrid expanded={expandedCategories[category.name]}>
-                <SortableContext items={category.courses} strategy={rectSortingStrategy}>            
                   {category.courses
                     .filter((course) =>
                       courseMap.get(course?.id).code.toLowerCase().includes(searchTerm.toLowerCase())
@@ -401,7 +399,6 @@ const CoursePicker = ({ categories, courseMap, displayCourse, openDisciplinePopU
                         disable={!expandedCategories[category.name]}
                         handleClick={displayCourse}/>
                     ))}
-                </SortableContext> 
               </CoursesGrid>
             </CategoryContainer>
           ))}
