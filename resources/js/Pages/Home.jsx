@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import Header from '../Components/Header/Header.jsx';
 import Semester from '../Components/Semesters/Semesters.jsx';
 import CoursePicker from '../Components/CoursePicker/CoursePicker.jsx';
 import AddDisciplinePopUp from '../Components/PopUps/AddDisciplinePopUp.jsx';
 import CoursePopUp from '../Components/PopUps/CoursePopUp.jsx';
-import { fetchPlans, loadPlans, storePlans, syncPlans } from '../Handlers/PlansHandlers.jsx';
+import usePlansSync from '../Hooks/usePlansSync.jsx';
+import usePageLifecycleHandlers from '../Hooks/usePageLifecycleHandlers.jsx';
 import { collisionAlgorithm, Monitor } from '../Components/Dnd/Utilities.jsx';
 import { DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
@@ -145,18 +146,6 @@ const Home = ({ subjects }) => {
   const [coursePopUpActive, setCoursePopUpActive] = useState(false);
   const [unsavedChanges, setUnsavedChanges] = useState(false);
 
-  
-  window.addEventListener('load', () => {
-    loadPlans();
-    fetchPlans(setPlans, setIsLoading);
-  });
-  
-  window.addEventListener('beforeunload', () => {
-    if (unsavedChanges)
-        storePlans(courseMap);
-  });
-
-
   const [courseMap, setCourseMap] = useState(() => {
     const initialCourseMap = new Map(
       subjects.map((subject) => [
@@ -197,6 +186,9 @@ const Home = ({ subjects }) => {
     return initialCourseMap;
   });
 
+  usePageLifecycleHandlers(setPlans, setIsLoading, unsavedChanges, courseMap)
+  usePlansSync(courseMap, setCourseMap, setPlans, setUnsavedChanges)
+  
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: { distance: 5 } // it's important to trigger onClick events right
@@ -271,17 +263,6 @@ const Home = ({ subjects }) => {
     setCourseMap(updatedCourseMap);
     setUnsavedChanges(true);
   }, [plans]);
-
-  // update database
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      syncPlans(courseMap, setCourseMap);
-      fetchPlans(setPlans, setIsLoading);
-      setUnsavedChanges(false);
-    }, 60000); // Sincroniza a cada 1min
-
-    return () => { clearInterval(intervalId) };
-  }, [courseMap]);
 
 
   if (isLoading) {

@@ -1,12 +1,12 @@
-import { CSS } from "@dnd-kit/utilities";
-import { useSortable } from "@dnd-kit/sortable";
-import Card from "../Atoms/Card";
-import CardContentCourse from "../Atoms/CardContentCourse";
+import { CSS } from "@dnd-kit/utilities"
+import { useSortable } from "@dnd-kit/sortable"
+import Card from "../Atoms/Card"
+import CardContentCourse from "../Atoms/CardContentCourse"
 
-const SortableItem = ({id, course, container, ...props}) => {
-    const planed = course.semester !== null; 
-    const disabled = props.disable || (planed && container !== 'Semesters');
-    const sortableId =  disabled? `${id}@${container}` : id;
+function SortableItem({id, course, container, ...props}) {
+    const planed = course.semester !== null
+    const disabled = props.disable || (planed && container !== 'Semesters')
+    const sortableId =  disabled? `${id}@${container}` : id
 
     const {
         attributes,
@@ -15,13 +15,14 @@ const SortableItem = ({id, course, container, ...props}) => {
         transform,
         transition,
         isDragging,
-    } = useSortable({ id: sortableId });
+    } = useSortable({ id: sortableId })
 
     const style = {
         transform: CSS.Transform.toString(transform),
         transition: transition || 'transform 0.3s ease, opacity 0.3s ease',
         opacity: isDragging || disabled ? 0.2 : 1,
-    };
+        tabindex: 0
+    }
 
     return (
         <div ref={disabled? null : setNodeRef} style={style} {...attributes} {...listeners}>
@@ -34,5 +35,7 @@ const SortableItem = ({id, course, container, ...props}) => {
                 />
             </Card>
         </div>
-    );
-}; export default SortableItem;
+    )
+}
+
+export default SortableItem

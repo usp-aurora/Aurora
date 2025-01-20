@@ -1,9 +1,9 @@
-import { DragOverlay } from '@dnd-kit/core';
-import { restrictToWindowEdges } from '@dnd-kit/modifiers';
-import Card from '../Atoms/Card';
-import CardContentCourse from '../Atoms/CardContentCourse';
+import { DragOverlay } from '@dnd-kit/core'
+import { restrictToWindowEdges } from '@dnd-kit/modifiers'
+import Card from '../Atoms/Card'
+import CardContentCourse from '../Atoms/CardContentCourse'
 
-const DragOverlayComponent = ({ course }) => {
+function DragOverlayComponent({ course }) {
     return (
         <DragOverlay modifiers={[restrictToWindowEdges]}>
             {course ? 
@@ -17,7 +17,7 @@ const DragOverlayComponent = ({ course }) => {
                 </Card> 
             : null}
         </DragOverlay>
-    );
-};
+    )
+}
 
-export default DragOverlayComponent;
+export default DragOverlayComponent
