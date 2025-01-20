@@ -229,34 +229,34 @@ const Semesters = ({ semesters, setSemesters, displayCourse, courseMap }) => {
       </SemestersContainerHeader>
 
       {semesters.map(semester => (
-        <Droppable key={semester.alias} id={semester.alias} disable={!expandedSemesters[semester.id]}>
-          <SemesterContainer key={semester.id} id={semester.alias}>
-            <SemesterHeader onClick={() => {toggleSemester(semester.id)}}>
-              <SemesterInfos>
-                <h1 style={{marginRight: "20px"}}>{semester.id}º Período</h1>
+        <SemesterContainer key={semester.id} id={semester.alias}>
+          <SemesterHeader  onClick={() => {toggleSemester(semester.id)}}>
+            <SemesterInfos>
+              <h1 style={{marginRight: "20px"}}>{semester.id}º Período</h1>
+              <SemesterWarnings>
+                <img style={{paddingRight: '5px'}} src='/icons/warning_yellow.png' />
+                <p style={{color: "#ECA706"}}>Provável conflito de horário.</p>
+              </SemesterWarnings>
+              {
+                semester.credits[0] + semester.credits[1] > 40 ?
                 <SemesterWarnings>
-                  <img style={{paddingRight: '5px'}} src='/icons/warning_yellow.png' />
-                  <p style={{color: "#ECA706"}}>Provável conflito de horário.</p>
+                  <img style={{paddingRight: '5px'}} src='/icons/warning.png'/>
+                  <p style={{color: "#C11414"}}>Máximo de 40 créditos por período.</p>
                 </SemesterWarnings>
-                {
-                  semester.credits[0] + semester.credits[1] > 40 ?
-                  <SemesterWarnings>
-                    <img style={{paddingRight: '5px'}} src='/icons/warning.png'/>
-                    <p style={{color: "#C11414"}}>Máximo de 40 créditos por período.</p>
-                  </SemesterWarnings>
-                  : semester.credits[0] + semester.credits[1] < 12 ?
-                  <SemesterWarnings>
-                    <img style={{paddingRight: '5px'}} src='/icons/warning.png'/>
-                    <p style={{color: "#C11414"}}>Mínimo de 12 créditos por período.</p>
-                  </SemesterWarnings>
-                  : null
-                }
-                </SemesterInfos>
-              <SemesterCreditsAndIcon>
-                <p style={{color: "#757575"}}>{semester.credits[0] ? semester.credits[0] : ''} {semester.credits[0] && semester.credits[1] ? '+ ' : ''} {semester.credits[1] ? semester.credits[1] : ''} {semester.credits[0] || semester.credits[1] ? 'créditos' : ''}</p>
-                <span>{expandedSemesters[semester.id] ? '▼' : '▶'}</span>
-              </SemesterCreditsAndIcon>
-            </SemesterHeader>
+                : semester.credits[0] + semester.credits[1] < 12 ?
+                <SemesterWarnings>
+                  <img style={{paddingRight: '5px'}} src='/icons/warning.png'/>
+                  <p style={{color: "#C11414"}}>Mínimo de 12 créditos por período.</p>
+                </SemesterWarnings>
+                : null
+              }
+              </SemesterInfos>
+            <SemesterCreditsAndIcon>
+              <p style={{color: "#757575"}}>{semester.credits[0] ? semester.credits[0] : ''} {semester.credits[0] && semester.credits[1] ? '+ ' : ''} {semester.credits[1] ? semester.credits[1] : ''} {semester.credits[0] || semester.credits[1] ? 'créditos' : ''}</p>
+              <span>{expandedSemesters[semester.id] ? '▼' : '▶'}</span>
+            </SemesterCreditsAndIcon>
+          </SemesterHeader>
+          <Droppable key={semester.alias} id={semester.alias} disable={!expandedSemesters[semester.id]}>
             <SortableContext items={semester.courses} strategy={rectSortingStrategy}>
               <CoursesList expanded={expandedSemesters[semester.id]}>
                 {!semester.courses.length ?
@@ -276,8 +276,8 @@ const Semesters = ({ semesters, setSemesters, displayCourse, courseMap }) => {
                 ))}
               </CoursesList>
             </SortableContext>
-          </SemesterContainer>
-        </Droppable>
+          </Droppable>
+        </SemesterContainer>
       ))}
 
       <Card colors={{
