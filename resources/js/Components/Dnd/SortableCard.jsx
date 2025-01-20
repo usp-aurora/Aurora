@@ -21,6 +21,7 @@ function SortableItem({id, course, container, ...props}) {
         transform: CSS.Transform.toString(transform),
         transition: transition || 'transform 0.3s ease, opacity 0.3s ease',
         opacity: isDragging || disabled ? 0.2 : 1,
+        touchAction: "none",
         tabindex: 0
     }
 
