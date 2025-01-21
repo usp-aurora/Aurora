@@ -9,6 +9,28 @@ function usePageLifecycleHandlers(setPlans, setIsLoading, unsavedChanges, course
     const courseMapRef = useRef(courseMap)
     const unsavedChangesRef = useRef(unsavedChanges)
 
+    async function handleLoad() {
+        try {
+            await syncUnsyncedPlansOnLoad()
+            const plans = await getPlansFromServer()
+            setPlans(plans)
+        } catch (error) {
+            console.error("Erro no processo de carregamento:", error)
+        } finally {
+            setIsLoading(false)
+            window.removeEventListener("load", handleLoad)
+        }
+    }      
+
+    function handleBeforeUnload(event) {
+        if (unsavedChangesRef.current) {
+            event.preventDefault()
+            savePlansToLocalStorage(courseMapRef.current)
+        }
+    }
+
+    window.addEventListener("load", handleLoad) 
+
     useEffect(() => {
         courseMapRef.current = courseMap
     }, [courseMap])
@@ -17,26 +39,13 @@ function usePageLifecycleHandlers(setPlans, setIsLoading, unsavedChanges, course
         unsavedChangesRef.current = unsavedChanges
     }, [unsavedChanges])
 
-    async function handleLoad() {
-        try {
-          await syncUnsyncedPlansOnLoad()
-          const plans = await getPlansFromServer()
-          setPlans(plans)
-        } catch (error) {
-          console.error("Erro no processo de carregamento:", error)
-        } finally {
-          setIsLoading(false)
-        }
-    }      
+    useEffect(() => {
+        window.addEventListener("beforeunload", handleBeforeUnload) 
 
-    function handleBeforeUnload() {
-        if (unsavedChangesRef.current) {
-            savePlansToLocalStorage(courseMapRef.current)
+        return () => {
+            window.removeEventListener("beforeunload", handleBeforeUnload)
         }
-    }
-
-    window.addEventListener("load", handleLoad)
-    window.addEventListener("beforeunload", handleBeforeUnload)
+    }, [handleBeforeUnload])
 }
 
 export default usePageLifecycleHandlers
