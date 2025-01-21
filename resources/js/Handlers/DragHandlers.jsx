@@ -99,37 +99,24 @@ function handleDragOver(event, courseMap, setPlans, dragObject, setDragObject) {
 }
   
 // Handler when drag ends
-function handleDragEnd(event, courseMap, setCourseMap, plans, setPlans, dragObject, setDragObject) {
+function handleDragEnd(event, courseMap, dragObject, setPlans) {
   const { over } = event
   const overId = getId(over?.id)
-  
-  // update courseMap
-  const updatedMap = new Map(courseMap)
-  const semesterId = (dragObject.container == 'coursePicker') ? null : Number(dragObject.container.split(' ')[1])
-  updatedMap.set(dragObject.id, {...courseMap.get(dragObject.id), semester: semesterId})
-  setCourseMap(updatedMap)
 
   const overContainer = findContainer(overId, courseMap)
+  if (!dragObject.container || !overContainer || dragObject.container !== overContainer) return
 
-  if (!dragObject.container || !overContainer || dragObject.container !== overContainer) {
-    setDragObject(null)
-    return
-  }
-
-  const activeIndex = getContainer(dragObject.container, plans)?.courses.findIndex((course) => course.id === dragObject.id)
-  const overIndex = getContainer(overContainer, plans)?.courses.findIndex((course) => course.id === Number(overId))
-
-  if (activeIndex !== overIndex) {
-      setPlans((prevPlans) =>
-      prevPlans.map(semester => {
-          if (semester.alias === overContainer) 
-            return { ...semester, courses: arrayMove(semester.courses, activeIndex, overIndex) }
-          return semester
+  setPlans((prevPlans) => {
+    const activeIndex = getContainer(dragObject.container, prevPlans)?.courses.findIndex((course) => course.id === dragObject.id)
+    const overIndex = getContainer(overContainer, prevPlans)?.courses.findIndex((course) => course.id === Number(overId))
+    if (activeIndex !== overIndex) 
+      return prevPlans.map(semester => {
+        if (semester.alias === overContainer) 
+          return { ...semester, courses: arrayMove(semester.courses, activeIndex, overIndex) }
+        else return semester
       })
-      );
-  }
-
-  setDragObject(null)
+    else return prevPlans
+  })
 }
 
 export {handleDragStart, handleDragOver, handleDragEnd}

@@ -188,6 +188,19 @@ const Home = ({ subjects }) => {
 
   usePageLifecycleHandlers(setPlans, setIsLoading, unsavedChanges, courseMap)
   usePlansSync(courseMap, setCourseMap, setPlans, setUnsavedChanges)
+
+  useEffect(() => {
+      const updatedCourseMap = new Map(courseMap)
+      plans.forEach((semester) => {
+          semester.courses.forEach((course) => 
+              updatedCourseMap.set(course.id, {
+                  ...courseMap.get(course.id),
+                  plan: course.plan,
+                  semester: semester.id, 
+              }))
+      })
+      setCourseMap(updatedCourseMap)
+  }, [isLoading])
   
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -244,27 +257,6 @@ const Home = ({ subjects }) => {
     );
   };
 
-  // update courseMap when plans changes
-  useEffect(() => {
-    const updatedCourseMap = new Map(courseMap);
-
-    plans.forEach((semester) => {
-      semester.courses.forEach((course) => {
-        const existingEntry = updatedCourseMap.get(course.id);
-        if (existingEntry) {
-          updatedCourseMap.set(course.id, {
-            ...existingEntry,
-            plan: course.plan,
-            semester: semester.id, 
-          });
-        }
-      });
-    });
-    setCourseMap(updatedCourseMap);
-    setUnsavedChanges(true);
-  }, [plans]);
-
-
   if (isLoading) {
     return (
       <LoadingContainer>
@@ -287,7 +279,7 @@ const Home = ({ subjects }) => {
       />
       <Header />
       <DndContext sensors={sensors} collisionDetection={(props) => collisionAlgorithm(props)}>
-        <Monitor  plans={plans} courseMap={courseMap} setPlans={setPlans} setCourseMap={setCourseMap}/>
+        <Monitor  courseMap={courseMap} setCourseMap={setCourseMap} setPlans={setPlans} setUnsavedChanges={setUnsavedChanges}/>
         <ContentContainer>
           <Semester courseMap={courseMap} semesters={plans} setSemesters={setPlans} displayCourse={showCourseDetails} />
           <CoursePicker courseMap={courseMap} categories={categories} displayCourse={showCourseDetails} openDisciplinePopUp={toggleDiscipline} />

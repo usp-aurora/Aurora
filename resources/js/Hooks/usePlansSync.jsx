@@ -14,10 +14,9 @@ function usePlansSync(courseMap, setCourseMap, setPlans, setUnsavedChanges) {
   useEffect(() => {
     const intervalId = setInterval(async () => {
         try {
-            syncPlansWithServer(courseMapRef.current, setCourseMap)
+            syncPlansWithServer(courseMapRef.current, setCourseMap, setUnsavedChanges)
             const plans = await getPlansFromServer()
             setPlans(plans)
-            setUnsavedChanges(false)
         } catch (error) {
             console.error("Erro no processo de carregamento:", error)
     }}, 10000)

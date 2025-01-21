@@ -52,34 +52,57 @@ class PlansController extends Controller
     public function sync(Request $request)
     {
         $data = $request->json()->all();
-        $deletedCourses = []; // Lista para armazenar os IDs dos cursos deletados
+        $changedPlans = []; // Unificado para planos criados, atualizados ou deletados.
 
         try {
-            foreach ($data as $subject) {
-                if (isset($subject['id']) && isset($subject['semester'])) {
+            foreach ($data as $plan) {
+                if (isset($plan['id']) && isset($plan['semester'])) {
                     // Atualizar plano existente
                     $this->update(new Request([
-                        'subject_id' => $subject['subject_id'],
-                        'semester' => $subject['semester'],
-                    ]), $subject['id']);
-                } elseif (isset($subject['semester'])) {
+                        'subject_id' => $plan['subject_id'],
+                        'semester' => $plan['semester'],
+                    ]), $plan['id']);
+
+                    $changedPlans[] = [
+                        'id' => $plan['id'],
+                        'subject_id' => $plan['subject_id'],
+                        'action' => 'updated'
+                    ];
+                } elseif (isset($plan['semester'])) {
                     // Criar novo plano
-                    $this->store(new Request([
-                        'subject_id' => $subject['subject_id'],
-                        'semester' => $subject['semester'],
+                   $this->store(new Request([
+                        'subject_id' => $plan['subject_id'],
+                        'semester' => $plan['semester'],
                     ]));
-                } elseif (isset($subject['id'])) {
-                    $plan = Plan::find($subject['id']);
-                    if ($plan) {
-                        $deletedCourses[] = $plan->subject_id; // Adiciona o subject_id à lista
-                        $this->destroy($subject['id']);
+
+                    // Recupera o plano recém-criado
+                    $newPlan = Plan::where('user_id', $this->getUserId())
+                                    ->where('subject_id', $plan['subject_id'])
+                                    ->where('semester', $plan['semester'])
+                                    ->latest() 
+                                    ->first();
+
+                    $changedPlans[] = [
+                        'id' => $newPlan->id,
+                        'subject_id' => $newPlan->subject_id,
+                        'action' => 'created'
+                    ];
+                } elseif (isset($plan['id'])) {
+                    if (Plan::find($plan['id'])) {
+                        $this->destroy($plan['id']);              
+
+                        $changedPlans[] = [
+                            'id' => $plan['id'],
+                            'subject_id' => $plan['subject_id'],
+                            'action' => 'deleted'
+                        ];
                     }
                 }
             }
 
             return response()->json([
                 'status' => 'success', 
-                'deletedCourses' => $deletedCourses // Retorna os IDs dos cursos deletados
+                'changedPlans' => $changedPlans
             ], 200);
         } catch (\Exception $e) {
             // Log de erro para investigação futura
@@ -92,53 +115,98 @@ class PlansController extends Controller
     // Store a newly created resource in storage.
     private function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'subject_id' => 'required|exists:subjects,id',
-            'semester' => 'required',
+            'semester' => 'required|integer',
         ]);
 
-        $plan = Plan::create([
-            'user_id' => $this->getUserId(),
-            'subject_id' => $request->subject_id,
-            'semester' => $request->semester,
-        ]);
+        try {
+            $plan = Plan::create([
+                'user_id' => $this->getUserId(),
+                'subject_id' => $validated['subject_id'],
+                'semester' => $validated['semester'],
+            ]);
 
-        return response()->json(['success' => 'Plan created successfully!', 'plan' => $plan], 201);
+            return response()->json([
+                'success' => true,
+                'message' => 'Plan created successfully!',
+                'plan' => $plan
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error creating plan',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
 
     // Update the specified resource in storage.
     private function update(Request $request, $id)
     {
-        $request->validate([
+        $validated = $request->validate([
             'subject_id' => 'required|exists:subjects,id',
-            'semester' => 'required',
+            'semester' => 'required|integer',
         ]);
 
-        // Find the plan, create if not found
-        $plan = Plan::findOrFail($id);    
-        
-        $plan->update([
-            'subject_id' => $request->subject_id,
-            'semester' => $request->semester,
-        ]);
-        return response()->json(['success' => 'Plan successfully updated!'], 200); 
+        try {
+            $plan = Plan::findOrFail($id);
+
+            $plan->update([
+                'subject_id' => $validated['subject_id'],
+                'semester' => $validated['semester'],
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Plan successfully updated!',
+                'plan' => $plan
+            ], 200);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Plan not found',
+            ], 404);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error updating plan',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
     
 
     // Remove the specified resource from storage.
-    private function destroy($id) {
+    private function destroy($id) 
+    {
         try {
-            // Find the plan, if not found, consider it already deleted
             $plan = Plan::find($id);
 
-            if ($plan) {
-                $plan->delete();
+            if (!$plan) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Plan not found',
+                ], 404);
             }
 
-            return response()->json(['success' => 'Plan successfully deleted!'], 200);
+            $plan->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Plan successfully deleted!',
+                'deleted_plan' => [
+                    'id' => $id,
+                    'subject_id' => $plan->subject_id,
+                ]
+            ], 200);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Error deleting the plan'], 500);
+            return response()->json([
+                'success' => false,
+                'message' => 'Error deleting plan',
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
 

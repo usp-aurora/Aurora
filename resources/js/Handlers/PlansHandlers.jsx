@@ -22,7 +22,7 @@ async function getPlansFromServer() {
   }
 }
 
-async function syncPlansWithServer(updatedData, setData) {
+async function syncPlansWithServer(updatedData, setData, failedToSave) {
   try {
     const payload = JSON.stringify(
       Array.from(updatedData).map(([key, val]) => ({
@@ -35,21 +35,44 @@ async function syncPlansWithServer(updatedData, setData) {
     const response = await axios.post('/api/plans/sync', payload)
 
     if (response.status === 200) {
-      if (response.data.deletedCourses.length > 0)
-        setData((prev) => {
-          const data = new Map(prev)
-          response.data.deletedCourses.forEach((id) => data.set(id, {
-              ...data.get(id),
-              plan: null, 
-            }))
-          return data
+      const { changedPlans } = response.data
+
+      setData((prev) => {
+        const data = new Map(prev)
+
+        changedPlans.forEach(({ id, subject_id, action }) => {
+          switch (action) {
+            case 'created':
+            case 'updated':
+              data.set(subject_id, {
+                ...data.get(subject_id),
+                plan: id,
+              })
+              break
+
+            case 'deleted':
+              data.set(subject_id, {
+                ...data.get(subject_id),
+                plan: null,
+              })
+              break
+
+            default:
+              console.error("Ação não reconhecida:", action)
+              break
+          }
         })
+        return data
+      })
       console.log("Sincronização concluída com sucesso!")
+      failedToSave(false)
     } else {
       console.error("Erro ao sincronizar:", response.data)
+      failedToSave(true)
     }
   } catch (error) {
     console.error("Erro na comunicação com o servidor:", error)
+    failedToSave(true)
   }
 }
 
