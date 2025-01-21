@@ -10,12 +10,28 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
+    use \Spatie\Permission\Traits\HasRoles;
+
+    public static $permissoesHierarquia = [
+        'admin', // Exemplo de permissões hierárquicas
+        'manager',
+        'user',
+    ];
+
+
+    public static $permissoesVinculo = [
+        'Admin',
+        'Usuario',
+        'Gerente',
+        // Adicione outros vínculos conforme necessário
+    ];
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
+     
     protected $fillable = [
         'name',
         'email',

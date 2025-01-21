@@ -19,7 +19,7 @@ class SubjectFactory extends Factory
         return [
             'name' => $this->generateName(),
             'code' => $this->generateCustomCode(),
-            'syllabus' => $this->faker->paragraph(),
+            'syllabus' => $this->faker->sentence(20),
             'lecture_credits' => $this->faker->numberBetween(2, 4),
             'work_credits' => $this->faker->numberBetween(0, 2)
         ];
