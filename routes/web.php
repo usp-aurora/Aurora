@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-use App\Http\Controllers\PlansController;
+use App\Http\Controllers\PlanController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\LoginController;
@@ -13,9 +13,13 @@ use App\Http\Controllers\LoginController;
 Route::get('/', [HomeController::class, 'index']);
 
 Route::prefix('api/plans')->group(function () {
-    Route::get('/index', [PlansController::class, 'index'])->name('plans.index');
-    Route::post('/sync', [PlansController::class, 'sync'])->name('plans.sync');
+    Route::get('/index', [PlanController::class, 'index']);
+    Route::post('/sync', [PlanController::class, 'sync']);
+    Route::post('', [PlanController::class, 'store'])->middleware('auth');
+    Route::put('/{id}', [PlanController::class, 'update'])->middleware('auth');
+    Route::delete('/{id}', [PlanController::class, 'destroy'])->middleware('auth');
 });
+
 Route::get('/teste-login', [IndexController::class, 'index']);
 Route::get('login', [LoginController::class, 'redirectToProvider']);
 Route::get('callback', [LoginController::class, 'handleProviderCallback']);
