@@ -1,7 +1,32 @@
+function addDragOverlay() {
+	if(document.getElementById("drag-overlay") == null) {
+		const dragOverlay = document.createElement("div")
+		dragOverlay.id = "drag-overlay"
+		dragOverlay.style = `
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			z-index: 9999;
+			background-color: transparent;
+			cursor: grabbing;
+		`
+		document.body.appendChild(dragOverlay)
+	}
+}
+
+function removeDragOverlay() {
+	const dragOverlay = document.getElementById("drag-overlay")
+	if(dragOverlay != null)
+		dragOverlay.remove()
+}
+
 function getHandleMouseDown(mouseDown, dragStart, origin) {
 	return e => {
 		mouseDown.current = true
 		dragStart.current = { x: origin.x+e.clientX, y: origin.y+e.clientY }
+		addDragOverlay()
 	}
 }
 
@@ -39,6 +64,7 @@ function getHandleMouseLeave(mouseDown, alphaNode) {
 	return e => {
 		mouseDown.current = false
 		alphaNode.current = undefined
+		removeDragOverlay()
 	}
 }
 
@@ -46,6 +72,7 @@ function getHandleMouseUp(mouseDown, alphaNode) {
 	return e => {
 		mouseDown.current = false
 		alphaNode.current = undefined
+		removeDragOverlay()
 	}
 }
 

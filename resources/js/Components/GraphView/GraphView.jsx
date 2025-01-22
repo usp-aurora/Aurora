@@ -15,7 +15,7 @@ const GraphBodyView = styled.div`
 	width: 100%;
 	height: 100%;
 	overflow: hidden;
-	cursor: ${({isMouseDown}) => isMouseDown ? 'grabbing' : 'grab'};
+	cursor: grab;
 	touch-action: none;
 `
 
@@ -31,7 +31,6 @@ const GraphBackground = styled.rect`
 	stroke-width: 0;
 	fill: #112;
 `
-
 
 const NodeContainerView = styled.div`
 	position: absolute;
@@ -137,7 +136,6 @@ function GraphView({ nodes, links, root, interactive = false, vertical = false, 
 		<GraphBodyView
 			onMouseDown={getHandleMouseDown(mouseDown,dragStart,origin)}
 			onTouchStart={handleTouch}
-			isMouseDown={mouseDown.current}
 			ref={outerDiv}
 		>
 			<LinkContainerView>
