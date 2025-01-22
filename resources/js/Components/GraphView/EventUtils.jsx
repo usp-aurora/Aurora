@@ -49,7 +49,7 @@ function getHandleMouseUp(mouseDown, alphaNode) {
 	}
 }
 
-function getHandleMouseDownNode(alphaNode, alphaStart, key, pos, x, y) {
+function getHandleMouseDownNode(alphaNode, alphaStart, key, pos) {
 	return e => {
 		e.preventDefault()
 		alphaNode.current = key

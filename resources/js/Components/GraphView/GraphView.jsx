@@ -15,7 +15,7 @@ const GraphBodyView = styled.div`
 	width: 100%;
 	height: 100%;
 	overflow: hidden;
-	cursor: grab;
+	cursor: ${({isMouseDown}) => isMouseDown ? 'grabbing' : 'grab'};
 	touch-action: none;
 `
 
@@ -26,6 +26,12 @@ const LinkContainerView = styled.svg`
 	width: 100%;
 	height: 100%;
 `
+
+const GraphBackground = styled.rect`
+	stroke-width: 0;
+	fill: #112;
+`
+
 
 const NodeContainerView = styled.div`
 	position: absolute;
@@ -66,12 +72,12 @@ function GraphView({ nodes, links, root, interactive = false, vertical = false, 
 	const width = outerDiv.current ? outerDiv.current.clientWidth : 0
 	const height = outerDiv.current ? outerDiv.current.clientHeight : 0
 
-	const NodeViews = Array.from(nodes, ([key,node],idx) => {
+	const NodeViews = Array.from(nodes, ([key,node], idx) => {
 		const pos = positions.get(key)
 		const x = pos.x-origin.x+width/2
 		const y = pos.y-origin.y+height/2
 		const handleMouseDownNode = interactive
-			? getHandleMouseDownNode(alphaNode, alphaStart, key, pos, x, y)
+			? getHandleMouseDownNode(alphaNode, alphaStart, key, pos)
 			: undefined
 		return (
 			<NodeView key={key} x={x} y={y} onMouseDown={handleMouseDownNode} >
@@ -131,20 +137,17 @@ function GraphView({ nodes, links, root, interactive = false, vertical = false, 
 		<GraphBodyView
 			onMouseDown={getHandleMouseDown(mouseDown,dragStart,origin)}
 			onTouchStart={handleTouch}
-
-			style={mouseDown.current ? {cursor:"grabbing"} : {}}
-
+			isMouseDown={mouseDown.current}
 			ref={outerDiv}
 		>
 			<LinkContainerView>
-				<filter id="glow">
+				<filter>
 					<feDropShadow dx="0" dy="0" stdDeviation="2" floodColor="white" />
 				</filter>
-				<rect
+				<GraphBackground
 					x="0" y="0"
 					width={width}
 					height={height}
-					strokeWidth="0" fill="#112"
 				/>
 				{LinkViews}
 			</LinkContainerView>

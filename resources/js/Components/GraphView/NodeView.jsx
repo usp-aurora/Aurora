@@ -2,12 +2,14 @@ import styled from 'styled-components';
 
 const NodeContainerView = styled.div`
 	position: absolute;
+    transform: ${({ xTranslation, yTranslation }) => `translate(${xTranslation}px, ${yTranslation}px) translate(-50%, -50%)`};
 `
 
 function NodeView({x=0,y=0,onMouseDown,children}) {
 	return (
 		<NodeContainerView
-			style = {{ transform: `translate(${x}px,${y}px) translate(-50%,-50%)` }}
+			xTranslation={x}
+			yTranslation={y}
 			onMouseDown={onMouseDown}
 		>
 			{children}
@@ -16,3 +18,4 @@ function NodeView({x=0,y=0,onMouseDown,children}) {
 }
 
 export default NodeView
+
