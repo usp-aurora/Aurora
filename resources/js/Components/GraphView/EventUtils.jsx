@@ -22,6 +22,14 @@ function removeDragOverlay() {
 		dragOverlay.remove()
 }
 
+function getHandleResize(setSize, outerDiv) {
+	return e => {
+		const width = outerDiv.current ? outerDiv.current.clientWidth : 0
+		const height = outerDiv.current ? outerDiv.current.clientHeight : 0
+		setSize({width, height})
+	}
+}
+
 function getHandleMouseDown(mouseDown, dragStart, origin) {
 	return e => {
 		mouseDown.current = true
@@ -106,6 +114,7 @@ function handleTouch(e) {
 }
 
 export {
+	getHandleResize,
 	getHandleMouseDown,
 	getHandleMouseMove,
 	getHandleMouseLeave,
