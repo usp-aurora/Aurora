@@ -5,9 +5,9 @@ import Semester from '../Components/Semesters/Semesters.jsx';
 import CoursePicker from '../Components/CoursePicker/CoursePicker.jsx';
 import AddDisciplinePopUp from '../Components/PopUps/AddDisciplinePopUp.jsx';
 import CoursePopUp from '../Components/PopUps/CoursePopUp.jsx';
-import usePlansSync from '../Hooks/usePlansSync.jsx';
-import usePageLifecycleHandlers from '../Hooks/usePageLifecycleHandlers.jsx';
-import { collisionAlgorithm, Monitor } from '../Components/Dnd/Utilities.jsx';
+import usePlanSync from '../Hooks/usePlanSync.jsx';
+import useLifecycleHandlers from '../Hooks/useLifecycleHandlers.jsx';
+import { computeCollision, DragMonitor } from '../Components/Dnd/Utilities.jsx';
 import { DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import { ClipLoader } from "react-spinners";
@@ -186,22 +186,6 @@ const Home = ({ subjects }) => {
     return initialCourseMap;
   });
 
-  usePageLifecycleHandlers(setPlans, setIsLoading, unsavedChanges, courseMap)
-  usePlansSync(courseMap, setCourseMap, setPlans, setUnsavedChanges)
-
-  useEffect(() => {
-      const updatedCourseMap = new Map(courseMap)
-      plans.forEach((semester) => {
-          semester.courses.forEach((course) => 
-              updatedCourseMap.set(course.id, {
-                  ...courseMap.get(course.id),
-                  plan: course.plan,
-                  semester: semester.id, 
-              }))
-      })
-      setCourseMap(updatedCourseMap)
-  }, [isLoading])
-  
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: { distance: 5 } // it's important to trigger onClick events right
@@ -209,7 +193,10 @@ const Home = ({ subjects }) => {
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     }),
-  );
+  )
+
+  useLifecycleHandlers(courseMap, unsavedChanges, setIsLoading, setPlans, setCourseMap)
+  usePlanSync(courseMap, setCourseMap, setPlans, setUnsavedChanges)
   
   const toggleDiscipline = () => {
     setAddDisciplineActive(!addDisciplineActive);
@@ -278,8 +265,8 @@ const Home = ({ subjects }) => {
                     desc={course.desc}
       />
       <Header />
-      <DndContext sensors={sensors} collisionDetection={(props) => collisionAlgorithm(props)}>
-        <Monitor  courseMap={courseMap} setCourseMap={setCourseMap} setPlans={setPlans} setUnsavedChanges={setUnsavedChanges}/>
+      <DndContext sensors={sensors} collisionDetection={(props) => computeCollision(props)}>
+        <DragMonitor courseMap={courseMap} setCourseMap={setCourseMap} setPlans={setPlans} setUnsavedChanges={setUnsavedChanges}/>
         <ContentContainer>
           <Semester courseMap={courseMap} semesters={plans} setSemesters={setPlans} displayCourse={showCourseDetails} />
           <CoursePicker courseMap={courseMap} categories={categories} displayCourse={showCourseDetails} openDisciplinePopUp={toggleDiscipline} />

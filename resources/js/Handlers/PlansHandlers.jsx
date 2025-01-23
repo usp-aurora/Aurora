@@ -1,18 +1,29 @@
 import axios from 'axios'
 
-function savePlansToLocalStorage(updatedData) {
+/**
+ * Save unsynced plans to local storage for later synchronization.
+ * 
+ * @param {Map} unsyncedData - Map containing unsynced data.
+ */
+function persistPlansToLocalStorage(unsyncedData) {
   const payload = JSON.stringify(
-    Array.from(updatedData).map(([key, val]) => ({
-      id: val.plan,
-      subject_id: key,
-      semester: val.semester,
+    Array.from(unsyncedData).map(([subjectId, subjectDetails]) => ({
+      id: subjectDetails.plan,
+      subject_id: subjectId,
+      semester: subjectDetails.semester,
     }))
   )
   
   localStorage.setItem('unsyncedPlans', payload)
 }
 
-async function getPlansFromServer() {
+/**
+ * Fetch plans from the server.
+ * 
+ * @returns {Promise<Array>} The list of plans fetched from the server.
+ * @throws {Error} Throws an error if fetching fails.
+ */
+async function fetchPlansFromServer() {
   try {
     const response = await fetch("/api/plans/index")
     const data = await response.json()
@@ -22,13 +33,20 @@ async function getPlansFromServer() {
   }
 }
 
-async function syncPlansWithServer(updatedData, setData, failedToSave) {
+/**
+ * Synchronize plans with the server.
+ * 
+ * @param {Map} data - Map containing the current state of plans.
+ * @param {Function} updateData - Function to update the state of plans data.
+ * @param {Function} setSyncErrorFlag - Function to set the sync error flag.
+ */
+async function syncPlansWithServer(data, updateData, setSyncErrorFlag) {
   try {
     const payload = JSON.stringify(
-      Array.from(updatedData).map(([key, val]) => ({
-        id: val.plan,
-        subject_id: key,
-        semester: val.semester,
+      Array.from(data).map(([subjectId, subjectDetails]) => ({
+        id: subjectDetails.plan,
+        subject_id: subjectId,
+        semester: subjectDetails.semester,
       }))
     )
     
@@ -37,56 +55,61 @@ async function syncPlansWithServer(updatedData, setData, failedToSave) {
     if (response.status === 200) {
       const { changedPlans } = response.data
 
-      setData((prev) => {
-        const data = new Map(prev)
+      updateData((previousData) => {
+        const updatedData = new Map(previousData)
 
         changedPlans.forEach(({ id, subject_id, action }) => {
           switch (action) {
             case 'created':
             case 'updated':
-              data.set(subject_id, {
-                ...data.get(subject_id),
+              updatedData.set(subject_id, {
+                ...updatedData.get(subject_id),
                 plan: id,
               })
               break
 
             case 'deleted':
-              data.set(subject_id, {
-                ...data.get(subject_id),
+              updatedData.set(subject_id, {
+                ...updatedData.get(subject_id),
                 plan: null,
               })
               break
 
             default:
-              console.error("Ação não reconhecida:", action)
-              break
+              console.warn("Unrecognized action:", action)
           }
         })
-        return data
+
+        return updatedData
       })
-      console.log("Sincronização concluída com sucesso!")
-      failedToSave(false)
+
+      console.log("Synchronization successful!")
+      setSyncErrorFlag(false)
     } else {
-      console.error("Erro ao sincronizar:", response.data)
-      failedToSave(true)
+      console.error("Synchronization error:", response.data)
+      setSyncErrorFlag(true)
     }
   } catch (error) {
-    console.error("Erro na comunicação com o servidor:", error)
-    failedToSave(true)
+    console.error("Communication error with the server:", error)
+    setSyncErrorFlag(true)
   }
 }
 
-async function syncUnsyncedPlansOnLoad() {
+/**
+ * Synchronize unsynced plans from local storage.
+ */
+async function syncPendingPlans() {
   const unsyncedPlans = localStorage.getItem('unsyncedPlans')
-    if (unsyncedPlans) {
-      const response = await axios.post('api/plans/sync', unsyncedPlans)
 
-      if (response.status === 200) {
+  if (unsyncedPlans) {
+    try {
+      const response = await axios.post('api/plans/sync', unsyncedPlans)
+      if (response.status === 200) 
         localStorage.removeItem('unsyncedPlans')
-      } else {
-        console.error('Erro ao sincronizar planos:', response.data)
+    } catch (error) {
+      console.error("Error synchronizing unsynced plans:", error)
     }
   }
 }
 
-export {getPlansFromServer, savePlansToLocalStorage, syncPlansWithServer, syncUnsyncedPlansOnLoad}
+export {fetchPlansFromServer, persistPlansToLocalStorage, syncPlansWithServer, syncPendingPlans}
