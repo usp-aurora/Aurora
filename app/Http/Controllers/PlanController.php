@@ -69,23 +69,25 @@ class PlanController extends Controller
     public function sync(Request $request)
     {
         $data = $request->json()->all();
+        $userPlans = Plan::where('user_id', $this->getUserId())->get();
         $changedPlans = [];
 
         try {
             foreach ($data as $plan) {
-                if (isset($plan['id']) && isset($plan['semester'])) {
+                $existingPlan = $userPlans->where('subject_id', $plan['subject_id'])->first();
+                if ($existingPlan && isset($plan['semester'])) {
                     // Update existing plan
                     $this->update(new Request([
                         'subject_id' => $plan['subject_id'],
                         'semester' => $plan['semester'],
-                    ]), $plan['id']);
+                    ]), $existingPlan['id']);
 
                     $changedPlans[] = [
-                        'id' => $plan['id'],
+                        'id' => $existingPlan['id'],
                         'subject_id' => $plan['subject_id'],
                         'action' => 'updated',
                     ];
-                } elseif (isset($plan['semester'])) {
+                } elseif (!$existingPlan && isset($plan['semester'])) {
                     // Create a new plan
                     $this->store(new Request([
                         'subject_id' => $plan['subject_id'],
@@ -103,16 +105,14 @@ class PlanController extends Controller
                         'subject_id' => $newPlan->subject_id,
                         'action' => 'created',
                     ];
-                } elseif (isset($plan['id'])) {
-                    if (Plan::find($plan['id'])) {
-                        $this->destroy($plan['id']);
+                } elseif ($existingPlan && isset($plan['id'])) {
+                    $this->destroy($plan['id']);
 
-                        $changedPlans[] = [
-                            'id' => $plan['id'],
-                            'subject_id' => $plan['subject_id'],
-                            'action' => 'deleted',
-                        ];
-                    }
+                    $changedPlans[] = [
+                        'id' => $plan['id'],
+                        'subject_id' => $plan['subject_id'],
+                        'action' => 'deleted',
+                    ];
                 }
             }
 
