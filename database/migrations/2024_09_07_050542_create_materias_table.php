@@ -12,9 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('materias', function (Blueprint $table) {
-            $table->id();
+            $table->string('codigo_materia')->primary();
             $table->string('nome');
-            $table->string('codigo');
             $table->string('ementa');
             $table->string('creditos_aula');
             $table->string('creditos_trabalho');

@@ -28,9 +28,9 @@ class CarregaMateriasController extends Controller {
                     ->select(["titulo", "descricao", "id"])->get();
         
         foreach ($grupos as $grupo) {
-            $disciplinas = DB::table('materias_grupo')
-                             ->where('materias_grupo.id_grupo', '=', $grupo->id)
-                             ->join('materias', 'materias_grupo.id_materia', '=', 'materias.id')
+            $disciplinas = DB::table('materias_grupos')
+                             ->where('materias_grupos.id_grupo', '=', $grupo->id)
+                             ->join('materias', 'materias_grupos.codigo_materia', '=', 'materias.codigo_materia')
                              ->select(["materias.codigo_materia", "materias.nome", "materias.ementa", "materias.creditos_aula", "materias.creditos_trabalho", ])->get();
             
             $grupoAtual = [
@@ -72,10 +72,10 @@ class CarregaMateriasController extends Controller {
         $grupoEstrutura = [];
         
         foreach ($grupos as $grupo) {
-            $disciplinas = DB::table('materias_grupo')
-                             ->where('materias_grupo.id_grupo', '=', $grupo->id)
-                             ->join('materia', 'materias_grupo.id_materia', '=', 'materia.id')
-                             ->select(["materia.codigo_materia", "materia.nome", "materia.ementa", "materia.creditos_aula", "materia.creditos_trabalho", ])->get();
+            $disciplinas = DB::table('materias_grupos')
+                             ->where('materias_grupos.id_grupo', '=', $grupo->id)
+                             ->join('materias', 'materias_grupos.codigo_materia', '=', 'materias.codigo_materia')
+                             ->select(["materias.codigo_materia", "materias.nome", "materias.ementa", "materias.creditos_aula", "materias.creditos_trabalho", ])->get();
             
             $subgrupo = [
                 'titulo' => $grupo->titulo,
@@ -86,7 +86,7 @@ class CarregaMateriasController extends Controller {
             
             foreach  ($disciplinas as $disciplina) {
                 $subgrupo['materias'][] = [
-                    'codigo_materia' => $disciplina->codigo_material,
+                    'codigo_materia' => $disciplina->codigo_materia,
                     'nome' => $disciplina->nome,
                     'ementa' => $disciplina->ementa,
                     'creditos_aula' => $disciplina->creditos_aula,

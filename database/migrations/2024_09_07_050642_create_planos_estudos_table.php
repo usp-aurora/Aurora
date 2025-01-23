@@ -14,8 +14,9 @@ return new class extends Migration
         Schema::create('planos_estudos', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->string('codigo_materia');
             $table->foreignId('id_usuario')->references('id')->on('users')->constrained();
-            $table->foreignId('id_materia')->references('id')->on('materias')->constrained();
+            $table->foreign('codigo_materia')->references('codigo_materia')->on('materias')->constrained();
             $table->integer('semestre');
 
         });

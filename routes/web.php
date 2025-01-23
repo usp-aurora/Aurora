@@ -6,6 +6,7 @@ use App\Http\Controllers\PlanoEstudosController;
 use App\Http\Controllers\PlansController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\CarregaMateriasController;
 
 
 Route::get('/', [PlanoEstudosController::class, 'index']);
