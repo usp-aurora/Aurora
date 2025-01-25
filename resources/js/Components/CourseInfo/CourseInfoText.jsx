@@ -1,6 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 
+const CourseTextContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+`
+
 const CourseDescription = styled.div`
 	max-height: 3lh;
 	overflow: hidden;
@@ -43,13 +48,13 @@ const ReadMoreCheckbox = styled.input`
 
 const CourseInfoText = ({ desc }) => {
 	return (
-		<>
+		<CourseTextContainer>
 			<ReadMoreCheckbox type="checkbox" name="read-more" id="read-more" />
 			<CourseDescription>
 				<p>{desc}</p>
 			</CourseDescription>
 			<ReadMoreLabel for="read-more" />
-		</>
+		</CourseTextContainer>
 	);
 };
 
