@@ -1,57 +1,57 @@
 function getAdjacencyLists(nodes,links) {
-	const inLists = new Map(Array.from(nodes.keys(), key => [key,[]]))
-	const outLists = new Map(Array.from(nodes.keys(), key => [key,[]]))
+	const inLists = new Map(Array.from(nodes.keys(), key => [key,[]]));
+	const outLists = new Map(Array.from(nodes.keys(), key => [key,[]]));
 	for(const [key,link] of links) {
-		outLists.get(link.a).push(link.b)
-		inLists.get(link.b).push(link.a)
+		outLists.get(link.a).push(link.b);
+		inLists.get(link.b).push(link.a);
 	}
-	return [inLists,outLists]
+	return [inLists,outLists];
 }
 
 // assumes a directed acyclic graph
 function getLayers(inLists, outLists, root) {
-	const counters = new Map(Array.from(inLists.keys(), key => [key,0]))
-	const layers = new Map()
+	const counters = new Map(Array.from(inLists.keys(), key => [key,0]));
+	const layers = new Map();
 
 	// BFS
-	let stack = [[root,false],[root,true]]
+	let stack = [[root,false],[root,true]];
 	while(stack.length > 0) {
-		const newStack = []
+		const newStack = [];
 		while(stack.length > 0) {
-			const [node,foward] = stack.pop()
-			const list = (foward ? outLists : inLists).get(node)
+			const [node,foward] = stack.pop();
+			const list = (foward ? outLists : inLists).get(node);
 			for(const otherNode of list) {
-				const counter = counters.get(otherNode)
+				const counter = counters.get(otherNode);
 				if(counter == 0) {
-					newStack.push([otherNode,foward])
+					newStack.push([otherNode,foward]);
 				}
-				counters.set(otherNode,counter+1)
+				counters.set(otherNode,counter+1);
 			}
 		}
-		stack = newStack
+		stack = newStack;
 	}
 
 	// topological sorting
-	layers.set(root,0)
-	stack = [[root,false],[root,true]]
+	layers.set(root,0);
+	stack = [[root,false],[root,true]];
 	while(stack.length > 0) {
-		const newStack = []
+		const newStack = [];
 		while(stack.length > 0) {
-			const [node,foward] = stack.pop()
-			const list = (foward ? outLists : inLists).get(node)
+			const [node,foward] = stack.pop();
+			const list = (foward ? outLists : inLists).get(node);
 			for(const otherNode of list) {
-				const counter = counters.get(otherNode)
+				const counter = counters.get(otherNode);
 				if(counter == 1) {
-					layers.set(otherNode,layers.get(node)+(foward ? 1 : -1))
-					newStack.push([otherNode,foward])
+					layers.set(otherNode,layers.get(node)+(foward ? 1 : -1));
+					newStack.push([otherNode,foward]);
 				}
-				counters.set(otherNode,counter-1)
+				counters.set(otherNode,counter-1);
 			}
 		}
-		stack = newStack
+		stack = newStack;
 	}
 
-	return layers
+	return layers;
 }
 
-export { getAdjacencyLists, getLayers }
+export { getAdjacencyLists, getLayers };

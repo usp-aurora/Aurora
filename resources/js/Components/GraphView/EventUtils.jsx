@@ -1,7 +1,7 @@
 function addDragOverlay() {
 	if(document.getElementById("drag-overlay") == null) {
-		const dragOverlay = document.createElement("div")
-		dragOverlay.id = "drag-overlay"
+		const dragOverlay = document.createElement("div");
+		dragOverlay.id = "drag-overlay";
 		dragOverlay.style = `
 			position: absolute;
 			top: 0;
@@ -11,30 +11,30 @@ function addDragOverlay() {
 			z-index: 9999;
 			background-color: transparent;
 			cursor: grabbing;
-		`
-		document.body.appendChild(dragOverlay)
+		`;
+		document.body.appendChild(dragOverlay);
 	}
 }
 
 function removeDragOverlay() {
-	const dragOverlay = document.getElementById("drag-overlay")
+	const dragOverlay = document.getElementById("drag-overlay");
 	if(dragOverlay != null)
-		dragOverlay.remove()
+		dragOverlay.remove();
 }
 
 function getHandleResize(setSize, outerDiv) {
-	return e => {
-		const width = outerDiv.current ? outerDiv.current.clientWidth : 0
-		const height = outerDiv.current ? outerDiv.current.clientHeight : 0
-		setSize({width, height})
+	return function(e) {
+		const width = (outerDiv.current ? outerDiv.current.clientWidth : 0);
+		const height = (outerDiv.current ? outerDiv.current.clientHeight : 0);
+		setSize({width, height});
 	}
 }
 
 function getHandleMouseDown(mouseDown, dragStart, origin) {
-	return e => {
-		mouseDown.current = true
-		dragStart.current = { x: origin.x+e.clientX, y: origin.y+e.clientY }
-		addDragOverlay()
+	return function(e) {
+		mouseDown.current = true;
+		dragStart.current = { x: origin.x+e.clientX, y: origin.y+e.clientY };
+		addDragOverlay();
 	}
 }
 
@@ -45,72 +45,72 @@ function getHandleMouseMove(
 	mouseDown,
 	alphaNode,
 	dragStart,
-	alphaStart
+	alphaStart,
 ) {
-	return e => {
-		e.preventDefault()
+	return function(e) {
+		e.preventDefault();
 		if(mouseDown.current) {
-			const alpha = alphaNode.current // alphaNode.current can become undefined
+			const alpha = alphaNode.current; // alphaNode.current can become undefined
 			if(alpha == undefined) {
-				setOrigin({ x: dragStart.current.x-e.clientX, y: dragStart.current.y-e.clientY })
+				setOrigin({ x: dragStart.current.x-e.clientX, y: dragStart.current.y-e.clientY });
 			}
 			else {
 				setPositions(positions => {
-					const newPositions = new Map(positions)
-					const alphaX = alphaStart.current.x+e.clientX
-					const alphaY = alphaStart.current.y+e.clientY
-					newPositions.set(alpha,{x:alphaX,y:alphaY})
-					return newPositions
-				})
-				startUpdate()
+					const newPositions = new Map(positions);
+					const alphaX = alphaStart.current.x+e.clientX;
+					const alphaY = alphaStart.current.y+e.clientY;
+					newPositions.set(alpha,{x:alphaX,y:alphaY});
+					return newPositions;
+				});
+				startUpdate();
 			}
 		}
-	}
+	};
 }
 
 function getHandleMouseLeave(mouseDown, alphaNode) {
-	return e => {
-		mouseDown.current = false
-		alphaNode.current = undefined
-		removeDragOverlay()
-	}
+	return function(e) {
+		mouseDown.current = false;
+		alphaNode.current = undefined;
+		removeDragOverlay();
+	};
 }
 
 function getHandleMouseUp(mouseDown, alphaNode) {
-	return e => {
-		mouseDown.current = false
-		alphaNode.current = undefined
-		removeDragOverlay()
-	}
+	return function(e) {
+		mouseDown.current = false;
+		alphaNode.current = undefined;
+		removeDragOverlay();
+	};
 }
 
 function getHandleMouseDownNode(alphaNode, alphaStart, key, pos) {
-	return e => {
-		e.preventDefault()
-		alphaNode.current = key
-		alphaStart.current = { x: pos.x-e.clientX, y: pos.y-e.clientY }
-	}
+	return function(e) {
+		e.preventDefault();
+		alphaNode.current = key;
+		alphaStart.current = { x: pos.x-e.clientX, y: pos.y-e.clientY };
+	};
 }
 
 function handleTouch(e) {
-	const touches = e.changedTouches
-	const first = touches[0]
+	const touches = e.changedTouches;
+	const first = touches[0];
 
 	const type = (
 		e.type == "touchstart" ? "mousedown" :
 		e.type == "touchmove" ? "mousemove" :
 		"mouseup"
-	)
+	);
 
-	const simulatedEvent = document.createEvent("MouseEvent")
+	const simulatedEvent = document.createEvent("MouseEvent");
 	simulatedEvent.initMouseEvent(
 		type, true, true, window, 1,
 		first.screenX, first.screenY,
 		first.clientX, first.clientY, false,
-		false, false, false, 0/*left*/, null
-	)
+		false, false, false, 0, null,
+	);
 
-	first.target.dispatchEvent(simulatedEvent)
+	first.target.dispatchEvent(simulatedEvent);
 }
 
 export {
@@ -120,5 +120,5 @@ export {
 	getHandleMouseLeave,
 	getHandleMouseUp,
 	getHandleMouseDownNode,
-	handleTouch
-}
+	handleTouch,
+};
