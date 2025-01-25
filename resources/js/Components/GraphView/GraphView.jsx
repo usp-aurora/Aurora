@@ -99,7 +99,7 @@ function GraphView({ nodes, links, root, interactive = false, vertical = false, 
 		const x2 = pos2.x-origin.x + size.width/2;
 		const y2 = pos2.y-origin.y + size.height/2;
 		return (
-			<LinkView key={key} x1={x1} y1={y1} x2={x2} y2={y2} r={90} />
+			<LinkView key={key} x1={x1} y1={y1} x2={x2} y2={y2} />
 		);
 	});
 

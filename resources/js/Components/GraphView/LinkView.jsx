@@ -6,7 +6,7 @@ const Link = styled.line`
 	filter: url(#glow);
 `;
 
-function LinkView({x1=0,y1=0,x2=10,y2=10,r=20}) {
+function LinkView({x1=0,y1=0,x2=10,y2=10,r=80}) {
 	const hypot = Math.hypot(x2-x1,y2-y1);
 	if(hypot < 2*r) {
 		return (<></>);
