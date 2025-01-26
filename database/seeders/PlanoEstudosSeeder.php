@@ -15,11 +15,11 @@ class PlanoEstudosSeeder extends Seeder
     {
         $plan = [
             'id_usuario' => 1,
-            'id_materia' => 1,
+            'codigo_materia' => "MAC0218",
             'semestre' => 1,
         ];
 
         PlanoEstudos::create($plan);
-        PlanoEstudos::factory(45)->create();
+        // PlanoEstudos::factory(45)->create();
     }
 }
