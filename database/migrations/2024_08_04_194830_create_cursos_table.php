@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nome_curso');
             $table->integer('id_instituto')->nullable();
+            $table->string('grade');
             $table->timestamp('updated_at');
             $table->timestamp('created_at');
         });
