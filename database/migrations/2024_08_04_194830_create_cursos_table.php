@@ -16,8 +16,7 @@ return new class extends Migration
             $table->string('nome_curso');
             $table->integer('id_instituto')->nullable();
             $table->string('grade');
-            $table->timestamp('updated_at');
-            $table->timestamp('created_at');
+            $table->timestamps();
         });
     }
 
@@ -29,3 +28,4 @@ return new class extends Migration
         Schema::dropIfExists('cursos');
     }
 };
+ 

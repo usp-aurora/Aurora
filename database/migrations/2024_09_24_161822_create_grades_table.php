@@ -15,8 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('id_curso')->references('id')->on('cursos')->onUpdate('cascade');
             $table->foreignId('id_grupo')->references('id')->on('grupos')->onUpdate('cascade');
-            $table->timestamp('updated_at');
-            $table->timestamp('created_at');
+            $table->timestamps();
         });
     }
 

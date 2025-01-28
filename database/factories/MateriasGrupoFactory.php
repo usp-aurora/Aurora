@@ -18,10 +18,21 @@ class MateriasGrupoFactory extends Factory
     {
         return [
             'id_grupo' => $this->faker->numberBetween(1, 3),
-            //'id_grupo' => 1,
-            'id_materia' => $this->faker->numberBetween(1, 3)
-            //'id_materia' => 1
+            'codigo_materia' => $this->generateCustomCode()
         ];
+    }
+
+    /**
+     * Generate some subjects code.
+     *
+     * @return string
+     */
+    private function generateCustomCode()
+    {
+        $letters = "MAC";
+        $numbers = $this->faker->numerify('####');
+        
+        return $letters . $numbers;
     }
     
 }

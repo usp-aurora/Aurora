@@ -1,9 +1,6 @@
 <?php
-
 namespace Database\Factories;
-
 use Illuminate\Database\Eloquent\Factories\Factory;
-
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Subject>
  */
@@ -17,8 +14,8 @@ class MateriaFactory extends Factory
     public function definition(): array
     {
         return [
-            'nome' => $this->generateName(),
-            'codigo' => $this->generateCustomCode(),
+            'nome' => $this->faker->sentence(rand(3, 8)),
+            'codigo_materia' => $this->generateCustomCode(),
             'ementa' => $this->faker->paragraph(),
             'creditos_aula' => $this->faker->numberBetween(2, 4),
             'creditos_trabalho' => $this->faker->numberBetween(0, 2)
@@ -26,27 +23,14 @@ class MateriaFactory extends Factory
     }
     
     /**
-     * Generate a name with 3 to 8 words.
-     *
-     * @return string
-     */
-    private function generateName()
-    {
-        $wordCount = $this->faker->numberBetween(3, 8); // Randomly choose a number between 3 and 8
-        $words = $this->faker->words($wordCount); // Generate the words
-        
-        return ucfirst(implode(' ', $words)); // Join the words into a sentence and capitalize the first letter
-    }
-
-    /**
      * Generate some subjects code.
      *
      * @return string
      */
     private function generateCustomCode()
     {
-        $letters = "MAC";// strtoupper($this->faker->lexify('???'));
-        $numbers = $this->faker->numerify('####'); // Generates 4 random numbers
+        $letters = "MAC";
+        $numbers = $this->faker->numerify('####');
         
         return $letters . $numbers;
     }

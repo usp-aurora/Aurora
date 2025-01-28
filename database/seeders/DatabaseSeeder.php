@@ -27,9 +27,9 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call([
+            GrupoSeeder::class,
             MateriaSeeder::class,
             PlanoEstudosSeeder::class,
-            GrupoSeeder::class,
             MateriasGrupoSeeder::class,
             CriteriosCompletudeSeeder::class,
             CursosSeeder::class

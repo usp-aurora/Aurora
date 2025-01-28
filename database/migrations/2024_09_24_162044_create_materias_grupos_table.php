@@ -16,8 +16,7 @@ return new class extends Migration
             $table->foreignId('id_grupo')->references('id')->on('grupos')->onUpdate('cascade');
             $table->string('codigo_materia');
             $table->foreign('codigo_materia')->references('codigo_materia')->on('materias')->onUpdate('cascade');
-            $table->timestamp('updated_at');
-            $table->timestamp('created_at');
+            $table->timestamps();
         });
     }
 

@@ -24,3 +24,4 @@ class CursosSeeder extends Seeder
         ]);
     }
 }
+ 

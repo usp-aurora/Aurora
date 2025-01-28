@@ -16,8 +16,7 @@ return new class extends Migration
             $table->string('titulo');
             $table->string('descricao');
             $table->unsignedBigInteger('id_grupo_pai')->nullable();
-            $table->timestamp('updated_at');
-            $table->timestamp('created_at');
+            $table->timestamps();
         });
 
         Schema::table('grupos', function (Blueprint $table) {
