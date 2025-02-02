@@ -1,16 +1,16 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import Header from '../Components/Header/Header.jsx';
 import Semester from '../Components/Semesters/Semesters.jsx';
 import CoursePicker from '../Components/CoursePicker/CoursePicker.jsx';
 import AddDisciplinePopUp from '../Components/PopUps/AddDisciplinePopUp.jsx';
 import CoursePopUp from '../Components/PopUps/CoursePopUp.jsx';
+import LoadingScreen from '../Components/Atoms/LoadingScreen.jsx';
 import usePlanSync from '../Hooks/usePlanSync.jsx';
 import useLifecycleHandlers from '../Hooks/useLifecycleHandlers.jsx';
 import { computeCollision, DragMonitor } from '../Components/Dnd/Utilities.jsx';
 import { DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
-import { ClipLoader } from "react-spinners";
 
 const AppContainer = styled.div`
   /* display: flex;
@@ -26,16 +26,6 @@ const ContentContainer = styled.div`
   display: flex;
   flex-grow: 1;
 `;
-
-const LoadingContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  font-size: 1.5em;
-  color: #555;
-`;
-
 
 const categories = [
   {
@@ -195,7 +185,7 @@ const Home = ({ subjects }) => {
     }),
   )
 
-  useLifecycleHandlers(courseMap, unsavedChanges, setIsLoading, setPlans, setCourseMap)
+  useLifecycleHandlers(courseMap, plans, unsavedChanges, setIsLoading, setPlans, setCourseMap)
   usePlanSync(courseMap, setCourseMap, setPlans, setUnsavedChanges)
   
   const toggleDiscipline = () => {
@@ -244,15 +234,9 @@ const Home = ({ subjects }) => {
     );
   };
 
-  if (isLoading) {
-    return (
-      <LoadingContainer>
-         <ClipLoader color="#51A1E0" size={50} />
-      </LoadingContainer>
-    );
-  } 
-
-  return (
+  return  isLoading ? (
+	  <LoadingScreen />
+  ) : (
     <AppContainer>
       <AddDisciplinePopUp isOpen={addDisciplineActive} onClose={toggleDiscipline} />
       <CoursePopUp isOpen={coursePopUpActive} onClose={toggleCoursePopUp} 

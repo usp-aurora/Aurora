@@ -1,11 +1,33 @@
 import axios from 'axios'
 
 /**
+ * Retrieves stored plans from local storage
+ * 
+ * @returns {Array | null} Plans grouped by semester.
+ */
+function fetchGuestPlans() {
+  const storedPlans = localStorage.getItem('guestPlans');
+  localStorage.removeItem('guestPlans');
+  return storedPlans ? JSON.parse(storedPlans) : null;
+}
+
+/**
+ * Saves only relevant course data for guest users, ensuring it includes up to the last non-empty semester
+ * 
+ * @param {Array} plans - Plans grouped by semester.
+ */
+function saveGuestPlans(plans) {
+  const guestPlans = plans.map(semester => ({ ...semester, courses: semester.courses.map(course => ({ id: course.id, code: course.code }))}));
+  const lastSemester =  guestPlans.findLastIndex((sem) => sem.courses.length > 0) + 1;
+  localStorage.setItem('guestPlans', JSON.stringify(guestPlans.slice(0, lastSemester)));
+}
+    
+/**
  * Save unsynced plans to local storage for later synchronization.
  * 
  * @param {Map} unsyncedData - Map containing unsynced data.
  */
-function persistPlansToLocalStorage(unsyncedData) {
+function saveUserPlans(unsyncedData) {
   const payload = JSON.stringify(
     Array.from(unsyncedData).map(([subjectId, subjectDetails]) => ({
       id: subjectDetails.plan,
@@ -13,7 +35,7 @@ function persistPlansToLocalStorage(unsyncedData) {
       semester: subjectDetails.semester,
     }))
   )
-  
+
   localStorage.setItem('unsyncedPlans', payload)
 }
 
@@ -23,7 +45,7 @@ function persistPlansToLocalStorage(unsyncedData) {
  * @returns {Promise<Array>} The list of plans fetched from the server.
  * @throws {Error} Throws an error if fetching fails.
  */
-async function fetchPlansFromServer() {
+async function fetchUserPlans() {
   try {
     const response = await fetch("/api/plans/index")
     const data = await response.json()
@@ -112,4 +134,4 @@ async function syncPendingPlans() {
   }
 }
 
-export {fetchPlansFromServer, persistPlansToLocalStorage, syncPlansWithServer, syncPendingPlans}
+export { fetchGuestPlans, fetchUserPlans, saveGuestPlans, saveUserPlans, syncPlansWithServer, syncPendingPlans };
