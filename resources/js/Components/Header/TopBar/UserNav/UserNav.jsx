@@ -23,7 +23,7 @@ const UserMenuButton = styled.button`
     font-weight: 450;
     font-size: 18px;
     margin: 0 10px;
-    color: ${(props) => (props.textcolor)};
+    color: ${(props) => (props.$textcolor)};
   }
 `;
 
@@ -69,6 +69,7 @@ const MenuItem = styled.div`
 function UserNav({ textColor='black' }) {
   const dropdownRef = useRef(null);
   const { authUser } = useAuth();
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const toggleDropdown = (event) => {
@@ -93,7 +94,7 @@ function UserNav({ textColor='black' }) {
   
   return authUser ? (
     <>
-      <UserMenuButton onClick={toggleDropdown} role="button" aria-label="Abrir menu do usuário" textcolor={textColor}>
+      <UserMenuButton onClick={toggleDropdown} role="button" aria-label="Abrir menu do usuário" $textcolor={textColor}>
         <span>{authUser.name}</span>
         <span>{isDropdownOpen ? "▲" : "▼"}</span>
       </UserMenuButton>
@@ -105,7 +106,7 @@ function UserNav({ textColor='black' }) {
             <h3>Previsão de Conclusão</h3> <DownloadButton />
           </MenuItem>
           <MenuItem>
-            <h3>Tema:</h3> <ThemeSwitch />
+            <h3>Tema:</h3> <ThemeSwitch right={isDarkMode} setRight={setIsDarkMode}/>
           </MenuItem>
           <MenuItem>
             <LogoutButton onClick={() => (window.location.href = "/logout")}>Sair</LogoutButton>

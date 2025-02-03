@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import React, { useState } from 'react';
+import React from 'react';
 
 const BaseButton = styled.button`
   font-size: 16px;
@@ -79,25 +79,23 @@ const ToggleSwitch = styled.button`
 const ToggleThumb = styled.div`
   height: 18px;
   width: 18px;
-  background-color: ${(props) => (props.$isDarkMode ? "#17538d" : "#2a85cd")};
+  background-color: ${(props) => (props.$right ? "#17538d" : "#2a85cd")};
   border-radius: 99px;
   position: absolute;
-  left: ${(props) => (props.$isDarkMode ? "calc(38px - 20px)" : "0")};
+  left: ${(props) => (props.$right ? "calc(38px - 20px)" : "0")};
   top: 50%;
   transform: translateY(-50%);
   transition: background-color 0.2s ease, left 0.15s ease;
 `;
 
-function ThemeSwitch() {
-  const [isDarkMode, setIsDarkMode] = useState(false);
-
+function ThemeSwitch({right, setRight, leftLabel = 'Claro', rightLabel = 'Escuro'}) {
   return (
     <ThemeSwitchContainer>
-      <h3>Claro</h3>
-      <ToggleSwitch onClick={() => setIsDarkMode(!isDarkMode)}>
-        <ToggleThumb $isDarkMode={isDarkMode} />
+      <h3>{leftLabel}</h3>
+      <ToggleSwitch onClick={() => setRight(!right)}>
+        <ToggleThumb $right={right} />
       </ToggleSwitch>
-      <h3>Escuro</h3>
+      <h3>{rightLabel}</h3>
     </ThemeSwitchContainer>
   );
 }
