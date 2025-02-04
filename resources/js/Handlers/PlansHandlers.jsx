@@ -29,7 +29,9 @@ function saveGuestPlans(plans) {
  */
 function saveUserPlans(unsyncedData) {
   const payload = JSON.stringify(
-    Array.from(unsyncedData).map(([subjectId, subjectDetails]) => ({
+    Array.from(unsyncedData)
+    .filter(([id, subject]) => subject.unsaved) // Filters only unsaved subjects
+    .map(([subjectId, subjectDetails]) => ({
       id: subjectDetails.plan,
       subject_id: subjectId,
       semester: subjectDetails.semester,
@@ -65,7 +67,9 @@ async function fetchUserPlans() {
 async function syncPlansWithServer(data, updateData, setSyncErrorFlag) {
   try {
     const payload = JSON.stringify(
-      Array.from(data).map(([subjectId, subjectDetails]) => ({
+      Array.from(data)
+      .filter(([id, subject]) => subject.unsaved) // Filters only unsaved subjects
+      .map(([subjectId, subjectDetails]) => ({
         id: subjectDetails.plan,
         subject_id: subjectId,
         semester: subjectDetails.semester,
@@ -87,12 +91,14 @@ async function syncPlansWithServer(data, updateData, setSyncErrorFlag) {
               updatedData.set(subject_id, {
                 ...updatedData.get(subject_id),
                 plan: id,
+                unsaved: false,
               })
               break
 
             case 'deleted':
               updatedData.set(subject_id, {
                 ...updatedData.get(subject_id),
+                unsaved: false,
                 plan: null,
               })
               break

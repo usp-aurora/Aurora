@@ -70,6 +70,7 @@ function DragMonitor({ courseMap, setCourseMap, setPlans, setUnsavedChanges }) {
         updatedMap.set(draggedItem.id, {
           ...prevMap.get(draggedItem.id),
           semester: draggedItem.container === 'coursePicker' ? null : Number(draggedItem.container.split(' ')[1]),
+          unsaved: true,
         })
         return updatedMap
       })

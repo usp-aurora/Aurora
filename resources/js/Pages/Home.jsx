@@ -145,6 +145,7 @@ const Home = ({ subjects }) => {
           tags: [], // init tags
           plan: null, // init with plan as null
           semester: null, // init with semester as null
+          unsaved: false,
           // init card data
           colors: {
             background: "#FFFFFF",
