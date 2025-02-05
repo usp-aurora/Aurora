@@ -1,17 +1,14 @@
-import React from 'react'
-import {useDroppable} from '@dnd-kit/core'
+import React from 'react';
+import { useDroppable } from '@dnd-kit/core';
 
-function Droppable({id, disable = false, ...props}) {
-  const {setNodeRef} = useDroppable({
-    id: id,
-  })
-  
+function Droppable ({ id, children, disabled = false, ...props }) {
+  const { setNodeRef } = useDroppable({ id });
+
   return (
-    <div ref={disable? undefined : setNodeRef} style={{minHeight: props.children.clientHeight, minWidth: props.children.clientWidth}}>     
-      {props.children}
+    <div ref={disabled ? undefined : setNodeRef} {...props}>
+      {children}
     </div>
-  )
+  );
+};
 
-}
-
-export default Droppable
+export default Droppable;

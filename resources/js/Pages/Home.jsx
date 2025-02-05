@@ -8,9 +8,7 @@ import CoursePopUp from '../Components/PopUps/CoursePopUp.jsx';
 import LoadingScreen from '../Components/Atoms/LoadingScreen.jsx';
 import usePlanSync from '../Hooks/usePlanSync.jsx';
 import useLifecycleHandlers from '../Hooks/useLifecycleHandlers.jsx';
-import { computeCollision, DragMonitor } from '../Components/Dnd/Utilities.jsx';
-import { DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
-import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
+import DragAndDropProvider from '../Components/Dnd/DragAndDropProvider.jsx';
 
 const AppContainer = styled.div`
   /* display: flex;
@@ -177,15 +175,6 @@ const Home = ({ subjects }) => {
     return initialCourseMap;
   });
 
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: { distance: 5 } // it's important to trigger onClick events right
-    }),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    }),
-  )
-
   useLifecycleHandlers(courseMap, plans, unsavedChanges, setIsLoading, setPlans, setCourseMap)
   usePlanSync(courseMap, setCourseMap, setPlans, setUnsavedChanges)
   
@@ -250,13 +239,17 @@ const Home = ({ subjects }) => {
                     desc={course.desc}
       />
       <Header />
-      <DndContext sensors={sensors} collisionDetection={(props) => computeCollision(props)}>
-        <DragMonitor courseMap={courseMap} setCourseMap={setCourseMap} setPlans={setPlans} setUnsavedChanges={setUnsavedChanges}/>
+      <DragAndDropProvider
+        courseMap={courseMap}
+        setCourseMap={setCourseMap}
+        setPlans={setPlans}
+        setUnsavedChanges={setUnsavedChanges}
+      >
         <ContentContainer>
           <Semester courseMap={courseMap} semesters={plans} setSemesters={setPlans} displayCourse={showCourseDetails} />
           <CoursePicker courseMap={courseMap} categories={categories} displayCourse={showCourseDetails} openDisciplinePopUp={toggleDiscipline} />
         </ContentContainer>
-      </DndContext>
+      </DragAndDropProvider>
     </AppContainer>
   );
 };
