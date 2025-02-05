@@ -392,8 +392,8 @@ const CoursePicker = ({ categories, courseMap, displayCourse, openDisciplinePopU
                   .map((course) => (
                     <SortableCard 
                       id={course.id}
-                      course={courseMap.get(course?.id)}
-                      key={`${course.id}@${category.name}`} 
+                      key={course.id}
+                      course={courseMap.get(course?.id)} 
                       container={category.name}
                       disable={!expandedCategories[category.name]}
                       handleClick={displayCourse}/>

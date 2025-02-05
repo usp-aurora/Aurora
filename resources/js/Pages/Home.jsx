@@ -72,6 +72,7 @@ const categories = [
       { id: 17 }, 
       { id: 18 },
       { id: 19 },
+      { id : 1 },
     ],
     color: '#6762CD',
     completed: 0,

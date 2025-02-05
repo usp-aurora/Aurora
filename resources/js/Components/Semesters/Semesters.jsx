@@ -254,10 +254,10 @@ const Semesters = ({ semesters, setSemesters, displayCourse, courseMap }) => {
                 :
                 semester.courses.map((course) => (
                   <SortableCard
-                    id={course.id} 
-                    course={courseMap.get(course.id)}
-                    key={`${course.id}@Semesters`} 
-                    container={'Semesters'}
+                    id={course.id}
+                    key={course.id}
+                    course={courseMap.get(course.id)} 
+                    container={semester.alias}
                     disable={!expandedSemesters[semester.id]}
                     handleClick={displayCourse}
                   />
