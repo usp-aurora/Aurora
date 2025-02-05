@@ -22,6 +22,9 @@ class PlanControllerTest extends TestCase
      */
     public function test_index_returns_grouped_plans_by_semester()
     {
+        $user = User::where('id', 1)->first();
+        $this->actingAs($user);
+
         $response = $this->getJson('/api/plans/index');
 
         $response->assertStatus(200)

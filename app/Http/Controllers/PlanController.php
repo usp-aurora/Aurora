@@ -8,11 +8,6 @@ use App\Models\Plan;
 
 class PlanController extends Controller
 {
-    // temporary function until the login system is implemented 
-    private function getUserId() {
-        return auth()->check() ? auth()->user()->id : 1;
-    }
-
     /**
      * Retrieve all plans for the authenticated user, grouped by semester.
      *
@@ -23,7 +18,7 @@ class PlanController extends Controller
      */
     public function index()
     {
-        $plans = Plan::where('user_id', $this->getUserId())
+        $plans = Plan::where('user_id', auth()->user()->id )
             ->join('subjects', 'plans.subject_id', '=', 'subjects.id')
             ->select('plans.*', 'subjects.code', 'subjects.name', 'subjects.syllabus', 'subjects.lecture_credits', 'subjects.work_credits')
             ->get();
@@ -68,8 +63,9 @@ class PlanController extends Controller
      */
     public function sync(Request $request)
     {
+        $userId = auth()->user()->id; 
         $data = $request->json()->all();
-        $userPlans = Plan::where('user_id', $this->getUserId())->get();
+        $userPlans = Plan::where('user_id', $userId)->get();
         $changedPlans = [];
 
         try {
@@ -94,7 +90,7 @@ class PlanController extends Controller
                         'semester' => $plan['semester'],
                     ]));
 
-                    $newPlan = Plan::where('user_id', $this->getUserId())
+                    $newPlan = Plan::where('user_id', $userId)
                         ->where('subject_id', $plan['subject_id'])
                         ->where('semester', $plan['semester'])
                         ->latest()
@@ -142,7 +138,7 @@ class PlanController extends Controller
 
         try {
             $plan = Plan::create([
-                'user_id' => $this->getUserId(),
+                'user_id' => auth()->user()->id ,
                 'subject_id' => $validated['subject_id'],
                 'semester' => $validated['semester'],
             ]);
