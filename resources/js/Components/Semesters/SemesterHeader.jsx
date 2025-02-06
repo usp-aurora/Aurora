@@ -50,8 +50,6 @@ const SemesterHeader = ({ semesterData, expanded, onClick}) => {
         </SemesterWarnings>
     );
 
-    console.log(warnings);
-
     const creditsText = (
         <p>
             {lectureCredits ? lectureCredits : ''}

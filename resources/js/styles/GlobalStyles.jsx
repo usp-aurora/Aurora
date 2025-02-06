@@ -8,7 +8,7 @@ const GlobalStyle = createGlobalStyle`
   }
 
   :root {
-    font-size: 12px;
+    /* font-size: 12px; */
 
     // ===== Fonts =====
     --title-font: "Rubik";
@@ -43,7 +43,7 @@ const GlobalStyle = createGlobalStyle`
     --black: #1A1B23;
 
   }
-
+/* 
   body {
     font-family: var(--text-font);
   }
@@ -80,7 +80,7 @@ const GlobalStyle = createGlobalStyle`
   p { 
     font-size: 11px;
     line-height: 14px;
-  }
+  } */
 `;
 
 export default GlobalStyle;

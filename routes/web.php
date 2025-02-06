@@ -22,8 +22,19 @@ Route::get('logout', [LoginController::class, 'logout']);
 
 // Routing para as páginas que estamos utilizando pra desenvolvimento
 // !!! Lembre que apenas os arquivos em resources/js/Pages são acessíveis aqui !!!
+
+
 Route::get('/test', function() {
-    return Inertia::render('Development/Teste');
+    return Inertia::render('Development/Test');
+});
+
+
+Route::get('/semesters', function() {
+    return Inertia::render('Development/TestSemesters');
+});
+
+Route::get('/course-info', function() {
+    return Inertia::render('Development/TestCourseInfo');
 });
 
 Route::get('/card', function () {

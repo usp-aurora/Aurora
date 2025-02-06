@@ -22,17 +22,13 @@ const getSemesterData = (plans, semester) => {
   return semesterData;
 }
 
-const Semesters = ({ plans }) => {
-  const [courses] = useState(plans.map(plan => ({
-    ...plan,  // Inclui os outros campos do plano original
-  })));
-
+const Semesters = ({ plans, toggleCourseInfo }) => {
   const semesters = getUniqueSemesters(plans);
 
   return (
     <SemestersContainer>
       {semesters.map(semester => (
-        <Semester semesterData = {getSemesterData(plans, semester)} />
+        <Semester semesterData = {getSemesterData(plans, semester)} toggleCourseInfo={toggleCourseInfo}/>
       ))}
     </SemestersContainer>
   );

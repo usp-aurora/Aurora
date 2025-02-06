@@ -32,7 +32,7 @@ const CoursesList = styled.ul`
   gap: 10px;
 `;
 
-const Semester = ({ semesterData }) => {
+const Semester = ({ semesterData, toggleCourseInfo }) => {
 
     const [expanded, setExpanded] = useState(false);
 
@@ -49,8 +49,8 @@ const Semester = ({ semesterData }) => {
                         courseCode={course.code}
                         courseTitle={course.title}
                         planetURL="/icons/planeta.png"
-                        onClick={() => { }}
-                        onCreate={() => { }}>
+                        onClick={toggleCourseInfo}
+                        >
                     </SubjectCard>
                 ))}
                 <AuxiliarCard iconURL="./icons/plus.svg" message="Adicionar">

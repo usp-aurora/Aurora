@@ -10,7 +10,7 @@ import CourseInfoTags from './CourseInfoTags';
 import CourseInfoText from './CourseInfoText';
 
 const CourseInfoBackground = styled.div`
-	animation: ${props => (props.open ? fadeIn : fadeOut)} 1s ease-in-out -0.3s;
+	animation: ${({ open }) => (open ? fadeIn : fadeOut)} 1s ease-in-out -0.3s;
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -20,7 +20,7 @@ const CourseInfoBackground = styled.div`
 
 	padding: 1em;
 
-	display: flex;
+	display: ${({ open }) => (open ? "flex" : "none")};
 	justify-content: center;
 	align-items: center;
 	z-index: 1000;
