@@ -1,54 +1,41 @@
-import React, { useEffect } from 'react';
-import styled from 'styled-components';
-import glassmorphismStyle from '../../../styles/glassmorphism';
+import React from "react";
+import { styled } from "@mui/material/styles";
+import { Typography } from "@mui/material";
+import CardContainer from "./Auxiliary/CardContainer";
+import CardBackgroundBase from "./Auxiliary/CardBackgroundBase";
 
-const CardComponent = styled.div`
-  width: 104px;
-  height: 104px;
+const CardBackground = styled(({ glassmorphismLevel, ...other }) => (
+	<CardBackgroundBase {...other} />
+))(({ theme, ghost }) => ({
+	"&:hover": {
+		backgroundColor: ghost ? "transparent" : theme.palette.primary.dark,
+	},
+}));
 
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
-  cursor: pointer;
+const StyledIcon = styled(({ component: Component, ...props }) => (
+	<Component {...props} />
+))(({ theme }) => ({
+	color: "white",
+	fontSize: "60px",
+}));
 
-  position: relative;
+const StyledText = styled(Typography)(({ theme }) => ({
+	fontSize: theme.typography.small.fontSize,
 
-  &:active {
-    transform: translateY(2px);
-  }
-`;
+	[theme.breakpoints.up("sm")]: {
+		fontSize: theme.typography.p.fontSize,
+	},
+}));
 
-const CardContainer = styled.div`
-  width: 104px;
-  height: 94px;
-
-  border-radius: 8px;
-  background-color: #2A85CD;
-
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  justify-content: space-evenly;
-
-  text-align: center;
-`;
-
-const CardIcon = styled.img`
-  width: 48px;
-  height: 48px;
-`
-
-
-const Card = ({iconURL, message, onClick, onCreate}) => {
-  return (
-    <CardComponent onClick={onClick} onLoad={onCreate}>
-      <CardContainer>
-          <CardIcon src={iconURL}/>
-          <p>{message}</p>
-      </CardContainer>
-    </CardComponent>
-  );
+const ButtonCard = ({ icon, text, ghost }) => {
+	return (
+		<CardContainer>
+			<CardBackground ghost={ghost}>
+				{icon && <StyledIcon component={icon} />}
+				<StyledText component="p">{text}</StyledText>
+			</CardBackground>
+		</CardContainer>
+	);
 };
 
-export default Card;
+export default ButtonCard;

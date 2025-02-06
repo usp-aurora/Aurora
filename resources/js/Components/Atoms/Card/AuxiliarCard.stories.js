@@ -1,12 +1,11 @@
 import { fn } from '@storybook/test';
 
-import { ThemeProvider } from '@mui/material/styles';
-import ButtonCard from './ButtonCard';
+import AuxiliarCard from './AuxiliarCard';
 import AddIcon from "@mui/icons-material/Add";
 
 export default {
-  title: 'ButtonCard',
-  component: ButtonCard,
+  title: 'Auxiliar Card',
+  component: AuxiliarCard,
 
   parameters: {
     layout: 'centered',
@@ -17,17 +16,24 @@ export default {
   args: { 
     onClick: fn(),
     title: "",
-    text: "Adicionar",
-    icon: AddIcon,
+    text: "",
+    icon: "",
     ghost: false,
   },
 };
 
 // More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
-export const Adicionar = {
+export const Card = {
   args: {
     text: "Adicionar",
     icon: AddIcon,
-    ghost: true
+    ghost: false
+  },
+};
+
+export const CardGhost = {
+  args: {
+    text: "Arraste uma disciplina",
+    ghost: "true"
   },
 };

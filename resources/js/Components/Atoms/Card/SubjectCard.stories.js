@@ -3,24 +3,48 @@ import { fn } from '@storybook/test';
 import SubjectCard from './SubjectCard';
 
 export default {
-  title: 'Card',
+  title: 'Subject Card',
   component: SubjectCard,
+
   parameters: {
     layout: 'centered',
   },
-
+  
   tags: ['autodocs'],
-
+  
   args: { 
-    onClick: fn() 
-},
+    courseCode: "",
+    courseTitle: "",
+    planetURL: "",
+    ghost: false,
+    onClick: fn()
+  },
 };
 
 // More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
-export const Teste = {
+export const Card2Lines = {
   args: {
-    courseCode: "MAC9999",
-    courseTitle: "Uma matéria com um nome muito grande",
-    planetURL: "public/icons/planeta.png",
+    courseCode: "MAC0105",
+    courseTitle: "Fundamentos de Matemática para a Computação",
+    planetURL: "./public/icons/planeta.png",
+    ghost: false
   },
+};
+
+export const CardGhost = {
+  args: {
+    courseCode: "MAC0105",
+    courseTitle: "Fundamentos de Matemática para a Computação",
+    planetURL: "",
+    ghost: "true"
+  }
+};
+
+export const Card1Line = {
+  args: {
+    courseCode: "MAC0105",
+    courseTitle: "Cálculo 1",
+    planetURL: "./public/icons/planeta.png",
+    ghost: false
+  }
 };
