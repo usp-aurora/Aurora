@@ -1,17 +1,15 @@
 import React from "react";
 import { styled } from "@mui/system";
+import clickEffect from "../../../../styles/clickEffect";
 
 const Container = styled("div")(({ theme }) => ({
+    ...clickEffect,
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "flex-end",
 
     position: "relative",
-
-    "&:active": {
-      transform: "translateY(2px)",
-    },
 
     width: theme.card.mobile.outerWidth,
     height: theme.card.mobile.outerHeight,
