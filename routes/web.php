@@ -37,3 +37,7 @@ Route::get('/completion-bar', function () {
 Route::get('/botao', function () {
     return Inertia::render('Development/TestButtons');
 });
+
+Route::get('/form', function () {
+    return Inertia::render('Development/TestForms');
+});
