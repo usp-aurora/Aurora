@@ -3,6 +3,7 @@ import './bootstrap';
 import { createInertiaApp } from '@inertiajs/react'
 import { createRoot } from 'react-dom/client'
 import GlobalStyles from './GlobalStyles.jsx'
+import { AuthProvider } from './Hooks/useAuthContext.jsx';
 
 createInertiaApp({
   resolve: name => {
@@ -12,8 +13,10 @@ createInertiaApp({
   setup({ el, App, props }) {
     createRoot(el).render(
       <>
-        <GlobalStyles></GlobalStyles>
-        <App {...props} />
+        <AuthProvider>
+            <GlobalStyles></GlobalStyles>
+            <App {...props} />
+        </AuthProvider>
       </>
     )
   },

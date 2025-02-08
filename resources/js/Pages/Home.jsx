@@ -1,16 +1,14 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import Header from '../Components/Header/Header.jsx';
 import Semester from '../Components/Semesters/Semesters.jsx';
 import CoursePicker from '../Components/CoursePicker/CoursePicker.jsx';
 import AddDisciplinePopUp from '../Components/PopUps/AddDisciplinePopUp.jsx';
 import CoursePopUp from '../Components/PopUps/CoursePopUp.jsx';
+import LoadingScreen from '../Components/Atoms/LoadingScreen.jsx';
 import usePlanSync from '../Hooks/usePlanSync.jsx';
 import useLifecycleHandlers from '../Hooks/useLifecycleHandlers.jsx';
-import { computeCollision, DragMonitor } from '../Components/Dnd/Utilities.jsx';
-import { DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
-import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
-import { ClipLoader } from "react-spinners";
+import DragAndDropProvider from '../Components/Dnd/DragAndDropProvider.jsx';
 
 const AppContainer = styled.div`
   /* display: flex;
@@ -26,16 +24,6 @@ const ContentContainer = styled.div`
   display: flex;
   flex-grow: 1;
 `;
-
-const LoadingContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  font-size: 1.5em;
-  color: #555;
-`;
-
 
 const categories = [
   {
@@ -84,6 +72,7 @@ const categories = [
       { id: 17 }, 
       { id: 18 },
       { id: 19 },
+      { id : 1 },
     ],
     color: '#6762CD',
     completed: 0,
@@ -155,6 +144,7 @@ const Home = ({ subjects }) => {
           tags: [], // init tags
           plan: null, // init with plan as null
           semester: null, // init with semester as null
+          unsaved: false,
           // init card data
           colors: {
             background: "#FFFFFF",
@@ -186,16 +176,7 @@ const Home = ({ subjects }) => {
     return initialCourseMap;
   });
 
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: { distance: 5 } // it's important to trigger onClick events right
-    }),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    }),
-  )
-
-  useLifecycleHandlers(courseMap, unsavedChanges, setIsLoading, setPlans, setCourseMap)
+  useLifecycleHandlers(courseMap, plans, unsavedChanges, setIsLoading, setPlans, setCourseMap)
   usePlanSync(courseMap, setCourseMap, setPlans, setUnsavedChanges)
   
   const toggleDiscipline = () => {
@@ -244,15 +225,9 @@ const Home = ({ subjects }) => {
     );
   };
 
-  if (isLoading) {
-    return (
-      <LoadingContainer>
-         <ClipLoader color="#51A1E0" size={50} />
-      </LoadingContainer>
-    );
-  } 
-
-  return (
+  return  isLoading ? (
+	  <LoadingScreen />
+  ) : (
     <AppContainer>
       <AddDisciplinePopUp isOpen={addDisciplineActive} onClose={toggleDiscipline} />
       <CoursePopUp isOpen={coursePopUpActive} onClose={toggleCoursePopUp} 
@@ -265,13 +240,17 @@ const Home = ({ subjects }) => {
                     desc={course.desc}
       />
       <Header />
-      <DndContext sensors={sensors} collisionDetection={(props) => computeCollision(props)}>
-        <DragMonitor courseMap={courseMap} setCourseMap={setCourseMap} setPlans={setPlans} setUnsavedChanges={setUnsavedChanges}/>
+      <DragAndDropProvider
+        courseMap={courseMap}
+        setCourseMap={setCourseMap}
+        setPlans={setPlans}
+        setUnsavedChanges={setUnsavedChanges}
+      >
         <ContentContainer>
           <Semester courseMap={courseMap} semesters={plans} setSemesters={setPlans} displayCourse={showCourseDetails} />
           <CoursePicker courseMap={courseMap} categories={categories} displayCourse={showCourseDetails} openDisciplinePopUp={toggleDiscipline} />
         </ContentContainer>
-      </DndContext>
+      </DragAndDropProvider>
     </AppContainer>
   );
 };

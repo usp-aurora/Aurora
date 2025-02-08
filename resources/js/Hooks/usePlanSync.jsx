@@ -1,8 +1,9 @@
 import { useEffect, useRef } from "react"
 import { 
-    fetchPlansFromServer, 
+    fetchUserPlans, 
     syncPlansWithServer 
 } from '../Handlers/PlansHandlers.jsx'
+import { useAuth } from './useAuthContext.jsx'
 
 /**
  * Custom hook to synchronize course data and fetch plans at regular intervals.
@@ -14,6 +15,7 @@ import {
  */
 function usePlanSync(courseMap, updateCourseMap, updatePlans, markUnsavedChanges) {
   const courseMapRef = useRef(courseMap)
+  const {authUser} = useAuth();
 
   useEffect(() => {
     courseMapRef.current = courseMap
@@ -22,9 +24,9 @@ function usePlanSync(courseMap, updateCourseMap, updatePlans, markUnsavedChanges
   // Set up an interval to sync and fetch plans regularly
   useEffect(() => {
     const intervalId = setInterval(async () => {
-        try {
+      if(authUser) try {
             await syncPlansWithServer(courseMapRef.current, updateCourseMap, markUnsavedChanges)
-            const plans = await fetchPlansFromServer()
+            const plans = await fetchUserPlans()
             updatePlans(plans)
         } catch (error) {
             console.error("Error during synchronization or fetching plans:", error)
@@ -32,7 +34,7 @@ function usePlanSync(courseMap, updateCourseMap, updatePlans, markUnsavedChanges
 
     // Cleanup interval on component unmount
     return () => clearInterval(intervalId)
-  }, [courseMap])
+  }, [courseMap, authUser])
 }
 
 export default usePlanSync

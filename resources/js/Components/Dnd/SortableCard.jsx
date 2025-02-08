@@ -5,7 +5,7 @@ import CardContentCourse from "../Atoms/CardContentCourse"
 
 function SortableItem({id, course, container, ...props}) {
     const planed = course.semester !== null
-    const disabled = props.disable || (planed && container !== 'Semesters')
+    const disabled = props.disable || (planed && !container.startsWith('Semester'))
     const sortableId =  disabled? `${id}@${container}` : id
 
     const {

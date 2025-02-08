@@ -1,92 +1,121 @@
 import { useEffect, useRef } from "react"
 import { 
-    fetchPlansFromServer, 
-    persistPlansToLocalStorage, 
+    fetchGuestPlans, 
+    fetchUserPlans, 
+    saveGuestPlans, 
+    saveUserPlans, 
     syncPendingPlans 
 } from '../Handlers/PlansHandlers.jsx'
+import { useAuth } from './useAuthContext.jsx'
+
 
 /**
- * Custom hook that manages page lifecycle events for syncing plans data.
+ * Custom hook to handle page lifecycle for managing and syncing plans data.
  * 
- * @param {Map} courseMap - Map containing course data.
- * @param {Boolean} unsavedChanges - Tracks if there are unsaved changes.
- * @param {Function} setIsLoading - Function to set the page loading state.
- * @param {Function} setPlans - Function to set the plans state.
- * @param {Function} updateCourseMap - Function to update the course map state.
+ * @param {Map} courseMap - Current mapping of courses.
+ * @param {Array} plans - Current plans structure (grouped by semester).
+ * @param {boolean} hasUnsavedChanges - Indicates if there are unsaved changes.
+ * @param {Function} setIsPlansLoading - Function to update the plans loading state.
+ * @param {Function} setPlans - Function to update the plans.
+ * @param {Function} updateCourseMap - Function to update the course map.
  */
-function useLifecycleHandlers(courseMap, unsavedChanges, setIsLoading, setPlans, updateCourseMap) {
-    const courseMapRef = useRef(courseMap)
-    const unsavedChangesRef = useRef(unsavedChanges)
+function useLifecycleHandlers(courseMap, plans, hasUnsavedChanges, setIsPlansLoading, setPlans, updateCourseMap) {
+    const { authUser, isAuthLoading } = useAuth();
+    const plansRef = useRef(plans);
+    const courseMapRef = useRef(courseMap);
+    const unsavedChangesRef = useRef(hasUnsavedChanges);
 
     /**
-     * Updates the course map with plan details from the provided plans array.
+     * Merges plan data into the existing course map.
      * 
      * @param {Map} currentCourseMap - The existing course map.
-     * @param {Array} plans - Array of plans to merge into the course map.
+     * @param {Array} retrievedPlans - Plans data to merge.
      */
-    function updateCourseMapWithPlans(currentCourseMap, plans) {
-        const updatedCourseMap = new Map(currentCourseMap)
-        plans.forEach((semester) => {
-            semester.courses.forEach((course) => 
+    function mergePlansIntoCourseMap(currentCourseMap, retrievedPlans) {
+        const updatedCourseMap = new Map(currentCourseMap);
+
+        retrievedPlans.forEach((semester) => {
+            semester.courses.forEach((course) => {
                 updatedCourseMap.set(course.id, {
                     ...currentCourseMap.get(course.id),
                     plan: course.plan,
                     semester: semester.id,
-                })
-            )
-        })
-        updateCourseMap(updatedCourseMap)
+                });
+            });
+        });
+
+        updateCourseMap(updatedCourseMap);
     }
 
     /**
-     * Handles the initial page load process, syncing unsynced plans 
-     * and fetching the latest plans from the server.
+     * Handles the initial loading of plans.
+     * - Syncs pending changes.
+     * - Fetches plans (from server if authenticated, or from local storage otherwise).
      */
-    async function handlePageLoad() {
-        try {
-            await syncPendingPlans()
-            const plans = await fetchPlansFromServer()
-            updateCourseMapWithPlans(courseMap, plans)
-            setPlans(plans)
-        } catch (error) {
-            console.error("Error fetching plans:", error)
-        } finally {
-            setIsLoading(false)
-            window.removeEventListener("load", handlePageLoad)
-        }
-    }
+	async function initializePlans() {
+		try {
+			let plans;
+            if (authUser) { 
+                await syncPendingPlans(); 
+                plans = await fetchUserPlans() ?? [];
+            } else {
+                plans = fetchGuestPlans() ?? [];
+            }
+
+            mergePlansIntoCourseMap(courseMap, plans);
+            setPlans(plans);     
+		} catch (error) {
+			console.warn("Failed to load plans:", error);
+            setPlans([]);
+		} finally {
+			setIsPlansLoading(false);
+		}
+	}
 
     /**
-     * Handles actions to perform before the page unloads, such as saving
-     * unsaved plans to local storage.
+     * Saves plans when the user leaves the page.
+     * - Saves as guest plans if not authenticated.
+     * - Saves as user plans if authenticated.
      * 
      * @param {Event} event - The beforeunload event.
      */
     function handlePageUnload(event) {
-        if (unsavedChangesRef.current) {
-            event.preventDefault()
-            persistPlansToLocalStorage(courseMapRef.current)
+        if (unsavedChangesRef.current || !authUser) {
+            event.preventDefault();
+            if (authUser) saveUserPlans(courseMapRef.current);
+            else saveGuestPlans(plansRef.current);      
         }
     }
 
-    window.addEventListener("load", handlePageLoad) 
+	// Load plans on initial render once auth loading is complete
+	useEffect(() => {
+		if (!isAuthLoading) {
+			initializePlans();
+		}
+	}, [isAuthLoading]);
 
-    useEffect(() => {
-        window.addEventListener("beforeunload", handlePageUnload) 
+	// Add and remove the beforeunload event listener
+	useEffect(() => {
+		window.addEventListener("beforeunload", handlePageUnload);
 
-        return () => {
-            window.removeEventListener("beforeunload", handlePageUnload)
-        }
-    }, [handlePageUnload])
+		return () => {
+			window.removeEventListener("beforeunload", handlePageUnload);
+		};
+	}, [authUser]);
 
-    useEffect(() => {
-        courseMapRef.current = courseMap
-    }, [courseMap])
+	// Keep refs in sync with props
+	useEffect(() => {
+		courseMapRef.current = courseMap;
+	}, [courseMap]);
 
-    useEffect(() => {
-        unsavedChangesRef.current = unsavedChanges
-    }, [unsavedChanges])
+	useEffect(() => {
+		plansRef.current = plans;
+	}, [plans]);
+
+	useEffect(() => {
+		unsavedChangesRef.current = hasUnsavedChanges;
+	}, [hasUnsavedChanges]);
 
 }
 
-export default useLifecycleHandlers
+export default useLifecycleHandlers;

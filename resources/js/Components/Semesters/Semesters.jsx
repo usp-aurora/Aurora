@@ -5,7 +5,7 @@ import SortableCard from '../Dnd/SortableCard';
 import StyledButton from '../Atoms/StyledButton';
 import {slideIn, slideOut, bounce, bounceBack} from '../Atoms/Animations';
 import Droppable from '../Dnd/Droppable';
-import { rectSortingStrategy, SortableContext } from '@dnd-kit/sortable';
+import SortableGrid from '../Dnd/SortableGrid';
 
 const SemestersContainer = styled.div`
   width: 60vw;
@@ -72,7 +72,6 @@ const SemesterHeader = styled.div`
   height: 100%;
   display: flex;
   justify-content: space-between;
-  cursor: pointer;
 `;
 
 const SemesterInfos = styled.div`
@@ -96,26 +95,16 @@ const SemesterCreditsAndIcon = styled.div`
   align-items: center;
 `;
 
-const CoursesList = styled.ul`
-  margin-top: ${props => (props.expanded ? '1%' : '0')};
+const DroppableCourseGrid = styled(Droppable)`
   list-style: none;
   padding: 0;
   overflow: hidden;  /* Importante para esconder o conteúdo quando fechado */
   display: flex;
-  max-height: ${props => (props.expanded ? '500px' : '0')}; /* Define o limite de altura */
-  animation: ${props => (props.expanded ? slideIn : slideOut)} 1s ease-in-out ${props => (props.expanded ? '-0.1s' : '-0.6s')};
   flex-wrap: wrap;
   gap: 10px;
-`;
-
-
-const CourseContainer = styled.li`
-  width: 100px;
-  height: 100px;
-  background-color: gray;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  margin-top: ${({ disabled }) => (disabled ? '0' : '1%')};
+  max-height: ${({ disabled }) => (disabled ? '0' : '500px')}; /* Define o limite de altura */
+  animation:  ${({ disabled }) => (disabled ? slideOut : slideIn)} 1s ease-in-out ${({ disabled }) => (disabled ? '-0.6s' : '-0.1s')};
 `;
 
 const NewCard = styled.div`
@@ -256,9 +245,8 @@ const Semesters = ({ semesters, setSemesters, displayCourse, courseMap }) => {
               <span>{expandedSemesters[semester.id] ? '▼' : '▶'}</span>
             </SemesterCreditsAndIcon>
           </SemesterHeader>
-          <Droppable key={semester.alias} id={semester.alias} disable={!expandedSemesters[semester.id]}>
-            <SortableContext items={semester.courses} strategy={rectSortingStrategy}>
-              <CoursesList expanded={expandedSemesters[semester.id]}>
+            <DroppableCourseGrid id={semester.alias} key={semester.alias} disabled={!expandedSemesters[semester.id]}>
+              <SortableGrid items={semester.courses} >
                 {!semester.courses.length ?
                   <NewCard>
                     <p>Arraste uma disciplina</p>
@@ -266,17 +254,16 @@ const Semesters = ({ semesters, setSemesters, displayCourse, courseMap }) => {
                 :
                 semester.courses.map((course) => (
                   <SortableCard
-                    id={course.id} 
-                    course={courseMap.get(course.id)}
-                    key={`${course.id}@Semesters`} 
-                    container={'Semesters'}
+                    id={course.id}
+                    key={course.id}
+                    course={courseMap.get(course.id)} 
+                    container={semester.alias}
                     disable={!expandedSemesters[semester.id]}
                     handleClick={displayCourse}
                   />
                 ))}
-              </CoursesList>
-            </SortableContext>
-          </Droppable>
+              </SortableGrid>
+            </DroppableCourseGrid>
         </SemesterContainer>
       ))}
 
