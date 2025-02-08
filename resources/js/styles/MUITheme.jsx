@@ -8,6 +8,8 @@ theme = createTheme({
         primary: {main: '#2A85CD'},
         error: {main: '#E83030'},
         neutral: {main: '#FFFFFF'},
+        white: {main: '#FFFFFF'},
+        black: {main: '#000000'},   
         yellow: theme.palette.augmentColor ({
             color: {
                 main: '#FFD12B',
