@@ -12,6 +12,7 @@
         "laravel/tinker": "^2.9",
         "nesbot/carbon": "^2.72.2",
         "socialiteproviders/manager": "^4.0",
+        "spatie/laravel-permission": "^6.10",
         "symfony/http-foundation": "^7.0",
         "uspdev/senhaunica-socialite": "^4.3"
     },

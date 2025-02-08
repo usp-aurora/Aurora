@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import styled, { keyframes } from 'styled-components';
-import CardContentCourse from '../Atoms/CardContentCourse';
 import Card from '../Atoms/Card';
+import SortableCard from '../Dnd/SortableCard';
 import StyledButton from '../Atoms/StyledButton';
 import {slideIn, slideOut, bounce, bounceBack} from '../Atoms/Animations';
+import Droppable from '../Dnd/Droppable';
+import SortableGrid from '../Dnd/SortableGrid';
 
 const SemestersContainer = styled.div`
+  width: 60vw;
   flex-grow: 1;
   padding: 20px;
 `;
@@ -69,7 +72,6 @@ const SemesterHeader = styled.div`
   height: 100%;
   display: flex;
   justify-content: space-between;
-  cursor: pointer;
 `;
 
 const SemesterInfos = styled.div`
@@ -93,26 +95,16 @@ const SemesterCreditsAndIcon = styled.div`
   align-items: center;
 `;
 
-const CoursesList = styled.ul`
-  margin-top: ${props => (props.expanded ? '1%' : '0')};
+const DroppableCourseGrid = styled(Droppable)`
   list-style: none;
   padding: 0;
   overflow: hidden;  /* Importante para esconder o conteúdo quando fechado */
   display: flex;
-  max-height: ${props => (props.expanded ? '500px' : '0')}; /* Define o limite de altura */
-  animation: ${props => (props.expanded ? slideIn : slideOut)} 1s ease-in-out ${props => (props.expanded ? '-0.1s' : '-0.6s')};
   flex-wrap: wrap;
   gap: 10px;
-`;
-
-
-const CourseContainer = styled.li`
-  width: 100px;
-  height: 100px;
-  background-color: gray;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  margin-top: ${({ disabled }) => (disabled ? '0' : '1%')};
+  max-height: ${({ disabled }) => (disabled ? '0' : '500px')}; /* Define o limite de altura */
+  animation:  ${({ disabled }) => (disabled ? slideOut : slideIn)} 1s ease-in-out ${({ disabled }) => (disabled ? '-0.6s' : '-0.1s')};
 `;
 
 const NewCard = styled.div`
@@ -161,47 +153,7 @@ const NewSemester = styled.div`
   cursor: pointer;
 `;
 
-const Semesters = ({ plans }) => {
-  const [courses] = useState(plans.map(plan => ({
-    ...plan,  // Inclui os outros campos do plano original
-    colors: {
-      background: "#FFFFFF",
-      innerLine: "#51A1E0",
-      outerLine: "#17538D",
-    },
-    pokeball: "#C2DCF5"
-  })));
-
-  const semesters = [
-    {id: 1},
-    {id: 2},
-    {id: 3},
-    {id: 4},
-    {id: 5},
-    {id: 6},
-    {id: 7},
-    {id: 8},
-  ];
-
-  const [semestersCredits, setSemestersCredits] = useState(
-    semesters.reduce((credits, semester) => {
-      credits[semester.id] = {
-        classCredits: 0,
-        workCredits: 0
-      }
-      return credits;
-    }, {})
-  );
-
-  const addCreditsToSemester = (semesterId, classCredits, workCredits) => {
-    setSemestersCredits((prev) => ({
-      ...prev,
-      [semesterId]: {
-        classCredits: prev[semesterId].classCredits + classCredits,
-        workCredits: prev[semesterId].workCredits + workCredits
-      },
-    }));
-  } 
+const Semesters = ({ semesters, setSemesters, displayCourse, courseMap }) => {
 
   const [expandedSemesters, setExpandedSemesters] = useState(
     semesters.reduce((acc, semester) => {
@@ -215,6 +167,23 @@ const Semesters = ({ plans }) => {
       ...prev,
       [semesterId]: !prev[semesterId],
     }));
+  };
+
+  const addSemester = () => {
+    const newId = semesters.length + 1;
+
+    const newSemester = {
+      id: newId,
+      alias: `Semester ${newId}`,
+      credits: [0, 0],
+      courses: [],
+    };
+
+    setExpandedSemesters((prev) => ({
+      ...prev,
+      [newId]: false,
+    }));
+    setSemesters([...semesters, newSemester]);
   };
 
   return (
@@ -249,8 +218,8 @@ const Semesters = ({ plans }) => {
       </SemestersContainerHeader>
 
       {semesters.map(semester => (
-        <SemesterContainer key={semester.id} isOpen={expandedSemesters[semester.id]}>
-          <SemesterHeader onClick={() => {toggleSemester(semester.id)}}>
+        <SemesterContainer key={semester.id} id={semester.alias}>
+          <SemesterHeader  onClick={() => {toggleSemester(semester.id)}}>
             <SemesterInfos>
               <h1 style={{marginRight: "20px"}}>{semester.id}º Período</h1>
               <SemesterWarnings>
@@ -258,47 +227,56 @@ const Semesters = ({ plans }) => {
                 <p style={{color: "#ECA706"}}>Provável conflito de horário.</p>
               </SemesterWarnings>
               {
-                semestersCredits[semester.id].classCredits + semestersCredits[semester.id].workCredits > 40 ?
+                semester.credits[0] + semester.credits[1] > 40 ?
                 <SemesterWarnings>
                   <img style={{paddingRight: '5px'}} src='/icons/warning.png'/>
                   <p style={{color: "#C11414"}}>Máximo de 40 créditos por período.</p>
                 </SemesterWarnings>
+                : semester.credits[0] + semester.credits[1] < 12 ?
+                <SemesterWarnings>
+                  <img style={{paddingRight: '5px'}} src='/icons/warning.png'/>
+                  <p style={{color: "#C11414"}}>Mínimo de 12 créditos por período.</p>
+                </SemesterWarnings>
                 : null
               }
-            </SemesterInfos>
+              </SemesterInfos>
             <SemesterCreditsAndIcon>
-              <p style={{color: "#757575"}}>{semestersCredits[semester.id].classCredits ? semestersCredits[semester.id].classCredits : ''} {semestersCredits[semester.id].workCredits ? '+' : ''} {semestersCredits[semester.id].workCredits ? semestersCredits[semester.id].workCredits : ''} {semestersCredits[semester.id].classCredits || semestersCredits[semester.id].workCredits ? 'créditos' : ''}</p>
+              <p style={{color: "#757575"}}>{semester.credits[0] ? semester.credits[0] : ''} {semester.credits[0] && semester.credits[1] ? '+ ' : ''} {semester.credits[1] ? semester.credits[1] : ''} {semester.credits[0] || semester.credits[1] ? 'créditos' : ''}</p>
               <span>{expandedSemesters[semester.id] ? '▼' : '▶'}</span>
             </SemesterCreditsAndIcon>
           </SemesterHeader>
-          <CoursesList expanded={expandedSemesters[semester.id]}>
-            {courses
-              .filter(course => course.semester === semester.id)
-              .map(course => (
-                <Card colors={course.colors} onCreate={() => addCreditsToSemester(semester.id, course.credits[0], course.credits[1])} onClick={() => {
-                  openCourse();
-                  changeCourseDisplay(course.pokeball, "/pokemons/ditto.png", course.title, course.code, course.tags, course.credits, course.desc)
-                }}>
-                  <CardContentCourse pokeball={course.pokeball} courseCode={course.code} courseTitle={course.title} pokemonURL="/pokemons/ditto.png">
-                  </CardContentCourse>
-                </Card>
-              ))}
-            <NewCard>
-              <p>Arraste uma disciplina</p>
-            </NewCard>
-          </CoursesList>
+            <DroppableCourseGrid id={semester.alias} key={semester.alias} disabled={!expandedSemesters[semester.id]}>
+              <SortableGrid items={semester.courses} >
+                {!semester.courses.length ?
+                  <NewCard>
+                    <p>Arraste uma disciplina</p>
+                  </NewCard>
+                :
+                semester.courses.map((course) => (
+                  <SortableCard
+                    id={course.id}
+                    key={course.id}
+                    course={courseMap.get(course.id)} 
+                    container={semester.alias}
+                    disable={!expandedSemesters[semester.id]}
+                    handleClick={displayCourse}
+                  />
+                ))}
+              </SortableGrid>
+            </DroppableCourseGrid>
         </SemesterContainer>
       ))}
+
       <Card colors={{
-        background: "#E4EEFA",
-        innerLine: "#51A1E0",
-        outerLine: "#17538D",
-      }}>
-        <NewSemester>
-          <h1 style={{fontSize: "60px", marginBottom: "10px"}}>+</h1>
-          <p>Adicionar período</p>
-        </NewSemester>
-      </Card>
+          background: "#E4EEFA",
+          innerLine: "#51A1E0",
+          outerLine: "#17538D",
+        }}>
+          <NewSemester onClick={addSemester}>
+            <h1 style={{fontSize: "60px", marginBottom: "10px"}}>+</h1>
+            <p>Adicionar período</p>
+          </NewSemester>
+        </Card>
     </SemestersContainer>
   );
 };
