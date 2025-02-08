@@ -1,44 +1,53 @@
 import React from 'react';
 import { styled } from "@mui/material/styles";
+import Typography from '@mui/material/Typography';
 
 const ProgressBarContainer = styled("div")(({}) => ({
 	display: "flex",
 	flexDirection: "row", 
 	alignItems: "center",
+	width: "100%",
 }));
 
-const ProgressLabel = styled("p")(({ theme }) => ({
+const ProgressLabel = styled(Typography)(({ theme }) => ({
 	fontSize: theme.typography.small.fontSize,
 	lineHeight: theme.typography.small.lineHeight,
-	marginRight: `calc(2 * ${theme.typography.small.fontSize})`,
+	width: "80px",
+	whiteSpace: "nowrap",
+	overflow: "hidden",
+	textOverflow: "ellipsis",
 
 	[theme.breakpoints.up('sm')]: {
 		marginRight: `calc(2 * ${theme.typography.h4.fontSize})`,
 		fontSize: theme.typography.h4.fontSize,
 		lineHeight: theme.typography.h4.lineHeight,
+		width: "100px",
 	},
 }));
 
-const ProgressValue = styled("p")(({ theme }) => ({
+const ProgressValue = styled(Typography)(({ theme }) => ({
 	fontSize: "8px",
 	lineHeight: "8px",
 	whiteSpace: "nowrap",
 	marginLeft: "6px",
+	width: "40px",
+	overflow: "hidden",
+	textOverflow: "ellipsis",
 
 	[theme.breakpoints.up('sm')]: {
 		fontSize: "12px",
 		lineHeight: "12px",
 		marginLeft: "8px",
+		width: "60px"
 	},
 }));
 
 const BaseBar = styled("div")(({ theme }) => ({
-	width: "100%",
-	height: '8px',
-
+	flexGrow: 1,
 	borderRadius: '80px',
 	position: 'relative',
-
+	
+	height: '8px',
 	backgroundColor: theme.palette.white.main,
 	[theme.breakpoints.up('sm')]: {
 		height: '12px',
@@ -65,18 +74,18 @@ const CoursedBar = styled("div")(({ theme, percentage, color }) => ({
 	borderRadius: 'inherit',
 }));
 
-const ProgressBar = ({ coursed = 30, planned = 50, needed = 100, color = "pink" }) => {
+const ProgressBar = ({ label, coursed, planned, needed, color}) => {
 	const plannedPercentage = (planned / needed) * 100;
 	const coursedPercentage = (coursed / needed) * 100;
 
 	return (
 		<ProgressBarContainer>
-			<ProgressLabel>Eletivas</ProgressLabel>
+			<ProgressLabel variant="body2">{label}</ProgressLabel>
 			<BaseBar>
 				<PlannedBar color={color} percentage={plannedPercentage} />
 				<CoursedBar color={color} percentage={coursedPercentage} />
 			</BaseBar>
-			<ProgressValue>{`${coursed} / ${needed}`}</ProgressValue>
+			<ProgressValue variant="caption">{`${coursed} / ${needed}`}</ProgressValue>
 		</ProgressBarContainer>
 	);
 };

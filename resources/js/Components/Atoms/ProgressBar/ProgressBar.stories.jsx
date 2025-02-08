@@ -11,6 +11,11 @@ export default {
 	tags: ['autodocs'],
 	
 	args: {
+		label: 'Example',
+		coursed: 50,
+		planned: 75,
+		needed: 100,
+		color: 'pink'
 	},
 
 	decorators: [
@@ -24,5 +29,10 @@ export default {
 
 export const Default = {
 	args: {
+		label: 'Example',
+		coursed: 50,
+		planned: 75,
+		needed: 100,
+		color: 'green'
 	},
 };
