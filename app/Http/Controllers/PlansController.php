@@ -6,6 +6,7 @@ use Illuminate\Foundation\Auth;
 use Illuminate\Http\Request;
 use App\Models\Plan;
 use Inertia\Inertia;
+use function Spatie\LaravelPdf\Support\pdf;
 
 class PlansController extends Controller
 {
@@ -91,4 +92,23 @@ class PlansController extends Controller
         }
     }
 
+    public function export()
+    {
+        $plans = Plan::where('user_id', 1)->get();
+
+        $plans_subjects_grouped_by_semester = $plans->groupBy('semester')->map(function ($semester) {
+            return $semester->map(function ($plan) {
+                return [
+                    'name' => $plan->subject->name,
+                    'code' => $plan->subject->code,
+                    'lecture_credits' => $plan->subject->lecture_credits,
+                    'work_credits' => $plan->subject->work_credits,
+                ];
+            });
+        });
+
+        // dd($plans_subjects_grouped_by_semester);
+
+        return pdf()->view('exportTemplate', [ 'plans_subjects_grouped_by_semester' => $plans_subjects_grouped_by_semester ])->name('export.pdf');
+    }
 }
