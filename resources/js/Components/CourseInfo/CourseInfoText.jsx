@@ -53,7 +53,7 @@ const CourseInfoText = ({ desc }) => {
 			<CourseDescription>
 				<p>{desc}</p>
 			</CourseDescription>
-			<ReadMoreLabel for="read-more" />
+			<ReadMoreLabel htmlFor="read-more" />
 		</CourseTextContainer>
 	);
 };

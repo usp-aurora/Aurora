@@ -18,13 +18,13 @@ const getSemesterData = (plans, semester) => {
   return semesterData;
 }
 
-const Semesters = ({ plans, toggleCourseInfo }) => {
+const Semesters = ({ plans, openCourseInfoPopUp }) => {
   const semesters = getUniqueSemesters(plans);
 
   return (
     <Stack spacing={1}>
       {semesters.map(semester => (
-        <Semester semesterData = {getSemesterData(plans, semester)} toggleCourseInfo={toggleCourseInfo}/>
+        <Semester key={semester} semesterData = {getSemesterData(plans, semester)} openCourseInfoPopUp={openCourseInfoPopUp}/>
       ))}
     </Stack>
   );

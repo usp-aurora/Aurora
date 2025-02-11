@@ -72,8 +72,9 @@ const StyledCourseText = styled(Typography)(({theme}) => ({
 }));
 
 const SubjectCard = ({ courseCode, courseTitle, planetURL, ghost, glassmorphismLevel, onClick }) => {
+	
 	return (
-		<CardContainer onClick={() => onClick(courseCode)}>
+		<CardContainer onClick={onClick}>
 			<CardBackground ghost={ghost} glassmorphismLevel={glassmorphismLevel}>
 				<CardContent>
 					<PlanetContainer>

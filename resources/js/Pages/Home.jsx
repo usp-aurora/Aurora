@@ -27,10 +27,9 @@ const Home = ({ plans }) => {
   const [courseInfoActive, setCourseInfo] = useState(false);
   const [courseCode, setCourseCode] = useState("");
 
-
-  const toggleCourseInfo = (courseCode) => {
-    setCourseCode(courseCode);
-    setCourseInfo(!courseInfoActive);
+  const openCourseInfoPopUp = (course) => {
+    console.log(course);
+    setCourseInfo(true);
   }
 
   const closeCourseInfoPopUp = () => {
@@ -44,7 +43,7 @@ const Home = ({ plans }) => {
                   onClose={closeCourseInfoPopUp}
                   title="Introdução à Computação" 
                   code={courseCode} 
-                  tags={[{"color": "#51A1E0", "name":"Obrigatória"}, {"color": "#51A1E0", "name":"Obrigatória"}, {"color": "#51A1E0", "name":"Obrigatória"}]}
+                  tags={[{"color": "#51A1E0", "name":"Obrigatória2"}, {"color": "#51A1E0", "name":"Obrigatória3"}, {"color": "#51A1E0", "name":"Obrigatória4"}]}
                   credits={{lectureCredits: 4, workCredits: 2}}
                   desc="Descrição genérica"/>
       <ContentContainer>
@@ -52,7 +51,7 @@ const Home = ({ plans }) => {
           <Header />
           <Stack spacing={1}>
             <CompletionBar />
-            <Semesters plans={plans} toggleCourseInfo={toggleCourseInfo} />
+            <Semesters plans={plans} openCourseInfoPopUp={openCourseInfoPopUp} />
           </Stack>
         </Stack>
       </ContentContainer>

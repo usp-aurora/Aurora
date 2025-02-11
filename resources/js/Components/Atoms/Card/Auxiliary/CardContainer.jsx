@@ -19,9 +19,9 @@ const Container = styled("div")(({ theme }) => ({
     },
 }));
 
-function CardContainer({ children }) {
+function CardContainer({ children, ...props }) {
     return (
-        <Container>
+        <Container {...props}>
             {children}
         </Container>
     );

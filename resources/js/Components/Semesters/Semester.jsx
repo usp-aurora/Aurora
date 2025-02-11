@@ -40,7 +40,7 @@ const CardContainer = styled("div")(({ theme }) => ({
     }
 }));
 
-const Semester = ({ semesterData, toggleCourseInfo }) => {
+const Semester = ({ semesterData, openCourseInfoPopUp }) => {
     let workCredits = 0;
     let lectureCredits = 0;
 
@@ -53,10 +53,10 @@ const Semester = ({ semesterData, toggleCourseInfo }) => {
         <SummaryContainer>
             <SemesterInfoText>{semesterData.semester}º Período</SemesterInfoText>
             <SemesterCreditsText>
-                {lectureCredits ? lectureCredits : ""}
-                {workCredits ? " + " : ""}
-                {workCredits ? workCredits : ""}
-                {lectureCredits || workCredits ? " créditos" : ""}
+                {(lectureCredits ? lectureCredits : "0") + " "}
+                +
+                {" " + (workCredits ? workCredits : "0") + " "}
+                créditos
             </SemesterCreditsText>
         </SummaryContainer>
     );
@@ -64,15 +64,15 @@ const Semester = ({ semesterData, toggleCourseInfo }) => {
     return (
         <Accordion
             summary={Summary}
-            sx={{ borderRadius: "160px" }}
         >
             <CardContainer>
                 {semesterData.courses.map((course) => (
                     <SubjectCard
+                        key={course.code}
                         courseCode={course.code}
                         courseTitle={course.title}
                         planetURL="/icons/planeta.png"
-                        onClick={toggleCourseInfo}
+                        onClick={openCourseInfoPopUp}
                     ></SubjectCard>
                 ))}
             </CardContainer>
