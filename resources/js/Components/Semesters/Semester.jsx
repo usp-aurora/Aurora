@@ -1,63 +1,86 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
+import React from "react";
 
-import SemesterHeader from './SemesterHeader';
-import SubjectCard from '../Atoms/Card/SubjectCard';
-import AuxiliarCard from '../Atoms/Card/AuxiliarCard';
-import { slideIn, slideOut } from '../Atoms/Animations';
+import { Typography } from "@mui/material/";
+import { styled } from "@mui/material/styles";
 
-import glassmorphismStyle from '../../styles/glassmorphism';
+import Accordion from "../Atoms/Accordion/Accordion";
+import SubjectCard from "../Atoms/Card/SubjectCard";
+import { red } from "@mui/material/colors";
 
 
-const SemesterContainer = styled.div`
-  ${glassmorphismStyle}
+const SemesterInfoText = styled(Typography)(({ theme }) => ({
+    fontSize: theme.typography.h4.fontSize,
+    lineHeight: theme.typography.h4.lineHeight,
+    [theme.breakpoints.up("sm")]: {
+        fontSize: theme.typography.h1.fontSize,
+        lineHeight: theme.typography.h1.lineHeight,
+    },
+}));
 
-  width: 100%;
-  padding: 2% 3%;
-  margin-bottom: 5%;
-`;
+const SemesterCreditsText = styled(Typography)(({ theme }) => ({
+    fontSize: theme.typography.small.fontSize,
+    lineHeight: theme.typography.small.lineHeight,
 
-const CoursesList = styled.ul`
-  margin-top: ${props => (props.expanded ? '2%' : '0')};
-  list-style: none;
-  padding: 0;
-  overflow: hidden;  /* Importante para esconder o conteúdo quando fechado */
-  max-height: ${props => (props.expanded ? '50000px' : '0')}; /* Define o limite de altura, 
-  quando aberto, é alto para não dar problema */
-  animation: ${props => (props.expanded ? slideIn : slideOut)} 1s ease-in-out ${props => (props.expanded ? '-0.1s' : '-0.6s')};
-  
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 10px;
-`;
+    [theme.breakpoints.up("sm")]: {
+        fontSize: theme.typography.p.fontSize,
+        lineHeight: theme.typography.p.lineHeight,
+    },
+}));
+
+const SummaryContainer = styled("div")(({}) => ({
+    width: "100%",
+    padding: "8px", 
+
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+}));
+
+const CardContainer = styled("div")(({}) => ({
+    display: "flex",
+    justifyContent: "space-between",
+    flexWrap: "wrap",
+}));
 
 const Semester = ({ semesterData, toggleCourseInfo }) => {
+    let workCredits = 0;
+    let lectureCredits = 0;
 
-    const [expanded, setExpanded] = useState(false);
+    semesterData.courses.forEach((course) => {
+        workCredits += parseInt(course.workCredits, 10);
+        lectureCredits += parseInt(course.lectureCredits, 10);
+    });
 
-    const toggleExpanded = () => {
-        setExpanded(prevExpanded => !prevExpanded);
-    };
+    const Summary = (
+        <SummaryContainer>
+            <SemesterInfoText>{semesterData.semester}º Período</SemesterInfoText>
+            <SemesterCreditsText>
+                {lectureCredits ? lectureCredits : ""}
+                {workCredits ? " + " : ""}
+                {workCredits ? workCredits : ""}
+                {lectureCredits || workCredits ? " créditos" : ""}
+            </SemesterCreditsText>
+        </SummaryContainer>
+    );
 
     return (
-        <SemesterContainer>
-            <SemesterHeader semesterData={semesterData} expanded={expanded} onClick={toggleExpanded} />
-            <CoursesList expanded={expanded}>
-                {semesterData.courses.map(course => (
+        <Accordion
+            summary={Summary}
+            sx={{ borderRadius: "160px" }}
+        >
+            <CardContainer>
+                {semesterData.courses.map((course) => (
                     <SubjectCard
                         courseCode={course.code}
                         courseTitle={course.title}
                         planetURL="/icons/planeta.png"
                         onClick={toggleCourseInfo}
-                        >
-                    </SubjectCard>
+                    ></SubjectCard>
                 ))}
-                <AuxiliarCard iconURL="./icons/plus.svg" message="Adicionar">
-                </AuxiliarCard>
-            </CoursesList>
-        </SemesterContainer>
-    )
-}
+            </CardContainer>
+        </Accordion>
+    );
+};
 
 export default Semester;

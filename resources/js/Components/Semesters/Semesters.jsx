@@ -1,11 +1,7 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
+import { styled } from "@mui/material/styles";
+import Stack from '@mui/material/Stack';
 import Semester from './Semester';
-
-const SemestersContainer = styled.div`
-  flex-grow: 1;
-  padding: 20px;
-`;
 
 const getUniqueSemesters = (plans) => {
   const uniqueSemesters = new Set();
@@ -26,11 +22,11 @@ const Semesters = ({ plans, toggleCourseInfo }) => {
   const semesters = getUniqueSemesters(plans);
 
   return (
-    <SemestersContainer>
+    <Stack spacing={1}>
       {semesters.map(semester => (
         <Semester semesterData = {getSemesterData(plans, semester)} toggleCourseInfo={toggleCourseInfo}/>
       ))}
-    </SemestersContainer>
+    </Stack>
   );
 };
 
