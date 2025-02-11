@@ -10,8 +10,7 @@ const ProgressBarContainer = styled("div")(({}) => ({
 }));
 
 const ProgressLabel = styled(Typography)(({ theme }) => ({
-	fontSize: theme.typography.small.fontSize,
-	lineHeight: theme.typography.small.lineHeight,
+	...theme.typography.small,
 	width: "80px",
 	whiteSpace: "nowrap",
 	overflow: "hidden",
@@ -19,8 +18,7 @@ const ProgressLabel = styled(Typography)(({ theme }) => ({
 
 	[theme.breakpoints.up('sm')]: {
 		marginRight: `calc(2 * ${theme.typography.h4.fontSize})`,
-		fontSize: theme.typography.h4.fontSize,
-		lineHeight: theme.typography.h4.lineHeight,
+		...theme.typography.h4,
 		width: "100px",
 	},
 }));
