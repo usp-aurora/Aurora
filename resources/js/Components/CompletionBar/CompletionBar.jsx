@@ -1,8 +1,8 @@
 import React from 'react';
 import Stack from '@mui/material/Stack';
 import { styled } from "@mui/material/styles";
-import glassmorphismStyle from '../../../styles/MUI/glassmorphismMUI';
-import ProgressBar from '../../Atoms/ProgressBar/ProgressBar';
+import glassmorphismStyle from '../../styles/MUI/glassmorphismMUI';
+import ProgressBar from '../Atoms/ProgressBar/ProgressBar';
 
 const CompletionBarContainer = styled(Stack)(({ theme }) => ({
   ...glassmorphismStyle(theme, 'level2'),
