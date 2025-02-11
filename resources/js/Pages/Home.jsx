@@ -1,54 +1,27 @@
-import styled from 'styled-components';
 import React, { useState } from 'react';
-import Header from '../Components/Header/Header.jsx';
+import { styled } from "@mui/material/styles";
+import Stack from '@mui/material/Stack';
+
+import Header from '../Components/Header/Header'
+import CompletionBar from '../Components/CompletionBar/CompletionBar' 
 import Semesters from '../Components/Semesters/Semesters.jsx';
 import CourseInfo from '../Components/CourseInfo/CourseInfo.jsx';
+import Background from '../Components/Background/HomeBackground.jsx';
 // import CoursePicker from '../Components/CoursePicker/CoursePicker.jsx';
 // import AddDisciplinePopUp from '../Components/PopUps/AddDisciplinePopUp.jsx';
-// import CoursePopUp from '../Components/PopUps/CoursePopUp.jsx';
 
 
+const AppContainer = styled("div")(() => ({
+  position: 'relative'
+}));
 
-const AppContainer = styled.div`
-  position: relative; 
-
-  /* display: flex;
-    height: 100vh;
-    flex-direction: column;
-    
-    align-items: center;
-    justify-content: center;
-    background-color: grey; */
-    /* background-color: black; */
-`;
-
-const Background = styled.div`
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  z-index: -1;
-
-  width: 100%; 
-  height: max(100%, 100vh);
-  background: url('./images/Background-Noturno.png') no-repeat center center;
-  background-size: auto 100%;
-  background-position: center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`
-
-const Text = styled.h1`
-  color: white;
-  font-size: 2em;
-`;
-
-
-const ContentContainer = styled.div`
-  display: flex;
-  flex-grow: 1;
-`;
-
+const ContentContainer = styled("div")(({ theme }) => ({
+  padding: "8px", 
+  
+  [theme.breakpoints.up('sm')]: {
+    padding: '16px',
+  }
+}));
 
 const Home = ({ plans }) => {
   const [courseInfoActive, setCourseInfo] = useState(false);
@@ -67,7 +40,6 @@ const Home = ({ plans }) => {
   return (
     <AppContainer>
       <Background />
-      <Header />
       <CourseInfo isOpen={courseInfoActive}
                   onClose={closeCourseInfoPopUp}
                   title="Introdução à Computação" 
@@ -76,7 +48,13 @@ const Home = ({ plans }) => {
                   credits={{lectureCredits: 4, workCredits: 2}}
                   desc="Descrição genérica"/>
       <ContentContainer>
-        <Semesters plans={plans} toggleCourseInfo={toggleCourseInfo} />
+        <Stack spacing={1}> 
+          <Header />
+          <Stack spacing={1}>
+            <CompletionBar />
+            <Semesters plans={plans} toggleCourseInfo={toggleCourseInfo} />
+          </Stack>
+        </Stack>
       </ContentContainer>
     </AppContainer>
   );
