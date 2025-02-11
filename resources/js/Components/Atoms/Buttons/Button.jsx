@@ -7,7 +7,7 @@ const StyledButton = styled(MUIButton)(({ theme }) => ({
 	...clickEffect,
 	textTransform: 'none',
 	borderRadius: '1.5rem',
-	fontSize: theme.typography.h4.fontSize,
+	...theme.typography.h4,
 
 	'&.MuiButton-sizeSmall': {
 		padding: '2px 26px',

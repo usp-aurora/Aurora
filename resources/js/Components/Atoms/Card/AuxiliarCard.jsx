@@ -20,10 +20,10 @@ const StyledIcon = styled(({ component: Component, ...props }) => (
 }));
 
 const StyledText = styled(Typography)(({ theme }) => ({
-	fontSize: theme.typography.small.fontSize,
-
+	...theme.typography.small,
+	
 	[theme.breakpoints.up("sm")]: {
-		fontSize: theme.typography.p.fontSize,
+		...theme.typography.p,
 	},
 }));
 
