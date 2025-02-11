@@ -1,4 +1,3 @@
-// filepath: /home/kim/Documents/code/03_projetos/Aurora/Aurora/resources/js/Components/Atoms/Accordion/Accordion.jsx
 import React from "react";
 import MUIAccordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
@@ -24,21 +23,25 @@ const StyledAccordion = styled((props) => (
     },
 
     "&.Mui-expanded": {
-        marginBottom: 0,
-        marginTop: 0,
+        marginBottom: "0px",
+        marginTop: "0px"
     },
 }));
 
-const StyledAccordionSummary = styled(AccordionSummary)(({ theme }) => ({
+const StyledAccordionSummary = styled(AccordionSummary)(({ }) => ({
     minHeight: '0px',
 	
 	'&.Mui-expanded': {
-		margin: 0,
+		margin: "0px",
 		minHeight: '0px',
   	},
 
 	".MuiAccordionSummary-content": {
-        margin: 0,
+        margin: "0px",
+
+        '&.Mui-expanded': {
+            margin: "0px", // This will remove the margin when expanded
+        }
     },
 }));
 

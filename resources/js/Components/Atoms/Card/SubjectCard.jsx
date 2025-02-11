@@ -13,19 +13,22 @@ const CardBackground = styled(({ glassmorphismLevel, ...other }) => <CardBackgro
 	})
 );
 
-const CardContent = styled("div")(() => ({
+const CardContent = styled("div")(({ theme }) => ({
 	display: "flex",
 	alignItems: "center",
 	flexDirection: "column",
 	justifyContent: "center",
 	textAlign: "center",
-	transform: "translateY(-10px)",
+	marginBottom: "8px",
+	[theme.breakpoints.up("sm")]: {
+		marginBottom: "14px",
+	}
 }));
 
 const PlanetContainer = styled("div")(({ theme }) => ({
 	width: theme.card.mobile.planetSize,
 	height: theme.card.mobile.planetSize,
-	marginBottom: "0.5rem",
+	marginBottom: "8px",
 	[theme.breakpoints.up("sm")]: {
 		width: theme.card.desktop.planetSize,
 		height: theme.card.desktop.planetSize,
@@ -34,18 +37,18 @@ const PlanetContainer = styled("div")(({ theme }) => ({
 
 const StyledTitle = styled(Typography)(({ theme }) => ({
 	color: theme.palette.neutral.main,
-	fontSize: theme.typography.h4.fontSize,
-	lineHeight: theme.typography.h4.lineHeight,
-	
+
+	...theme.typography.h4,
+	lineHeight: "15px",
 	[theme.breakpoints.up("sm")]: {
-			fontSize: theme.typography.h3.fontSize,
-			lineHeight: theme.typography.h3.lineHeight,
+		...theme.typography.h3,
+		lineHeight: "26px",
 	}
 }));
 
 const TextBox = styled("div")(({theme}) => ({
 	width: "100%",
-	height: "2rem",
+	height: "28px",
 	
 	wordBreak: "break-word",
 	display: "-webkit-box",
@@ -54,16 +57,17 @@ const TextBox = styled("div")(({theme}) => ({
 	overflow: "hidden",
 
 	[theme.breakpoints.up("sm")]: {
-		heigh: "3rem"
+		heigh: "39px"
 	}
 }));
 
 const StyledCourseText = styled(Typography)(({theme}) => ({
-	fontSize: theme.typography.small.fontSize,
 	maxWidth: "100%",
-
+	textAlign: "center",
+	
+	...theme.typography.small,
 	[theme.breakpoints.up("sm")]: {
-		fontSize: theme.typography.p.fontSize
+		...theme.typography.p,
 	}
 }));
 

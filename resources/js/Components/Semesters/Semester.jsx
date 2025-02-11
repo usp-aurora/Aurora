@@ -5,25 +5,18 @@ import { styled } from "@mui/material/styles";
 
 import Accordion from "../Atoms/Accordion/Accordion";
 import SubjectCard from "../Atoms/Card/SubjectCard";
-import { red } from "@mui/material/colors";
-
 
 const SemesterInfoText = styled(Typography)(({ theme }) => ({
-    fontSize: theme.typography.h4.fontSize,
-    lineHeight: theme.typography.h4.lineHeight,
+    ...theme.typography.h4,
     [theme.breakpoints.up("sm")]: {
-        fontSize: theme.typography.h1.fontSize,
-        lineHeight: theme.typography.h1.lineHeight,
+        ...theme.typography.h1,
     },
 }));
 
 const SemesterCreditsText = styled(Typography)(({ theme }) => ({
-    fontSize: theme.typography.small.fontSize,
-    lineHeight: theme.typography.small.lineHeight,
-
+    ...theme.typography.small,
     [theme.breakpoints.up("sm")]: {
-        fontSize: theme.typography.p.fontSize,
-        lineHeight: theme.typography.p.lineHeight,
+        ...theme.typography.p,
     },
 }));
 
@@ -37,10 +30,14 @@ const SummaryContainer = styled("div")(({}) => ({
     justifyContent: "space-between",
 }));
 
-const CardContainer = styled("div")(({}) => ({
+const CardContainer = styled("div")(({ theme }) => ({
     display: "flex",
     justifyContent: "space-between",
     flexWrap: "wrap",
+    gap: "8px",
+    [theme.breakpoints.up("sm")]: {
+        gap: "16px"
+    }
 }));
 
 const Semester = ({ semesterData, toggleCourseInfo }) => {
