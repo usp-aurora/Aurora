@@ -19,7 +19,7 @@ class PlanoEstudosSeeder extends Seeder
             'semestre' => 1,
         ];
 
-        PlanoEstudos::create($plan);
-        // PlanoEstudos::factory(45)->create();
+        // PlanoEstudos::create($plan);
+        PlanoEstudos::factory(45)->create();
     }
 }

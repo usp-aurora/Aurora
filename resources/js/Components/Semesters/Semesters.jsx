@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { styled } from "@mui/material/styles";
 import Stack from '@mui/material/Stack';
 import Semester from './Semester';
 
@@ -14,13 +13,11 @@ const getUniqueSemesters = (plans) => {
 };
 
 const getSemesterData = (plans, semester) => {
-  let semesterData = { "semester": semester, "courses": plans.filter(plan => plan.semester === semester) };
-  return semesterData;
+  return { "semester": semester, "courses": plans.filter(plan => plan.semester === semester) }; 
 }
 
 const Semesters = ({ plans, openCourseInfoPopUp }) => {
   const semesters = getUniqueSemesters(plans);
-
   return (
     <Stack spacing={1}>
       {semesters.map(semester => (

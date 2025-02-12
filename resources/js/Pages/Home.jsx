@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { styled } from "@mui/material/styles";
 import Stack from '@mui/material/Stack';
 
@@ -7,8 +7,7 @@ import CompletionBar from '../Components/CompletionBar/CompletionBar'
 import Semesters from '../Components/Semesters/Semesters.jsx';
 import CourseInfo from '../Components/CourseInfo/CourseInfo.jsx';
 import Background from '../Components/Background/HomeBackground.jsx';
-// import CoursePicker from '../Components/CoursePicker/CoursePicker.jsx';
-// import AddDisciplinePopUp from '../Components/PopUps/AddDisciplinePopUp.jsx';
+import CoursePicker from '../Components/CoursePicker/CoursePicker.jsx';
 
 
 const AppContainer = styled("div")(() => ({
@@ -16,6 +15,8 @@ const AppContainer = styled("div")(() => ({
 }));
 
 const ContentContainer = styled("div")(({ theme }) => ({
+  display: 'flex',
+  justifyContent: 'center',
   padding: "8px", 
   
   [theme.breakpoints.up('sm')]: {
@@ -23,7 +24,7 @@ const ContentContainer = styled("div")(({ theme }) => ({
   }
 }));
 
-const Home = ({ plans }) => {
+const Home = ({ plans, subjects }) => {
   const [courseInfoActive, setCourseInfo] = useState(false);
   const [courseCode, setCourseCode] = useState("");
 
@@ -49,9 +50,12 @@ const Home = ({ plans }) => {
       <ContentContainer>
         <Stack spacing={1}> 
           <Header />
-          <Stack spacing={1}>
-            <CompletionBar />
-            <Semesters plans={plans} openCourseInfoPopUp={openCourseInfoPopUp} />
+          <Stack spacing={2} direction="row">
+            <Stack spacing={1}>
+              <CompletionBar />
+              <Semesters plans={plans} openCourseInfoPopUp={openCourseInfoPopUp} />
+            </Stack>
+            <CoursePicker open={false} data={subjects}/>
           </Stack>
         </Stack>
       </ContentContainer>

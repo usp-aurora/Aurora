@@ -6,10 +6,11 @@ use App\Http\Controllers\PlanoEstudosController;
 use App\Http\Controllers\PlansController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CarregaMateriasController;
 
 
-Route::get('/', [PlanoEstudosController::class, 'index']);
+Route::get('/', [HomeController::class, 'index']);
 
 Route::prefix('planos')->group(function () {
     Route::post('/store', [PlanoEstudosController::class, 'store'])->name('plans.store');
@@ -21,39 +22,10 @@ Route::get('login', [LoginController::class, 'redirectToProvider']);
 Route::get('callback', [LoginController::class, 'handleProviderCallback']);
 Route::get('logout', [LoginController::class, 'logout']);
 
-
-Route::get('/json-grupos/{id_curso}', [CarregaMateriasController::class, 'index']);
-
 // Routing para as páginas que estamos utilizando pra desenvolvimento
 // !!! Lembre que apenas os arquivos em resources/js/Pages são acessíveis aqui !!!
 
 
 Route::get('/test', function() {
     return Inertia::render('Development/Test');
-});
-
-
-Route::get('/semesters', function() {
-    return Inertia::render('Development/TestSemesters');
-});
-
-Route::get('/course-info', function() {
-    return Inertia::render('Development/TestCourseInfo');
-});
-
-Route::get('/card', function () {
-    return Inertia::render('Development/CardTest');
-});
-
-Route::get('/cards', function () {
-    return Inertia::render('Development/CardsTest');
-});
-
-
-Route::get('/completion-bar', function () {
-    return Inertia::render('Development/TestCompletionBar');
-});
-
-Route::get('/botao', function () {
-    return Inertia::render('Development/TestButtons');
 });

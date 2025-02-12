@@ -1,14 +1,15 @@
 import { styled } from "@mui/material/styles";
-import React, { useState } from 'react';
+import React from 'react';
+
 const BackgroundComponent = styled("div")(() => ({
 	position: 'absolute',
 	top: 0,
 	left: 0,
 	zIndex: -1,
 	width: '100%',
-	height: 'max(100%, 100vh)',
+	height: '100%',
 	background: 'url(./images/Background-Noturno.png) no-repeat center center',
-	backgroundSize: 'auto 100%',
+	backgroundSize: 'cover',
 	backgroundPosition: 'center',
 	display: 'flex',
 	justifyContent: 'center',

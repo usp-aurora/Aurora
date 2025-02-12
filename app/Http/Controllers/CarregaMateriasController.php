@@ -3,12 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
 
 class CarregaMateriasController extends Controller {
 
     // Função principal que recebe o id de um grupoCursoJSON, carrega os grupos e devolve o json
     public function index($id_curso) {
-        return response()->json($this->carregaCurso($id_curso));
+        return $this->carregaCurso($id_curso);
     }
     
     // Função recursiva que processa os grupos (e seus subgrupos) 
