@@ -395,7 +395,7 @@ const CoursePicker = ({ categories, courseMap, displayCourse, openDisciplinePopU
                       key={course.id}
                       course={courseMap.get(course?.id)} 
                       container={category.name}
-                      disable={!expandedCategories[category.name]}
+                      disabled={!expandedCategories[category.name]}
                       handleClick={displayCourse}/>
                   ))}
             </CoursesGrid>

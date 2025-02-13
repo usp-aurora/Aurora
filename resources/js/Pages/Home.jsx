@@ -130,7 +130,7 @@ const categories = [
 
 const Home = ({ subjects }) => {
   const [plans, setPlans] = useState([]); 
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingData, setIsLoadingData] = useState(true);
   const [addDisciplineActive, setAddDisciplineActive] = useState(false);
   const [coursePopUpActive, setCoursePopUpActive] = useState(false);
   const [unsavedChanges, setUnsavedChanges] = useState(false);
@@ -176,7 +176,7 @@ const Home = ({ subjects }) => {
     return initialCourseMap;
   });
 
-  useLifecycleHandlers(courseMap, plans, unsavedChanges, setIsLoading, setPlans, setCourseMap)
+  useLifecycleHandlers(courseMap, plans, unsavedChanges, setIsLoadingData, setPlans, setCourseMap)
   usePlanSync(courseMap, setCourseMap, setPlans, setUnsavedChanges)
   
   const toggleDiscipline = () => {
@@ -225,7 +225,7 @@ const Home = ({ subjects }) => {
     );
   };
 
-  return  isLoading ? (
+  return  isLoadingData ? (
 	  <LoadingScreen />
   ) : (
     <AppContainer>
@@ -241,7 +241,6 @@ const Home = ({ subjects }) => {
       />
       <Header />
       <DragAndDropProvider
-        courseMap={courseMap}
         setCourseMap={setCourseMap}
         setPlans={setPlans}
         setUnsavedChanges={setUnsavedChanges}

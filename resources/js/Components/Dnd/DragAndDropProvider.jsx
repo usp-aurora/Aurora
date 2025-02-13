@@ -1,8 +1,8 @@
 import { DndContext, closestCenter, rectIntersection } from "@dnd-kit/core";
 import { useState, useRef, useEffect } from "react";
 import { useSensor, useSensors, PointerSensor, KeyboardSensor } from "@dnd-kit/core";
-import DragOverlayComponent from "./DragOverlayComponent.jsx";
 import { handleDragStart, handleDragOver, handleDragEnd } from "../../Handlers/DragHandlers.jsx";
+import DragOverlayComponent from "./DragOverlayComponent.jsx";
 
 /**
  * Computes the best collision detection strategy for draggable items.
@@ -28,12 +28,11 @@ function computeCollision({ droppableContainers, ...args }) {
  *
  * @param {Object} props - Props passed to the provider.
  * @param {React.ReactNode} props.children - Child components wrapped by the provider.
- * @param {Map} props.courseMap - Course data mapping.
  * @param {Function} props.setCourseMap - Function to update course mapping.
  * @param {Function} props.setPlans - Function to update plan structure.
  * @param {Function} props.setUnsavedChanges - Function to mark unsaved changes.
  */
-function DragAndDropProvider({ children, courseMap, setCourseMap, setPlans, setUnsavedChanges }) {
+function DragAndDropProvider({ children, setCourseMap, setPlans, setUnsavedChanges }) {
   const [dragOverlay, setDragOverlay] = useState(null);
   const [draggedItem, setDraggedItem] = useState(null);
   const throttleTimer = useRef(null);
@@ -56,11 +55,11 @@ function DragAndDropProvider({ children, courseMap, setCourseMap, setPlans, setU
    */
   function handleThrottledDragOver(event) {
     if (!throttleTimer.current) {
-      handleDragOver(event, courseMap, setPlans, draggedItem, setDraggedItem);
+      handleDragOver(event, setPlans, draggedItem, setDraggedItem);
 
       throttleTimer.current = setTimeout(() => {
         throttleTimer.current = null;
-      }, 5) // Throttle duration in milliseconds.
+      }, 1) // Throttle duration in milliseconds.
     }
   }
 
@@ -89,10 +88,10 @@ function DragAndDropProvider({ children, courseMap, setCourseMap, setPlans, setU
       /**
        * Monitors drag events and updates states accordingly.
        */
-      onDragStart={(event) => handleDragStart(event, courseMap, setDragOverlay, setDraggedItem)}
+      onDragStart={(event) => handleDragStart(event, setDragOverlay, setDraggedItem)}
       onDragOver={(event) => handleThrottledDragOver(event)}
       onDragEnd={(event) => { 
-        handleDragEnd(event, courseMap, draggedItem, setPlans);
+        handleDragEnd(event, draggedItem, setPlans);
         setDraggedItem(null);
         setDragOverlay(null);
       }}
