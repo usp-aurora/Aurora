@@ -45,7 +45,7 @@ const Container = styled("div")(({ theme }) => ({
         ...glassmorphismStyle(theme, "level2"),
         margin: 0,
         padding: theme.spacing(2),
-        height: "93vh",
+        minHeight: "93vh",
         borderRadius: "12px"
     }
 }));

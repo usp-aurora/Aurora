@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import Starfield from "./Starfield";
 
 const BackgroundComponent = styled(Starfield)(() => ({
-	position: 'absolute',
 	top: 0,
 	left: 0,
 	width: '100%',
