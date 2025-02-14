@@ -1,8 +1,10 @@
+import { useState, useRef, useEffect, createContext, useContext } from "react";
 import { DndContext, closestCenter, rectIntersection } from "@dnd-kit/core";
-import { useState, useRef, useEffect } from "react";
 import { useSensor, useSensors, PointerSensor, KeyboardSensor } from "@dnd-kit/core";
 import { handleDragStart, handleDragOver, handleDragEnd } from "../../Handlers/DragHandlers.jsx";
 import DragOverlayComponent from "./DragOverlayComponent.jsx";
+
+const DragAndDropContext = createContext();
 
 /**
  * Computes the best collision detection strategy for draggable items.
@@ -33,6 +35,7 @@ function computeCollision({ droppableContainers, ...args }) {
  * @param {Function} props.setUnsavedChanges - Function to mark unsaved changes.
  */
 function DragAndDropProvider({ children, setCourseMap, setPlans, setUnsavedChanges }) {
+  const [isDragDisabled, setIsDragDisabled] = useState(false);
   const [dragOverlay, setDragOverlay] = useState(null);
   const [draggedItem, setDraggedItem] = useState(null);
   const throttleTimer = useRef(null);
@@ -43,9 +46,7 @@ function DragAndDropProvider({ children, setCourseMap, setPlans, setUnsavedChang
    * - `KeyboardSensor`: Allows keyboard-based sorting.
    */
   const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: { distance: 5 }, // Ensures small movements as clicks
-    }),
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }), // Ensures small movements as clicks
     useSensor(KeyboardSensor)
   );
 
@@ -59,12 +60,13 @@ function DragAndDropProvider({ children, setCourseMap, setPlans, setUnsavedChang
 
       throttleTimer.current = setTimeout(() => {
         throttleTimer.current = null;
-      }, 1) // Throttle duration in milliseconds.
+      }, 5) // Throttle duration in milliseconds.
     }
   }
 
   /**
    * Updates `courseMap` when dragged item changes.
+   * Marks changes as unsaved.
    */
   useEffect(() => {
     if (draggedItem) {
@@ -79,31 +81,33 @@ function DragAndDropProvider({ children, setCourseMap, setPlans, setUnsavedChang
         return updatedMap;
       });
     }
-  }, [draggedItem]);
+  }, [draggedItem, setCourseMap, setUnsavedChanges]);
 
   return (
-    <DndContext 
-      sensors={sensors} 
-      collisionDetection={computeCollision}
-      /**
-       * Monitors drag events and updates states accordingly.
-       */
-      onDragStart={(event) => handleDragStart(event, setDragOverlay, setDraggedItem)}
-      onDragOver={(event) => handleThrottledDragOver(event)}
-      onDragEnd={(event) => { 
-        handleDragEnd(event, draggedItem, setPlans);
-        setDraggedItem(null);
-        setDragOverlay(null);
-      }}
-      onDragCancel={() => {
-        setDraggedItem(null);
-        setDragOverlay(null);
-      }}    
-    >
-      {dragOverlay && <DragOverlayComponent course={dragOverlay} />}
-      {children}
-    </DndContext>
+	<DragAndDropContext.Provider value={{ isDragDisabled, setIsDragDisabled }}>
+		<DndContext 
+			sensors={sensors} 
+			collisionDetection={computeCollision}
+			onDragStart={(event) => handleDragStart(event, setDragOverlay, setDraggedItem)}
+			onDragOver={(event) => handleThrottledDragOver(event)}
+			onDragEnd={(event) => { 
+				handleDragEnd(event, draggedItem, setPlans);
+				setDraggedItem(null);
+				setDragOverlay(null);
+			}}
+			onDragCancel={() => {setDraggedItem(null); setDragOverlay(null); }}    
+		>
+			{dragOverlay && <DragOverlayComponent course={dragOverlay} />}
+			{children}
+		</DndContext>
+	</ DragAndDropContext.Provider>
   );
 }
 
-export default DragAndDropProvider;
+/**
+ * Hook to access the drag-and-drop context.
+ * @returns {Object} Drag-and-drop context.
+ */
+function useDragAndDrop() { return useContext(DragAndDropContext); }
+
+export { DragAndDropProvider, useDragAndDrop };
