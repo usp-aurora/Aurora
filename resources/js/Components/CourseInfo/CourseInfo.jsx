@@ -50,7 +50,6 @@ const CourseReqsPlaceholder = styled.div`
 	width: 100%;
 
 	border-radius: 16px;
-	background-color: #18273C;
 	flex-grow: 1;
 
 	display: flex;
