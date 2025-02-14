@@ -13,6 +13,12 @@ theme = createTheme({
         },
         white: {main: '#FFFFFF'},
         black: {main: '#000000'},   
+        red: theme.palette.augmentColor ({
+            color: {
+                main: '#E83030',
+            },
+            name: 'red'
+        }),
         yellow: theme.palette.augmentColor ({
             color: {
                 main: '#FFD12B',

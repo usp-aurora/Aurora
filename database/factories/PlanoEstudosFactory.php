@@ -3,13 +3,13 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use \App\Models\Plan;
-use \App\Models\Subject;
+use \App\Models\PlanoEstudos;
+use \App\Models\Materia;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Plan>
  */
-class PlanFactory extends Factory
+class PlanoEstudosFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -19,9 +19,9 @@ class PlanFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => 1,
-            'subject_id' => $this->faker->unique->numberBetween(2, Subject::count()), // Must run SubjectSeeder first
-            'semester' => $this->faker->numberBetween(1, 8)
+            'id_usuario' => 1,
+            'codigo_materia' => Materia::inRandomOrder()->first()->codigo_materia,
+            'semestre' => $this->faker->numberBetween(1, 8)
         ];
     }
 }

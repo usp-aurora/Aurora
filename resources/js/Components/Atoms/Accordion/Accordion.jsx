@@ -10,6 +10,7 @@ import glassmorphismStyle from "../../../styles/MUI/glassmorphismMUI";
 const Container = styled("div")(() => ({
     display: "flex",
     flexDirection: "column",
+    width: "100%",
 }));
 
 const StyledAccordion = styled((props) => (
@@ -17,19 +18,24 @@ const StyledAccordion = styled((props) => (
 ))(({ theme, glassmorphismLevel }) => ({
     ...glassmorphismStyle(theme, glassmorphismLevel),
     borderRadius: "8px",
-
-    [theme.breakpoints.up("sm")]: {
-        borderRadius: "12px",
-    },
+    padding: "8px",
+    width: "100%",
 
     "&.Mui-expanded": {
         marginBottom: "0px",
         marginTop: "0px"
     },
+
+    [theme.breakpoints.up("sm")]: {
+        borderRadius: "12px",
+        paddingLeft: "16px",
+        paddingRight: "16px",
+    },
 }));
 
 const StyledAccordionSummary = styled(AccordionSummary)(({ }) => ({
     minHeight: '0px',
+    padding: "0px",
 	
 	'&.Mui-expanded': {
 		margin: "0px",
@@ -46,7 +52,11 @@ const StyledAccordionSummary = styled(AccordionSummary)(({ }) => ({
 }));
 
 const StyledAccordionDetails = styled(AccordionDetails)(({ theme }) => ({
-	padding: theme.spacing(2),
+	padding: "8px 0px 0px 0px", 
+
+    [theme.breakpoints.up("sm")]: {
+        padding: "8px 0px 0px 0px",
+    },
 }));
 
 const StyledExpandMoreIcon = styled(ExpandMoreIcon)(({ theme }) => ({
@@ -57,10 +67,11 @@ const Accordion = ({
     children,
     summary,
     glassmorphismLevel = "level2",
+    expanded
 }) => {
     return (
         <Container>
-            <StyledAccordion glassmorphismLevel={glassmorphismLevel}>
+            <StyledAccordion expanded={expanded} glassmorphismLevel={glassmorphismLevel}>
                 <StyledAccordionSummary
                     expandIcon={<StyledExpandMoreIcon/>}
                 >
