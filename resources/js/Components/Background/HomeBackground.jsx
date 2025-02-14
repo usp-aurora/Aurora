@@ -6,7 +6,6 @@ const BackgroundComponent = styled(Starfield)(() => ({
 	position: 'absolute',
 	top: 0,
 	left: 0,
-	zIndex: -1,
 	width: '100%',
 	height: 'max(100%, 100vh)',
 	display: 'flex',
@@ -15,9 +14,9 @@ const BackgroundComponent = styled(Starfield)(() => ({
 }));
 
 const Background = () => {
-  return (
-	<BackgroundComponent themeMode="dark" />
-  );
+	return (
+		<BackgroundComponent themeMode="dark" />
+  	);
 };
 
 export default Background;
