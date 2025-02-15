@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Foundation\Auth;
 use Illuminate\Http\Request;
-use App\Models\Plan;
+use App\Models\PlanoEstudos;
 use Inertia\Inertia;
 
-class PlansController extends Controller
+class PlanoEstudosController extends Controller
 {
     // temporary function until the login system is implemented 
     private function getUserId() {
@@ -17,17 +17,19 @@ class PlansController extends Controller
     // Show all plans by user.
     public function index()
     {
-        $plans =  Plan::where('user_id', $this->getUserId())
-                       ->orderBy('semester')->get();
+        $plans =  PlanoEstudos::where('id_usuario', $this->getUserId())
+                                ->join('materias', 'planos_estudos.id_materia', '=', 'materias.id')
+                                ->select('planos_estudos.*', 'materias.codigo', 'materias.nome')
+                                ->get();
 
         return Inertia::render('Home', [
             'plans' => $plans->map(function ($plan) {
                 return [
                     'id' => $plan->id,
-                    'title' => $plan->subject->name,
-                    'code' => $plan->subject->code,
-                    'semester' => $plan->semester,
-                    'subject_id' => $plan->subject->id,
+                    'subject_id' => $plan->id_materia,
+                    'title' => $plan->nome,
+                    'code' => $plan->codigo,
+                    'semester' => $plan->semestre,
                 ];
             })
         ]);
@@ -41,14 +43,14 @@ class PlansController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'subject_id' => 'required',
-            'semester' => 'required',
+            'id_materia' => 'required',
+            'semestre' => 'required',
         ]);
 
-        $plan = Plan::create([
-            'user_id' => $this->getUserId(),
-            'subject_id' => $request->subject_id,
-            'semester' => $request->semester,
+        $plan = PlanoEstudos::create([
+            'id_usuario' => $this->getUserId(),
+            'id_materia' => $request->subject_id,
+            'semestre' => $request->semester,
         ]);
 
         return response()->json(['success' => 'Plan created successfully!', 'plan' => $plan], 201);
@@ -59,16 +61,16 @@ class PlansController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'subject_id' => 'required',
-            'semester' => 'required',
+            'id_materia' => 'required',
+            'semestre' => 'required',
         ]);
 
         // Find the plan, create if not found
-        $plan = Plan::find($id) ?? $this->store($request);    
+        $plan = PlanoEstudos::find($id) ?? $this->store($request);    
         
         $plan->update([
-            'subject_id' => $request->subject_id,
-            'semester' => $request->semester,
+            'id_materia' => $request->subject_id,
+            'semestre' => $request->semester,
         ]);
 
         return response()->json(['success' => 'Plan successfully updated!', 'plan' => $plan], 200); 
@@ -79,7 +81,7 @@ class PlansController extends Controller
     public function destroy($id) {
         try {
             // Find the plan, if not found, consider it already deleted
-            $plan = Plan::find($id);
+            $plan = PlanoEstudos::find($id);
 
             if ($plan) {
                 $plan->delete();
