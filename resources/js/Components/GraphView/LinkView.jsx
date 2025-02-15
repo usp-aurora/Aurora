@@ -1,10 +1,10 @@
-import styled from 'styled-components';
+import { styled } from "@mui/material";
 
-const Link = styled.line`
-	stroke: white;
-	stroke-width: 1px;
-	filter: url(#glow);
-`;
+const Link = styled("line")({
+	stroke: "white",
+	strokeWidth: "1px",
+	filter: "url(#glow)",
+});
 
 function LinkView({x1=0,y1=0,x2=10,y2=10,r=80}) {
 	const hypot = Math.hypot(x2-x1,y2-y1);

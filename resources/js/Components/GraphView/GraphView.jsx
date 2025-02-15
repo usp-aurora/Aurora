@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from "react";
-import styled from 'styled-components';
+import { styled } from "@mui/material";
 
 import NodeView from "./NodeView";
 import LinkView from "./LinkView";
@@ -9,40 +9,41 @@ import {
 	getHandleMouseDownNode, handleTouch,
 } from "./EventUtils";
 import {getStartUpdate, stopUpdate, getInitialStablePositions} from "./UpdateUtils";
+import Starfield from "../Background/Starfield";
 
-const GraphBodyView = styled.div`
-	position: relative;
-	width: 100%;
-	height: 100%;
-	overflow: hidden;
-	cursor: grab;
-	touch-action: none;
-`;
+const GraphBodyView = styled("div")({
+	position: "relative",
+	width: "100%",
+	height: "100%",
+	overflow: "hidden",
+	cursor: "grab",
+	touchAction: "none",
+})
 
-const LinkContainerView = styled.svg`
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-`;
+const LinkContainerView = styled("svg")({
+	position: "absolute",
+	top: 0,
+	left: 0,
+	width: "100%",
+	height: "100%",
+});
 
-const GraphBackgroundView = styled.div`
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	background-color: #112;
-`;
+const GraphBackgroundView = styled(Starfield)({
+	position: "absolute",
+	top: 0,
+	left: 0,
+	width: "100%",
+	height: "100%",
+	borderRadius: "16px",
+})
 
-const NodeContainerView = styled.div`
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-`;
+const NodeContainerView = styled("div")({
+	position: "absolute",
+	top: 0,
+	left: 0,
+	width: "100%",
+	height: "100%",
+});
 
 function GraphView({ nodes, links, root, interactive = false, vertical = false, forceStyle = {} }) {
 
@@ -148,7 +149,7 @@ function GraphView({ nodes, links, root, interactive = false, vertical = false, 
 			onTouchStart={handleTouch}
 			ref={outerDiv}
 		>
-			<GraphBackgroundView />
+			<GraphBackgroundView twinkling={false}/>
 			<LinkContainerView>
 				<filter>
 					<feDropShadow dx="0" dy="0" stdDeviation="2" floodColor="white" />

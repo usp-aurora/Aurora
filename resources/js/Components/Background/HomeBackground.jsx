@@ -1,25 +1,21 @@
 import { styled } from "@mui/material/styles";
-import React from 'react';
+import React, { useState } from 'react';
+import Starfield from "./Starfield";
 
-const BackgroundComponent = styled("div")(() => ({
-	position: 'absolute',
+const BackgroundComponent = styled(Starfield)(() => ({
 	top: 0,
 	left: 0,
-	zIndex: -1,
 	width: '100%',
-	height: '100%',
-	background: 'url(./images/Background-Noturno.png) no-repeat center center',
-	backgroundSize: 'cover',
-	backgroundPosition: 'center',
+	height: 'max(100%, 100vh)',
 	display: 'flex',
 	justifyContent: 'center',
 	alignItems: 'center',
 }));
 
 const Background = () => {
-  return (
-	<BackgroundComponent />
-  );
+	return (
+		<BackgroundComponent themeMode="dark" />
+  	);
 };
 
 export default Background;

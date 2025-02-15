@@ -1,4 +1,4 @@
-import { keyframes } from 'styled-components';
+import { keyframes } from "@mui/system";
 
 export const slideIn = keyframes`
   0% {
@@ -94,4 +94,8 @@ export const fadeOut = keyframes`
   100% {
     opacity: 0;
   }
+`;
+
+export const twinkle = keyframes`
+  25% { opacity: 0; }
 `;

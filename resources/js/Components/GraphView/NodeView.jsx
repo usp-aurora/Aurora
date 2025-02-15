@@ -1,8 +1,8 @@
-import styled from 'styled-components';
+import { styled } from "@mui/material";
 
-const NodeContainerView = styled.div`
-	position: absolute;
-`;
+const NodeContainerView = styled("div")({
+	position: "absolute",
+});
 
 function NodeView({x=0,y=0,onMouseDown,children}) {
 	return (
