@@ -10,10 +10,11 @@ const CardComponent = styled.div`
   align-items: center;
   justify-content: center;
   cursor: pointer;
-
+  user-select: none;
+ 
   &:active {
     transform: translateY(2px);
-  }
+  }  
 `;
 
 const CardContent = styled.div`
