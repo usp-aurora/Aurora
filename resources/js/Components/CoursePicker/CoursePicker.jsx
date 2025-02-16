@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import StyledButton from '../Atoms/StyledButton';
 import Droppable from '../Dnd/Droppable';
-import SortableCard from '../Dnd/SortableCard';
+import SortableItem from '../Dnd/SortableItem';
 import {slideIn, slideIn2, slideOut, slideOut2} from '../Atoms/Animations'
+import Card from "../Atoms/Card"
+import CardContentCourse from "../Atoms/CardContentCourse"
 // import { ReactComponent as ThinButtonBlueBackgroundSVG } from '../../assets/ThinButtonBlueBackground.svg';
 // import { ReactComponent as AplicarTextIconSVG } from '../../assets/AplicarTextIcon.svg';
 
@@ -226,7 +228,7 @@ const CategoryHeaderBackground = styled.div`
   position: relative;
 `;
 
-const CoursesGrid = styled.div`
+const CourseGrid = styled.div`
   display: grid;
   overflow: hidden;
   grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
@@ -384,21 +386,38 @@ const CoursePicker = ({ categories, courseMap, displayCourse, openDisciplinePopU
                   </svg>
                 </CategoryHeaderBackground>
             </CategoryHeader>
-            <CoursesGrid $expanded={expandedCategories[category.name]}>
-                {category.courses
-                  .filter((course) =>
-                    courseMap.get(course?.id).code.toLowerCase().includes(searchTerm.toLowerCase())
-                  )
-                  .map((course) => (
-                    <SortableCard 
-                      id={course.id}
-                      key={course.id}
-                      course={courseMap.get(course?.id)} 
-                      container={category.name}
-                      disabled={!expandedCategories[category.name]}
-                      handleClick={displayCourse}/>
-                  ))}
-            </CoursesGrid>
+            <CourseGrid $expanded={expandedCategories[category.name]}>
+              {category.courses
+                .filter((course) =>
+                  courseMap.get(course?.id).code.toLowerCase().includes(searchTerm.toLowerCase())
+                )
+                .map((course) => {
+                  const courseDetails = courseMap.get(course.id);
+                  const isBlocked = courseDetails.semester !== null;
+
+                  return (
+                    <SortableItem
+                      id={courseDetails.code}
+                      key={courseDetails.code}
+                      courseData={courseDetails}
+                      containerName={category.name}
+                      isDisabled={!expandedCategories[category.name] || isBlocked}
+                    >
+                      <Card
+                        colors={courseDetails.colors}
+                        onClick={() => displayCourse(courseDetails)}
+                      >
+                        <CardContentCourse
+                          pokeball={courseDetails.pokeball}
+                          courseCode={courseDetails.code}
+                          courseTitle={courseDetails.title}
+                          pokemonURL="/pokemons/ditto.png"
+                        />
+                      </Card>
+                    </SortableItem>
+                  );
+                })}
+            </CourseGrid>
           </CategoryContainer>
         ))}
       </Categories>

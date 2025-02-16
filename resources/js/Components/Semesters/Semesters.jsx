@@ -46,7 +46,8 @@ const NewSemester = styled.div`
 
 const Semesters = ({ semesters, setSemesters, displayCourse, courseMap }) => {
   const {setIsDragDisabled} = useDragAndDrop();
-
+  const [ requiredCourses, setRequiredCourses ] = useState(false);
+  
   const [expandedSemesters, setExpandedSemesters] = useState(
     semesters.reduce((acc, semester) => {
       acc[semester.id] = false;
@@ -95,7 +96,8 @@ const Semesters = ({ semesters, setSemesters, displayCourse, courseMap }) => {
         </SemestersContainerHeaderPages>
         <p style={{color: "#9E9E9E", fontSize: 12}}>Arraste uma disciplina para adicioná-la ou removê-la do período desejado.</p>
         <SemestersContainerHeaderView>
-          <StyledButton background_image={"/assets/a2.png"} onClick={() => setIsDragDisabled((prev) => !prev)}>
+        <StyledButton background_image={"/assets/a2.png"} 
+            onClick={() => {setIsDragDisabled((prev) => !prev); setRequiredCourses((prev) => !prev)}}>
             <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M1.30223 9.22502L1.19386 9.5L1.30223 9.77498C3.14092 14.4408 7.68046 17.75 13 17.75C18.3195 17.75 22.8591 14.4408 24.6978 9.77498L24.8061 9.5L24.6978 9.22502C22.8591 4.55921 18.3195 1.25 13 1.25C7.68046 1.25 3.14092 4.55921 1.30223 9.22502ZM13 4.75C16.377 4.75 19.398 6.57762 20.9767 9.50003C19.3985 12.4228 16.3862 14.25 13 14.25C9.61377 14.25 6.6015 12.4228 5.0233 9.50004C6.60196 6.57762 9.62298 4.75 13 4.75ZM16.25 9.5C16.25 7.70579 14.7942 6.25 13 6.25C11.2058 6.25 9.75 7.70579 9.75 9.5C9.75 11.2942 11.2058 12.75 13 12.75C14.7942 12.75 16.25 11.2942 16.25 9.5Z" fill="white" stroke="#1B68AE" stroke-width="1.5"/>
             </svg>
@@ -113,7 +115,8 @@ const Semesters = ({ semesters, setSemesters, displayCourse, courseMap }) => {
         <Semester 
           key={semester.id}  
           semester={semester} 
-          expanded={expandedSemesters[semester.id]}
+          isExpanded={expandedSemesters[semester.id]}
+          isRequired={requiredCourses}
           toggleSemester={toggleSemester} 
           displayCourse={displayCourse}
           courseMap={courseMap}

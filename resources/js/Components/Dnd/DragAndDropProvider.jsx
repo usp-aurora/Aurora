@@ -73,8 +73,8 @@ function DragAndDropProvider({ children, setCourseMap, setPlans, setUnsavedChang
       setUnsavedChanges(true);
       setCourseMap((prevMap) => {
         const updatedMap = new Map(prevMap);
-        updatedMap.set(draggedItem.id, {
-          ...prevMap.get(draggedItem.id),
+        updatedMap.set(draggedItem.course.id, {
+          ...prevMap.get(draggedItem.course.id),
           semester: draggedItem.container === "coursePicker" ? null : Number(draggedItem.container.split(" ")[1]),
           unsaved: true,
         });

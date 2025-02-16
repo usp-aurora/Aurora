@@ -33,7 +33,7 @@ function getSemesterCourses(alias, plans) {
  */
 function calculateDropIndex(over, draggingRect, targetCourses) {
   const overId = extractBaseId(over.id);
-  const overIndex = targetCourses.findIndex((course) => course.id === overId);
+  const overIndex = targetCourses.findIndex((course) => course.code === overId);
   if (overIndex === -1) return targetCourses.length;
 
   const isAfterLastItem =
@@ -65,7 +65,7 @@ function handleDragStart(event, setOverlay, setDraggedItem) {
   });
 
   setDraggedItem({
-    id: course.id,
+    id: course.code,
     container: container,
     course: {
       id: course.id,
@@ -97,12 +97,10 @@ function handleDragOver(event, updatePlans, draggedItem, setDraggedItem) {
         return {
           ...semester,
           credits: semester.credits.map((credit, i) => Number(credit) - Number(draggedItem.course.credits[i])),
-          courses: semester.courses.filter((course) => course.id !== draggedItem.id),
+          courses: semester.courses.filter((course) => course.code !== draggedItem.id),
         };
       } else if (semester.alias === targetContainer) {
-        const targetCourses = semester.courses.filter(
-          (course) => course.id !== draggedItem.id
-        );
+        const targetCourses = semester.courses.filter((course) => course.code !== draggedItem.id);
         const newIndex = calculateDropIndex(over, draggingRect, targetCourses);
 
         return {
@@ -134,8 +132,8 @@ function handleDragEnd(event, draggedItem, updatePlans) {
   if (!targetContainer || draggedItem.container !== targetContainer) return;
 
   updatePlans((prevPlans) => {
-    const sourceIndex = getSemesterCourses(draggedItem.container, prevPlans).findIndex((course) => course.id === draggedItem.id);
-    const targetIndex = getSemesterCourses(targetContainer, prevPlans).findIndex((course) => course.id === extractBaseId(over.id));
+    const sourceIndex = getSemesterCourses(draggedItem.container, prevPlans).findIndex((course) => course.code === draggedItem.id);
+    const targetIndex = getSemesterCourses(targetContainer, prevPlans).findIndex((course) => course.code === extractBaseId(over.id));
 
     if (sourceIndex !== targetIndex) {
       return prevPlans.map((semester) => {

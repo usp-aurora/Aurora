@@ -1,8 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
-import SortableCard from '../Dnd/SortableCard';
 import {slideIn, slideOut, bounce, bounceBack} from '../Atoms/Animations';
 import Droppable from '../Dnd/Droppable';
+import Card from "../Atoms/Card";
+import CardContentCourse from "../Atoms/CardContentCourse";
+import SortableItem from '../Dnd/SortableItem';
 import SortableGrid from '../Dnd/SortableGrid';
 
 const SemesterContainer = styled.div`
@@ -66,7 +68,7 @@ const SemesterCreditsAndIcon = styled.div`
   align-items: center;
 `;
 
-const DroppableCourseGrid = styled(Droppable)`
+const DroppableSemester = styled(Droppable)`
   list-style: none;
   padding: 0;
   overflow: hidden;  /* Importante para esconder o conteúdo quando fechado */
@@ -112,7 +114,7 @@ const NewCard = styled.div`
   );
 `;
 
-const Semester = ({ semester, expanded, toggleSemester, displayCourse, courseMap }) => {
+const Semester = ({ semester, isExpanded, isRequired, toggleSemester, displayCourse, courseMap }) => {
 
   return (
     <SemesterContainer>
@@ -138,28 +140,49 @@ const Semester = ({ semester, expanded, toggleSemester, displayCourse, courseMap
               </SemesterInfos>
             <SemesterCreditsAndIcon>
               <p style={{color: "#757575"}}>{semester.credits[0] ? semester.credits[0] : ''} {semester.credits[0] && semester.credits[1] ? '+ ' : ''} {semester.credits[1] ? semester.credits[1] : ''} {semester.credits[0] || semester.credits[1] ? 'créditos' : ''}</p>
-              <span>{expanded ? '▼' : '▶'}</span>
+              <span>{isExpanded ? '▼' : '▶'}</span>
             </SemesterCreditsAndIcon>
         </SemesterHeader>
-        <DroppableCourseGrid id={semester.alias} key={semester.alias} disabled={!expanded}>
-            <SortableGrid items={semester.courses} name={semester.alias}>
-                {!semester.courses.length ?
-                  <NewCard>
-                    <p>Arraste uma disciplina</p>
-                  </NewCard>
-                :
-                semester.courses.map((course) => (
-                  <SortableCard
-                    id={course.id}
-                    key={course.id}
-                    course={courseMap.get(course.id)} 
-                    container={semester.alias}
-                    disabled={!expanded}
-                    handleClick={displayCourse}
-                  />
-                ))}
-            </SortableGrid>
-        </DroppableCourseGrid>
+        <DroppableSemester id={semester.alias} key={semester.id} disabled={!isExpanded}>
+          <SortableGrid items={semester.courses}>
+            {semester.courses.length === 0 ? (
+              <NewCard>
+                <p>Arraste uma disciplina</p>
+              </NewCard>
+            ) : (
+              semester.courses.map((course) => {
+                const courseDetails = courseMap.get(course.id);
+                const isRequiredScheduled = isRequired && courseDetails.semester;
+
+                return (
+                  <SortableItem
+                    id={courseDetails.code}
+                    key={courseDetails.code}
+                    courseData={courseDetails}
+                    containerName={semester.alias}
+                    isDisabled={!isExpanded}
+                  >
+                    <Card
+                      colors={isRequiredScheduled ? {
+                        background: "#FFFFFF",
+                        innerLine: "#09DE5A",
+                        outerLine: "#15B48F",
+                      } : courseDetails.colors}
+                      onClick={() => displayCourse(courseDetails)}
+                    >
+                      <CardContentCourse
+                        pokeball={courseDetails.pokeball}
+                        courseCode={courseDetails.code}
+                        courseTitle={courseDetails.title}
+                        pokemonURL="/pokemons/ditto.png"
+                      />
+                    </Card>
+                  </SortableItem>
+                );
+              })
+            )}
+          </SortableGrid>
+        </DroppableSemester>
     </SemesterContainer>
   );
 };
