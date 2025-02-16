@@ -12,7 +12,7 @@ function SortableItem({ id, courseData, containerName, isDisabled, children }) {
         id: sortableId,
         data: {
             course: { ...courseData },
-            container: containerName.startsWith("Semester") ? containerName : "coursePicker",
+            container: typeof containerName == "number" ? containerName : "coursePicker",
         },
     });
 

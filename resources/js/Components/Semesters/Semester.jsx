@@ -150,7 +150,7 @@ const Semester = ({ semesterData, isExpanded, isRequired, toggleSemester, displa
               <span>{isExpanded ? '▼' : '▶'}</span>
             </SemesterCreditsAndIcon>
         </SemesterHeader>
-        <DroppableSemester id={semesterData.alias} key={semesterData.id} disabled={!isExpanded}>
+        <DroppableSemester id={semesterData.id} key={semesterData.id} disabled={!isExpanded}>
           <SortableGrid items={semesterData.courses}>
             {semesterData.courses.length === 0 ? (
               <NewCard>
@@ -166,7 +166,7 @@ const Semester = ({ semesterData, isExpanded, isRequired, toggleSemester, displa
                     id={courseDetails.code}
                     key={courseDetails.code}
                     courseData={courseDetails}
-                    containerName={semesterData.alias}
+                    containerName={semesterData.id}
                     isDisabled={!isExpanded}
                   >
                     <Card

@@ -30,7 +30,6 @@ class PlanController extends Controller
 
             $groupedPlans[] = [
                 'id' => $semester,
-                'alias' => 'Semester ' . $semester,
                 'courses' => $semesterPlans->map(function ($plan) {
                     return [
                         'plan' => $plan->id,

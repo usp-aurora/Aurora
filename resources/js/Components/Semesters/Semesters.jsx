@@ -67,7 +67,6 @@ const Semesters = ({ semesters, setSemesters, displayCourse, courseMap }) => {
 
     const newSemester = {
       id: newId,
-      alias: `Semester ${newId}`,
       courses: [],
     };
 

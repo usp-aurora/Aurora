@@ -8,20 +8,20 @@ import { arrayMove } from '@dnd-kit/sortable';
 function extractBaseId(id) { return (typeof id === 'string' ? id.split('@')[0] : id); }
 
 /**
- * Determines the container alias for a given element.
+ * Determines the container name for a given element.
  * @param {Object} element - The DnD element.
- * @returns {string} - The container alias (e.g., "Semester X" or "coursePicker").
+ * @returns {string} - The container name (e.g., "1" or "coursePicker").
  */
-function getContainerAlias(element) { return element?.data.current?.container ?? element?.id; }
+function getContainerName(element) { return element?.data.current?.container ?? element?.id; }
 
 /**
- * Retrieves the list of courses for a given semester alias.
- * @param {string} alias - The semester alias.
+ * Retrieves the list of courses for a given semester id.
+ * @param {string} id - The semester id.
  * @param {Array} plans - The list of plans.
  * @returns {Array} - List of courses for the semester, or an empty array if not found.
  */
-function getSemesterCourses(alias, plans) {
-  return plans.find((semester) => semester.alias === alias)?.courses || [];
+function getSemesterCourses(id, plans) {
+  return plans.find((semester) => semester.id === id)?.courses || [];
 };
 
 /**
@@ -87,18 +87,18 @@ function handleDragStart(event, setOverlay, setDraggedItem) {
  */
 function handleDragOver(event, updatePlans, draggedItem, setDraggedItem) {
   const { over, draggingRect } = event;
-  const targetContainer = getContainerAlias(over);
+  const targetContainer = getContainerName(over);
 
   if (!targetContainer || draggedItem.container === targetContainer) return;
 
   updatePlans((prevPlans) =>
     prevPlans.map((semester) => {
-      if (semester.alias === draggedItem.container) {
+      if (semester.id == draggedItem.container) {
         return {
           ...semester,
           courses: semester.courses.filter((course) => course.code !== draggedItem.id),
         };
-      } else if (semester.alias === targetContainer) {
+      } else if (semester.id == targetContainer) {
         const targetCourses = semester.courses.filter((course) => course.code !== draggedItem.id);
         const newIndex = calculateDropIndex(over, draggingRect, targetCourses);
 
@@ -125,7 +125,7 @@ function handleDragOver(event, updatePlans, draggedItem, setDraggedItem) {
  */
 function handleDragEnd(event, draggedItem, updatePlans) {
   const { over } = event;
-  const targetContainer = getContainerAlias(over);
+  const targetContainer = getContainerName(over);
 
   if (!targetContainer || draggedItem.container !== targetContainer) return;
 
@@ -135,7 +135,7 @@ function handleDragEnd(event, draggedItem, updatePlans) {
 
     if (sourceIndex !== targetIndex) {
       return prevPlans.map((semester) => {
-        if (semester.alias === targetContainer) {
+        if (semester.id == targetContainer) {
           return { ...semester, courses: arrayMove(semester.courses, sourceIndex, targetIndex) };
         }
         return semester;
@@ -145,4 +145,4 @@ function handleDragEnd(event, draggedItem, updatePlans) {
   });
 }
 
-export { handleDragStart, handleDragOver, handleDragEnd };
+export { getContainerName, handleDragStart, handleDragOver, handleDragEnd };

@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, createContext, useContext } from "react";
 import { DndContext, closestCenter, rectIntersection } from "@dnd-kit/core";
 import { useSensor, useSensors, PointerSensor, KeyboardSensor } from "@dnd-kit/core";
-import { handleDragStart, handleDragOver, handleDragEnd } from "../../Handlers/DragHandlers.jsx";
+import { getContainerName, handleDragStart, handleDragOver, handleDragEnd } from "../../Handlers/DragHandlers.jsx";
 import DragOverlayComponent from "./DragOverlayComponent.jsx";
 
 const DragAndDropContext = createContext();
@@ -21,7 +21,7 @@ function computeCollision({ droppableContainers, ...args }) {
     ? rectCollisions
     : closestCenter({ 
         ...args, 
-        droppableContainers: droppableContainers.filter(({ id }) => id !== "coursePicker") 
+        droppableContainers: droppableContainers.filter((droppable) => getContainerName(droppable) !== "coursePicker" ) 
       });
 }
 
@@ -75,7 +75,7 @@ function DragAndDropProvider({ children, setCourseMap, setPlans, setUnsavedChang
         const updatedMap = new Map(prevMap);
         updatedMap.set(draggedItem.course.id, {
           ...prevMap.get(draggedItem.course.id),
-          semester: draggedItem.container === "coursePicker" ? null : Number(draggedItem.container.split(" ")[1]),
+          semester: draggedItem.container === "coursePicker" ? null : Number(draggedItem.container),
           unsaved: true,
         });
         return updatedMap;
