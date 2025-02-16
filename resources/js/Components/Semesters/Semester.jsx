@@ -152,7 +152,7 @@ const Semester = ({ semesterData, isExpanded, isRequired, toggleSemester, displa
         </SemesterHeader>
         <DroppableSemester id={semesterData.id} key={semesterData.id} disabled={!isExpanded}>
           <SortableGrid items={semesterData.courses}>
-            {semesterData.courses.length === 0 ? (
+            {semesterData.courses.length === 0 ? (!isRequired &&
               <NewCard>
                 <p>Arraste uma disciplina</p>
               </NewCard>
