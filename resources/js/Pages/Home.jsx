@@ -7,6 +7,7 @@ import AddDisciplinePopUp from '../Components/PopUps/AddDisciplinePopUp.jsx';
 import CoursePopUp from '../Components/PopUps/CoursePopUp.jsx';
 import LoadingScreen from '../Components/Atoms/LoadingScreen.jsx';
 import usePlanSync from '../Hooks/usePlanSync.jsx';
+import useCourseMap from '../Hooks/useCourseMap.jsx';
 import useLifecycleHandlers from '../Hooks/useLifecycleHandlers.jsx';
 import { DragAndDropProvider } from '../Components/Dnd/DragAndDropProvider.jsx';
 
@@ -135,47 +136,7 @@ const Home = ({ subjects }) => {
   const [coursePopUpActive, setCoursePopUpActive] = useState(false);
   const [unsavedChanges, setUnsavedChanges] = useState(false);
 
-  const [courseMap, setCourseMap] = useState(() => {
-    const initialCourseMap = new Map(
-      subjects.map((subject) => [
-        subject.id,
-        {
-          ...subject,
-          tags: [], // init tags
-          plan: null, // init with plan as null
-          semester: null, // init with semester as null
-          unsaved: false,
-          // init card data
-          colors: {
-            background: "#FFFFFF",
-            innerLine: "#51A1E0",
-            outerLine: "#17538D",
-          },
-          pokeball: "#C2DCF5" },
-      ])
-    );
-
-    categories.forEach((category) => {
-      category.courses.forEach((course) => {
-        const existingEntry = initialCourseMap.get(course.id);
-        if (existingEntry) {
-          initialCourseMap.set(course.id, {
-            ...existingEntry,
-            tags: [
-              ...existingEntry.tags,
-              {
-                name: category.name,
-                color: category.color,
-              },
-            ],
-          });
-        }
-      });
-    });
-
-    return initialCourseMap;
-  });
-
+  const [courseMap, setCourseMap] = useCourseMap(subjects, categories);
   useLifecycleHandlers(courseMap, plans, unsavedChanges, setIsLoadingData, setPlans, setCourseMap)
   usePlanSync(courseMap, setCourseMap, setPlans, setUnsavedChanges)
   
