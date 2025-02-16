@@ -114,23 +114,30 @@ const NewCard = styled.div`
   );
 `;
 
-const Semester = ({ semester, isExpanded, isRequired, toggleSemester, displayCourse, courseMap }) => {
+const Semester = ({ semesterData, isExpanded, isRequired, toggleSemester, displayCourse, courseMap }) => {
+  let workCredits = 0;
+  let lectureCredits = 0;
+
+  semesterData.courses.forEach((course) => {
+      lectureCredits += parseInt(course.credits[0], 10);
+      workCredits += parseInt(course.credits[1], 10);
+  });
 
   return (
     <SemesterContainer>
-        <SemesterHeader onClick={() => {toggleSemester(semester.id)}}>
+        <SemesterHeader onClick={() => {toggleSemester(semesterData.id)}}>
             <SemesterInfos>
-                <h1 style={{marginRight: "20px"}}>{semester.id}º Período</h1>
+                <h1 style={{marginRight: "20px"}}>{semesterData.id}º Período</h1>
                 <SemesterWarnings>
                     <img style={{paddingRight: '5px'}} src='/icons/warning_yellow.png' />
                     <p style={{color: "#ECA706"}}>Provável conflito de horário.</p>
                 </SemesterWarnings>
-                {semester.credits[0] + semester.credits[1] > 40 ?
+                {lectureCredits + workCredits > 40 ?
                     <SemesterWarnings>
                         <img style={{paddingRight: '5px'}} src='/icons/warning.png'/>
                        <p style={{color: "#C11414"}}>Máximo de 40 créditos por período.</p>
                     </SemesterWarnings>
-                 : semester.credits[0] + semester.credits[1] < 12 ?
+                 : lectureCredits + workCredits < 12 ?
                     <SemesterWarnings>
                         <img style={{paddingRight: '5px'}} src='/icons/warning.png'/>
                         <p style={{color: "#C11414"}}>Mínimo de 12 créditos por período.</p>
@@ -139,18 +146,18 @@ const Semester = ({ semester, isExpanded, isRequired, toggleSemester, displayCou
                 }
               </SemesterInfos>
             <SemesterCreditsAndIcon>
-              <p style={{color: "#757575"}}>{semester.credits[0] ? semester.credits[0] : ''} {semester.credits[0] && semester.credits[1] ? '+ ' : ''} {semester.credits[1] ? semester.credits[1] : ''} {semester.credits[0] || semester.credits[1] ? 'créditos' : ''}</p>
+              <p style={{color: "#757575"}}>{lectureCredits ? lectureCredits : ''} {lectureCredits && workCredits ? '+ ' : ''} {workCredits ? workCredits : ''} {lectureCredits || workCredits ? 'créditos' : ''}</p>
               <span>{isExpanded ? '▼' : '▶'}</span>
             </SemesterCreditsAndIcon>
         </SemesterHeader>
-        <DroppableSemester id={semester.alias} key={semester.id} disabled={!isExpanded}>
-          <SortableGrid items={semester.courses}>
-            {semester.courses.length === 0 ? (
+        <DroppableSemester id={semesterData.alias} key={semesterData.id} disabled={!isExpanded}>
+          <SortableGrid items={semesterData.courses}>
+            {semesterData.courses.length === 0 ? (
               <NewCard>
                 <p>Arraste uma disciplina</p>
               </NewCard>
             ) : (
-              semester.courses.map((course) => {
+              semesterData.courses.map((course) => {
                 const courseDetails = courseMap.get(course.id);
                 const isRequiredScheduled = isRequired && courseDetails.semester;
 
@@ -159,7 +166,7 @@ const Semester = ({ semester, isExpanded, isRequired, toggleSemester, displayCou
                     id={courseDetails.code}
                     key={courseDetails.code}
                     courseData={courseDetails}
-                    containerName={semester.alias}
+                    containerName={semesterData.alias}
                     isDisabled={!isExpanded}
                   >
                     <Card

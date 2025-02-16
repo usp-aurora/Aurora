@@ -33,7 +33,6 @@ class PlanControllerTest extends TestCase
                     '*' => [
                         'id',
                         'alias',
-                        'credits',
                         'courses' => [
                             '*' => [ 'plan', 'id', 'code', 'title', 'desc', 'credits', ],
                         ],

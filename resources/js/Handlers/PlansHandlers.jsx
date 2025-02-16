@@ -17,7 +17,7 @@ function fetchGuestPlans() {
  * @param {Array} plans - Plans grouped by semester.
  */
 function saveGuestPlans(plans) {
-  const guestPlans = plans.map(semester => ({ ...semester, courses: semester.courses.map(course => ({ id: course.id, code: course.code }))}));
+  const guestPlans = plans.map(semester => ({ ...semester, courses: semester.courses.map(course => ({ id: course.id, code: course.code, credits: course.credits }))}));
   const lastSemester =  guestPlans.findLastIndex((sem) => sem.courses.length > 0) + 1;
   localStorage.setItem('guestPlans', JSON.stringify(guestPlans.slice(0, lastSemester)));
 }

@@ -96,7 +96,6 @@ function handleDragOver(event, updatePlans, draggedItem, setDraggedItem) {
       if (semester.alias === draggedItem.container) {
         return {
           ...semester,
-          credits: semester.credits.map((credit, i) => Number(credit) - Number(draggedItem.course.credits[i])),
           courses: semester.courses.filter((course) => course.code !== draggedItem.id),
         };
       } else if (semester.alias === targetContainer) {
@@ -105,7 +104,6 @@ function handleDragOver(event, updatePlans, draggedItem, setDraggedItem) {
 
         return {
           ...semester,
-          credits: semester.credits.map((credit, i) => Number(credit) + Number(draggedItem.course.credits[i])),
           courses: [...targetCourses.slice(0, newIndex), draggedItem.course, ...targetCourses.slice(newIndex)],
         };
       }

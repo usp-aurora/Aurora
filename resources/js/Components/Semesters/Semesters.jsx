@@ -45,7 +45,7 @@ const NewSemester = styled.div`
 `;
 
 const Semesters = ({ semesters, setSemesters, displayCourse, courseMap }) => {
-  const {setIsDragDisabled} = useDragAndDrop();
+  const { setIsDragDisabled } = useDragAndDrop();
   const [ requiredCourses, setRequiredCourses ] = useState(false);
   
   const [expandedSemesters, setExpandedSemesters] = useState(
@@ -68,7 +68,6 @@ const Semesters = ({ semesters, setSemesters, displayCourse, courseMap }) => {
     const newSemester = {
       id: newId,
       alias: `Semester ${newId}`,
-      credits: [0, 0],
       courses: [],
     };
 
@@ -114,7 +113,7 @@ const Semesters = ({ semesters, setSemesters, displayCourse, courseMap }) => {
       {semesters.map(semester => (
         <Semester 
           key={semester.id}  
-          semester={semester} 
+          semesterData={semester} 
           isExpanded={expandedSemesters[semester.id]}
           isRequired={requiredCourses}
           toggleSemester={toggleSemester} 

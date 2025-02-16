@@ -31,10 +31,6 @@ class PlanController extends Controller
             $groupedPlans[] = [
                 'id' => $semester,
                 'alias' => 'Semester ' . $semester,
-                'credits' => [
-                    $semesterPlans->sum('lecture_credits'),
-                    $semesterPlans->sum('work_credits'),
-                ],
                 'courses' => $semesterPlans->map(function ($plan) {
                     return [
                         'plan' => $plan->id,
