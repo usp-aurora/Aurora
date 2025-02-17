@@ -29,7 +29,7 @@ class PlanController extends Controller
             $semesterPlans = $plans->filter(fn($plan) => $plan->semester == $semester);
 
             $groupedPlans[] = [
-                'id' => $semester,
+                'semesterId' => $semester,
                 'courses' => $semesterPlans->map(function ($plan) {
                     return [
                         'plan' => $plan->id,

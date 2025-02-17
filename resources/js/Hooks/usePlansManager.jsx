@@ -119,7 +119,7 @@ function usePlansManager(courseMap, updateCourseMap, setIsPlansLoading) {
                     console.error("Error during synchronization or fetching plans:", error);
                 }
             }
-        }, 10000);
+        }, 5000);
 
         return () => clearInterval(intervalId);
     }, [courseMap, authUser]);

@@ -199,7 +199,7 @@ const Home = ({ subjects }) => {
       <Header />
       <DragAndDropProvider setCourseMap={setCourseMap} setPlans={setPlans}>
         <ContentContainer>
-          <Semester courseMap={courseMap} semesters={plans} setSemesters={setPlans} displayCourse={showCourseDetails} />
+          <Semester courseMap={courseMap} plans={plans} setPlans={setPlans} displayCourse={showCourseDetails} />
           <CoursePicker courseMap={courseMap} categories={categories} displayCourse={showCourseDetails} openDisciplinePopUp={toggleDiscipline} />
         </ContentContainer>
       </DragAndDropProvider>

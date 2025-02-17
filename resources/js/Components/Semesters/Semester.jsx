@@ -125,9 +125,9 @@ const Semester = ({ semesterData, isExpanded, isRequired, toggleSemester, displa
 
   return (
     <SemesterContainer>
-        <SemesterHeader onClick={() => {toggleSemester(semesterData.id)}}>
+        <SemesterHeader onClick={() => {toggleSemester(semesterData.semesterId)}}>
             <SemesterInfos>
-                <h1 style={{marginRight: "20px"}}>{semesterData.id}º Período</h1>
+                <h1 style={{marginRight: "20px"}}>{semesterData.semesterId}º Período</h1>
                 <SemesterWarnings>
                     <img style={{paddingRight: '5px'}} src='/icons/warning_yellow.png' />
                     <p style={{color: "#ECA706"}}>Provável conflito de horário.</p>
@@ -150,7 +150,7 @@ const Semester = ({ semesterData, isExpanded, isRequired, toggleSemester, displa
               <span>{isExpanded ? '▼' : '▶'}</span>
             </SemesterCreditsAndIcon>
         </SemesterHeader>
-        <DroppableSemester id={semesterData.id} key={semesterData.id} disabled={!isExpanded}>
+        <DroppableSemester id={semesterData.semesterId} key={semesterData.semesterId} disabled={!isExpanded}>
           <SortableGrid items={semesterData.courses}>
             {semesterData.courses.length === 0 ? (!isRequired &&
               <NewCard>
@@ -166,7 +166,7 @@ const Semester = ({ semesterData, isExpanded, isRequired, toggleSemester, displa
                     id={courseDetails.code}
                     key={courseDetails.code}
                     courseData={courseDetails}
-                    containerName={semesterData.id}
+                    containerName={semesterData.semesterId}
                     isDisabled={!isExpanded}
                   >
                     <Card

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Card from '../Atoms/Card';
 import StyledButton from '../Atoms/StyledButton';
@@ -46,7 +46,7 @@ const NewSemester = styled.div`
 
 const mandatoryCurriculum = [
   {
-    id: 1,
+    semesterId: 1,
     courses: [
       {
         id: 1,
@@ -55,24 +55,25 @@ const mandatoryCurriculum = [
       },
     ],
   },
-  { id: 2, courses: [], },
-  { id: 3, courses: [], },
-  { id: 4, courses: [], },
-  { id: 5, courses: [], },
-  { id: 6, courses: [], },
-  { id: 7, courses: [], },
-  { id: 8, courses: [], },
+  { semesterId: 2, courses: [], },
+  { semesterId: 3, courses: [], },
+  { semesterId: 4, courses: [], },
+  { semesterId: 5, courses: [], },
+  { semesterId: 6, courses: [], },
+  { semesterId: 7, courses: [], },
+  { semesterId: 8, courses: [], },
 ];
 
-const Semesters = ({ semesters, setSemesters, displayCourse, courseMap }) => {
+const Semesters = ({ plans, setPlans, displayCourse, courseMap }) => {
   const { setIsDragDisabled } = useDragAndDrop();
-  const [ showRequiredCourses, setShowRequiredCourses ] = useState(false);
-  
-  const displayedSemesters = showRequiredCourses ? mandatoryCurriculum : semesters;
+
+  // Controls whether to show required courses or the custom plan
+  const [showRequiredCourses, setShowRequiredCourses] = useState(false);
+  const displayedSemesters = showRequiredCourses ? mandatoryCurriculum : plans;
 
   const [expandedSemesters, setExpandedSemesters] = useState(
-    semesters.reduce((acc, semester) => {
-      acc[semester.id] = false;
+    plans.reduce((acc, semester) => {
+      acc[semester.semesterId] = false;
       return acc;
     }, {})
   );
@@ -133,9 +134,9 @@ const Semesters = ({ semesters, setSemesters, displayCourse, courseMap }) => {
 
       {displayedSemesters.map(semester => (
         <Semester 
-          key={semester.id}  
+          key={semester.semesterId}  
           semesterData={semester} 
-          isExpanded={expandedSemesters[semester.id]}
+          isExpanded={expandedSemesters[semester.semesterId]}
           isRequired={showRequiredCourses}
           toggleSemester={toggleSemester} 
           displayCourse={displayCourse}

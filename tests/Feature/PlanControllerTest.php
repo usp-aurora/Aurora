@@ -31,7 +31,7 @@ class PlanControllerTest extends TestCase
             ->assertJsonStructure([
                 'plans' => [
                     '*' => [
-                        'id',
+                        'semesterId',
                         'courses' => [
                             '*' => [ 'plan', 'id', 'code', 'title', 'desc', 'credits', ],
                         ],
