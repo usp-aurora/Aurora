@@ -6,9 +6,8 @@ import CoursePicker from '../Components/CoursePicker/CoursePicker.jsx';
 import AddDisciplinePopUp from '../Components/PopUps/AddDisciplinePopUp.jsx';
 import CoursePopUp from '../Components/PopUps/CoursePopUp.jsx';
 import LoadingScreen from '../Components/Atoms/LoadingScreen.jsx';
-import usePlanSync from '../Hooks/usePlanSync.jsx';
 import useCourseMap from '../Hooks/useCourseMap.jsx';
-import useLifecycleHandlers from '../Hooks/useLifecycleHandlers.jsx';
+import usePlansManager from '../Hooks/usePlansManager.jsx';
 import { DragAndDropProvider } from '../Components/Dnd/DragAndDropProvider.jsx';
 
 const AppContainer = styled.div`
@@ -129,16 +128,13 @@ const categories = [
   },
 ];
 
-const Home = ({ subjects }) => {
-  const [plans, setPlans] = useState([]); 
+const Home = ({ subjects }) => { 
   const [isLoadingData, setIsLoadingData] = useState(true);
   const [addDisciplineActive, setAddDisciplineActive] = useState(false);
   const [coursePopUpActive, setCoursePopUpActive] = useState(false);
-  const [unsavedChanges, setUnsavedChanges] = useState(false);
 
   const [courseMap, setCourseMap] = useCourseMap(subjects, categories);
-  useLifecycleHandlers(courseMap, plans, unsavedChanges, setIsLoadingData, setPlans, setCourseMap)
-  usePlanSync(courseMap, setCourseMap, setPlans, setUnsavedChanges)
+  const [plans, setPlans] = usePlansManager(courseMap, setCourseMap, setIsLoadingData);
   
   const toggleDiscipline = () => {
     setAddDisciplineActive(!addDisciplineActive);
@@ -201,11 +197,7 @@ const Home = ({ subjects }) => {
                     desc={course.desc}
       />
       <Header />
-      <DragAndDropProvider
-        setCourseMap={setCourseMap}
-        setPlans={setPlans}
-        setUnsavedChanges={setUnsavedChanges}
-      >
+      <DragAndDropProvider setCourseMap={setCourseMap} setPlans={setPlans}>
         <ContentContainer>
           <Semester courseMap={courseMap} semesters={plans} setSemesters={setPlans} displayCourse={showCourseDetails} />
           <CoursePicker courseMap={courseMap} categories={categories} displayCourse={showCourseDetails} openDisciplinePopUp={toggleDiscipline} />

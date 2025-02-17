@@ -32,9 +32,8 @@ function computeCollision({ droppableContainers, ...args }) {
  * @param {React.ReactNode} props.children - Child components wrapped by the provider.
  * @param {Function} props.setCourseMap - Function to update course mapping.
  * @param {Function} props.setPlans - Function to update plan structure.
- * @param {Function} props.setUnsavedChanges - Function to mark unsaved changes.
  */
-function DragAndDropProvider({ children, setCourseMap, setPlans, setUnsavedChanges }) {
+function DragAndDropProvider({ children, setCourseMap, setPlans }) {
   const [isDragDisabled, setIsDragDisabled] = useState(false);
   const [dragOverlay, setDragOverlay] = useState(null);
   const [draggedItem, setDraggedItem] = useState(null);
@@ -70,7 +69,6 @@ function DragAndDropProvider({ children, setCourseMap, setPlans, setUnsavedChang
    */
   useEffect(() => {
     if (draggedItem) {
-      setUnsavedChanges(true);
       setCourseMap((prevMap) => {
         const updatedMap = new Map(prevMap);
         updatedMap.set(draggedItem.course.id, {
@@ -81,7 +79,7 @@ function DragAndDropProvider({ children, setCourseMap, setPlans, setUnsavedChang
         return updatedMap;
       });
     }
-  }, [draggedItem, setCourseMap, setUnsavedChanges]);
+  }, [draggedItem, setCourseMap]);
 
   return (
 	<DragAndDropContext.Provider value={{ isDragDisabled, setIsDragDisabled }}>
