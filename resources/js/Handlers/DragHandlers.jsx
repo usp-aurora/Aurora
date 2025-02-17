@@ -1,79 +1,83 @@
-import {arrayMove} from '@dnd-kit/sortable'
+import { arrayMove } from '@dnd-kit/sortable';
 
 /**
- * Extracts the usable ID from a string ID.
- * @param {string | number} id - The ID to process.
- * @returns {string} = The important part of the ID 
+ * Extracts the base ID from a composite string ID.
+ * Useful when an ID includes metadata (e.g., "mac123@1").
+ * 
+ * @param {string | number} id - The original ID.
+ * @returns {string | number} - The extracted base ID.
  */
-function getId(id) { return typeof id === 'string' ? id.split('@')[0] : id }
-
-/**
- * Finds a semester by its alias in the plans.
- * @param {string} alias - The alias of the semester.
- * @param {Array} plans - The list of plans grouped by semester.
- * @returns {Object} The semester object or undefined if not found.
- */
-function findSemesterByAlias(alias, plans) { return plans.find((semester) => semester.alias === alias) }
-
-/**
- * Determines the container alias for a given course ID using the course map.
- * @param {string | null} id - The course ID or the container alias itself .
- * @param {Map} courseMap - The course map.
- * @returns {string | null} The container alias ('Semester X' or 'coursePicker').
- */
-function determineContainerAlias(id, courseMap) {
-  if (courseMap.has(Number(id))) {
-    const semesterId = courseMap.get(Number(id)).semester
-    return semesterId ? `Semester ${semesterId}` : 'coursePicker'
-  }
-  return id
+function extractBaseId(id) { 
+  return (typeof id === 'string' ? id.split('@')[0] : id); 
 }
 
+/**
+ * Determines the container (semester or coursePicker) for a given element.
+ * 
+ * @param {Object} element - The dragged element from DnD.
+ * @returns {string} - The container name (e.g., "1" for semester ID or "coursePicker").
+ */
+function getContainerName(element) { 
+  return element?.data.current?.container ?? element?.id; 
+}
 
 /**
- * Calculates the new index for the dragged item.
- * @param {Object} over - The target element.
- * @param {Object} draggingRect - The rectangle of the dragging item.
- * @param {Array} overItems - The list of items in the target container.
- * @param {number} overId - The ID of the item being dragged over.
- * @returns {number} The new index for the dragged item.
+ * Retrieves the list of courses for a specific semester.
+ * 
+ * @param {string} semesterId - The semester identifier.
+ * @param {Array} plans - The list of plans containing semester data.
+ * @returns {Array} - List of courses for the given semester, or an empty array if not found.
  */
-function calculateDropIndex(over, draggingRect, overItems, overId) {
-  const overIndex = overItems.findIndex((course) => course.id === overId)
+function getSemesterCourses(semesterId, plans) {
+  return plans.find((semester) => semester.semesterId === semesterId)?.courses || [];
+}
 
-  if (overIndex === -1) return overItems.length
+/**
+ * Calculates the drop index for a dragged item within a container.
+ * 
+ * @param {Object} over - The target drop area.
+ * @param {Object} draggingRect - The bounding rectangle of the dragged item.
+ * @param {Array} targetCourses - List of courses in the target container.
+ * @returns {number} - The index where the item should be inserted.
+ */
+function calculateDropIndex(over, draggingRect, targetCourses) {
+  const overId = extractBaseId(over.id);
+  const overIndex = targetCourses.findIndex((course) => course.code === overId);
+  if (overIndex === -1) return targetCourses.length; // Place at the end if not found.
 
-  const isAfterLastItem = over && draggingRect && overIndex === overItems.length - 1 &&
+  const isAfterLastItem =
+    over &&
+    draggingRect &&
+    overIndex === targetCourses.length - 1 &&
     (draggingRect.offsetTop > over.rect.offsetTop + over.rect.height ||
-      draggingRect.offsetLeft > over.rect.offsetLeft + over.rect.width)
+      draggingRect.offsetLeft > over.rect.offsetLeft + over.rect.width);
 
-  return overIndex + (isAfterLastItem ? 1 : 0)
+  return overIndex + (isAfterLastItem ? 1 : 0);
 }
 
 /**
  * Handles the start of a drag event.
- * @param {Object} event - The drag event object from DnD Kit.
- * @param {Map} courseMap - The course map containing course details.
- * @param {Function} setOverlayObject - State updater for the overlay object.
- * @param {Function} setDragObject - State updater for the drag object.
+ * Initializes overlay display and sets the dragged item details.
+ * 
+ * @param {Object} event - The drag event object.
+ * @param {Function} setOverlay - State updater for the overlay object.
+ * @param {Function} setDraggedItem - State updater for the dragged object.
  */
-function handleDragStart(event, courseMap, setOverlayObject, setDragObject) {
-  const { active } = event
-  const courseId = getId(active.id)
+function handleDragStart(event, setOverlay, setDraggedItem) {
+  const { active } = event;
+  const course = active.data.current.course;
+  const container = active.data.current.container;
 
-  const course = courseMap.get(Number(courseId))
-  const containerAlias = determineContainerAlias(courseId, courseMap)
-
-  setOverlayObject({ 
-    code: course.code, 
+  setOverlay({
+    code: course.code,
     title: course.title,
     colors: course.colors,
     pokeball: course.pokeball,
-  })
+  });
 
-  setDragObject({
-    id: course.id,
-    container: containerAlias,
+  setDraggedItem({
+    id: course.code,
+    container: container,
     course: {
       id: course.id,
       code: course.code,
@@ -82,93 +86,80 @@ function handleDragStart(event, courseMap, setOverlayObject, setDragObject) {
       plan: course.plan,
       title: course.title,
     },
-  })
+  });
 }
 
 /**
- * Handles dragging over another element.
- * @param {Object} event - The drag event object from DnD Kit.
- * @param {Map} courseMap - The course map containing course details.
- * @param {Function} updatePlans - State updater for the plans.
- * @param {Object} dragObject - The current drag object.
- * @param {Function} updateDragObject - State updater for the drag object.
+ * Handles a drag-over event.
+ * Updates the plans when a course is dragged between semesters or coursePicker.
+ * 
+ * @param {Object} event - The drag event object.
+ * @param {Function} updatePlans - State updater for plans.
+ * @param {Object} draggedItem - The current dragged item.
+ * @param {Function} setDraggedItem - State updater for dragged item.
  */
-function handleDragOver(event, courseMap, updatePlans, dragObject, updateDragObject) {
-  const { over, draggingRect } = event
-  const overId = getId(over?.id)
-  
-  const targetContainer = determineContainerAlias(overId, courseMap)
-  if (!targetContainer || dragObject.container === targetContainer) return
+function handleDragOver(event, updatePlans, draggedItem, setDraggedItem) {
+  const { over, draggingRect } = event;
+  const targetContainer = getContainerName(over);
 
-  updatePlans((previousPlans) => 
-    previousPlans.map((semester) => {
-      if (semester.alias === dragObject.container) {
+  if (!targetContainer || draggedItem.container === targetContainer) return;
+
+  updatePlans((prevPlans) =>
+    prevPlans.map((semester) => {
+      if (semester.semesterId == draggedItem.container) {
+        // Remove the dragged course from the original semester
         return {
           ...semester,
-          credits: semester.credits.map(
-            (credit, i) => Number(credit) - Number(dragObject.course.credits[i])
-          ),
-          courses: semester.courses.filter((course) => course.id !== dragObject.id),
-        }
-      } else if (semester.alias === targetContainer) {
-        const targetCourses = findSemesterByAlias(targetContainer, previousPlans).courses.filter(
-          (course) => course.id !== dragObject.id
-        )
-        const newIndex = calculateDropIndex(over, draggingRect, targetCourses, overId)
+          courses: semester.courses.filter((course) => course.code !== draggedItem.id),
+        };
+      } else if (semester.semesterId == targetContainer) {
+        // Insert the dragged course into the target semester
+        const targetCourses = semester.courses.filter((course) => course.code !== draggedItem.id);
+        const newIndex = calculateDropIndex(over, draggingRect, targetCourses);
 
         return {
           ...semester,
-          credits: semester.credits.map(
-            (credit, i) => Number(credit) + Number(dragObject.course.credits[i])
-          ),
-          courses: [
-            ...targetCourses.slice(0, newIndex),
-            dragObject.course,
-            ...targetCourses.slice(newIndex),
-          ],
-        }
+          courses: [...targetCourses.slice(0, newIndex), draggedItem.course, ...targetCourses.slice(newIndex)],
+        };
       }
-      return semester
+      return semester;
     })
-  )
+  );
 
-  updateDragObject((previous) => ({
-    ...previous,
+  setDraggedItem((prev) => ({
+    ...prev,
     container: targetContainer,
-  }))
+  }));
 }
-  
+
 /**
  * Handles the end of a drag event.
- * @param {Object} event - The drag event object from DnD Kit.
- * @param {Map} courseMap - The course map containing course details.
- * @param {Object} dragObject - The current drag object.
- * @param {Function} updatePlans - State updater for the plans.
+ * Updates the plans state by moving the dragged item within the same semester.
+ * 
+ * @param {Object} event - The drag event object.
+ * @param {Object} draggedItem - The currently dragged item.
+ * @param {Function} updatePlans - State updater for plans.
  */
-function handleDragEnd(event, courseMap, dragObject, updatePlans) {
-  const { over } = event
-  const overId = getId(over?.id)
+function handleDragEnd(event, draggedItem, updatePlans) {
+  const { over } = event;
+  const targetContainer = getContainerName(over);
 
-  const targetContainer = determineContainerAlias(overId, courseMap)
-  if (!targetContainer || dragObject.container !== targetContainer) return
+  if (!targetContainer || draggedItem.container !== targetContainer) return;
 
-  updatePlans((previousPlans) => {
-    const sourceIndex = findSemesterByAlias(dragObject.container, previousPlans)?.courses.findIndex(
-      (course) => course.id === dragObject.id
-    )
-    const targetIndex = findSemesterByAlias(targetContainer, previousPlans)?.courses.findIndex(
-      (course) => course.id === overId
-    )
+  updatePlans((prevPlans) => {
+    const sourceIndex = getSemesterCourses(draggedItem.container, prevPlans).findIndex((course) => course.code === draggedItem.id);
+    const targetIndex = getSemesterCourses(targetContainer, prevPlans).findIndex((course) => course.code === extractBaseId(over.id));
+
     if (sourceIndex !== targetIndex) {
-      return previousPlans.map((semester) => {
-        if (semester.alias === targetContainer) {
-          return { ...semester, courses: arrayMove(semester.courses, sourceIndex, targetIndex) }
+      return prevPlans.map((semester) => {
+        if (semester.semesterId == targetContainer) {
+          return { ...semester, courses: arrayMove(semester.courses, sourceIndex, targetIndex) };
         }
-        return semester
-      })
+        return semester;
+      });
     }
-    return previousPlans
-  })
+    return prevPlans;
+  });
 }
 
-export {handleDragStart, handleDragOver, handleDragEnd}
+export { getContainerName, handleDragStart, handleDragOver, handleDragEnd };

@@ -6,9 +6,9 @@ import CoursePicker from '../Components/CoursePicker/CoursePicker.jsx';
 import AddDisciplinePopUp from '../Components/PopUps/AddDisciplinePopUp.jsx';
 import CoursePopUp from '../Components/PopUps/CoursePopUp.jsx';
 import LoadingScreen from '../Components/Atoms/LoadingScreen.jsx';
-import usePlanSync from '../Hooks/usePlanSync.jsx';
-import useLifecycleHandlers from '../Hooks/useLifecycleHandlers.jsx';
-import DragAndDropProvider from '../Components/Dnd/DragAndDropProvider.jsx';
+import useCourseMap from '../Hooks/useCourseMap.jsx';
+import usePlansManager from '../Hooks/usePlansManager.jsx';
+import { DragAndDropProvider } from '../Components/Dnd/DragAndDropContext.jsx';
 
 const AppContainer = styled.div`
   /* display: flex;
@@ -128,56 +128,13 @@ const categories = [
   },
 ];
 
-const Home = ({ subjects }) => {
-  const [plans, setPlans] = useState([]); 
-  const [isLoading, setIsLoading] = useState(true);
+const Home = ({ subjects }) => { 
+  const [isLoadingData, setIsLoadingData] = useState(true);
   const [addDisciplineActive, setAddDisciplineActive] = useState(false);
   const [coursePopUpActive, setCoursePopUpActive] = useState(false);
-  const [unsavedChanges, setUnsavedChanges] = useState(false);
 
-  const [courseMap, setCourseMap] = useState(() => {
-    const initialCourseMap = new Map(
-      subjects.map((subject) => [
-        subject.id,
-        {
-          ...subject,
-          tags: [], // init tags
-          plan: null, // init with plan as null
-          semester: null, // init with semester as null
-          unsaved: false,
-          // init card data
-          colors: {
-            background: "#FFFFFF",
-            innerLine: "#51A1E0",
-            outerLine: "#17538D",
-          },
-          pokeball: "#C2DCF5" },
-      ])
-    );
-
-    categories.forEach((category) => {
-      category.courses.forEach((course) => {
-        const existingEntry = initialCourseMap.get(course.id);
-        if (existingEntry) {
-          initialCourseMap.set(course.id, {
-            ...existingEntry,
-            tags: [
-              ...existingEntry.tags,
-              {
-                name: category.name,
-                color: category.color,
-              },
-            ],
-          });
-        }
-      });
-    });
-
-    return initialCourseMap;
-  });
-
-  useLifecycleHandlers(courseMap, plans, unsavedChanges, setIsLoading, setPlans, setCourseMap)
-  usePlanSync(courseMap, setCourseMap, setPlans, setUnsavedChanges)
+  const [courseMap, setCourseMap] = useCourseMap(subjects, categories);
+  const [plans, setPlans] = usePlansManager(courseMap, setCourseMap, setIsLoadingData);
   
   const toggleDiscipline = () => {
     setAddDisciplineActive(!addDisciplineActive);
@@ -225,7 +182,7 @@ const Home = ({ subjects }) => {
     );
   };
 
-  return  isLoading ? (
+  return  isLoadingData ? (
 	  <LoadingScreen />
   ) : (
     <AppContainer>
@@ -240,14 +197,9 @@ const Home = ({ subjects }) => {
                     desc={course.desc}
       />
       <Header />
-      <DragAndDropProvider
-        courseMap={courseMap}
-        setCourseMap={setCourseMap}
-        setPlans={setPlans}
-        setUnsavedChanges={setUnsavedChanges}
-      >
+      <DragAndDropProvider setCourseMap={setCourseMap} setPlans={setPlans}>
         <ContentContainer>
-          <Semester courseMap={courseMap} semesters={plans} setSemesters={setPlans} displayCourse={showCourseDetails} />
+          <Semester courseMap={courseMap} plans={plans} setPlans={setPlans} displayCourse={showCourseDetails} />
           <CoursePicker courseMap={courseMap} categories={categories} displayCourse={showCourseDetails} openDisciplinePopUp={toggleDiscipline} />
         </ContentContainer>
       </DragAndDropProvider>

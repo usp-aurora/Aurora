@@ -26,7 +26,7 @@ const PokeballBackground = styled.div`
 const Pokeball = ({pokeball, pokemonURL, pokemonSize, pokeballSize}) => {
     return (
         <PokemonContainer>
-            <Pokemon src={pokemonURL} />
+            <Pokemon src={pokemonURL} draggable="false"/>
             <PokeballBackground>
             <svg viewBox="0 0 56 56" fill="none"
                 xmlns="http://www.w3.org/2000/svg">

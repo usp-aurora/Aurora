@@ -17,7 +17,7 @@ function fetchGuestPlans() {
  * @param {Array} plans - Plans grouped by semester.
  */
 function saveGuestPlans(plans) {
-  const guestPlans = plans.map(semester => ({ ...semester, courses: semester.courses.map(course => ({ id: course.id, code: course.code }))}));
+  const guestPlans = plans.map(semester => ({ ...semester, courses: semester.courses.map(course => ({ id: course.id, code: course.code, credits: course.credits }))}));
   const lastSemester =  guestPlans.findLastIndex((sem) => sem.courses.length > 0) + 1;
   localStorage.setItem('guestPlans', JSON.stringify(guestPlans.slice(0, lastSemester)));
 }
@@ -62,9 +62,8 @@ async function fetchUserPlans() {
  * 
  * @param {Map} data - Map containing the current state of plans.
  * @param {Function} updateData - Function to update the state of plans data.
- * @param {Function} setSyncErrorFlag - Function to set the sync error flag.
  */
-async function syncPlansWithServer(data, updateData, setSyncErrorFlag) {
+async function syncPlansWithServer(data, updateData) {
   try {
     const payload = JSON.stringify(
       Array.from(data)
@@ -110,16 +109,11 @@ async function syncPlansWithServer(data, updateData, setSyncErrorFlag) {
 
         return updatedData
       })
-
-      console.log("Synchronization successful!")
-      setSyncErrorFlag(false)
     } else {
       console.error("Synchronization error:", response.data)
-      setSyncErrorFlag(true)
     }
   } catch (error) {
     console.error("Communication error with the server:", error)
-    setSyncErrorFlag(true)
   }
 }
 

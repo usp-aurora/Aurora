@@ -1,11 +1,9 @@
-import React, { useState } from 'react';
-import styled, { keyframes } from 'styled-components';
+import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
 import Card from '../Atoms/Card';
-import SortableCard from '../Dnd/SortableCard';
 import StyledButton from '../Atoms/StyledButton';
-import {slideIn, slideOut, bounce, bounceBack} from '../Atoms/Animations';
-import Droppable from '../Dnd/Droppable';
-import SortableGrid from '../Dnd/SortableGrid';
+import Semester from './Semester';
+import { useDragAndDrop } from '../Dnd/DragAndDropContext';
 
 const SemestersContainer = styled.div`
   width: 60vw;
@@ -34,113 +32,6 @@ const SemestersContainerHeaderView = styled.div`
   width: 10%;
 `;
 
-const SemesterContainer = styled.div`
-  // animation: ${props => props.isOpen ? bounceBack : bounce} 2s ease-in-out -0.5s;
-  // animation-fill-mode: both;
-  width: 100%;
-  padding: 2%;
-  margin-bottom: 2%;
-
-  background-color: #E4EEFA;
-
-  clip-path: polygon(
-    0px calc(100% - 8px),
-    4px calc(100% - 8px),
-    4px calc(100% - 4px),
-    8px calc(100% - 4px),
-    8px 100%,
-    calc(100% - 8px) 100%,
-    calc(100% - 8px) calc(100% - 4px),
-    calc(100% - 4px) calc(100% - 4px),
-    calc(100% - 4px) calc(100% - 8px),
-    100% calc(100% - 8px),
-    100% 8px,
-    calc(100% - 4px) 8px,
-    calc(100% - 4px) 4px,
-    calc(100% - 8px) 4px,
-    calc(100% - 8px) 0px,
-    8px 0px,
-    8px 4px,
-    4px 4px,
-    4px 8px,
-    0px 8px
-  );
-`;
-
-const SemesterHeader = styled.div`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: space-between;
-`;
-
-const SemesterInfos = styled.div`
-  flex: 85;
-  display: flex;
-  justify-content: align-left;
-  align-items: center;  
-`;
-
-const SemesterWarnings = styled.div`
-  margin-left: 1%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const SemesterCreditsAndIcon = styled.div`
-  flex: 15;  
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const DroppableCourseGrid = styled(Droppable)`
-  list-style: none;
-  padding: 0;
-  overflow: hidden;  /* Importante para esconder o conteúdo quando fechado */
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: ${({ disabled }) => (disabled ? '0' : '1%')};
-  max-height: ${({ disabled }) => (disabled ? '0' : '500px')}; /* Define o limite de altura */
-  animation:  ${({ disabled }) => (disabled ? slideOut : slideIn)} 1s ease-in-out ${({ disabled }) => (disabled ? '-0.6s' : '-0.1s')};
-`;
-
-const NewCard = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  width: 136px;
-  height: 136px;
-
-  background-color: #C2DCF5;
-
-  clip-path: polygon(
-    0px calc(100% - 8px),
-    4px calc(100% - 8px),
-    4px calc(100% - 4px),
-    8px calc(100% - 4px),
-    8px 100%,
-    calc(100% - 8px) 100%,
-    calc(100% - 8px) calc(100% - 4px),
-    calc(100% - 4px) calc(100% - 4px),
-    calc(100% - 4px) calc(100% - 8px),
-    100% calc(100% - 8px),
-    100% 8px,
-    calc(100% - 4px) 8px,
-    calc(100% - 4px) 4px,
-    calc(100% - 8px) 4px,
-    calc(100% - 8px) 0px,
-    8px 0px,
-    8px 4px,
-    4px 4px,
-    4px 8px,
-    0px 8px
-  );
-`;
-
 const NewSemester = styled.div`
   width: 100%;
   height: 136px;
@@ -153,11 +44,36 @@ const NewSemester = styled.div`
   cursor: pointer;
 `;
 
-const Semesters = ({ semesters, setSemesters, displayCourse, courseMap }) => {
+const mandatoryCurriculum = [
+  {
+    semesterId: 1,
+    courses: [
+      {
+        id: 1,
+        code: "MAC0110",
+        credits: [ "4", "0"],
+      },
+    ],
+  },
+  { semesterId: 2, courses: [], },
+  { semesterId: 3, courses: [], },
+  { semesterId: 4, courses: [], },
+  { semesterId: 5, courses: [], },
+  { semesterId: 6, courses: [], },
+  { semesterId: 7, courses: [], },
+  { semesterId: 8, courses: [], },
+];
+
+const Semesters = ({ plans, setPlans, displayCourse, courseMap }) => {
+  const { setIsDragDisabled } = useDragAndDrop();
+
+  // Controls whether to show required courses or the custom plan
+  const [showRequiredCourses, setShowRequiredCourses] = useState(false);
+  const displayedSemesters = showRequiredCourses ? mandatoryCurriculum : plans;
 
   const [expandedSemesters, setExpandedSemesters] = useState(
-    semesters.reduce((acc, semester) => {
-      acc[semester.id] = false;
+    plans.reduce((acc, semester) => {
+      acc[semester.semesterId] = false;
       return acc;
     }, {})
   );
@@ -174,8 +90,6 @@ const Semesters = ({ semesters, setSemesters, displayCourse, courseMap }) => {
 
     const newSemester = {
       id: newId,
-      alias: `Semester ${newId}`,
-      credits: [0, 0],
       courses: [],
     };
 
@@ -201,9 +115,10 @@ const Semesters = ({ semesters, setSemesters, displayCourse, courseMap }) => {
             </svg>
           </StyledButton>
         </SemestersContainerHeaderPages>
-        <p style={{color: "#9E9E9E", fontSize: 12}}>Arraste uma disciplina para adicioná-la ou removê-la do período desejado.</p>
+        <p style={{color: "#9E9E9E", fontSize: 12}}>{showRequiredCourses ? "Você está visualizando a grade obrigatória." : "Arraste uma disciplina para adicioná-la ou removê-la do período desejado." }</p>
         <SemestersContainerHeaderView>
-          <StyledButton background_image={"/assets/a2.png"}>
+        <StyledButton background_image={"/assets/a2.png"} 
+            onClick={() => {setIsDragDisabled((prev) => !prev); setShowRequiredCourses((prev) => !prev)}}>
             <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M1.30223 9.22502L1.19386 9.5L1.30223 9.77498C3.14092 14.4408 7.68046 17.75 13 17.75C18.3195 17.75 22.8591 14.4408 24.6978 9.77498L24.8061 9.5L24.6978 9.22502C22.8591 4.55921 18.3195 1.25 13 1.25C7.68046 1.25 3.14092 4.55921 1.30223 9.22502ZM13 4.75C16.377 4.75 19.398 6.57762 20.9767 9.50003C19.3985 12.4228 16.3862 14.25 13 14.25C9.61377 14.25 6.6015 12.4228 5.0233 9.50004C6.60196 6.57762 9.62298 4.75 13 4.75ZM16.25 9.5C16.25 7.70579 14.7942 6.25 13 6.25C11.2058 6.25 9.75 7.70579 9.75 9.5C9.75 11.2942 11.2058 12.75 13 12.75C14.7942 12.75 16.25 11.2942 16.25 9.5Z" fill="white" stroke="#1B68AE" stroke-width="1.5"/>
             </svg>
@@ -217,54 +132,16 @@ const Semesters = ({ semesters, setSemesters, displayCourse, courseMap }) => {
         </SemestersContainerHeaderView>
       </SemestersContainerHeader>
 
-      {semesters.map(semester => (
-        <SemesterContainer key={semester.id} id={semester.alias}>
-          <SemesterHeader  onClick={() => {toggleSemester(semester.id)}}>
-            <SemesterInfos>
-              <h1 style={{marginRight: "20px"}}>{semester.id}º Período</h1>
-              <SemesterWarnings>
-                <img style={{paddingRight: '5px'}} src='/icons/warning_yellow.png' />
-                <p style={{color: "#ECA706"}}>Provável conflito de horário.</p>
-              </SemesterWarnings>
-              {
-                semester.credits[0] + semester.credits[1] > 40 ?
-                <SemesterWarnings>
-                  <img style={{paddingRight: '5px'}} src='/icons/warning.png'/>
-                  <p style={{color: "#C11414"}}>Máximo de 40 créditos por período.</p>
-                </SemesterWarnings>
-                : semester.credits[0] + semester.credits[1] < 12 ?
-                <SemesterWarnings>
-                  <img style={{paddingRight: '5px'}} src='/icons/warning.png'/>
-                  <p style={{color: "#C11414"}}>Mínimo de 12 créditos por período.</p>
-                </SemesterWarnings>
-                : null
-              }
-              </SemesterInfos>
-            <SemesterCreditsAndIcon>
-              <p style={{color: "#757575"}}>{semester.credits[0] ? semester.credits[0] : ''} {semester.credits[0] && semester.credits[1] ? '+ ' : ''} {semester.credits[1] ? semester.credits[1] : ''} {semester.credits[0] || semester.credits[1] ? 'créditos' : ''}</p>
-              <span>{expandedSemesters[semester.id] ? '▼' : '▶'}</span>
-            </SemesterCreditsAndIcon>
-          </SemesterHeader>
-            <DroppableCourseGrid id={semester.alias} key={semester.alias} disabled={!expandedSemesters[semester.id]}>
-              <SortableGrid items={semester.courses} >
-                {!semester.courses.length ?
-                  <NewCard>
-                    <p>Arraste uma disciplina</p>
-                  </NewCard>
-                :
-                semester.courses.map((course) => (
-                  <SortableCard
-                    id={course.id}
-                    key={course.id}
-                    course={courseMap.get(course.id)} 
-                    container={semester.alias}
-                    disable={!expandedSemesters[semester.id]}
-                    handleClick={displayCourse}
-                  />
-                ))}
-              </SortableGrid>
-            </DroppableCourseGrid>
-        </SemesterContainer>
+      {displayedSemesters.map(semester => (
+        <Semester 
+          key={semester.semesterId}  
+          semesterData={semester} 
+          isExpanded={expandedSemesters[semester.semesterId]}
+          isRequired={showRequiredCourses}
+          toggleSemester={toggleSemester} 
+          displayCourse={displayCourse}
+          courseMap={courseMap}
+        />
       ))}
 
       <Card colors={{
