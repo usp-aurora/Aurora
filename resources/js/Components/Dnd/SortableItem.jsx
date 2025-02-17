@@ -20,10 +20,8 @@ function SortableItem({ id, courseData, containerName, isDisabled, children }) {
     });
 
     function handleDragStart(event) {
-        if (!isDraggable) {
-            event.preventDefault();
-            setShowWarning(true);
-        }
+        event.preventDefault(); // prevent native drag behavior
+        if (isDragDisabled) setShowWarning(true);
     };
 
     const cardStyle = {
