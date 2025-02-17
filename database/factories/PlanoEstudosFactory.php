@@ -20,7 +20,7 @@ class PlanoEstudosFactory extends Factory
     {
         return [
             'id_usuario' => 1,
-            'id_materia' => $this->faker->unique->numberBetween(2, Materia::count()), // Must run SubjectSeeder first
+            'codigo_materia' => Materia::inRandomOrder()->first()->codigo_materia,
             'semestre' => $this->faker->numberBetween(1, 8)
         ];
     }
