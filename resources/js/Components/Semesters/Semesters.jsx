@@ -86,10 +86,10 @@ const Semesters = ({ plans, setPlans, displayCourse, courseMap }) => {
   };
 
   const addSemester = () => {
-    const newId = semesters.length + 1;
+    const newId = plans.length + 1;
 
     const newSemester = {
-      id: newId,
+      semesterId: newId,
       courses: [],
     };
 
@@ -97,7 +97,7 @@ const Semesters = ({ plans, setPlans, displayCourse, courseMap }) => {
       ...prev,
       [newId]: false,
     }));
-    setSemesters([...semesters, newSemester]);
+    setPlans([...plans, newSemester]);
   };
 
   return (
