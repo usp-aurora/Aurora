@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import Card from '../Atoms/Card';
 import StyledButton from '../Atoms/StyledButton';
 import Semester from './Semester';
-import { useDragAndDrop } from '../Dnd/DragAndDropProvider';
+import { useDragAndDrop } from '../Dnd/DragAndDropContext';
 
 const SemestersContainer = styled.div`
   width: 60vw;

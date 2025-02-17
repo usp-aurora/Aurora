@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { createPortal } from 'react-dom';
+import styled from "styled-components";
+import { createPortal } from "react-dom";
 
 const Overlay = styled.div`
   position: fixed;
@@ -11,7 +11,7 @@ const Overlay = styled.div`
   z-index: 1000;
 `;
 
-const PopupContainer = styled.div`
+const PopupWrapper = styled.div`
   background: #fff;
   color: #333;
   padding: 20px;
@@ -34,7 +34,7 @@ const Message = styled.p`
   text-align: left;
 `;
 
-const Button = styled.button`
+const CloseButton = styled.button`
   background: #007bff;
   color: #fff;
   border: none;
@@ -50,18 +50,20 @@ const Button = styled.button`
   }
 `;
 
-function DisabledDragWarning({ showPopup, setShowPopup }) {
-  if (!showPopup) return null;
+function DragWarningPopup({ isVisible, onClose }) {
+  if (!isVisible) return null;
 
   return createPortal(
     <Overlay>
-      <PopupContainer>
-        <Message>Você está na visualização de grade obrigatória, por favor volte a visualização do planejamento para arrastar disciplinas.</Message>
-        <Button onClick={() => setShowPopup(false)}>OK</Button>
-      </PopupContainer>
+      <PopupWrapper>
+        <Message>
+          Atualmente, você está visualizando a grade obrigatória. Por favor, retorne ao modo de planejamento para arrastar cursos.
+        </Message>
+        <CloseButton onClick={onClose}>OK</CloseButton>
+      </PopupWrapper>
     </Overlay>,
     document.body
   );
 }
 
-export default DisabledDragWarning;
+export default DragWarningPopup;

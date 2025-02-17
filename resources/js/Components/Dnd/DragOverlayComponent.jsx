@@ -1,23 +1,23 @@
-import { DragOverlay } from '@dnd-kit/core'
-import { restrictToWindowEdges, snapCenterToCursor } from '@dnd-kit/modifiers'
-import Card from '../Atoms/Card'
-import CardContentCourse from '../Atoms/CardContentCourse'
+import { DragOverlay } from "@dnd-kit/core";
+import { restrictToWindowEdges, snapCenterToCursor } from "@dnd-kit/modifiers";
+import Card from "../Atoms/Card";
+import CardContentCourse from "../Atoms/CardContentCourse";
 
 function DragOverlayComponent({ course }) {
-    return (
-        <DragOverlay modifiers={[snapCenterToCursor, restrictToWindowEdges]}>
-            {course ? 
-                <Card colors={course.colors}>
-                    <CardContentCourse 
-                        pokeball={course.pokeball} 
-                        courseCode={course.code} 
-                        courseTitle={course.title} 
-                        pokemonURL="/pokemons/ditto.png"
-                    />
-                </Card> 
-            : null}
-        </DragOverlay>
-    )
+  return (
+    <DragOverlay modifiers={[snapCenterToCursor, restrictToWindowEdges]}>
+      {course ? (
+        <Card colors={course.colors}>
+          <CardContentCourse
+            pokeball={course.pokeball}
+            courseCode={course.code}
+            courseTitle={course.title}
+            pokemonURL="/pokemons/ditto.png"
+          />
+        </Card>
+      ) : null}
+    </DragOverlay>
+  );
 }
 
-export default DragOverlayComponent
+export default DragOverlayComponent;

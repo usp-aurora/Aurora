@@ -7,12 +7,12 @@ import DragOverlayComponent from "./DragOverlayComponent.jsx";
 const DragAndDropContext = createContext();
 
 /**
- * Computes the best collision detection strategy for draggable items.
- * Prioritizes `rectIntersection` but falls back to `closestCenter`.
+ * Determines the best collision detection strategy for draggable items.
+ * Uses `rectIntersection` first and falls back to `closestCenter`.
  *
  * @param {Object} params - Drag event parameters.
- * @param {Array} params.droppableContainers - List of droppable targets.
- * @returns {Array} - Array of collision detections.
+ * @param {Array} params.droppableContainers - List of available droppable areas.
+ * @returns {Array} - Array of detected collisions.
  */
 function computeCollision({ droppableContainers, ...args }) {
   const rectCollisions = rectIntersection({ ...args, droppableContainers });
@@ -21,17 +21,19 @@ function computeCollision({ droppableContainers, ...args }) {
     ? rectCollisions
     : closestCenter({ 
         ...args, 
-        droppableContainers: droppableContainers.filter((droppable) => getContainerName(droppable) !== "coursePicker" ) 
+        droppableContainers: droppableContainers.filter(
+          (droppable) => getContainerName(droppable) !== "coursePicker"
+        ),
       });
 }
 
 /**
- * Provides a Drag-and-Drop context, managing drag states and event handlers.
+ * Drag-and-drop provider that manages drag state, interactions, and event handlers.
  *
- * @param {Object} props - Props passed to the provider.
- * @param {React.ReactNode} props.children - Child components wrapped by the provider.
- * @param {Function} props.setCourseMap - Function to update course mapping.
- * @param {Function} props.setPlans - Function to update plan structure.
+ * @param {Object} props
+ * @param {React.ReactNode} props.children - Components wrapped inside the provider.
+ * @param {Function} props.setCourseMap - Function to update the course mapping.
+ * @param {Function} props.setPlans - Function to update the plan structure.
  */
 function DragAndDropProvider({ children, setCourseMap, setPlans }) {
   const [isDragDisabled, setIsDragDisabled] = useState(false);
@@ -40,17 +42,17 @@ function DragAndDropProvider({ children, setCourseMap, setPlans }) {
   const throttleTimer = useRef(null);
 
   /**
-   * Defines the sensors used for detecting drag interactions.
-   * - `PointerSensor`: Detects dragging with mouse/touch, activated after moving 5px.
-   * - `KeyboardSensor`: Allows keyboard-based sorting.
+   * Defines sensors for drag detection.
+   * - `PointerSensor`: Detects mouse/touch drag, activated after 5px movement.
+   * - `KeyboardSensor`: Enables keyboard-based sorting.
    */
   const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }), // Ensures small movements as clicks
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
     useSensor(KeyboardSensor)
   );
 
   /**
-   * Throttles drag-over event to improve performance.
+   * Throttles drag-over event for performance optimization.
    * @param {Object} event - Drag event from DnD Kit.
    */
   function handleThrottledDragOver(event) {
@@ -59,12 +61,12 @@ function DragAndDropProvider({ children, setCourseMap, setPlans }) {
 
       throttleTimer.current = setTimeout(() => {
         throttleTimer.current = null;
-      }, 5) // Throttle duration in milliseconds.
+      }, 5);
     }
   }
 
   /**
-   * Updates `courseMap` when dragged item changes.
+   * Updates `courseMap` when an item is dragged.
    * Marks changes as unsaved.
    */
   useEffect(() => {
@@ -82,30 +84,35 @@ function DragAndDropProvider({ children, setCourseMap, setPlans }) {
   }, [draggedItem, setCourseMap]);
 
   return (
-	<DragAndDropContext.Provider value={{ isDragDisabled, setIsDragDisabled }}>
-		<DndContext 
-			sensors={sensors} 
-			collisionDetection={computeCollision}
-			onDragStart={(event) => handleDragStart(event, setDragOverlay, setDraggedItem)}
-			onDragOver={(event) => handleThrottledDragOver(event)}
-			onDragEnd={(event) => { 
-				handleDragEnd(event, draggedItem, setPlans);
-				setDraggedItem(null);
-				setDragOverlay(null);
-			}}
-			onDragCancel={() => {setDraggedItem(null); setDragOverlay(null); }}    
-		>
-			{dragOverlay && <DragOverlayComponent course={dragOverlay} />}
-			{children}
-		</DndContext>
-	</ DragAndDropContext.Provider>
+    <DragAndDropContext.Provider value={{ isDragDisabled, setIsDragDisabled }}>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={computeCollision}
+        onDragStart={(event) => handleDragStart(event, setDragOverlay, setDraggedItem)}
+        onDragOver={handleThrottledDragOver}
+        onDragEnd={(event) => {
+          handleDragEnd(event, draggedItem, setPlans);
+          setDraggedItem(null);
+          setDragOverlay(null);
+        }}
+        onDragCancel={() => {
+          setDraggedItem(null);
+          setDragOverlay(null);
+        }}
+      >
+        {dragOverlay && <DragOverlayComponent course={dragOverlay} />}
+        {children}
+      </DndContext>
+    </DragAndDropContext.Provider>
   );
 }
 
 /**
  * Hook to access the drag-and-drop context.
- * @returns {Object} Drag-and-drop context.
+ * @returns {Object} Drag-and-drop context values.
  */
-function useDragAndDrop() { return useContext(DragAndDropContext); }
+function useDragAndDrop() {
+  return useContext(DragAndDropContext);
+}
 
 export { DragAndDropProvider, useDragAndDrop };

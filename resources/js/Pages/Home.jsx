@@ -8,7 +8,7 @@ import CoursePopUp from '../Components/PopUps/CoursePopUp.jsx';
 import LoadingScreen from '../Components/Atoms/LoadingScreen.jsx';
 import useCourseMap from '../Hooks/useCourseMap.jsx';
 import usePlansManager from '../Hooks/usePlansManager.jsx';
-import { DragAndDropProvider } from '../Components/Dnd/DragAndDropProvider.jsx';
+import { DragAndDropProvider } from '../Components/Dnd/DragAndDropContext.jsx';
 
 const AppContainer = styled.div`
   /* display: flex;
