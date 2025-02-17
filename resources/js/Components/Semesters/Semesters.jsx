@@ -114,7 +114,7 @@ const Semesters = ({ semesters, setSemesters, displayCourse, courseMap }) => {
             </svg>
           </StyledButton>
         </SemestersContainerHeaderPages>
-        <p style={{color: "#9E9E9E", fontSize: 12}}>Arraste uma disciplina para adicioná-la ou removê-la do período desejado.</p>
+        <p style={{color: "#9E9E9E", fontSize: 12}}>{showRequiredCourses ? "Você está visualizando a grade obrigatória." : "Arraste uma disciplina para adicioná-la ou removê-la do período desejado." }</p>
         <SemestersContainerHeaderView>
         <StyledButton background_image={"/assets/a2.png"} 
             onClick={() => {setIsDragDisabled((prev) => !prev); setShowRequiredCourses((prev) => !prev)}}>
