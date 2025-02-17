@@ -30,6 +30,7 @@ function SortableItem({ id, courseData, containerName, isDisabled, children }) {
         transform: CSS.Transform.toString(transform),
         transition: transition || "opacity 0.3s ease",
         opacity: isDragging || isDisabled ? 0.2 : 1,
+        touchAction: "none",
         tabIndex: isDraggable ? 0 : -1,
     };
 
