@@ -7,12 +7,12 @@ use Inertia\Inertia;
 
 class LoadSubjectsController extends Controller {
 
-    // Função principal que recebe o id de um grupoCursoJSON, carrega os groups e devolve o json
+    // Main function that receives the id of a course, loads the groups and returns the json
     public function index($id_course) {
         return $this->loadCourse($id_course);
     }
     
-    // Função recursiva que processa os groups (e seus subgroups) 
+    // Recursive function that processes groups (and their subgroups) 
     private function loadCourse($id_course) {        
         $schedule = DB::table('courses')
                           ->where('id', '=', $id_course)
