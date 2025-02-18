@@ -1,81 +1,63 @@
-import styled from 'styled-components';
-import React, { useState } from 'react';
-import Header from '../Components/Header/Header.jsx';
-import Semester from '../Components/Semesters/Semesters.jsx';
+import React, { useState, useEffect } from 'react';
+import { styled } from "@mui/material/styles";
+import Stack from '@mui/material/Stack';
+
+import Header from '../Components/Header/Header'
+import CompletionBar from '../Components/CompletionBar/CompletionBar' 
+import Semesters from '../Components/Semesters/Semesters.jsx';
+import CourseInfo from '../Components/CourseInfo/CourseInfo.jsx';
+import Background from '../Components/Background/HomeBackground.jsx';
 import CoursePicker from '../Components/CoursePicker/CoursePicker.jsx';
-import AddDisciplinePopUp from '../Components/PopUps/AddDisciplinePopUp.jsx';
-import CoursePopUp from '../Components/PopUps/CoursePopUp.jsx';
-
-const AppContainer = styled.div`
-  /* display: flex;
-  height: 100vh;
-  flex-direction: column;
-
-  align-items: center;
-  justify-content: center;
-  background-color: grey; */
-`;
-
-const ContentContainer = styled.div`
-  display: flex;
-  flex-grow: 1;
-`;
 
 
-const Home = ({ plans }) => {
+const AppContainer = styled("div")(() => ({
+  position: 'relative'
+}));
 
-  const [addDisciplineActive, setAddDisciplineActive] = useState(false);
-  const [coursePopUpActive, setCoursePopUpActive] = useState(false);
+const ContentContainer = styled("div")(({ theme }) => ({
+  display: 'flex',
+  justifyContent: 'center',
+  padding: "8px", 
+  
+  [theme.breakpoints.up('sm')]: {
+    padding: '16px',
+  }
+}));
 
-  const toggleDiscipline = () => {
-    setAddDisciplineActive(!addDisciplineActive);
+const Home = ({ plans, subjects }) => {
+  const [courseInfoActive, setCourseInfo] = useState(false);
+  const [courseCode, setCourseCode] = useState("");
+
+  const openCourseInfoPopUp = (course) => {
+    console.log(course);
+    setCourseInfo(true);
   }
 
-  const toggleCoursePopUp = () => {
-    setCoursePopUpActive(!coursePopUpActive);
-  }
-
-  const [course, setCourse] = useState({
-    pokeball_color: '',
-    pokemonURL: '',
-    title: '',
-    code: '',
-    tags: [{
-      color: '',
-      name: ''
-    }],
-    credits: [0,0],
-    desc: ''
-  })
-
-  const toggleCourse = (p_color, p_url, title, code, tags, credits, desc) => {
-    setCourse({
-      pokeball_color: p_color,
-      pokemonURL: p_url,
-      title: title,
-      code: code,
-      tags: tags,
-      credits: credits,
-      desc: desc
-    })
+  const closeCourseInfoPopUp = () => {
+    setCourseInfo(false);
   }
 
   return (
     <AppContainer>
-      <AddDisciplinePopUp isOpen={addDisciplineActive} onClose={toggleDiscipline} />
-      <CoursePopUp isOpen={coursePopUpActive} onClose={toggleCoursePopUp} 
-                    pokeball_color={course.pokeball_color} 
-                    pokemonURL={course.pokemonURL}
-                    title={course.title}
-                    code={course.code}
-                    tags={course.tags}
-                    credits={course.credits}
-                    desc={course.desc}
-      />
-      <Header />
+      <Background />
+      <CourseInfo isOpen={courseInfoActive}
+                  onClose={closeCourseInfoPopUp}
+                  title="Introdução à Computação" 
+                  code={courseCode} 
+                  tags={[{"color": "#51A1E0", "name":"Obrigatória2"}, {"color": "#51A1E0", "name":"Obrigatória3"}, {"color": "#51A1E0", "name":"Obrigatória4"}]}
+                  credits={{lectureCredits: 4, workCredits: 2}}
+                  desc="Descrição genérica"/>
       <ContentContainer>
-        <Semester plans={plans} openCourse={toggleCoursePopUp} changeCourseDisplay={toggleCourse} />
-        <CoursePicker openCourse={toggleCoursePopUp} changeCourseDisplay={toggleCourse} openDisciplinePopUp={toggleDiscipline} />
+        <Stack spacing={1}> 
+          <Header />
+          <Stack spacing={2} direction="row">
+            <Stack spacing={1}>
+              <CompletionBar />
+              <Semesters plans={plans} openCourseInfoPopUp={openCourseInfoPopUp} />
+            </Stack>
+            <CoursePicker open={false} data={subjects}/>
+          </Stack>
+        </Stack>
       </ContentContainer>
     </AppContainer>
   );
