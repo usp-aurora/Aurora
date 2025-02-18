@@ -12,9 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('subjects', function (Blueprint $table) {
-            $table->id();
+            $table->string('subject_code')->primary();
             $table->string('name');
-            $table->string('code');
             $table->string('syllabus');
             $table->string('lecture_credits');
             $table->string('work_credits');

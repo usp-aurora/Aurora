@@ -20,7 +20,7 @@ class PlanFactory extends Factory
     {
         return [
             'user_id' => 1,
-            'subject_id' => $this->faker->unique->numberBetween(2, Subject::count()), // Must run SubjectSeeder first
+            'subject_code' => Subject::inRandomOrder()->first()->subject_code,
             'semester' => $this->faker->numberBetween(1, 8)
         ];
     }

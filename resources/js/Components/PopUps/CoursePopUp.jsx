@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import StyledButton from '../Atoms/StyledButton';
-import CourseTag from '../Atoms/CourseTag';
-import Pokeball from '../Atoms/Pokeball';
-import {fadeIn, fadeOut } from '../Atoms/Animations'
+import StyledButton from '../Atomsold/StyledButton';
+import CourseTag from '../Atomsold/CourseTag';
+import Pokeball from '../Atomsold/Pokeball';
+import {fadeIn, fadeOut } from '../Atomsold/Animations'
 
 const CoursePopUpBackground = styled.div`
   animation: ${props => (props.open ? fadeIn : fadeOut)} 1s ease-in-out -0.3s;

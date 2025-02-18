@@ -42,7 +42,7 @@ function SortableItem({ id, courseData, containerName, isDisabled, children }) {
                 onDragStart={handleDragStart}
                 onTouchMove={() => isDragDisabled && setShowWarning(true)}
                 {...(isDraggable ? { ...attributes, ...listeners } : {})}
-            >
+            >   
                 {children}
             </div>
         </>

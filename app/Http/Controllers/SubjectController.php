@@ -11,16 +11,14 @@ class SubjectController extends Controller
     public function index()
     {
         $subjects = Subject::all();
-        
+
         return $subjects->map(function ($subject) {
             return [
-                'id'      => $subject->id,
-                'code'    => $subject->code,
-                'title'   => $subject->name,
-                'desc'    => $subject->syllabus,
-                'credits' => [$subject->lecture_credits, $subject->work_credits],
+                'subject_code' => $subject->subject_code,
+                'title'        => $subject->name,
+                'desc'         => $subject->syllabus,
+                'credits'      => [$subject->lecture_credits, $subject->work_credits],
             ];
         });;
     }
-
 }

@@ -1,7 +1,7 @@
 import { DragOverlay } from "@dnd-kit/core";
 import { restrictToWindowEdges, snapCenterToCursor } from "@dnd-kit/modifiers";
-import Card from "../Atoms/Card";
-import CardContentCourse from "../Atoms/CardContentCourse";
+import Card from "../Atomsold/Card";
+import CardContentCourse from "../Atomsold/CardContentCourse";
 
 function DragOverlayComponent({ course }) {
   return (

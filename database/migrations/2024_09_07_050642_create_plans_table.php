@@ -14,8 +14,9 @@ return new class extends Migration
         Schema::create('plans', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->foreignId('user_id')->constrained();
-            $table->foreignId('subject_id')->constrained();
+            $table->string('subject_code');
+            $table->foreign('subject_code')->references('subject_code')->on('subjects')->constrained();
+            $table->foreignId('user_id')->references('id')->on('users')->constrained();
             $table->integer('semester');
         });
     }

@@ -1,0 +1,87 @@
+import React from "react";
+import { styled } from "@mui/material/styles";
+import { Typography } from "@mui/material";
+import CardContainer from "../Atoms/CardContainer/CardContainer";
+import SubjectCard from "../Atoms/Card/SubjectCard";
+
+import SortableItem from "../Dnd/SortableItem";
+
+const SubGroupContainer = styled("div")(({ theme, depth }) => ({
+    display: "flex",
+    flexDirection: "column",
+
+    marginLeft: theme.spacing(depth),
+    borderLeft: "1px solid white",
+    gap: theme.spacing(1),
+    paddingLeft: theme.spacing(1),
+
+    [theme.breakpoints.up("sm")]: {
+        marginLeft: theme.spacing(2 * depth),
+        gap: theme.spacing(2),
+    },
+}));
+
+const SubGroupHeader = styled("div")(() => ({
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+}));
+
+const SubGroupTitle = styled(Typography)(({ theme }) => ({
+    ...theme.typography.h5,
+    [theme.breakpoints.up("sm")]: {
+        ...theme.typography.h4,
+    },
+}));
+
+const SubGroupText = styled(Typography)(({ theme }) => ({
+    ...theme.typography.small,
+    [theme.breakpoints.up("sm")]: {
+        ...theme.typography.p,
+    },
+}));
+
+const SubGroup = ({ depth, courseMap, subgroupData }) => {
+    return (
+        <SubGroupContainer depth={depth}>
+            <SubGroupHeader>
+                <SubGroupTitle>{subgroupData.title}</SubGroupTitle>
+                <SubGroupText>99/99 créditos</SubGroupText>
+            </SubGroupHeader>
+            <SubGroupText>{subgroupData.description}</SubGroupText>
+            <CardContainer>
+                {subgroupData.subjects.map((subject) => {
+                    const courseDetails = courseMap.get(
+                        subject.subject_code
+                    );
+                    const isBlocked = courseDetails.semester !== null;
+                    return (
+                        <SortableItem
+                            id={courseDetails.subject_code}
+                            key={courseDetails.subject_code}
+                            courseData={courseDetails}
+                            containerName={subgroupData.title}
+                            isDisabled={
+                                isBlocked
+                            //     // !expandedCategories[category.name] || isBlocked
+                            }
+                        >
+                            <SubjectCard
+                                courseCode={subject.subject_code}
+                                courseTitle={subject.name}
+                                planetURL="/icons/planeta.png"
+                                // onClick={openCourseInfoPopUp}
+                            />
+                        </SortableItem>
+                    );
+                })}
+            </CardContainer>
+            {subgroupData.subgroups.map((subgroup) => (
+                <SubGroup key={subgroup.title} depth={depth + 1} subgroupData={subgroup} />
+            ))}
+        </SubGroupContainer>
+    );
+};
+
+export default SubGroup;

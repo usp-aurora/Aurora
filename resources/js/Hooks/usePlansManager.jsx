@@ -81,11 +81,12 @@ function usePlansManager(courseMap, updateCourseMap, setIsPlansLoading) {
      * @param {Event} event - The beforeunload event.
      */
     function handlePageUnload(event) {
-        if (hasUnsavedChangesRef.current || !authUser) {
-            event.preventDefault();
-            if (authUser) saveUserPlans(courseMapRef.current);
-            else saveGuestPlans(plans);      
-        }
+        console.log("Unloading page...");
+        // if (hasUnsavedChangesRef.current || !authUser) {
+        //     event.preventDefault();
+        //     if (authUser) saveUserPlans(courseMapRef.current);
+        //     else saveGuestPlans(plans);      
+        // }
     }
 
     // Keeps the latest reference of courseMap and detects unsaved changes

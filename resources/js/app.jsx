@@ -2,7 +2,12 @@ import './bootstrap';
 
 import { createInertiaApp } from '@inertiajs/react'
 import { createRoot } from 'react-dom/client'
+
 import GlobalStyles from './GlobalStyles.jsx'
+
+import MUITheme from './styles/MUITheme.jsx'
+import { ThemeProvider } from '@mui/material/styles';
+
 import { AuthProvider } from './Hooks/useAuthContext.jsx';
 
 createInertiaApp({
@@ -14,8 +19,10 @@ createInertiaApp({
     createRoot(el).render(
       <>
         <AuthProvider>
+          <ThemeProvider theme={MUITheme}>
             <GlobalStyles></GlobalStyles>
             <App {...props} />
+          </ThemeProvider>
         </AuthProvider>
       </>
     )
