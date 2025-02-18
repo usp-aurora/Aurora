@@ -7,7 +7,7 @@ use App\Http\Controllers\PlansController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\CarregaMateriasController;
+use App\Http\Controllers\LoadSubjectsController;
 
 
 Route::get('/', [HomeController::class, 'index']);
@@ -29,3 +29,5 @@ Route::get('logout', [LoginController::class, 'logout']);
 Route::get('/test', function() {
     return Inertia::render('Development/Test');
 });
+
+Route::get('/json-grupos/{id_curso}', [LoadSubjectsController::class, 'index']);

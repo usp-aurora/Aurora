@@ -5,12 +5,12 @@ namespace Database\Seeders;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Database\Seeders\MateriaSeeder;
-use Database\Seeders\PlanoEstudosSeeder;
-use Database\Seeders\MateriasGrupoSeeder;
-use Database\Seeders\CriteriosCompletudeSeeder;
-use Database\Seeders\GrupoSeeder;
-use Database\Seeders\CursosSeeder;
+use Database\Seeders\SubjectSeeder;
+use Database\Seeders\StudiesPlanSeeder;
+use Database\Seeders\SubjectsGroupSeeder;
+use Database\Seeders\CompletenessCriteriaSeeder;
+use Database\Seeders\GroupSeeder;
+use Database\Seeders\CoursesSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -28,12 +28,12 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call([
-            GrupoSeeder::class,
-            MateriaSeeder::class,
-            PlanoEstudosSeeder::class,
-            MateriasGrupoSeeder::class,
-            CriteriosCompletudeSeeder::class,
-            CursosSeeder::class
+            GroupSeeder::class,
+            SubjectSeeder::class,
+            StudiesPlanSeeder::class,
+            SubjectsGroupSeeder::class,
+            CompletenessCriteriaSeeder::class,
+            CoursesSeeder::class
         ]);
     }
 }
