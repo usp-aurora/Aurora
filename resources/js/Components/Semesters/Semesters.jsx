@@ -9,7 +9,7 @@ import { useDragAndDrop } from '../Dnd/DragAndDropContext';
 const mandatoryCurriculum = [
   {
     semesterId: 1,
-    courses: [
+    subjects: [
       {
         id: 1,
         code: "MAC0110",
@@ -17,13 +17,13 @@ const mandatoryCurriculum = [
       },
     ],
   },
-  { semesterId: 2, courses: [], },
-  { semesterId: 3, courses: [], },
-  { semesterId: 4, courses: [], },
-  { semesterId: 5, courses: [], },
-  { semesterId: 6, courses: [], },
-  { semesterId: 7, courses: [], },
-  { semesterId: 8, courses: [], },
+  { semesterId: 2, subjects: [], },
+  { semesterId: 3, subjects: [], },
+  { semesterId: 4, subjects: [], },
+  { semesterId: 5, subjects: [], },
+  { semesterId: 6, subjects: [], },
+  { semesterId: 7, subjects: [], },
+  { semesterId: 8, subjects: [], },
 ];
 
 const Semesters = ({ plans, setPlans, displayCourse, courseMap }) => {
@@ -33,32 +33,14 @@ const Semesters = ({ plans, setPlans, displayCourse, courseMap }) => {
   const [showRequiredCourses, setShowRequiredCourses] = useState(false);
   const displayedSemesters = showRequiredCourses ? mandatoryCurriculum : plans;
 
-  const [expandedSemesters, setExpandedSemesters] = useState(
-    plans.reduce((acc, semester) => {
-      acc[semester.semesterId] = false;
-      return acc;
-    }, {})
-  );
-
-  const toggleSemester = (semesterId) => {
-    setExpandedSemesters((prev) => ({
-      ...prev,
-      [semesterId]: !prev[semesterId],
-    }));
-  };
-
   const addSemester = () => {
     const newId = plans.length + 1;
 
     const newSemester = {
       semesterId: newId,
-      courses: [],
+      subjects: [],
     };
 
-    setExpandedSemesters((prev) => ({
-      ...prev,
-      [newId]: false,
-    }));
     setPlans([...plans, newSemester]);
   };
 
@@ -66,13 +48,11 @@ const Semesters = ({ plans, setPlans, displayCourse, courseMap }) => {
       <Stack spacing={1}>
         {displayedSemesters.map(semester => (
           <Semester 
-          key={semester.semesterId}  
-          semesterData={semester} 
-          isExpanded={expandedSemesters[semester.semesterId]}
-          isRequired={showRequiredCourses}
-          toggleSemester={toggleSemester} 
-          displayCourse={displayCourse}
-          courseMap={courseMap}
+            key={semester.semesterId}  
+            semesterData={semester} 
+            isRequired={showRequiredCourses}
+            displayCourse={displayCourse}
+            courseMap={courseMap}
           />
         ))}
 

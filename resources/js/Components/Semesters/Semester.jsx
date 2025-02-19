@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { Typography } from "@mui/material/";
 import { styled } from "@mui/material/styles";
@@ -46,22 +46,22 @@ const DroppableCardContainer = styled(Droppable)(({ theme }) => ({
 
 const Semester = ({
     semesterData,
-    isExpanded,
     isRequired,
-    toggleSemester,
     displayCourse,
     courseMap,
 }) => {
     let workCredits = 0;
     let lectureCredits = 0;
 
-    semesterData.courses.forEach((course) => {
-        lectureCredits += parseInt(course.credits[0], 10);
-        workCredits += parseInt(course.credits[1], 10);
+    semesterData.subjects.forEach((subject) => {
+        lectureCredits += parseInt(subject.credits[0], 10);
+        workCredits += parseInt(subject.credits[1], 10);
     });
 
+    const [isExpanded, setExpanded] = useState(false);
+
     const Summary = (
-        <SummaryContainer>
+        <SummaryContainer onClick={() => setExpanded((prev) => !prev)}>
             <SemesterInfoText>
                 {semesterData.semesterId}º Período
             </SemesterInfoText>
@@ -76,9 +76,6 @@ const Semester = ({
     return (
         <Accordion
             summary={Summary}
-            onClick={() => {
-                toggleSemester(semesterData.semesterId);
-            }}
             expanded={isExpanded}
         >
             <DroppableCardContainer
@@ -86,13 +83,13 @@ const Semester = ({
                 key={semesterData.semesterId}
                 spacing={{ xs: 1, sm: 2 }}
             >
-                <SortableGrid items={semesterData.courses}>
-                    {semesterData.courses.length === 0
+                <SortableGrid items={semesterData.subjects}>
+                    {semesterData.subjects.length === 0
                         ? !isRequired && (
                               <AuxiliarCard text="Arraste uma disciplina" />
                           )
-                        : semesterData.courses.map((course) => {
-                              const courseDetails = courseMap.get(course.id);
+                        : semesterData.subjects.map((subject) => {
+                              const courseDetails = courseMap.get(subject.code);
                               const isRequiredScheduled =
                                   isRequired && courseDetails.semester;
 
@@ -105,8 +102,8 @@ const Semester = ({
                                       isDisabled={!isExpanded}
                                   >
                                       <SubjectCard
-                                          courseCode={course.code}
-                                          courseTitle={course.title}
+                                          courseCode={subject.code}
+                                          courseTitle={subject.name}
                                           planetURL="/icons/planeta.png"
                                           onClick={() =>
                                               displayCourse(courseDetails)

@@ -42,7 +42,7 @@ const SubGroupText = styled(Typography)(({ theme }) => ({
     },
 }));
 
-const SubGroup = ({ depth, courseMap, subgroupData }) => {
+const SubGroup = ({ depth, courseMap, subgroupData }) => {               
     return (
         <SubGroupContainer depth={depth}>
             <SubGroupHeader>
@@ -53,13 +53,13 @@ const SubGroup = ({ depth, courseMap, subgroupData }) => {
             <CardContainer>
                 {subgroupData.subjects.map((subject) => {
                     const courseDetails = courseMap.get(
-                        subject.subject_code
+                        subject.code
                     );
                     const isBlocked = courseDetails.semester !== null;
                     return (
                         <SortableItem
-                            id={courseDetails.subject_code}
-                            key={courseDetails.subject_code}
+                            id={courseDetails.code}
+                            key={courseDetails.code}
                             courseData={courseDetails}
                             containerName={subgroupData.title}
                             isDisabled={
@@ -68,7 +68,7 @@ const SubGroup = ({ depth, courseMap, subgroupData }) => {
                             }
                         >
                             <SubjectCard
-                                courseCode={subject.subject_code}
+                                courseCode={subject.code}
                                 courseTitle={subject.name}
                                 planetURL="/icons/planeta.png"
                                 // onClick={openCourseInfoPopUp}

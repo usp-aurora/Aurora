@@ -14,7 +14,7 @@ function SortableItem({ id, courseData, containerName, isDisabled, children }) {
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
         id: sortableId,
         data: {
-            course: { ...courseData },
+            subject: { ...courseData },
             container: typeof containerName === "number" ? containerName : "coursePicker",
         },
     });

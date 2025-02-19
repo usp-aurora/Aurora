@@ -1,20 +1,16 @@
 import { DragOverlay } from "@dnd-kit/core";
 import { restrictToWindowEdges, snapCenterToCursor } from "@dnd-kit/modifiers";
-import Card from "../Atomsold/Card";
-import CardContentCourse from "../Atomsold/CardContentCourse";
+import SubjectCard from "../Atoms/Card/SubjectCard";
 
-function DragOverlayComponent({ course }) {
+function DragOverlayComponent({ subject }) {
   return (
     <DragOverlay modifiers={[snapCenterToCursor, restrictToWindowEdges]}>
-      {course ? (
-        <Card colors={course.colors}>
-          <CardContentCourse
-            pokeball={course.pokeball}
-            courseCode={course.code}
-            courseTitle={course.title}
-            pokemonURL="/pokemons/ditto.png"
-          />
-        </Card>
+      {subject ? (
+        <SubjectCard
+          courseCode={subject.code}
+          courseTitle={subject.name}
+          planetURL="/icons/planeta.png"
+        />
       ) : null}
     </DragOverlay>
   );

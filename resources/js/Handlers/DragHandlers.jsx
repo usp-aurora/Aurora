@@ -22,14 +22,14 @@ function getContainerName(element) {
 }
 
 /**
- * Retrieves the list of courses for a specific semester.
+ * Retrieves the list of subjects for a specific semester.
  * 
  * @param {string} semesterId - The semester identifier.
  * @param {Array} plans - The list of plans containing semester data.
- * @returns {Array} - List of courses for the given semester, or an empty array if not found.
+ * @returns {Array} - List of subjects for the given semester, or an empty array if not found.
  */
-function getSemesterCourses(semesterId, plans) {
-  return plans.find((semester) => semester.semesterId === semesterId)?.courses || [];
+function getSemesterSubjects(semesterId, plans) {
+  return plans.find((semester) => semester.semesterId === semesterId)?.subjects || [];
 }
 
 /**
@@ -37,18 +37,18 @@ function getSemesterCourses(semesterId, plans) {
  * 
  * @param {Object} over - The target drop area.
  * @param {Object} draggingRect - The bounding rectangle of the dragged item.
- * @param {Array} targetCourses - List of courses in the target container.
+ * @param {Array} targetSubjects - List of subjects in the target container.
  * @returns {number} - The index where the item should be inserted.
  */
-function calculateDropIndex(over, draggingRect, targetCourses) {
+function calculateDropIndex(over, draggingRect, targetSubjects) {
   const overId = extractBaseId(over.id);
-  const overIndex = targetCourses.findIndex((course) => course.code === overId);
-  if (overIndex === -1) return targetCourses.length; // Place at the end if not found.
+  const overIndex = targetSubjects.findIndex((subject) => subject.code === overId);
+  if (overIndex === -1) return targetSubjects.length; // Place at the end if not found.
 
   const isAfterLastItem =
     over &&
     draggingRect &&
-    overIndex === targetCourses.length - 1 &&
+    overIndex === targetSubjects.length - 1 &&
     (draggingRect.offsetTop > over.rect.offsetTop + over.rect.height ||
       draggingRect.offsetLeft > over.rect.offsetLeft + over.rect.width);
 
@@ -65,33 +65,30 @@ function calculateDropIndex(over, draggingRect, targetCourses) {
  */
 function handleDragStart(event, setOverlay, setDraggedItem) {
   const { active } = event;
-  const course = active.data.current.course;
+  const subject = active.data.current.subject;
   const container = active.data.current.container;
 
   setOverlay({
-    code: course.code,
-    title: course.title,
-    colors: course.colors,
-    pokeball: course.pokeball,
+    code: subject.code,
+    name: subject.name,
   });
 
   setDraggedItem({
-    id: course.code,
+    id: subject.code,
     container: container,
-    course: {
-      id: course.id,
-      code: course.code,
-      credits: course.credits,
-      desc: course.desc,
-      plan: course.plan,
-      title: course.title,
+    subject: {
+      plan: subject.plan,
+      code: subject.code,
+      name: subject.name,
+      desc: subject.desc,
+      credits: subject.credits,
     },
   });
 }
 
 /**
  * Handles a drag-over event.
- * Updates the plans when a course is dragged between semesters or coursePicker.
+ * Updates the plans when a subject is dragged between semesters or coursePicker.
  * 
  * @param {Object} event - The drag event object.
  * @param {Function} updatePlans - State updater for plans.
@@ -107,19 +104,19 @@ function handleDragOver(event, updatePlans, draggedItem, setDraggedItem) {
   updatePlans((prevPlans) =>
     prevPlans.map((semester) => {
       if (semester.semesterId == draggedItem.container) {
-        // Remove the dragged course from the original semester
+        // Remove the dragged subject from the original semester
         return {
           ...semester,
-          courses: semester.courses.filter((course) => course.code !== draggedItem.id),
+          subjects: semester.subjects.filter((subject) => subject.code !== draggedItem.id),
         };
       } else if (semester.semesterId == targetContainer) {
-        // Insert the dragged course into the target semester
-        const targetCourses = semester.courses.filter((course) => course.code !== draggedItem.id);
-        const newIndex = calculateDropIndex(over, draggingRect, targetCourses);
+        // Insert the dragged subject into the target semester
+        const targetSubjects = semester.subjects.filter((subject) => subject.code !== draggedItem.id);
+        const newIndex = calculateDropIndex(over, draggingRect, targetSubjects);
 
         return {
           ...semester,
-          courses: [...targetCourses.slice(0, newIndex), draggedItem.course, ...targetCourses.slice(newIndex)],
+          subjects: [...targetSubjects.slice(0, newIndex), draggedItem.subject, ...targetSubjects.slice(newIndex)],
         };
       }
       return semester;
@@ -147,13 +144,13 @@ function handleDragEnd(event, draggedItem, updatePlans) {
   if (!targetContainer || draggedItem.container !== targetContainer) return;
 
   updatePlans((prevPlans) => {
-    const sourceIndex = getSemesterCourses(draggedItem.container, prevPlans).findIndex((course) => course.code === draggedItem.id);
-    const targetIndex = getSemesterCourses(targetContainer, prevPlans).findIndex((course) => course.code === extractBaseId(over.id));
+    const sourceIndex = getSemesterSubjects(draggedItem.container, prevPlans).findIndex((subject) => subject.code === draggedItem.id);
+    const targetIndex = getSemesterSubjects(targetContainer, prevPlans).findIndex((subject) => subject.code === extractBaseId(over.id));
 
     if (sourceIndex !== targetIndex) {
       return prevPlans.map((semester) => {
         if (semester.semesterId == targetContainer) {
-          return { ...semester, courses: arrayMove(semester.courses, sourceIndex, targetIndex) };
+          return { ...semester, subjects: arrayMove(semester.subjects, sourceIndex, targetIndex) };
         }
         return semester;
       });

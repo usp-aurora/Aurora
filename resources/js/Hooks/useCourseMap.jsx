@@ -10,23 +10,16 @@ import { useState } from "react";
 function initializeCourseMap(subjects) {
   const map = new Map(
     subjects.map((subject) => [
-      subject.subject_code,
+      subject.code,
       {
         ...subject,
         tags: [],
         plan: null,
         semester: null,
         unsaved: false,
-        colors: {
-          background: "#FFFFFF",
-          innerLine: "#51A1E0",
-          outerLine: "#17538D",
-        },
-        pokeball: "#C2DCF5",
       },
     ])
   );
-
   return map;
 }
 

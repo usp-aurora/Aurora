@@ -94,7 +94,7 @@ const CoursePicker = ({ open, courseMap, data }) => {
 
     return (
         <PopUpContainer open={open}>
-            <Container>
+            <Container id="coursePicker">
                 <PlaceholderBackground />
                 <HeaderContainer>
                     <StyledTitle>Adicionar disciplina</StyledTitle>

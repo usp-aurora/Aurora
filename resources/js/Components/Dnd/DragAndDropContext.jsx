@@ -73,8 +73,8 @@ function DragAndDropProvider({ children, setCourseMap, setPlans }) {
     if (draggedItem) {
       setCourseMap((prevMap) => {
         const updatedMap = new Map(prevMap);
-        updatedMap.set(draggedItem.course.id, {
-          ...prevMap.get(draggedItem.course.id),
+        updatedMap.set(draggedItem.subject.code, {
+          ...prevMap.get(draggedItem.subject.code),
           semester: draggedItem.container === "coursePicker" ? null : Number(draggedItem.container),
           unsaved: true,
         });
@@ -100,7 +100,7 @@ function DragAndDropProvider({ children, setCourseMap, setPlans }) {
           setDragOverlay(null);
         }}
       >
-        {dragOverlay && <DragOverlayComponent course={dragOverlay} />}
+        {dragOverlay && <DragOverlayComponent subject={dragOverlay} />}
         {children}
       </DndContext>
     </DragAndDropContext.Provider>
