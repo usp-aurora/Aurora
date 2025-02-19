@@ -36,7 +36,7 @@ const Home = ({ subjects, groups }) => {
   const [addDisciplineActive, setAddDisciplineActive] = useState(false);
   const [coursePopUpActive, setCoursePopUpActive] = useState(false);
 
-  const [courseMap, setCourseMap] = useCourseMap(subjects);
+  const [courseMap, setCourseMap] = useCourseMap(subjects, groups);
   const [plans, setPlans] = usePlansManager(courseMap, setCourseMap, setIsLoadingData);
 
   const toggleDiscipline = () => {

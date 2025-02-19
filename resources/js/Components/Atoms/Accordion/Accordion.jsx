@@ -68,12 +68,13 @@ const Accordion = ({
     summary,
     glassmorphismLevel = "level2",
     expanded,
+    handleClick,
     ...props
 }) => {
     return (
         <Container {...props}>
             <StyledAccordion expanded={expanded} glassmorphismLevel={glassmorphismLevel}>
-                <StyledAccordionSummary
+                <StyledAccordionSummary onClick={handleClick}
                     expandIcon={<StyledExpandMoreIcon/>}
                 >
                     {summary}

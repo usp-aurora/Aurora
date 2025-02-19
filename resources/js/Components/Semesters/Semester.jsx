@@ -48,7 +48,7 @@ const Semester = ({
     semesterData,
     isRequired,
     displayCourse,
-    courseMap,
+//  courseMap,
 }) => {
     let workCredits = 0;
     let lectureCredits = 0;
@@ -61,7 +61,7 @@ const Semester = ({
     const [isExpanded, setExpanded] = useState(false);
 
     const Summary = (
-        <SummaryContainer onClick={() => setExpanded((prev) => !prev)}>
+        <SummaryContainer>
             <SemesterInfoText>
                 {semesterData.semesterId}º Período
             </SemesterInfoText>
@@ -77,6 +77,7 @@ const Semester = ({
         <Accordion
             summary={Summary}
             expanded={isExpanded}
+            handleClick={() => setExpanded((prev) => !prev)}
         >
             <DroppableCardContainer
                 id={semesterData.semesterId}
@@ -90,7 +91,7 @@ const Semester = ({
                               <AuxiliarCard text="Arraste uma disciplina" />
                           )
                         : semesterData.subjects.map((subject) => {
-                              const isRequiredScheduled = isRequired && courseMap.get(subject.code).semester;
+                              // const isRequiredScheduled = isRequired && courseMap.get(subject.code).semester;
 
                               return (
                                   <SortableItem

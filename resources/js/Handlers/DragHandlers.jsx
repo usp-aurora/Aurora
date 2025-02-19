@@ -77,7 +77,6 @@ function handleDragStart(event, setOverlay, setDraggedItem) {
     id: subject.code,
     container: container,
     subject: {
-      plan: subject.plan,
       code: subject.code,
       name: subject.name,
       desc: subject.desc,

@@ -108,14 +108,12 @@ function usePlansManager(courseMap, updateCourseMap, setIsPlansLoading) {
 	}, [authUser, plans]);
 
     useEffect(() => {
-        if (!authUser) return;
+        if (!authUser || !hasUnsavedChangesRef.current) return;
 
         // Function to sync plans with the server
         async function syncPlans() {
             try {
                 await syncPlansWithServer(courseMapRef.current, updateCourseMap);
-                const updatedPlans = await fetchUserPlans();
-                setPlans(updatedPlans);
             } catch (error) {
                 console.error("Error during synchronization or fetching plans:", error);
             }
