@@ -30,11 +30,11 @@ class PlanController extends Controller
 
             $groupedPlans[] = [
                 'semesterId' => $semester,
-                'courses' => $semesterPlans->map(function ($plan) {
+                'subjects' => $semesterPlans->map(function ($plan) {
                     return [
                         'plan' => $plan->id,
                         'code' => $plan->subject_code,
-                        'title' => $plan->name,
+                        'name' => $plan->name,
                         'desc' => $plan->syllabus,
                         'credits' => [$plan->lecture_credits, $plan->work_credits],
                     ];

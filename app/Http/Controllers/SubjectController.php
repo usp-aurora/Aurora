@@ -15,7 +15,7 @@ class SubjectController extends Controller
         return $subjects->map(function ($subject) {
             return [
                 'code'         => $subject->code,
-                'title'        => $subject->name,
+                'name'         => $subject->name,
                 'desc'         => $subject->syllabus,
                 'credits'      => [$subject->lecture_credits, $subject->work_credits],
             ];

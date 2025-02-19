@@ -42,11 +42,10 @@ class GroupController extends Controller {
 
         foreach ($subjects as $subject) {
             $groupJSON['subjects'][] = [
-                'subject_code' => $subject->code,
+                'code' => $subject->code,
                 'name' => $subject->name,
-                'syllabus' => $subject->syllabus,
-                'lecture_credits' => $subject->lecture_credits,
-                'work_credits' => $subject->work_credits
+                'desc' => $subject->syllabus,
+                'credits' => [$subject->lecture_credits, $subject->work_credits],
             ];
         }
 
