@@ -76,12 +76,6 @@ function handleDragStart(event, setOverlay, setDraggedItem) {
   setDraggedItem({
     id: subject.code,
     container: container,
-    subject: {
-      code: subject.code,
-      name: subject.name,
-      desc: subject.desc,
-      credits: subject.credits,
-    },
   });
 }
 
@@ -95,7 +89,7 @@ function handleDragStart(event, setOverlay, setDraggedItem) {
  * @param {Function} setDraggedItem - State updater for dragged item.
  */
 function handleDragOver(event, updatePlans, draggedItem, setDraggedItem) {
-  const { over, draggingRect } = event;
+  const { active, over, draggingRect } = event;
   const targetContainer = getContainerName(over);
 
   if (!targetContainer || draggedItem.container === targetContainer) return;
@@ -112,10 +106,11 @@ function handleDragOver(event, updatePlans, draggedItem, setDraggedItem) {
         // Insert the dragged subject into the target semester
         const targetSubjects = semester.subjects.filter((subject) => subject.code !== draggedItem.id);
         const newIndex = calculateDropIndex(over, draggingRect, targetSubjects);
-
+        const newSubject = active.data.current.subject;
+ 
         return {
           ...semester,
-          subjects: [...targetSubjects.slice(0, newIndex), draggedItem.subject, ...targetSubjects.slice(newIndex)],
+          subjects: [...targetSubjects.slice(0, newIndex), newSubject, ...targetSubjects.slice(newIndex)],
         };
       }
       return semester;
