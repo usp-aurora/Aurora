@@ -107,21 +107,39 @@ function usePlansManager(courseMap, updateCourseMap, setIsPlansLoading) {
 		return () => window.removeEventListener("beforeunload", handlePageUnload);
 	}, [authUser, plans]);
 
-    // Periodically syncs plans with the server every 10 seconds
     useEffect(() => {
-        const intervalId = setInterval(async () => {
-            if (authUser) {
-                try {
-                    await syncPlansWithServer(courseMapRef.current, updateCourseMap);
-                    const updatedPlans = await fetchUserPlans();
-                    setPlans(updatedPlans);
-                } catch (error) {
-                    console.error("Error during synchronization or fetching plans:", error);
-                }
-            }
-        }, 5000);
+        if (!authUser) return;
 
-        return () => clearInterval(intervalId);
+        // Function to sync plans with the server
+        async function syncPlans() {
+            try {
+                await syncPlansWithServer(courseMapRef.current, updateCourseMap);
+                const updatedPlans = await fetchUserPlans();
+                setPlans(updatedPlans);
+            } catch (error) {
+                console.error("Error during synchronization or fetching plans:", error);
+            }
+        };
+
+        // Periodic synchronization every 10 seconds
+        const intervalId = setInterval(syncPlans, 10000);
+
+        // Handle Ctrl+S to trigger manual synchronization
+        function handleKeyDown(event) {
+            if (event.ctrlKey && event.key === "s") {
+                event.preventDefault(); // Prevent the default "Save page" action
+                syncPlans();
+            }
+        };
+
+        // Add event listener for keyboard shortcut
+        window.addEventListener("keydown", handleKeyDown);
+
+        // Clean up interval and event listener on component unmount
+        return () => {
+            clearInterval(intervalId);
+            window.removeEventListener("keydown", handleKeyDown);
+        };
     }, [courseMap, authUser]);
 
     return [plans, setPlans];

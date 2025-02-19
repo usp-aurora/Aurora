@@ -69,7 +69,7 @@ async function syncPlansWithServer(data, updateData) {
       .filter(([code, subject]) => subject.unsaved) // Filters only unsaved subjects
       .map(([subjectCode, subjectDetails]) => ({
         id: subjectDetails.plan,
-        subject_id: subjectCode,
+        subject_code: subjectCode,
         semester: subjectDetails.semester,
       }))
     )
@@ -105,7 +105,6 @@ async function syncPlansWithServer(data, updateData) {
               console.warn("Unrecognized action:", action)
           }
         })
-
         return updatedData
       })
     } else {
