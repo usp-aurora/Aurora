@@ -35,18 +35,18 @@ class GroupController extends Controller {
             'subgroups' => []
         ];
 
-        $disciplinas = DB::table('group_subjects')
+        $subjects = DB::table('group_subjects')
             ->where('group_subjects.group_id', '=', $group->id)
-            ->join('subjects', 'group_subjects.subject_code', '=', 'subjects.subject_code')
-            ->select(["subjects.subject_code", "subjects.name", "subjects.syllabus", "subjects.lecture_credits", "subjects.work_credits",])->get();
+            ->join('subjects', 'group_subjects.subject_code', '=', 'subjects.code')
+            ->select(["subjects.code", "subjects.name", "subjects.syllabus", "subjects.lecture_credits", "subjects.work_credits",])->get();
 
-        foreach ($disciplinas as $disciplina) {
+        foreach ($subjects as $subject) {
             $groupJSON['subjects'][] = [
-                'subject_code' => $disciplina->subject_code,
-                'name' => $disciplina->name,
-                'syllabus' => $disciplina->syllabus,
-                'lecture_credits' => $disciplina->lecture_credits,
-                'work_credits' => $disciplina->work_credits
+                'subject_code' => $subject->code,
+                'name' => $subject->name,
+                'syllabus' => $subject->syllabus,
+                'lecture_credits' => $subject->lecture_credits,
+                'work_credits' => $subject->work_credits
             ];
         }
 

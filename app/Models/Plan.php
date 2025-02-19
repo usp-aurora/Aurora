@@ -15,6 +15,6 @@ class Plan extends Model
     }
 
     public function subject() {
-        return $this->belongsTo(\App\Models\Subject::class);
+        return $this->belongsTo(\App\Models\Subject::class, 'subject_code', 'code');
     }
 }

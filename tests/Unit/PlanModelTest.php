@@ -24,7 +24,7 @@ class PlanModelTest extends TestCase
         // Create plan
         $plan = Plan::create([
             'user_id' => $user->id,
-            'subject_id' => $subject->id,
+            'subject_code' => $subject->code,
             'semester' => 1,
         ]);
 
@@ -32,7 +32,7 @@ class PlanModelTest extends TestCase
         $this->assertDatabaseHas('plans', [
             'id' => $plan->id,
             'user_id' => $user->id,
-            'subject_id' => $subject->id,
+            'subject_code' => $subject->code,
             'semester' => 1,
         ]);
     }
@@ -47,7 +47,7 @@ class PlanModelTest extends TestCase
 
         $plan = Plan::create([
             'user_id' => $user->id,
-            'subject_id' => $subject->id,
+            'subject_code' => $subject->code,
             'semester' => 1,
         ]);
 
@@ -65,12 +65,12 @@ class PlanModelTest extends TestCase
 
         $plan = Plan::create([
             'user_id' => $user->id,
-            'subject_id' => $subject->id,
+            'subject_code' => $subject->code,
             'semester' => 1,
         ]);
 
         $this->assertInstanceOf(Subject::class, $plan->subject);
-        $this->assertEquals($subject->id, $plan->subject->id);
+        $this->assertEquals($subject->code, $plan->subject_code);
     }
 
     /**
@@ -83,7 +83,7 @@ class PlanModelTest extends TestCase
 
         $plan = Plan::create([
             'user_id' => $user->id,
-            'subject_id' => $subject->id,
+            'subject_code' => $subject->code,
             'semester' => 1,
         ]);
 
@@ -104,7 +104,7 @@ class PlanModelTest extends TestCase
 
         $plan = Plan::create([
             'user_id' => $user->id,
-            'subject_id' => $subject->id,
+            'subject_code' => $subject->code,
             'semester' => 1,
         ]);
 
@@ -126,7 +126,7 @@ class PlanModelTest extends TestCase
 
         $plan = Plan::create([
             'user_id' => $user->id,
-            'subject_id' => $subject->id,
+            'subject_code' => $subject->code,
             'semester' => 1,
         ]);
 
@@ -146,7 +146,7 @@ class PlanModelTest extends TestCase
 
         Plan::create([
             'user_id' => null,
-            'subject_id' => null,
+            'subject_code' => null,
             'semester' => null,
         ]);
     }
@@ -168,6 +168,6 @@ class PlanModelTest extends TestCase
     {
         $this->expectException(\Illuminate\Database\QueryException::class);
 
-        Plan::factory()->create(['subject_id' => 0]);
+        Plan::factory()->create(['subject_code' => 0]);
     }
 }

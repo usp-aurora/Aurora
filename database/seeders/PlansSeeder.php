@@ -15,7 +15,7 @@ class PlansSeeder extends Seeder
     {
         $plan = [
             'semester' => 1,
-            'subject_id' => 1,
+            'subject_code' => "MAC0110",
             'user_id' => 1,
         ];
 

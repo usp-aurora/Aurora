@@ -20,7 +20,7 @@ class PlanFactory extends Factory
     {
         return [
             'user_id' => 1,
-            'subject_code' => Subject::inRandomOrder()->first()->subject_code,
+            'subject_code' => Subject::inRandomOrder()->first()->code,
             'semester' => $this->faker->numberBetween(1, 8)
         ];
     }

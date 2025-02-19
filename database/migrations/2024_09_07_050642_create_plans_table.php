@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->string('subject_code');
-            $table->foreign('subject_code')->references('subject_code')->on('subjects')->constrained();
+            $table->foreign('subject_code')->references('code')->on('subjects')->constrained();
             $table->foreignId('user_id')->references('id')->on('users')->constrained();
             $table->integer('semester');
         });

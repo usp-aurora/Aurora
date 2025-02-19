@@ -33,7 +33,7 @@ class PlanControllerTest extends TestCase
                     '*' => [
                         'semesterId',
                         'courses' => [
-                            '*' => [ 'plan', 'id', 'code', 'title', 'desc', 'credits', ],
+                            '*' => [ 'plan', 'code', 'title', 'desc', 'credits', ],
                         ],
                     ],
                 ],
@@ -59,13 +59,13 @@ class PlanControllerTest extends TestCase
         $subject3 = Subject::factory()->create();
         
 
-        $plan1 = Plan::factory()->create(['user_id' => $user->id, 'subject_id' => $subject1->id, 'semester' => 1]);
-        $plan2 = Plan::factory()->create(['user_id' => $user->id, 'subject_id' => $subject2->id, 'semester' => 1]);
+        $plan1 = Plan::factory()->create(['user_id' => $user->id, 'subject_code' => $subject1->code, 'semester' => 1]);
+        $plan2 = Plan::factory()->create(['user_id' => $user->id, 'subject_code' => $subject2->code, 'semester' => 1]);
 
         $payload = [
-            ['id' => $plan1->id, 'subject_id' => $subject1->id, 'semester' => 2], // Update
-            ['id' => null, 'subject_id' => $subject3->id, 'semester' => 3], // Create
-            ['id' => $plan2->id, 'subject_id' => $subject2->id, 'semester' => null], // Delete
+            ['id' => $plan1->id, 'subject_code' => $subject1->code, 'semester' => 2], // Update
+            ['id' => null, 'subject_code' => $subject3->code, 'semester' => 3], // Create
+            ['id' => $plan2->id, 'subject_code' => $subject2->code, 'semester' => null], // Delete
         ];
 
         $response = $this->postJson('/api/plans/sync', $payload);
@@ -74,13 +74,13 @@ class PlanControllerTest extends TestCase
             ->assertJsonStructure([
                 'status',
                 'changedPlans' => [
-                    '*' => ['id', 'subject_id', 'action'],
+                    '*' => ['id', 'subject_code', 'action'],
                 ],
             ]);
         
 
         $this->assertDatabaseHas('plans', ['id' => $plan1->id, 'semester' => 2]);
-        $this->assertDatabaseHas('plans', ['user_id' => $user->id, 'subject_id' => $subject3->id, 'semester' => 3]);
+        $this->assertDatabaseHas('plans', ['user_id' => $user->id, 'subject_code' => $subject3->code, 'semester' => 3]);
         $this->assertDatabaseMissing('plans', ['id' => $plan2->id]);
     }
 
@@ -95,7 +95,7 @@ class PlanControllerTest extends TestCase
         $this->actingAs($user);
 
         $payload = [
-            'subject_id' => $subject->id,
+            'subject_code' => $subject->code,
             'semester' => 1,
         ];
 
@@ -105,7 +105,7 @@ class PlanControllerTest extends TestCase
                  ->assertJson([
                      'status' => 'success',
                      'data' => [
-                         'subject_id' => $subject->id,
+                         'subject_code' => $subject->code,
                          'semester' => 1,
                      ]
                  ]);
@@ -122,7 +122,7 @@ class PlanControllerTest extends TestCase
         $this->actingAs($user);
 
         $payload = [
-            'subject_id' => $subject->id,
+            'subject_code' => $subject->code,
             'semester' => 2,
         ];
 
@@ -133,7 +133,7 @@ class PlanControllerTest extends TestCase
                      'status' => 'success',
                      'data' => [
                          'id' => $plan->id,
-                         'subject_id' => $subject->id,
+                         'subject_code' => $subject->code,
                          'semester' => 2,
                      ]
                  ]);

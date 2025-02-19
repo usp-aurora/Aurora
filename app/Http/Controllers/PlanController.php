@@ -19,8 +19,8 @@ class PlanController extends Controller
     public function index()
     {
         $plans = Plan::where('user_id', auth()->user()->id )
-            ->join('subjects', 'plans.subject_id', '=', 'subjects.id')
-            ->select('plans.*', 'subjects.code', 'subjects.name', 'subjects.syllabus', 'subjects.lecture_credits', 'subjects.work_credits')
+            ->join('subjects', 'plans.subject_code', '=', 'subjects.code')
+            ->select('plans.*', 'subjects.name', 'subjects.syllabus', 'subjects.lecture_credits', 'subjects.work_credits')
             ->get();
 
         $groupedPlans = [];
@@ -33,8 +33,7 @@ class PlanController extends Controller
                 'courses' => $semesterPlans->map(function ($plan) {
                     return [
                         'plan' => $plan->id,
-                        'id' => $plan->subject_id,
-                        'code' => $plan->code,
+                        'code' => $plan->subject_code,
                         'title' => $plan->name,
                         'desc' => $plan->syllabus,
                         'credits' => [$plan->lecture_credits, $plan->work_credits],
@@ -65,35 +64,35 @@ class PlanController extends Controller
 
         try {
             foreach ($data as $plan) {
-                $existingPlan = $userPlans->where('subject_id', $plan['subject_id'])->first();
+                $existingPlan = $userPlans->where('subject_code', $plan['subject_code'])->first();
                 if ($existingPlan && isset($plan['semester'])) {
                     // Update existing plan
                     $this->update(new Request([
-                        'subject_id' => $plan['subject_id'],
+                        'subject_code' => $plan['subject_code'],
                         'semester' => $plan['semester'],
                     ]), $existingPlan['id']);
 
                     $changedPlans[] = [
                         'id' => $existingPlan['id'],
-                        'subject_id' => $plan['subject_id'],
+                        'subject_code' => $plan['subject_code'],
                         'action' => 'updated',
                     ];
                 } elseif (!$existingPlan && isset($plan['semester'])) {
                     // Create a new plan
                     $this->store(new Request([
-                        'subject_id' => $plan['subject_id'],
+                        'subject_code' => $plan['subject_code'],
                         'semester' => $plan['semester'],
                     ]));
 
                     $newPlan = Plan::where('user_id', $userId)
-                        ->where('subject_id', $plan['subject_id'])
+                        ->where('subject_code', $plan['subject_code'])
                         ->where('semester', $plan['semester'])
                         ->latest()
                         ->first();
 
                     $changedPlans[] = [
                         'id' => $newPlan->id,
-                        'subject_id' => $newPlan->subject_id,
+                        'subject_code' => $newPlan->subject_id,
                         'action' => 'created',
                     ];
                 } elseif ($existingPlan && isset($plan['id'])) {
@@ -101,7 +100,7 @@ class PlanController extends Controller
 
                     $changedPlans[] = [
                         'id' => $plan['id'],
-                        'subject_id' => $plan['subject_id'],
+                        'subject_code' => $plan['subject_code'],
                         'action' => 'deleted',
                     ];
                 }
@@ -127,14 +126,14 @@ class PlanController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'subject_id' => 'required|exists:subjects,id',
+            'subject_code' => 'required|exists:subjects,code',
             'semester' => 'required|integer',
         ]);
 
         try {
             $plan = Plan::create([
                 'user_id' => auth()->user()->id ,
-                'subject_id' => $validated['subject_id'],
+                'subject_code' => $validated['subject_code'],
                 'semester' => $validated['semester'],
             ]);
 
@@ -162,7 +161,7 @@ class PlanController extends Controller
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
-            'subject_id' => 'required|exists:subjects,id',
+            'subject_code' => 'required|exists:subjects,code',
             'semester' => 'required|integer',
         ]);
 
@@ -170,7 +169,7 @@ class PlanController extends Controller
             $plan = Plan::findOrFail($id);
 
             $plan->update([
-                'subject_id' => $validated['subject_id'],
+                'subject_code' => $validated['subject_code'],
                 'semester' => $validated['semester'],
             ]);
 

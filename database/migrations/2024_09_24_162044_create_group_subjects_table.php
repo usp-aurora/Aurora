@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('group_id')->references('id')->on('groups')->onUpdate('cascade');
             $table->string('subject_code');
-            $table->foreign('subject_code')->references('subject_code')->on('subjects')->onUpdate('cascade');
+            $table->foreign('subject_code')->references('code')->on('subjects')->onUpdate('cascade');
             $table->timestamps();
         });
     }
