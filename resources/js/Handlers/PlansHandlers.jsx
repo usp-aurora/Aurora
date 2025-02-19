@@ -12,13 +12,12 @@ function fetchGuestPlans() {
 }
 
 /**
- * Saves only relevant course data for guest users, ensuring it includes up to the last non-empty semester
+ * Saves relevant data for guest users, ensuring it includes up to the last non-empty semester
  * 
- * @param {Array} plans - Plans grouped by semester.
+ * @param {Array} guestPlans - Plans grouped by semester.
  */
-function saveGuestPlans(plans) {
-  const guestPlans = plans.map(semester => ({ ...semester, courses: semester.courses.map(course => ({ id: course.id, code: course.code, credits: course.credits }))}));
-  const lastSemester =  guestPlans.findLastIndex((sem) => sem.courses.length > 0) + 1;
+function saveGuestPlans(guestPlans) {
+  const lastSemester =  guestPlans.findLastIndex((sem) => sem.subjects.length > 0) + 1;
   localStorage.setItem('guestPlans', JSON.stringify(guestPlans.slice(0, lastSemester)));
 }
     
@@ -30,10 +29,10 @@ function saveGuestPlans(plans) {
 function saveUserPlans(unsyncedData) {
   const payload = JSON.stringify(
     Array.from(unsyncedData)
-    .filter(([id, subject]) => subject.unsaved) // Filters only unsaved subjects
-    .map(([subjectId, subjectDetails]) => ({
+    .filter(([code, subject]) => subject.unsaved) // Filters only unsaved subjects
+    .map(([subjectCode, subjectDetails]) => ({
       id: subjectDetails.plan,
-      subject_id: subjectId,
+      subject_code: subjectCode,
       semester: subjectDetails.semester,
     }))
   )
@@ -67,10 +66,10 @@ async function syncPlansWithServer(data, updateData) {
   try {
     const payload = JSON.stringify(
       Array.from(data)
-      .filter(([id, subject]) => subject.unsaved) // Filters only unsaved subjects
-      .map(([subjectId, subjectDetails]) => ({
+      .filter(([code, subject]) => subject.unsaved) // Filters only unsaved subjects
+      .map(([subjectCode, subjectDetails]) => ({
         id: subjectDetails.plan,
-        subject_id: subjectId,
+        subject_id: subjectCode,
         semester: subjectDetails.semester,
       }))
     )
@@ -83,20 +82,20 @@ async function syncPlansWithServer(data, updateData) {
       updateData((previousData) => {
         const updatedData = new Map(previousData)
 
-        changedPlans.forEach(({ id, subject_id, action }) => {
+        changedPlans.forEach(({ id, subject_code, action }) => {
           switch (action) {
             case 'created':
             case 'updated':
-              updatedData.set(subject_id, {
-                ...updatedData.get(subject_id),
+              updatedData.set(subject_code, {
+                ...updatedData.get(subject_code),
                 plan: id,
                 unsaved: false,
               })
               break
 
             case 'deleted':
-              updatedData.set(subject_id, {
-                ...updatedData.get(subject_id),
+              updatedData.set(subject_code, {
+                ...updatedData.get(subject_code),
                 unsaved: false,
                 plan: null,
               })

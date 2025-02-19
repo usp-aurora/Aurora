@@ -36,11 +36,11 @@ function usePlansManager(courseMap, updateCourseMap, setIsPlansLoading) {
     function mergePlansIntoCourseMap(currentCourseMap, retrievedPlans) {
         const updatedCourseMap = new Map(currentCourseMap);
         retrievedPlans.forEach((semester) => {
-            semester.courses.forEach((course) => {
-                updatedCourseMap.set(course.id, {
-                    ...currentCourseMap.get(course.id),
-                    plan: course.plan,
-                    semester: semester.id,
+            semester.subjects.forEach((subject) => {
+                updatedCourseMap.set(subject.code, {
+                    ...currentCourseMap.get(subject.code),
+                    plan: subject.plan,
+                    semester: semester.semesterId,
                 });
             });
         });
@@ -81,18 +81,17 @@ function usePlansManager(courseMap, updateCourseMap, setIsPlansLoading) {
      * @param {Event} event - The beforeunload event.
      */
     function handlePageUnload(event) {
-        console.log("Unloading page...");
-        // if (hasUnsavedChangesRef.current || !authUser) {
-        //     event.preventDefault();
-        //     if (authUser) saveUserPlans(courseMapRef.current);
-        //     else saveGuestPlans(plans);      
-        // }
+        if (hasUnsavedChangesRef.current || !authUser) {
+             event.preventDefault();
+             if (authUser) saveUserPlans(courseMapRef.current);
+             else saveGuestPlans(plans);      
+        }
     }
 
     // Keeps the latest reference of courseMap and detects unsaved changes
     useEffect(() => {
         courseMapRef.current = courseMap;
-        hasUnsavedChangesRef.current = Array.from(courseMapRef.current).some(([id, subject]) => subject.unsaved);
+        hasUnsavedChangesRef.current = Array.from(courseMapRef.current).some(([code, subject]) => subject.unsaved);
     }, [courseMap]);
     
 	// Loads plans on initial render once authentication state is resolved
