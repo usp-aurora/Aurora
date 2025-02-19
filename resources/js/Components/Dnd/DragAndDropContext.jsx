@@ -61,7 +61,7 @@ function DragAndDropProvider({ children, setCourseMap, setPlans }) {
 
       throttleTimer.current = setTimeout(() => {
         throttleTimer.current = null;
-      }, 5);
+      }, 0.5);
     }
   }
 

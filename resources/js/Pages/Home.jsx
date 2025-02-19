@@ -90,6 +90,7 @@ const Home = ({ subjects, groups }) => {
   ) : (
     <AppContainer>
       <Background />
+      {/** 
       <CoursePopUp isOpen={coursePopUpActive} onClose={toggleCoursePopUp} 
                     pokeball_color={course.pokeball_color} 
                     pokemonURL={course.pokemonURL}
@@ -99,8 +100,7 @@ const Home = ({ subjects, groups }) => {
                     credits={course.credits}
                     desc={course.desc}
       />
-
-
+      */}
       <ContentContainer>
         <Stack spacing={1}>
           <Header />
