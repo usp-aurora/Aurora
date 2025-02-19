@@ -4,17 +4,17 @@ import { useSortable } from "@dnd-kit/sortable";
 import { useDragAndDrop } from "./DragAndDropContext";
 import DragWarningPopup from "./DragWarningPopup";
 
-function SortableItem({ id, courseData, containerName, isDisabled, children }) {
+function SortableItem({ id, subjectData, containerName, children, disabled = false }) {
     const { isDragDisabled } = useDragAndDrop();
     const [showWarning, setShowWarning] = useState(false);
 
-    const isDraggable = !isDragDisabled && !isDisabled;
+    const isDraggable = !isDragDisabled && !disabled;
     const sortableId = isDraggable ? id : `${id}@${containerName}`;
 
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
         id: sortableId,
         data: {
-            subject: { ...courseData },
+            subject: { ...subjectData },
             container: typeof containerName === "number" ? containerName : "coursePicker",
         },
     });
@@ -27,7 +27,7 @@ function SortableItem({ id, courseData, containerName, isDisabled, children }) {
     const cardStyle = {
         transform: CSS.Transform.toString(transform),
         transition: transition || "opacity 0.3s ease",
-        opacity: isDragging || isDisabled ? 0.2 : 1,
+        opacity: isDragging ? 0.2 : 1,
         touchAction: "none",
         tabIndex: isDraggable ? 0 : -1,
     };

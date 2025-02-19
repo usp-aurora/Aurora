@@ -82,6 +82,7 @@ const Semester = ({
                 id={semesterData.semesterId}
                 key={semesterData.semesterId}
                 spacing={{ xs: 1, sm: 2 }}
+                disabled={!isExpanded}
             >
                 <SortableGrid items={semesterData.subjects}>
                     {semesterData.subjects.length === 0
@@ -89,24 +90,22 @@ const Semester = ({
                               <AuxiliarCard text="Arraste uma disciplina" />
                           )
                         : semesterData.subjects.map((subject) => {
-                              const courseDetails = courseMap.get(subject.code);
-                              const isRequiredScheduled =
-                                  isRequired && courseDetails.semester;
+                              const isRequiredScheduled = isRequired && courseMap.get(subject.code).semester;
 
                               return (
                                   <SortableItem
-                                      id={courseDetails.code}
-                                      key={courseDetails.code}
-                                      courseData={courseDetails}
+                                      id={subject.code}
+                                      key={subject.code}
+                                      subjectData={subject}
                                       containerName={semesterData.semesterId}
-                                      isDisabled={!isExpanded}
+                                      disabled={!isExpanded}
                                   >
                                       <SubjectCard
                                           courseCode={subject.code}
                                           courseTitle={subject.name}
                                           planetURL="/icons/planeta.png"
                                           onClick={() =>
-                                              displayCourse(courseDetails)
+                                              displayCourse(subject)
                                           }
                                       />
                                   </SortableItem>

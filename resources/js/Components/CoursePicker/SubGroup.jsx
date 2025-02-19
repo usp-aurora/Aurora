@@ -52,25 +52,21 @@ const SubGroup = ({ depth, courseMap, subgroupData }) => {
             <SubGroupText>{subgroupData.description}</SubGroupText>
             <CardContainer>
                 {subgroupData.subjects.map((subject) => {
-                    const courseDetails = courseMap.get(
-                        subject.code
-                    );
-                    const isBlocked = courseDetails.semester !== null;
+                    const isBlocked = courseMap.get(subject.code).semester !== null;
+                    
                     return (
                         <SortableItem
-                            id={courseDetails.code}
-                            key={courseDetails.code}
-                            courseData={courseDetails}
+                            id={subject.code}
+                            key={subject.code}
+                            subjectData={subject}
                             containerName={subgroupData.title}
-                            isDisabled={
-                                isBlocked
-                            //     // !expandedCategories[category.name] || isBlocked
-                            }
+                            disabled={isBlocked}
                         >
                             <SubjectCard
                                 courseCode={subject.code}
                                 courseTitle={subject.name}
                                 planetURL="/icons/planeta.png"
+                                ghost={isBlocked}
                                 // onClick={openCourseInfoPopUp}
                             />
                         </SortableItem>

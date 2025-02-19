@@ -64,24 +64,21 @@ const Group = ({ groupData, courseMap }) => {
                 <GroupText>{groupData.description}</GroupText>
                 <CardContainer>
                     {groupData.subjects.map((subject) => {
-                        const courseDetails = courseMap.get(subject.code);
-                        const isBlocked = courseDetails.semester !== null;
+                        const isBlocked = courseMap.get(subject.code).semester !== null;
 
                         return (
                             <SortableItem
-                                id={courseDetails.code}
-                                key={courseDetails.code}
-                                courseData={courseDetails}
+                                id={subject.code}
+                                key={subject.code}
+                                subjectData={subject}
                                 containerName={groupData.title}
-                                isDisabled={
-                                    // !expandedCategories[category.name] ||
-                                    isBlocked
-                                }
+                                disabled={isBlocked}
                             >
                                 <SubjectCard
                                     courseCode={subject.code}
                                     courseTitle={subject.name}
                                     planetURL="/icons/planeta.png"
+                                    ghost={isBlocked}
                                     // onClick={openCourseInfoPopUp}
                                 />
                             </SortableItem>
