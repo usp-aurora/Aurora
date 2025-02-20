@@ -1,13 +1,6 @@
 import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyle = createGlobalStyle`
-  @font-face {
-    font-family: "vcr_osd_mono";
-    src: url('/fonts/vcr_osd_mono.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-  }
-
   *, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
@@ -15,9 +8,11 @@ const GlobalStyle = createGlobalStyle`
   }
 
   :root {
+    /* font-size: 12px; */
+
     // ===== Fonts =====
-    --title-font: "vcr_osd_mono";
-    --text-font: "Arial";
+    --title-font: "Rubik";
+    --text-font: "Rubik";
 
     // ===== Colors =====
     --primary-color-100: #E4EEFA;
@@ -48,45 +43,44 @@ const GlobalStyle = createGlobalStyle`
     --black: #1A1B23;
 
   }
-
+/* 
   body {
     font-family: var(--text-font);
   }
 
-  h1, h2, h3, h4, span, input { 
+  h1, h2, h3, h4, p, span, input { 
     font-family: var(--title-font);
-    font-weight: normal;
+    font-weight: 400;
+    color: white;
   }
 
   h1 { 
     font-size: 24px;
     line-height: 32px;
+    font-weight: 700;
   }
     
   h2 { 
     font-size: 20px;
     line-height: 32px;
+    font-weight: 500;
   }
-    
+  
   h3 { 
     font-size: 16px;
     line-height: 16px;
+    font-weight: 500;
   }
       
   h4 {
-    font-size: 14px;
-    line-height: 16px;
-  }
-      
-  h5 {
-    font-size: 10px;
-    line-height: 16px;
+    font-size: 16px;
+    line-height: 12px;
   }
 
   p { 
-    font-size: 10px;
-    line-height: 12px;
-  }
+    font-size: 11px;
+    line-height: 14px;
+  } */
 `;
 
 export default GlobalStyle;

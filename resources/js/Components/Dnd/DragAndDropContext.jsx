@@ -11,17 +11,17 @@ const DragAndDropContext = createContext();
  * Determines the best collision detection strategy for draggable items.
  * Uses `rectIntersection` first and falls back to `closestCenter`.
  *
- * @param {Object} params - Drag event parameters.
- * @param {Array} params.droppableContainers - List of available droppable areas.
+ * @param {Array} droppableContainers - List of available droppable areas.
+ * @param {Object} args - Drag event parameters.
  * @returns {Array} - Array of detected collisions.
  */
-function computeCollision({ droppableContainers, ...args }) {
-  const rectCollisions = rectIntersection({ ...args, droppableContainers });
+function computeCollision({ droppableContainers, ...props }) {
+  const rectCollisions = rectIntersection({ ...props, droppableContainers });
 
   return rectCollisions.length > 0
     ? rectCollisions
     : closestCenter({ 
-        ...args, 
+        ...props, 
         droppableContainers: droppableContainers.filter(
           (droppable) => getContainerName(droppable) !== "coursePicker"
         ),
@@ -31,10 +31,9 @@ function computeCollision({ droppableContainers, ...args }) {
 /**
  * Drag-and-drop provider that manages drag state, interactions, and event handlers.
  *
- * @param {Object} props
- * @param {React.ReactNode} props.children - Components wrapped inside the provider.
- * @param {Function} props.setCourseMap - Function to update the course mapping.
- * @param {Function} props.setPlans - Function to update the plan structure.
+ * @param {React.ReactNode} children - Components wrapped inside the provider.
+ * @param {Function} setCourseMap - Function to update the course mapping.
+ * @param {Function} setPlans - Function to update the plan structure.
  */
 function DragAndDropProvider({ children, setPlans }) {
   const [isDragDisabled, setIsDragDisabled] = useState(false);

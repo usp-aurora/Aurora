@@ -12,7 +12,6 @@ class HomeController extends Controller
     public function index() {
         
         $groupController = new GroupController();
-        // dd($groupController->index(1));
 
         return Inertia::render('Home', [
             'groups' => $groupController->index(1)
