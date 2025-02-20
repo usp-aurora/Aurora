@@ -12,8 +12,8 @@ import CoursePicker from '../Components/CoursePicker/CoursePicker.jsx';
 import CoursePopUp from '../Components/PopUps/CoursePopUp.jsx';
 import LoadingScreen from '../Components/Atomsold/LoadingScreen';
 
-import useCourseMap from '../Hooks/useCourseMap.jsx';
 import usePlansManager from '../Hooks/usePlansManager.jsx';
+import useSubjectDataMap from '../Hooks/useSubjectDataMap.jsx';
 import { DragAndDropProvider } from '../Components/Dnd/DragAndDropContext.jsx';
 
 
@@ -36,7 +36,7 @@ const Home = ({ subjects, groups }) => {
   const [addDisciplineActive, setAddDisciplineActive] = useState(false);
   const [coursePopUpActive, setCoursePopUpActive] = useState(false);
 
-  const [courseMap, setCourseMap] = useCourseMap(subjects, groups);
+  const [courseMap, setCourseMap] = useSubjectDataMap(subjects, groups);
   const [plans, setPlans] = usePlansManager(courseMap, setCourseMap, setIsLoadingData);
 
   const toggleDiscipline = () => {

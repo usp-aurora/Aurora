@@ -8,7 +8,7 @@ import { arrayMove } from '@dnd-kit/sortable';
  * @returns {string | number} - The extracted base ID.
  */
 function extractBaseId(id) { 
-  return (typeof id === 'string' ? id.split('@')[0] : id); 
+  return typeof id === 'string' ? id.split('@')[0] : id; 
 }
 
 /**
@@ -18,7 +18,7 @@ function extractBaseId(id) {
  * @returns {string} - The container name (e.g., "1" for semester ID or "coursePicker").
  */
 function getContainerName(element) { 
-  return element?.data.current?.container ?? element?.id; 
+  return element?.data?.current?.container ?? element?.id; 
 }
 
 /**
@@ -60,22 +60,17 @@ function calculateDropIndex(over, draggingRect, targetSubjects) {
  * Initializes overlay display and sets the dragged item details.
  * 
  * @param {Object} event - The drag event object.
- * @param {Function} setOverlay - State updater for the overlay object.
  * @param {Function} setDraggedItem - State updater for the dragged object.
  */
-function handleDragStart(event, setOverlay, setDraggedItem) {
+function handleDragStart(event, setDraggedItem) {
   const { active } = event;
   const subject = active.data.current.subject;
-  const container = active.data.current.container;
-
-  setOverlay({
-    code: subject.code,
-    name: subject.name,
-  });
 
   setDraggedItem({
-    id: subject.code,
-    container: container,
+    code: subject.code,
+    name: subject.name,
+    desc: subject.desc,
+    credits: subject.credits,
   });
 }
 
@@ -84,43 +79,36 @@ function handleDragStart(event, setOverlay, setDraggedItem) {
  * Updates the plans when a subject is dragged between semesters or coursePicker.
  * 
  * @param {Object} event - The drag event object.
- * @param {Function} updatePlans - State updater for plans.
  * @param {Object} draggedItem - The current dragged item.
- * @param {Function} setDraggedItem - State updater for dragged item.
+ * @param {Function} updatePlans - State updater for plans.
  */
-function handleDragOver(event, updatePlans, draggedItem, setDraggedItem) {
+function handleDragOver(event, draggedItem, updatePlans) {
   const { active, over, draggingRect } = event;
+
+  const activeContainer = getContainerName(active);
   const targetContainer = getContainerName(over);
 
-  if (!targetContainer || draggedItem.container === targetContainer) return;
+  if (!targetContainer || activeContainer === targetContainer) return;
 
   updatePlans((prevPlans) =>
     prevPlans.map((semester) => {
-      if (semester.semesterId == draggedItem.container) {
-        // Remove the dragged subject from the original semester
+      if (semester.semesterId === activeContainer) {
         return {
           ...semester,
-          subjects: semester.subjects.filter((subject) => subject.code !== draggedItem.id),
+          subjects: semester.subjects.filter((subject) => subject.code !== active.id),
         };
-      } else if (semester.semesterId == targetContainer) {
-        // Insert the dragged subject into the target semester
-        const targetSubjects = semester.subjects.filter((subject) => subject.code !== draggedItem.id);
+      } else if (semester.semesterId === targetContainer) {
+        const targetSubjects = semester.subjects.filter((subject) => subject.code !== active.id);
         const newIndex = calculateDropIndex(over, draggingRect, targetSubjects);
-        const newSubject = active.data.current.subject;
- 
+        
         return {
           ...semester,
-          subjects: [...targetSubjects.slice(0, newIndex), newSubject, ...targetSubjects.slice(newIndex)],
+          subjects: [...targetSubjects.slice(0, newIndex), draggedItem, ...targetSubjects.slice(newIndex)],
         };
       }
       return semester;
     })
   );
-
-  setDraggedItem((prev) => ({
-    ...prev,
-    container: targetContainer,
-  }));
 }
 
 /**
@@ -128,17 +116,17 @@ function handleDragOver(event, updatePlans, draggedItem, setDraggedItem) {
  * Updates the plans state by moving the dragged item within the same semester.
  * 
  * @param {Object} event - The drag event object.
- * @param {Object} draggedItem - The currently dragged item.
  * @param {Function} updatePlans - State updater for plans.
+ * @returns {string} - The target container where the item was dropped.
  */
-function handleDragEnd(event, draggedItem, updatePlans) {
-  const { over } = event;
+function handleDragEnd(event, updatePlans) {
+  const { active, over } = event;
   const targetContainer = getContainerName(over);
 
-  if (!targetContainer || draggedItem.container !== targetContainer) return;
+  if (!targetContainer) return null;
 
   updatePlans((prevPlans) => {
-    const sourceIndex = getSemesterSubjects(draggedItem.container, prevPlans).findIndex((subject) => subject.code === draggedItem.id);
+    const sourceIndex = getSemesterSubjects(targetContainer, prevPlans).findIndex((subject) => subject.code === active.id);
     const targetIndex = getSemesterSubjects(targetContainer, prevPlans).findIndex((subject) => subject.code === extractBaseId(over.id));
 
     if (sourceIndex !== targetIndex) {
@@ -151,6 +139,8 @@ function handleDragEnd(event, draggedItem, updatePlans) {
     }
     return prevPlans;
   });
+
+  return targetContainer;
 }
 
 export { getContainerName, handleDragStart, handleDragOver, handleDragEnd };

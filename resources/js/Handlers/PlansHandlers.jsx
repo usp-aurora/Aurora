@@ -35,9 +35,9 @@ function saveUserPlans(unsyncedData) {
       subject_code: subjectCode,
       semester: subjectDetails.semester,
     }))
-  )
+  );
 
-  localStorage.setItem('unsyncedPlans', payload)
+  localStorage.setItem('unsyncedPlans', payload);
 }
 
 /**
@@ -48,11 +48,11 @@ function saveUserPlans(unsyncedData) {
  */
 async function fetchUserPlans() {
   try {
-    const response = await fetch("/api/plans/index")
-    const data = await response.json()
-    return data.plans
+    const response = await fetch("/api/plans/index");
+    const data = await response.json();
+    return data.plans;
   } catch (error) {
-    throw error
+    throw error;
   }
 }
 
@@ -72,15 +72,16 @@ async function syncPlansWithServer(data, updateData) {
         subject_code: subjectCode,
         semester: subjectDetails.semester,
       }))
-    )
+    );
     
-    const response = await axios.post('/api/plans/sync', payload)
+    if (payload === "[]") return;
+    const response = await axios.post('/api/plans/sync', payload);
 
     if (response.status === 200) {
-      const { changedPlans } = response.data
+      const { changedPlans } = response.data;
 
       updateData((previousData) => {
-        const updatedData = new Map(previousData)
+        const updatedData = new Map(previousData);
 
         changedPlans.forEach(({ id, subject_code, action }) => {
           switch (action) {
@@ -90,28 +91,28 @@ async function syncPlansWithServer(data, updateData) {
                 ...updatedData.get(subject_code),
                 plan: id,
                 unsaved: false,
-              })
-              break
+              });
+              break;
 
             case 'deleted':
               updatedData.set(subject_code, {
                 ...updatedData.get(subject_code),
                 unsaved: false,
                 plan: null,
-              })
-              break
+              });
+              break;
 
             default:
-              console.warn("Unrecognized action:", action)
+              console.warn("Unrecognized action:", action);
           }
         })
-        return updatedData
-      })
+        return updatedData;
+      });
     } else {
-      console.error("Synchronization error:", response.data)
+      console.error("Synchronization error:", response.data);
     }
   } catch (error) {
-    console.error("Communication error with the server:", error)
+    console.error("Communication error with the server:", error);
   }
 }
 
@@ -119,15 +120,15 @@ async function syncPlansWithServer(data, updateData) {
  * Synchronize unsynced plans from local storage.
  */
 async function syncPendingPlans() {
-  const unsyncedPlans = localStorage.getItem('unsyncedPlans')
+  const unsyncedPlans = localStorage.getItem('unsyncedPlans');
 
   if (unsyncedPlans) {
     try {
-      const response = await axios.post('api/plans/sync', unsyncedPlans)
+      const response = await axios.post('api/plans/sync', unsyncedPlans);
       if (response.status === 200) 
-        localStorage.removeItem('unsyncedPlans')
+        localStorage.removeItem('unsyncedPlans');
     } catch (error) {
-      console.error("Error synchronizing unsynced plans:", error)
+      console.error("Error synchronizing unsynced plans:", error);
     }
   }
 }

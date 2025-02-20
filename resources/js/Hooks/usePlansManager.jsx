@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { mergePlansIntoSubjectDataMap } from "../Handlers/SubjectDataHandlers.jsx";
 import { 
     fetchGuestPlans, 
     fetchUserPlans, 
@@ -28,27 +29,6 @@ function usePlansManager(courseMap, updateCourseMap, setIsPlansLoading) {
     const hasUnsavedChangesRef = useRef(false);
 
     /**
-     * Merges retrieved plan data into the existing course map.
-     *
-     * @param {Map} currentCourseMap - The existing course map.
-     * @param {Array} retrievedPlans - Plans data to merge.
-     */
-    function mergePlansIntoCourseMap(currentCourseMap, retrievedPlans) {
-        const updatedCourseMap = new Map(currentCourseMap);
-        retrievedPlans.forEach((semester) => {
-            semester.subjects.forEach((subject) => {
-                updatedCourseMap.set(subject.code, {
-                    ...currentCourseMap.get(subject.code),
-                    plan: subject.plan,
-                    semester: semester.semesterId,
-                });
-            });
-        });
-
-        updateCourseMap(updatedCourseMap);
-    }
-
-    /**
      * Initializes plans by:
      * - Syncing any pending changes.
      * - Fetching plans from the server if authenticated, otherwise from local storage.
@@ -63,7 +43,7 @@ function usePlansManager(courseMap, updateCourseMap, setIsPlansLoading) {
                 retrievedPlans = fetchGuestPlans() ?? [];
             }
 
-            mergePlansIntoCourseMap(courseMap, retrievedPlans);
+            updateCourseMap(mergePlansIntoSubjectDataMap(courseMap, retrievedPlans));
             setPlans(retrievedPlans);     
 		} catch (error) {
 			console.warn("Failed to load plans:", error);
@@ -108,7 +88,7 @@ function usePlansManager(courseMap, updateCourseMap, setIsPlansLoading) {
 	}, [authUser, plans]);
 
     useEffect(() => {
-        if (!authUser || !hasUnsavedChangesRef.current) return;
+        if (!authUser) return;
 
         // Function to sync plans with the server
         async function syncPlans() {
