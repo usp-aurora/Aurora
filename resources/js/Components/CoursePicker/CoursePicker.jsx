@@ -1,9 +1,10 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { styled } from "@mui/material/styles";
 import { Typography } from "@mui/material";
 import Group from "./Group";
-import CloseIcon from '@mui/icons-material/Close'; 
+import CloseIcon from "@mui/icons-material/Close";
 import glassmorphismStyle from "../../styles/MUI/glassmorphismMUI";
+import Droppable from "../Dnd/Droppable";
 
 const PlaceholderBackground = styled("div")(({ theme }) => ({
     position: "fixed",
@@ -16,7 +17,7 @@ const PlaceholderBackground = styled("div")(({ theme }) => ({
 
     [theme.breakpoints.up("sm")]: {
         display: "none",
-    }
+    },
 }));
 
 const PopUpContainer = styled("div")(({ open, theme }) => ({
@@ -27,17 +28,17 @@ const PopUpContainer = styled("div")(({ open, theme }) => ({
         left: 0,
         width: "100%",
         height: "100%",
-        zIndex: 999
-    }
+        zIndex: 999,
+    },
 }));
 
-const Container = styled("div")(({ theme }) => ({
+const Container = styled(Droppable)(({ theme }) => ({
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "center",
     gap: theme.spacing(2),
-    
+
     margin: theme.spacing(1),
     marginTop: theme.spacing(2),
 
@@ -46,8 +47,8 @@ const Container = styled("div")(({ theme }) => ({
         margin: 0,
         padding: theme.spacing(2),
         minHeight: "93vh",
-        borderRadius: "12px"
-    }
+        borderRadius: "12px",
+    },
 }));
 
 const HeaderContainer = styled("div")(() => ({
@@ -75,18 +76,38 @@ const StyledCloseIcon = styled(CloseIcon)(({ theme }) => ({
     },
 }));
 
-const CoursePicker = ({ open, data }) => {
+const CoursePicker = ({ open, courseMap, data }) => {
+    // const [expandedCategories, setExpandedCategories] = useState(
+    //     categories.reduce((acc, data) => {
+    //         acc[data.subgroups.title] = false;
+    //         return acc;
+    //     }, {})
+    // );
+
+    // const toggleCategory = (groupTitle) => {
+    //     setExpandedCategories((prev) => ({
+    //         ...prev,
+    //         [categoryName]: !prev[categoryName],
+    //     }));
+    // };
+
     return (
         <PopUpContainer open={open}>
-            <Container>
+            <Container id="coursePicker">
                 <PlaceholderBackground />
                 <HeaderContainer>
                     <StyledTitle>Adicionar disciplina</StyledTitle>
-                    <StyledCloseIcon/>
+                    <StyledCloseIcon />
                 </HeaderContainer>
                 {/* Algum dia vai ter um search bar bem aqui */}
-                {data.subgrupos.map((group) => (
-                    <Group data={group}/>
+                {data.subgroups.map((groupData) => (
+                    <Group
+                        key={groupData.title}
+                        groupData={groupData}
+						courseMap={courseMap}
+                        // expanded={expandedCategories[category.name]}
+                        // onClick={() => toggleCategory(category.name)}
+                    />
                 ))}
             </Container>
         </PopUpContainer>

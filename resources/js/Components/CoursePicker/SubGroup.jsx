@@ -4,18 +4,20 @@ import { Typography } from "@mui/material";
 import CardContainer from "../Atoms/CardContainer/CardContainer";
 import SubjectCard from "../Atoms/Card/SubjectCard";
 
+import SortableItem from "../Dnd/SortableItem";
+
 const SubGroupContainer = styled("div")(({ theme, depth }) => ({
     display: "flex",
     flexDirection: "column",
 
     marginLeft: theme.spacing(depth),
     borderLeft: "1px solid white",
-	gap: theme.spacing(1),
+    gap: theme.spacing(1),
     paddingLeft: theme.spacing(1),
-	
+
     [theme.breakpoints.up("sm")]: {
-		marginLeft: theme.spacing(2 * depth),
-		gap: theme.spacing(2),
+        marginLeft: theme.spacing(2 * depth),
+        gap: theme.spacing(2),
     },
 }));
 
@@ -40,26 +42,39 @@ const SubGroupText = styled(Typography)(({ theme }) => ({
     },
 }));
 
-const SubGroup = ({ depth, data }) => {
+const SubGroup = ({ depth, courseMap, subgroupData }) => {               
     return (
         <SubGroupContainer depth={depth}>
             <SubGroupHeader>
-                <SubGroupTitle>{data.titulo}</SubGroupTitle>
+                <SubGroupTitle>{subgroupData.title}</SubGroupTitle>
                 <SubGroupText>99/99 créditos</SubGroupText>
             </SubGroupHeader>
-            <SubGroupText>{data.descricao}</SubGroupText>
+            <SubGroupText>{subgroupData.description}</SubGroupText>
             <CardContainer>
-                {data.materias.map((card) => (
-                    <SubjectCard
-                        courseCode={card.codigo_materia}
-                        courseTitle={card.nome}
-                        planetURL="/icons/planeta.png"
-                        // onClick={openCourseInfoPopUp}
-                    />
-                ))}
+                {subgroupData.subjects.map((subject) => {
+                    const isBlocked = courseMap.get(subject.code).semester !== null;
+                    
+                    return (
+                        <SortableItem
+                            id={subject.code}
+                            key={subject.code}
+                            subjectData={subject}
+                            containerName={subgroupData.title}
+                            disabled={isBlocked}
+                        >
+                            <SubjectCard
+                                courseCode={subject.code}
+                                courseTitle={subject.name}
+                                planetURL="/icons/planeta.png"
+                                ghost={isBlocked}
+                                // onClick={openCourseInfoPopUp}
+                            />
+                        </SortableItem>
+                    );
+                })}
             </CardContainer>
-            {data.subgrupos.map((subgrupo) => (
-                <SubGroup depth={depth + 1} data={subgrupo} />
+            {subgroupData.subgroups.map((subgroup) => (
+                <SubGroup key={subgroup.title} depth={depth + 1} subgroupData={subgroup} />
             ))}
         </SubGroupContainer>
     );
