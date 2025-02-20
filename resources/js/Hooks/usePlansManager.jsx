@@ -50,10 +50,10 @@ function usePlansManager(defaultPlans, subjectDataMap, updateSubjects, setIsPlan
                     updates: { plan: subject.plan, semester: semester.semesterId }
                 }))
             ));
-            setPlans(defaultPlans);
+            setPlans(retrievedPlans);
 		} catch (error) {
 			console.warn("Failed to load plans:", error);
-            setPlans(initializeDefaultPlans());
+            setPlans([]);
 		} finally {
 			setIsPlansLoading(false);
 		}
@@ -76,9 +76,9 @@ function usePlansManager(defaultPlans, subjectDataMap, updateSubjects, setIsPlan
 
     // Keeps the latest reference of subjectDataMap and detects unsaved changes
     useEffect(() => {
-        subjectDataMapRef.current = subjectDataMapRef;
-        hasUnsavedChangesRef.current = Array.from(subjectDataMapRef.current).some(([subjectCode, subject]) => subject.unsaved);
-    }, [subjectDataMapRef]);
+        subjectDataMapRef.current = subjectDataMap;
+        hasUnsavedChangesRef.current = Array.from(subjectDataMapRef.current).some(([, subject]) => subject.unsaved);
+    }, [subjectDataMap]);
     
 	// Loads plans on initial render once authentication state is resolved
 	useEffect(() => {

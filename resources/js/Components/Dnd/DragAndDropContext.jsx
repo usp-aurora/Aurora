@@ -71,8 +71,12 @@ function DragAndDropProvider({ children, setPlans }) {
         sensors={sensors}
         collisionDetection={computeCollision}
         onDragStart={(e) => handleDragStart(e, setDraggedItem)}
-        onDragOver={(e) => handleThrottledDragOver(e)}
-        onDragEnd={(e) =>  handleDragEnd(e, setPlans)}
+        onDragOver={(e) =>  handleThrottledDragOver(e)}
+        onDragCancel={(e) => setDraggedItem(null)}
+        onDragEnd={(e) =>  {
+          handleDragEnd(e, setPlans); 
+          setDraggedItem(null);
+        }}
       >
         {draggedItem && <DragOverlayComponent subject={draggedItem} />}
         {children}

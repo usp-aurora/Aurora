@@ -19,7 +19,7 @@ function fetchGuestPlans() {
  */
 function saveGuestPlans(guestPlans) {
 	const lastSemester = guestPlans.findLastIndex((sem) => sem.subjects.length > 0) + 1;
-  	localStorage.setItem('guestPlans', JSON.stringify(guestPlans.slice(0, lastSemester)));
+  	localStorage.setItem('guestPlans', JSON.stringify(guestPlans.slice(0, Math.max(8, lastSemester))));
 }
 
 /**

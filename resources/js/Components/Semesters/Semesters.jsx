@@ -39,7 +39,7 @@ const Semesters = ({ plans, updatePlans, plannedSubjects, updateSubject, coreCur
    * @param {Function} historyFunc - The function to execute (undo or redo)
    */
   function applyHistoryAction(historyFunc) {
-    if (showRequiredCourses) return;
+    if (showCurriculum) return;
     const action = historyFunc();
     if (action && action.changes?.semester) 
       updateSubject(action.key, {semester: historyFunc.name === "undo" ? action.changes.semester.from : action.changes.semester.to});
