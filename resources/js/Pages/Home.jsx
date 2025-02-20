@@ -43,33 +43,8 @@ const Home = ({ subjects, groups }) => {
     setAddDisciplineActive(!addDisciplineActive);
   }
 
-  const toggleCoursePopUp = () => {
-    setCoursePopUpActive(!coursePopUpActive);
-  }
-
-  const [course, setCourse] = useState({
-    pokeball_color: '',
-    pokemonURL: '',
-    title: '',
-    code: '',
-    tags: [{
-      color: '',
-      name: ''
-    }],
-    credits: [0,0],
-    desc: ''
-  })
-
-  const toggleCourse = (p_color, p_url, title, code, tags, credits, desc) => {
-    setCourse({
-      pokeball_color: p_color,
-      pokemonURL: p_url,
-      title: title,
-      code: code,
-      tags: tags,
-      credits: credits,
-      desc: desc
-    })
+  const closeCourseInfoPopUp = () => {
+    setCourseInfo(false);
   }
 
   const showCourseDetails = (course) => {

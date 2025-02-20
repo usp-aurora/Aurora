@@ -6,7 +6,6 @@ import CloseIcon from "@mui/icons-material/Close";
 import glassmorphismStyle from "../../styles/MUI/glassmorphismMUI";
 import Droppable from "../Dnd/Droppable";
 
-
 const PlaceholderBackground = styled("div")(({ theme }) => ({
     position: "fixed",
     top: 0,

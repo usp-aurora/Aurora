@@ -11,13 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('plans', function (Blueprint $table) {
+        Schema::create('materias_grupos', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('id_grupo')->references('id')->on('grupos')->onUpdate('cascade');
+            $table->string('codigo_materia');
+            $table->foreign('codigo_materia')->references('codigo_materia')->on('materias')->onUpdate('cascade');
             $table->timestamps();
-            $table->string('subject_code');
-            $table->foreign('subject_code')->references('code')->on('subjects')->constrained();
-            $table->foreignId('user_id')->references('id')->on('users')->constrained();
-            $table->integer('semester');
         });
     }
 
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('plans');
+        Schema::dropIfExists('materias_grupos');
     }
 };
