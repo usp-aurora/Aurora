@@ -10,7 +10,6 @@ const Text = styled(Typography)({
     lineHeight: '16px',
     letterSpacing: '0%',
     color: '#424242',
-    marginLeft: '12px',
     marginRight: '16px'
 });
 

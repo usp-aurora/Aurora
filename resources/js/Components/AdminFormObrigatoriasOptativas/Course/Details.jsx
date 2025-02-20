@@ -3,7 +3,7 @@ import Subject from '../Subject/Subject';
 
 export default function Details() {
     return (
-        <div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 0.75}}>
             <Criteria />
             <Subject />
         </div>

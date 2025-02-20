@@ -1,7 +1,36 @@
 import SubjectSearch from "./SubjectSearch";
 import SubjectItem from "./SubjectItem";
 import React, { useState } from "react";
-import { Button, Box } from "@mui/material";
+import { Button, Box, Typography } from "@mui/material";
+import CloseIcon from '@mui/icons-material/Close';
+import { styled } from "@mui/material/styles";
+
+const Container = styled('div')({
+    width: '824px',
+});
+
+const RemoveButton = styled(Button)({
+    width: "40px",
+    height: "40px",
+    minWidth: "40px",
+    minHeight: "40px",
+    border: "none",
+    backgroundColor: "transparent",
+    color: "#757575",
+    '& .MuiSvgIcon-root': {
+        fontSize: '26px', 
+    },
+});
+
+const Text = styled(Typography)({
+    fontFamily: 'Rubik',
+    fontWeight: 400,
+    fontSize: '14px',
+    lineHeight: '1.5',
+    letterSpacing: '0%',
+    color: 'var(--texto-primario-diurno, #424242)',
+    marginBottom: '12px',
+});
 
 const Subject = () => {
   const [subjects, setSubjects] = useState([]);
@@ -17,22 +46,21 @@ const Subject = () => {
   };
 
 return (
-    <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-        {/* Campo de pesquisa sempre disponível */}
-        <SubjectSearch onSelectSubject={addSubject} />
-
-        {/* Lista de disciplinas adicionadas */}
-        {subjects.map((subject, index) => (
-            <Box key={index} sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                <SubjectItem subject={subject} />
-                <Button variant="outlined" color="error" onClick={() => removeSubject(subject)}>
-                    X
-                </Button>
-            </Box>
-        ))}
-    </Box>
+    <Container>
+        <Text>Disciplinas:</Text>
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 0.75 }}>
+            <SubjectSearch onSelectSubject={addSubject} />
+            {subjects.map((subject, index) => (
+                <Box key={index} sx={{ display: "flex", alignItems: "center"}}>
+                    <SubjectItem subject={subject} />
+                    <RemoveButton variant="outlined" color="error" onClick={() => removeSubject(subject)}>
+                        <CloseIcon />
+                    </RemoveButton>
+                </Box>
+            ))}
+        </Box>
+    </Container>
 );
 };
 
 export default Subject;
-

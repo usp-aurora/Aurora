@@ -5,7 +5,7 @@ import { styled } from "@mui/material/styles";
 
 const SubjectBox = styled(Autocomplete)({
   "& .MuiOutlinedInput-root": {
-    width: "297px",
+    width: "824px",
     height: "32px",
     borderRadius: "16px",
     backgroundColor: "transparent",

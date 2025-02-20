@@ -5,6 +5,10 @@ import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
 import { styled } from '@mui/material/styles';
 
+const Container = styled('div')({
+    width: '824px',
+});
+
 const RemoveButton = styled(Button)({
     width: "40px",
     height: "40px",
@@ -56,35 +60,36 @@ const Criteria = () => {
     };
 
     return (
-        <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-                <CriteriaItem
-                    quantity={criteria[0].quantity}
-                    onChangeQuantity={(e) => updateCriteria(criteria[0].key, "quantity", e.target.value)}
-                    type={criteria[0].type}
-                    onChangeType={(event, newValue) => updateCriteria(criteria[0].key, "type", newValue)}
-                />
-                <AddButton onClick={addCriteria}>
-                    <AddIcon />
-                </AddButton>
-            </Box>
-            {criteria.slice(1).map((c) => (
-                <Box key={c.key} sx={{ display: "flex", alignItems: "center" }}>
+        <Container>
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 1.25 }}>
+                <Box sx={{ display: "flex", alignItems: "center" }}>
                     <CriteriaItem
-                        quantity={c.quantity}
-                        onChangeQuantity={(e) => updateCriteria(c.key, "quantity", e.target.value)}
-                        type={c.type}
-                        onChangeType={(event, newValue) => updateCriteria(c.key, "type", newValue)}
+                        quantity={criteria[0].quantity}
+                        onChangeQuantity={(e) => updateCriteria(criteria[0].key, "quantity", e.target.value)}
+                        type={criteria[0].type}
+                        onChangeType={(event, newValue) => updateCriteria(criteria[0].key, "type", newValue)}
                     />
-                    <RemoveButton variant="outlined" color="error" onClick={() => removeCriteria(c.key)}>
-                        <CloseIcon />
-                    </RemoveButton>
+                    <AddButton onClick={addCriteria}>
+                        <AddIcon />
+                    </AddButton>
                 </Box>
-            ))}
-        </Box>
+                {criteria.slice(1).map((c) => (
+                    <Box key={c.key} sx={{ display: "flex", alignItems: "center" }}>
+                        <CriteriaItem
+                            quantity={c.quantity}
+                            onChangeQuantity={(e) => updateCriteria(c.key, "quantity", e.target.value)}
+                            type={c.type}
+                            onChangeType={(event, newValue) => updateCriteria(c.key, "type", newValue)}
+                        />
+                        <RemoveButton variant="outlined" color="error" onClick={() => removeCriteria(c.key)}>
+                            <CloseIcon />
+                        </RemoveButton>
+                    </Box>
+                ))}
+            </Box>
+        </Container>
     );
 };
 
 export default Criteria;
 
-// arrumar negocio de seleção
