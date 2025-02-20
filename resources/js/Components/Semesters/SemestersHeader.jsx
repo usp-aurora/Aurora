@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { styled } from '@mui/material';
 import { Typography } from "@mui/material";
 import { useDragAndDrop } from '../Dnd/DragAndDropContext';
@@ -18,42 +19,47 @@ const HeaderContainer = styled("div")({
 });
 
 const StyledText = styled(Typography)(({ theme }) => ({
-	maxWidth: "100%",
-	textAlign: "center",
-	color: theme.palette.neutral.main,
-
-	[theme.breakpoints.up("sm")]: {
-		...theme.typography.h5,
-		lineHeight: "26px",
-	}
+    maxWidth: "100%",
+    textAlign: "center",
+    color: theme.palette.neutral.main,
+    [theme.breakpoints.up("sm")]: {
+        ...theme.typography.h5,
+        lineHeight: "26px",
+    }
 }));
 
-function SemestersHeader({ undo, redo, showCurriculum }) {
-    const { setIsDragDisabled } = useDragAndDrop();
+function SemestersHeader({ undo, redo, toggleCurriculum }) {
+    useEffect(() => {
+        function handleKeyDown(event) {
+            if (event.ctrlKey && event.key === "z") {
+                undo();
+            } else if (event.ctrlKey && event.key === "y") {
+                redo();
+            }
+        }
 
-    function toggleCurriculum() {
-        showCurriculum((prev) => {
-            setIsDragDisabled(!prev);
-            return !prev;
-        });
-    }
+        window.addEventListener("keydown", handleKeyDown);
+
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [undo, redo]);
 
     return (
         <HeaderContainer>   
             <Stack spacing={1} direction="row">
-                <IconWrapper Icon={UndoIcon} onClick={undo}/>
-                <IconWrapper Icon={RedoIcon} onClick={redo}/> 
+                <IconWrapper Icon={UndoIcon} onClick={undo} />
+                <IconWrapper Icon={RedoIcon} onClick={redo} /> 
             </Stack>
 
-            <StyledText> Arraste uma disciplina para adicioná-la ou removê-la do período desejado. </StyledText>
+            <StyledText>Arraste uma disciplina para adicioná-la ou removê-la do período desejado.</StyledText>
 
             <Stack spacing={1} direction="row">
-                <IconWrapper Icon={VisibilityOutlinedIcon} onClick={toggleCurriculum}/>
+                <IconWrapper Icon={VisibilityOutlinedIcon} onClick={toggleCurriculum} />
                 <IconWrapper Icon={FileDownloadOutlinedIcon} /> 
             </Stack>
         </HeaderContainer>
-        
-    )
+    );
 }
 
 export default SemestersHeader;

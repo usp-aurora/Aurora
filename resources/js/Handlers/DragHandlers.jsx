@@ -117,13 +117,12 @@ function handleDragOver(event, draggedItem, updatePlans) {
  * 
  * @param {Object} event - The drag event object.
  * @param {Function} updatePlans - State updater for plans.
- * @returns {string} - The target container where the item was dropped.
  */
-function handleDragEnd(event, updatePlans) {
+function handleDragEnd(event, updatePlans, setDraggedItem) {
   const { active, over } = event;
   const targetContainer = getContainerName(over);
 
-  if (!targetContainer) return null;
+  if (!targetContainer) return;
 
   updatePlans((prevPlans) => {
     const sourceIndex = getSemesterSubjects(targetContainer, prevPlans).findIndex((subject) => subject.code === active.id);
@@ -139,8 +138,6 @@ function handleDragEnd(event, updatePlans) {
     }
     return prevPlans;
   });
-
-  return targetContainer;
 }
 
 export { getContainerName, handleDragStart, handleDragOver, handleDragEnd };

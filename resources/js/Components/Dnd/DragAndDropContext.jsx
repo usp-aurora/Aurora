@@ -3,7 +3,6 @@ import { DndContext, closestCenter, rectIntersection } from "@dnd-kit/core";
 import { useSensor, useSensors, PointerSensor, KeyboardSensor } from "@dnd-kit/core";
 
 import DragOverlayComponent from "./DragOverlayComponent.jsx";
-import { updateSubjectSemester } from "../../Handlers/SubjectDataHandlers.jsx";
 import { getContainerName, handleDragStart, handleDragOver, handleDragEnd } from "../../Handlers/DragHandlers.jsx";
 
 const DragAndDropContext = createContext();
@@ -37,7 +36,7 @@ function computeCollision({ droppableContainers, ...args }) {
  * @param {Function} props.setCourseMap - Function to update the course mapping.
  * @param {Function} props.setPlans - Function to update the plan structure.
  */
-function DragAndDropProvider({ children, setCourseMap, setPlans }) {
+function DragAndDropProvider({ children, setPlans }) {
   const [isDragDisabled, setIsDragDisabled] = useState(false);
   const [draggedItem, setDraggedItem] = useState(null);
   const throttleTimer = useRef(null);
@@ -66,29 +65,14 @@ function DragAndDropProvider({ children, setCourseMap, setPlans }) {
     }
   }
 
-   /**
-   * Finalizes the drag event.
-   * Updates `courseMap` and marks changes as unsaved.
-   * 
-   * @param {Object} event - The drag event object.
-   */
-  function finalizeDrag(event) {
-    const targetContainer = handleDragEnd(event, setPlans);
-    const newSemester = targetContainer === "coursePicker" ? null : targetContainer;
-
-    setCourseMap((prevMap) =>  updateSubjectSemester(prevMap, draggedItem.code, newSemester));
-    setDraggedItem(null);
-  }
-
   return (
     <DragAndDropContext.Provider value={{ isDragDisabled, setIsDragDisabled }}>
       <DndContext
         sensors={sensors}
         collisionDetection={computeCollision}
-        onDragStart={(event) => handleDragStart(event, setDraggedItem)}
-        onDragOver={(event) => handleThrottledDragOver(event)}
-        onDragEnd={(event) => finalizeDrag(event)}
-        onDragCancel={(event) => finalizeDrag(event)}
+        onDragStart={(e) => handleDragStart(e, setDraggedItem)}
+        onDragOver={(e) => handleThrottledDragOver(e)}
+        onDragEnd={(e) =>  handleDragEnd(e, setPlans)}
       >
         {draggedItem && <DragOverlayComponent subject={draggedItem} />}
         {children}
