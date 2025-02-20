@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import Stack from '@mui/material/Stack';
 
-import AuxiliarCard from '../Atoms/Card/AuxiliarCard';
-
 import Semester from './Semester';
-import { useDragAndDrop } from '../Dnd/DragAndDropContext';
+import AuxiliarCard from '../Atoms/Card/AuxiliarCard';
+import SemestersHeader from './SemestersHeader';
 
 const mandatoryCurriculum = [
   {
@@ -12,7 +11,8 @@ const mandatoryCurriculum = [
     subjects: [
       {
         id: 1,
-        code: "MAC0110",
+        code: "MAC0425",
+        name: "Introdução a computação",
         credits: [ "4", "0"],
       },
     ],
@@ -27,13 +27,11 @@ const mandatoryCurriculum = [
 ];
 
 const Semesters = ({ plans, setPlans, displayCourse, courseMap }) => {
-  const { setIsDragDisabled } = useDragAndDrop();
-
   // Controls whether to show required courses or the custom plan
   const [showRequiredCourses, setShowRequiredCourses] = useState(false);
   const displayedSemesters = showRequiredCourses ? mandatoryCurriculum : plans;
 
-  const addSemester = () => {
+  function addSemester() {
     const newId = plans.length + 1;
 
     const newSemester = {
@@ -45,18 +43,20 @@ const Semesters = ({ plans, setPlans, displayCourse, courseMap }) => {
   };
 
   return (
-      <Stack spacing={1}>
-        {displayedSemesters.map(semester => (
-          <Semester 
-            key={semester.semesterId}  
-            semesterData={semester} 
-            isRequired={showRequiredCourses}
-            displayCourse={displayCourse}
-            courseMap={courseMap}
-          />
-        ))}
-
-        <AuxiliarCard text="Adicionar período" onClick={addSemester}/>
+      <Stack spacing={2}>
+        <SemestersHeader showCurriculum={setShowRequiredCourses}/>
+        <Stack spacing={1}>  
+          {displayedSemesters.map(semester => (
+            <Semester 
+              key={semester.semesterId}  
+              semesterData={semester} 
+              isRequired={showRequiredCourses}
+              displayCourse={displayCourse}
+              courseMap={courseMap}
+            />
+          ))}
+          <AuxiliarCard text="Adicionar período" onClick={addSemester}/>
+          </Stack>
       </Stack>
   );
 };
