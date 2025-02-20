@@ -58,8 +58,6 @@ function initializeCourseMap(subjects, course) {
     processGroup(group, group.title); // Initial parent group is itself
   });
 
-
-  console.log(map);
   return map;
 }
 

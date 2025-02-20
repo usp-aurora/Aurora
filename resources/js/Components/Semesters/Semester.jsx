@@ -46,7 +46,7 @@ const DroppableCardContainer = styled(Droppable)(({ theme }) => ({
 
 const Semester = ({
     semesterData,
-    isRequired,
+    isRequiredView,
     displayCourse,
 //  courseMap,
 }) => {
@@ -87,11 +87,11 @@ const Semester = ({
             >
                 <SortableGrid items={semesterData.subjects}>
                     {semesterData.subjects.length === 0
-                        ? !isRequired && (
+                        ? !isRequiredView && (
                               <AuxiliarCard text="Arraste uma disciplina" />
                           )
                         : semesterData.subjects.map((subject) => {
-                              // const isRequiredScheduled = isRequired && courseMap.get(subject.code).semester;
+                              // const isRequiredScheduled = isRequiredView && courseMap.get(subject.code).semester;
 
                               return (
                                   <SortableItem

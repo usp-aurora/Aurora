@@ -7,7 +7,7 @@ import CompletionBar from '../Components/CompletionBar/CompletionBar'
 import Background from '../Components/Background/HomeBackground.jsx';
 
 
-import Semester from '../Components/Semesters/Semesters.jsx';
+import Semesters from '../Components/Semesters/Semesters.jsx';
 import CoursePicker from '../Components/CoursePicker/CoursePicker.jsx';
 import CoursePopUp from '../Components/PopUps/CoursePopUp.jsx';
 import LoadingScreen from '../Components/Atomsold/LoadingScreen';
@@ -108,7 +108,7 @@ const Home = ({ subjects, groups }) => {
             <Stack spacing={2} direction="row">
               <Stack spacing={1} sx={{ width: "60vw" }}>
                 <CompletionBar />
-                <Semester courseMap={courseMap} plans={plans} setPlans={setPlans} displayCourse={showCourseDetails} />
+                <Semesters courseMap={courseMap} plans={plans} setPlans={setPlans} displayCourse={showCourseDetails} />
               </Stack>
               <CoursePicker courseMap={courseMap} data={groups} displayCourse={showCourseDetails} openDisciplinePopUp={toggleDiscipline} />        
             </Stack>
