@@ -46,9 +46,8 @@ const DroppableCardContainer = styled(Droppable)(({ theme }) => ({
 
 const Semester = ({
     semesterData,
-    displayCourse,
-//  isRequired,
-//  courseMap,
+    plannedSubjects,
+    coreCurriculum = false,
 }) => {
     let workCredits = 0;
     let lectureCredits = 0;
@@ -84,11 +83,11 @@ const Semester = ({
                 key={semesterData.semesterId}
                 spacing={{ xs: 1, sm: 2 }}
                 disabled={!isExpanded}
-                placeholder={<AuxiliarCard text="Arraste uma disciplina" ghost={true}/>}
+                placeholder={<AuxiliarCard text="Arraste uma disciplina" ghost={true} sx={{ pointerEvents: "none"}}/>}
             >
                 <SortableGrid items={semesterData.subjects}>
                     {semesterData.subjects.map((subject) => {
-                        // const isRequiredScheduled = isRequired && !!courseMap.get(subject.code).semester;
+                        const requiredScheduled = coreCurriculum && plannedSubjects.has(subject.code);
                         
                         return (
                             <SortableItem
@@ -102,13 +101,22 @@ const Semester = ({
                                     courseCode={subject.code}
                                     courseTitle={subject.name}
                                     planetURL="/icons/planeta.png"
-                                    onClick={() =>
-                                        displayCourse(subject)
-                                    }
+                                    // onClick={() =>
+                                    //    displayCourse(subject)
+                                    // }
                                 />
                             </SortableItem>
                         );
                     })}
+                    
+                    {coreCurriculum && semesterData.suggestions.map((suggestion, index) => (
+                        <AuxiliarCard 
+                        key={index}
+                            text={`Disciplina do grupo ${suggestion.group}`} 
+                            ghost={true}
+                            sx={{ pointerEvents: "none"}}
+                        />
+                    ))}
                 </SortableGrid>
             </DroppableCardContainer>
         </Accordion>

@@ -35,7 +35,7 @@ const SubGroupContainer = styled("div")(({ theme, depth }) => ({
     gap: theme.spacing(2),
 }));
 
-const Group = ({ groupData, courseMap }) => {
+const Group = ({ groupData, plannedSubjects }) => {
     return (
         <Accordion
             summary={
@@ -64,14 +64,14 @@ const Group = ({ groupData, courseMap }) => {
                 <GroupText>{groupData.description}</GroupText>
                 <CardContainer>
                     {groupData.subjects.map((subject) => {
-                        const isBlocked = courseMap.get(subject.code).semester !== null;
-
+                        const isBlocked = plannedSubjects.has(subject.code);
+                        
                         return (
                             <SortableItem
                                 id={subject.code}
                                 key={subject.code}
                                 subjectData={subject}
-                                containerName={groupData.title}
+                                containerName={subgroupData.title}
                                 disabled={isBlocked}
                             >
                                 <SubjectCard
@@ -87,7 +87,7 @@ const Group = ({ groupData, courseMap }) => {
                 </CardContainer>
                 <SubGroupContainer>
                     {groupData.subgroups.map((subgroup) => (
-                        <SubGroup key={subgroup.title} depth={1} subgroupData={subgroup} courseMap={courseMap}/>
+                        <SubGroup key={subgroup.title} depth={1} subgroupData={subgroup} plannedSubjects={plannedSubjects}/>
                     ))}
                 </SubGroupContainer>
             </GroupContainer>
