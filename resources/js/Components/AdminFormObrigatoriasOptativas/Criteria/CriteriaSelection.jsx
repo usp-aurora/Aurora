@@ -74,8 +74,10 @@ export default function CriteriaSelection({ type, onChangeType }) {
     <SelectionBox
       disablePortal
       options={options}
+      onChange={(event, newValue) => onChangeType?.(newValue)}
       value={type}
-      onChange={(event, newValue) => onChangeType(newValue)}
+      getOptionLabel={(option) => option.label} 
+      isOptionEqualToValue={(option, value) => option.id === value?.id} 
       renderInput={(params) => <SelectionBoxText {...params} label="Selecione..." />}
       slotProps={{
         popper: {

@@ -2,15 +2,34 @@ import React, { useState } from "react";
 import { Button, Box } from "@mui/material";
 import CriteriaItem from "./CriteriaItem";
 import CloseIcon from '@mui/icons-material/Close';
+import AddIcon from '@mui/icons-material/Add';
 import { styled } from '@mui/material/styles';
 
 const RemoveButton = styled(Button)({
     width: "40px",
     height: "40px",
+    minWidth: "40px",
+    minHeight: "40px",
     border: "none",
     backgroundColor: "transparent",
     color: "#757575",
-    // alterar tamanho do closeicon para bater distancia?
+    '& .MuiSvgIcon-root': {
+        fontSize: '26px', 
+    },
+});
+
+const AddButton = styled(Button)({
+    width: "40px",
+    height: "40px",
+    minWidth: "40px",
+    minHeight: "40px",
+    border: "none",
+    backgroundColor: "#2A85CD",
+    color: "#FFFFFF",
+    borderRadius: "8px",
+    '& .MuiSvgIcon-root': {
+        fontSize: '36px', 
+    },
 });
 
 
@@ -37,9 +56,20 @@ const Criteria = () => {
     };
 
     return (
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            {criteria.map((c) => (
-                <Box key={c.key} sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+        <Box sx={{ display: "flex", flexDirection: "column" }}>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+                <CriteriaItem
+                    quantity={criteria[0].quantity}
+                    onChangeQuantity={(e) => updateCriteria(criteria[0].key, "quantity", e.target.value)}
+                    type={criteria[0].type}
+                    onChangeType={(event, newValue) => updateCriteria(criteria[0].key, "type", newValue)}
+                />
+                <AddButton onClick={addCriteria}>
+                    <AddIcon />
+                </AddButton>
+            </Box>
+            {criteria.slice(1).map((c) => (
+                <Box key={c.key} sx={{ display: "flex", alignItems: "center" }}>
                     <CriteriaItem
                         quantity={c.quantity}
                         onChangeQuantity={(e) => updateCriteria(c.key, "quantity", e.target.value)}
@@ -51,15 +81,10 @@ const Criteria = () => {
                     </RemoveButton>
                 </Box>
             ))}
-
-            <Button variant="contained" onClick={addCriteria}>
-                Add
-            </Button>
         </Box>
     );
 };
 
 export default Criteria;
 
-// botão de adcionar
 // arrumar negocio de seleção
