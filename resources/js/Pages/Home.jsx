@@ -80,7 +80,7 @@ const Home = ({ subjects, groups }) => {
           <Header />
           <DragAndDropProvider setCourseMap={setCourseMap} setPlans={setPlans}>
             <Stack spacing={2} direction="row">
-              <Stack spacing={1} sx={{ width: "60vw" }}>
+              <Stack spacing={2} sx={{ width: "60vw" }}>
                 <CompletionBar />
                 <Semesters courseMap={courseMap} plans={plans} setPlans={setPlans} displayCourse={showCourseDetails} />
               </Stack>

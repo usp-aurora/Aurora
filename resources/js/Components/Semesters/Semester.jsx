@@ -46,8 +46,8 @@ const DroppableCardContainer = styled(Droppable)(({ theme }) => ({
 
 const Semester = ({
     semesterData,
-    isRequiredView,
     displayCourse,
+//  isRequired,
 //  courseMap,
 }) => {
     let workCredits = 0;
@@ -84,34 +84,31 @@ const Semester = ({
                 key={semesterData.semesterId}
                 spacing={{ xs: 1, sm: 2 }}
                 disabled={!isExpanded}
+                placeholder={<AuxiliarCard text="Arraste uma disciplina" ghost={true}/>}
             >
                 <SortableGrid items={semesterData.subjects}>
-                    {semesterData.subjects.length === 0
-                        ? !isRequiredView && (
-                              <AuxiliarCard text="Arraste uma disciplina" />
-                          )
-                        : semesterData.subjects.map((subject) => {
-                              // const isRequiredScheduled = isRequiredView && courseMap.get(subject.code).semester;
-
-                              return (
-                                  <SortableItem
-                                      id={subject.code}
-                                      key={subject.code}
-                                      subjectData={subject}
-                                      containerName={semesterData.semesterId}
-                                      disabled={!isExpanded}
-                                  >
-                                      <SubjectCard
-                                          courseCode={subject.code}
-                                          courseTitle={subject.name}
-                                          planetURL="/icons/planeta.png"
-                                          onClick={() =>
-                                              displayCourse(subject)
-                                          }
-                                      />
-                                  </SortableItem>
-                              );
-                          })}
+                    {semesterData.subjects.map((subject) => {
+                        // const isRequiredScheduled = isRequired && !!courseMap.get(subject.code).semester;
+                        
+                        return (
+                            <SortableItem
+                                id={subject.code}
+                                key={subject.code}
+                                subjectData={subject}
+                                containerName={semesterData.semesterId}
+                                disabled={!isExpanded}
+                            >
+                                <SubjectCard
+                                    courseCode={subject.code}
+                                    courseTitle={subject.name}
+                                    planetURL="/icons/planeta.png"
+                                    onClick={() =>
+                                        displayCourse(subject)
+                                    }
+                                />
+                            </SortableItem>
+                        );
+                    })}
                 </SortableGrid>
             </DroppableCardContainer>
         </Accordion>
