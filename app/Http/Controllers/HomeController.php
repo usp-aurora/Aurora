@@ -4,18 +4,19 @@ namespace App\Http\Controllers;
 
 use Inertia\Inertia;
 use Illuminate\Http\Request;
-use App\Http\Controllers\PlanoEstudosController;
-use App\Http\Controllers\CarregaMateriasController;
+use App\Http\Controllers\SubjectController;
+use App\Http\Controllers\GroupController;
 
 class HomeController extends Controller
 {
     public function index() {
-		$planController = new PlanoEstudosController();
-		$materiasController = new CarregaMateriasController();
+        
+        $subjectController = new SubjectController();
+        $groupController = new GroupController();
 
         return Inertia::render('Home', [
-			'plans' => $planController->index(),
-			'subjects' => $materiasController->index(1)
+            'subjects' => $subjectController->index(),
+            'groups' => $groupController->index(1)
         ]);
     }
 }

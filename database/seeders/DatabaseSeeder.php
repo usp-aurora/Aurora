@@ -3,14 +3,14 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Database\Seeders\MateriaSeeder;
-use Database\Seeders\PlanoEstudosSeeder;
-use Database\Seeders\MateriasGrupoSeeder;
-use Database\Seeders\CriteriosCompletudeSeeder;
-use Database\Seeders\GrupoSeeder;
-use Database\Seeders\CursosSeeder;
+use Database\Seeders\SubjectsSeeder;
+use Database\Seeders\PlansSeeder;
+use Database\Seeders\GroupSubjectsSeeder;
+use Database\Seeders\CompletionRequirementsSeeder;
+use Database\Seeders\GroupsSeeder;
+use Database\Seeders\CoursesSeeder;
+use Database\Seeders\CurriculumsSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -19,8 +19,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
         User::factory()->create([
             'name' => 'Teste',
             'email' => 'teste@teste.com',
@@ -28,12 +26,13 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call([
-            GrupoSeeder::class,
-            MateriaSeeder::class,
-            PlanoEstudosSeeder::class,
-            MateriasGrupoSeeder::class,
-            CriteriosCompletudeSeeder::class,
-            CursosSeeder::class
+            GroupsSeeder::class,
+            SubjectsSeeder::class,
+            PlansSeeder::class,
+            GroupSubjectsSeeder::class,
+            CompletionRequirementsSeeder::class,
+            CoursesSeeder::class,
+            CurriculumsSeeder::class
         ]);
     }
 }

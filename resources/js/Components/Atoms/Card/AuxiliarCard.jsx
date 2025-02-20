@@ -27,9 +27,9 @@ const StyledText = styled(Typography)(({ theme }) => ({
 	},
 }));
 
-const ButtonCard = ({ icon, text, ghost }) => {
+const ButtonCard = ({ icon, text, ghost, ...props }) => {
 	return (
-		<CardContainer>
+		<CardContainer {...props}>
 			<CardBackground ghost={ghost}>
 				{icon && <StyledIcon component={icon} />}
 				<StyledText component="p">{text}</StyledText>
