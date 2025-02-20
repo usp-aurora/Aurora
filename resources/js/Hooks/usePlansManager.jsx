@@ -49,6 +49,7 @@ function usePlansManager(subjectDataMap, updateSubjects, setIsPlansLoading) {
                     updates: { plan: subject.plan, semester: semester.semesterId }
                 }))
             ));
+            setPlans(retrievedPlans);
 		} catch (error) {
 			console.warn("Failed to load plans:", error);
             setPlans([]);

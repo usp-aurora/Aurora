@@ -77,7 +77,7 @@ const StyledCloseIcon = styled(CloseIcon)(({ theme }) => ({
     },
 }));
 
-const CoursePicker = ({ open, courseMap, data }) => {
+const CoursePicker = ({ open, data, plannedSubjects }) => {
     // const [expandedCategories, setExpandedCategories] = useState(
     //     categories.reduce((acc, data) => {
     //         acc[data.subgroups.title] = false;
@@ -105,7 +105,7 @@ const CoursePicker = ({ open, courseMap, data }) => {
                     <Group
                         key={groupData.title}
                         groupData={groupData}
-						courseMap={courseMap}
+						plannedSubjects={plannedSubjects}
                         // expanded={expandedCategories[category.name]}
                         // onClick={() => toggleCategory(category.name)}
                     />

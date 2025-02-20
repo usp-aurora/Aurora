@@ -42,7 +42,7 @@ const SubGroupText = styled(Typography)(({ theme }) => ({
     },
 }));
 
-const SubGroup = ({ depth, courseMap, subgroupData }) => {               
+const SubGroup = ({ depth, subgroupData, plannedSubjects }) => {               
     return (
         <SubGroupContainer depth={depth}>
             <SubGroupHeader>
@@ -52,7 +52,7 @@ const SubGroup = ({ depth, courseMap, subgroupData }) => {
             <SubGroupText>{subgroupData.description}</SubGroupText>
             <CardContainer>
                 {subgroupData.subjects.map((subject) => {
-                    const isBlocked = courseMap.get(subject.code).semester !== null;
+                    const isBlocked = plannedSubjects.has(subject.code);
                     
                     return (
                         <SortableItem

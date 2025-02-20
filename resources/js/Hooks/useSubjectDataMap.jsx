@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 
 /**
  * Initializes the subject data map with subjects and their associated tags.
@@ -9,7 +9,7 @@ import { useState } from "react";
 function initializeSubjectDataMap(course) {
   const map = new Map();
 
-  // Initialize map with subjects
+  // Populate the map with subjects, initializing metadata
   course.subjects.forEach((subject) => {
     map.set(subject.code, {
       tags: [],
@@ -63,14 +63,29 @@ function initializeSubjectDataMap(course) {
 }
 
 /**
- * Custom hook to initialize and manage the subject data map state.
+ * Custom hook for managing subject metadata within a course.
  *
- * @param {Array} subjects - List of subjects with their details.
- * @param {Array} course - Course description, containing list of subjects, groups (with subjects and subgroups), etc.
- * @returns {[Map, Function, Function]} - The `subjectDataMap` state, the single update function, and the bulk update function.
+ * @param {Object} course - Course data containing subjects, groups, and subgroups.
+ * @returns {[Map, Set, Function, Function]} - Returns:
+ *   - `subjectDataMap` (Map): The stateful map storing subject metadata.
+ *   - `plannedSubjects` (Set): A set containing subject codes of planned subjects (subjects with assigned semesters).
+ *   - `updateSubject` (Function): Function to update a specific subject.
+ *   - `bulkUpdateSubjects` (Function): Function to update multiple subjects at once.
  */
 function useSubjectDataMap(course) {
   const [subjectDataMap, setSubjectDataMap] = useState(() => initializeSubjectDataMap(course));
+
+  /**
+   * Retrieves a set of subject codes where the subject is assigned to a semester.
+   * 
+   * @returns {Set<string>} - A set of subject codes with a non-null semester.
+   */
+  const plannedSubjects = useMemo(() => 
+    new Set([...subjectDataMap]
+        .filter(([, info]) => info.semester !== null)
+        .map(([subjectCode]) => subjectCode)
+  ), [subjectDataMap]);
+
 
   /**
    * Updates attributes of a subject in the subjectDataMap.
@@ -134,7 +149,7 @@ function useSubjectDataMap(course) {
     });
   }
 
-  return [subjectDataMap, updateSubject, bulkUpdateSubjects];
+  return [subjectDataMap, plannedSubjects, updateSubject, bulkUpdateSubjects];
 }
 
 export default useSubjectDataMap;

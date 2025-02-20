@@ -6,7 +6,6 @@ import Header from '../Components/Header/Header'
 import CompletionBar from '../Components/CompletionBar/CompletionBar' 
 import Background from '../Components/Background/HomeBackground.jsx';
 
-
 import Semesters from '../Components/Semesters/Semesters.jsx';
 import CoursePicker from '../Components/CoursePicker/CoursePicker.jsx';
 import LoadingScreen from '../Components/Atomsold/LoadingScreen';
@@ -29,10 +28,22 @@ const ContentContainer = styled("div")(({ theme }) => ({
   }
 }));
 
+// Define the core curriculum with empty semesters
+const coreCurriculum = Array.from({ length: 8 }, (_, i) => ({ semesterId: i + 1, subjects: [], suggestions: [] }));
+coreCurriculum[0].subjects.push({
+  code: "MAC0425",
+  name: "Introdução à Computação",
+  credits: [4, 0],
+});
+
+coreCurriculum[0].suggestions.push({
+  group: "Optativa Livre",
+});
+
 const Home = ({ groups }) => { 
   const [isLoadingData, setIsLoadingData] = useState(true);
 
-  const [subjectDataMap, updateSubject, bulkUpdateSubjects] = useSubjectDataMap(groups);
+  const [subjectDataMap, plannedSubjects, updateSubject, bulkUpdateSubjects] = useSubjectDataMap(groups);
   const [plans, setPlans] = usePlansManager(subjectDataMap, bulkUpdateSubjects, setIsLoadingData);
 
   return  isLoadingData ? (
@@ -46,10 +57,16 @@ const Home = ({ groups }) => {
           <DragAndDropProvider setPlans={setPlans}>
             <Stack spacing={2} direction="row">
               <Stack spacing={2} sx={{ width: "60vw" }}>
-                <CompletionBar />
-                <Semesters courseMap={subjectDataMap} updateSubject={updateSubject} plans={plans} setPlans={setPlans} />
+                <CompletionBar />     
+                <Semesters 
+                    plans={plans} 
+                    coreCurriculum={coreCurriculum}
+                    plannedSubjects={plannedSubjects} 
+                    updatePlans={setPlans} 
+                    updateSubject={updateSubject}  
+                />
               </Stack>
-              <CoursePicker courseMap={subjectDataMap} data={groups} />        
+              <CoursePicker plannedSubjects={plannedSubjects} data={groups} />        
             </Stack>
           </DragAndDropProvider>
         </Stack>

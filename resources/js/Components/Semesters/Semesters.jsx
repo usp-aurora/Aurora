@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import Stack from "@mui/material/Stack";
 
 import Semester from "./Semester";
@@ -11,29 +11,22 @@ import { useDragAndDrop } from "../Dnd/DragAndDropContext";
 import { getContainerName } from "../../Handlers/DragHandlers";
 import useHistoryState from "../../Hooks/useHistoryState";
 
-// Define the mandatory curriculum with empty semesters
-const mandatoryCurriculum = Array.from({ length: 8 }, (_, i) => ({ semesterId: i + 1, subjects: [] }));
-mandatoryCurriculum[0].subjects.push({
-  id: 1,
-  code: "MAC0425",
-  name: "Introdução à Computação",
-  credits: ["4", "0"],
-});
 
-const Semesters = ({ plans, setPlans, displayCourse, courseMap, updateSubject }) => {
+const Semesters = ({ plans, updatePlans, plannedSubjects, updateSubject, coreCurriculum }) => {
   const { setIsDragDisabled } = useDragAndDrop();
-  const [pushState, getCurrentState, undo, redo] = useHistoryState(plans, setPlans);
-  const [showRequiredCourses, setShowRequiredCourses] = useState(false);
-  const displayedSemesters = showRequiredCourses ? mandatoryCurriculum : plans;
+  const [pushState, getCurrentState, undo, redo] = useHistoryState(plans, updatePlans);
+  const [showCurriculum, setShowCurriculum] = useState(false);
+  
+  const displayedSemesters = showCurriculum ? coreCurriculum : plans;
 
   // Adds a new empty semester to the plans
   function addSemester() {
     pushState([...plans, { semesterId: plans.length + 1, subjects: [] }]);
   }
 
-
+  // Toggle display of core curriculum and handles drag and drop disable.
   function toggleCurriculum() {
-    setShowRequiredCourses(prev => {
+    setShowCurriculum(prev => {
         setIsDragDisabled(!prev);
         return !prev;
     });
@@ -60,7 +53,7 @@ const Semesters = ({ plans, setPlans, displayCourse, courseMap, updateSubject })
       const diff = updateSubject(subjectCode, {semester: targetContainer === "coursePicker" ? null : targetContainer});
       pushState(plans, diff);
     },
-    onDragCancel: () => setPlans(getCurrentState),
+    onDragCancel: () => updatePlans(getCurrentState),
   });
 
   return (
@@ -75,9 +68,8 @@ const Semesters = ({ plans, setPlans, displayCourse, courseMap, updateSubject })
           <Semester
             key={semester.semesterId}
             semesterData={semester}
-            isRequired={showRequiredCourses}
-            displayCourse={displayCourse}
-            courseMap={courseMap}
+            plannedSubjects={plannedSubjects}
+            coreCurriculum={showCurriculum}
           />
         ))}
         <AuxiliarCard icon={AddIcon} text="Adicionar período" onClick={addSemester} />
