@@ -29,11 +29,11 @@ const ContentContainer = styled("div")(({ theme }) => ({
   }
 }));
 
-const Home = ({ subjects, groups }) => { 
+const Home = ({ groups }) => { 
   const [isLoadingData, setIsLoadingData] = useState(true);
 
-  const [subjectDataMap, setSubjectDataMap, updateSubjectSemester] = useSubjectDataMap(subjects, groups);
-  const [plans, setPlans] = usePlansManager(subjectDataMap, setSubjectDataMap, setIsLoadingData);
+  const [subjectDataMap, updateSubject, bulkUpdateSubjects] = useSubjectDataMap(groups);
+  const [plans, setPlans] = usePlansManager(subjectDataMap, bulkUpdateSubjects, setIsLoadingData);
 
   return  isLoadingData ? (
 	  <LoadingScreen />
@@ -47,7 +47,7 @@ const Home = ({ subjects, groups }) => {
             <Stack spacing={2} direction="row">
               <Stack spacing={2} sx={{ width: "60vw" }}>
                 <CompletionBar />
-                <Semesters courseMap={subjectDataMap} updateSubjectSemester={updateSubjectSemester} plans={plans} setPlans={setPlans} />
+                <Semesters courseMap={subjectDataMap} updateSubject={updateSubject} plans={plans} setPlans={setPlans} />
               </Stack>
               <CoursePicker courseMap={subjectDataMap} data={groups} />        
             </Stack>
