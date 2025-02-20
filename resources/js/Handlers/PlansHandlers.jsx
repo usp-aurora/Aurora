@@ -1,135 +1,134 @@
-import axios from 'axios'
+import axios from 'axios';
 
 /**
- * Retrieves stored plans from local storage
- * 
- * @returns {Array | null} Plans grouped by semester.
+ * Retrieves stored plans from local storage for guest users.
+ * The retrieved plans are removed from storage after fetching.
+ *
+ * @returns {Array | null} Plans grouped by semester, or null if none are found.
  */
 function fetchGuestPlans() {
-  const storedPlans = localStorage.getItem('guestPlans');
-  localStorage.removeItem('guestPlans');
-  return storedPlans ? JSON.parse(storedPlans) : null;
+	const storedPlans = localStorage.getItem('guestPlans');
+	localStorage.removeItem('guestPlans');
+  	return storedPlans ? JSON.parse(storedPlans) : null;
 }
 
 /**
- * Saves relevant data for guest users, ensuring it includes up to the last non-empty semester
- * 
+ * Saves guest user plans to local storage, ensuring only up to the last non-empty semester is retained.
+ *
  * @param {Array} guestPlans - Plans grouped by semester.
  */
 function saveGuestPlans(guestPlans) {
-  const lastSemester =  guestPlans.findLastIndex((sem) => sem.subjects.length > 0) + 1;
-  localStorage.setItem('guestPlans', JSON.stringify(guestPlans.slice(0, lastSemester)));
+	const lastSemester = guestPlans.findLastIndex((sem) => sem.subjects.length > 0) + 1;
+  	localStorage.setItem('guestPlans', JSON.stringify(guestPlans.slice(0, lastSemester)));
 }
-    
+
 /**
- * Save unsynced plans to local storage for later synchronization.
- * 
- * @param {Map} unsyncedData - Map containing unsynced data.
+ * Saves unsynced plans to local storage for future synchronization.
+ *
+ * @param {Map} subjectDataMap - The current state of subjects mapped by their codes.
  */
-function saveUserPlans(unsyncedData) {
-  const payload = JSON.stringify(
-    Array.from(unsyncedData)
-    .filter(([code, subject]) => subject.unsaved) // Filters only unsaved subjects
-    .map(([subjectCode, subjectDetails]) => ({
-      id: subjectDetails.plan,
-      subject_code: subjectCode,
-      semester: subjectDetails.semester,
-    }))
-  )
+function saveUserPlans(subjectDataMap) {
+  	const unsavedSubjects = Array.from(subjectDataMap)
+    	.filter(([, subject]) => subject.unsaved)
+    	.map(([subjectCode, { plan, semester }]) => ({
+     		id: plan,
+      		subject_code: subjectCode,
+      		semester,
+    }));
 
-  localStorage.setItem('unsyncedPlans', payload)
+  	if (unsavedSubjects.length > 0)
+    	localStorage.setItem('unsyncedPlans', JSON.stringify(unsavedSubjects));
 }
 
 /**
- * Fetch plans from the server.
- * 
- * @returns {Promise<Array>} The list of plans fetched from the server.
- * @throws {Error} Throws an error if fetching fails.
+ * Fetches the latest plans from the server.
+ *
+ * @returns {Promise<Array>} A promise that resolves to the list of plans.
+ * @throws {Error} Throws an error if the fetch request fails.
  */
 async function fetchUserPlans() {
-  try {
-    const response = await fetch("/api/plans/index")
-    const data = await response.json()
-    return data.plans
-  } catch (error) {
-    throw error
-  }
+	try {
+    	const response = await fetch('/api/plans/index');
+    	const data = await response.json();
+    	return data.plans;
+  	} catch (error) {
+    	throw error;
+  	}
 }
 
 /**
- * Synchronize plans with the server.
- * 
- * @param {Map} data - Map containing the current state of plans.
- * @param {Function} updateData - Function to update the state of plans data.
+ * Synchronizes unsaved plans with the server.
+ *
+ * Filters out subjects marked as `unsaved`, sends them to the server,
+ * and updates the local state accordingly based on the server response.
+ *
+ * @param {Map} subjectDataMap - The current state of subjects mapped by their codes.
+ * @param {Function} updateSubjects - Function to apply bulk updates to the subject data map.
  */
-async function syncPlansWithServer(data, updateData) {
-  try {
-    const payload = JSON.stringify(
-      Array.from(data)
-      .filter(([code, subject]) => subject.unsaved) // Filters only unsaved subjects
-      .map(([subjectCode, subjectDetails]) => ({
-        id: subjectDetails.plan,
-        subject_code: subjectCode,
-        semester: subjectDetails.semester,
-      }))
-    )
-    
-    const response = await axios.post('/api/plans/sync', payload)
+async function syncPlansWithServer(subjectDataMap, updateSubjects) {
+	try {
+    	const unsavedSubjects = Array.from(subjectDataMap)
+      		.filter(([, subject]) => subject.unsaved)
+      		.map(([subjectCode, { plan, semester }]) => ({
+        		id: plan,
+        		subject_code: subjectCode,
+        		semester,
+      	}));
 
-    if (response.status === 200) {
-      const { changedPlans } = response.data
+    	if (unsavedSubjects.length === 0) return;
 
-      updateData((previousData) => {
-        const updatedData = new Map(previousData)
+    	const response = await axios.post('/api/plans/sync', JSON.stringify(unsavedSubjects));
 
-        changedPlans.forEach(({ id, subject_code, action }) => {
-          switch (action) {
-            case 'created':
-            case 'updated':
-              updatedData.set(subject_code, {
-                ...updatedData.get(subject_code),
-                plan: id,
-                unsaved: false,
-              })
-              break
+    	if (response.status === 200) {
+			const { changedPlans } = response.data;
 
-            case 'deleted':
-              updatedData.set(subject_code, {
-                ...updatedData.get(subject_code),
-                unsaved: false,
-                plan: null,
-              })
-              break
-
-            default:
-              console.warn("Unrecognized action:", action)
-          }
-        })
-        return updatedData
-      })
-    } else {
-      console.error("Synchronization error:", response.data)
-    }
-  } catch (error) {
-    console.error("Communication error with the server:", error)
-  }
+			updateSubjects(
+				changedPlans.map(({ id, subject_code, action }) => ({
+				subjectCode: subject_code,
+				updates: (() => {
+					switch (action) {
+						case 'created':
+						case 'updated':
+							return { plan: id, unsaved: false };
+						case 'deleted':
+							return { plan: null, unsaved: false };
+						default:
+							return {}; // Fallback for unrecognized actions
+					}
+				})(),
+			})));
+    	} else {
+      		console.error('Server synchronization failed:', response.data);
+    	}
+  	} catch (error) {
+    	console.error('Error communicating with the server:', error);
+  	}
 }
 
 /**
- * Synchronize unsynced plans from local storage.
+ * Attempts to synchronize any locally stored unsynced plans with the server.
+ *
+ * If synchronization succeeds, the local unsynced data is removed.
  */
 async function syncPendingPlans() {
-  const unsyncedPlans = localStorage.getItem('unsyncedPlans')
+	const unsyncedPlans = localStorage.getItem('unsyncedPlans');
 
-  if (unsyncedPlans) {
-    try {
-      const response = await axios.post('api/plans/sync', unsyncedPlans)
-      if (response.status === 200) 
-        localStorage.removeItem('unsyncedPlans')
-    } catch (error) {
-      console.error("Error synchronizing unsynced plans:", error)
-    }
-  }
+  	if (unsyncedPlans) {
+    	try {
+      		const response = await axios.post('/api/plans/sync', unsyncedPlans);
+      		if (response.status === 200)
+        		localStorage.removeItem('unsyncedPlans');
+    	} catch (error) {
+      		console.error('Error synchronizing unsynced plans:', error);
+    	}
+  	}
 }
 
-export { fetchGuestPlans, fetchUserPlans, saveGuestPlans, saveUserPlans, syncPlansWithServer, syncPendingPlans };
+export {
+  fetchGuestPlans,
+  fetchUserPlans,
+  saveGuestPlans,
+  saveUserPlans,
+  syncPlansWithServer,
+  syncPendingPlans,
+};

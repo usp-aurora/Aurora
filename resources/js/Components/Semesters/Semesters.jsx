@@ -20,7 +20,7 @@ mandatoryCurriculum[0].subjects.push({
   credits: ["4", "0"],
 });
 
-const Semesters = ({ plans, setPlans, displayCourse, courseMap, updateSubjectSemester }) => {
+const Semesters = ({ plans, setPlans, displayCourse, courseMap, updateSubject }) => {
   const { setIsDragDisabled } = useDragAndDrop();
   const [pushState, getCurrentState, undo, redo] = useHistoryState(plans, setPlans);
   const [showRequiredCourses, setShowRequiredCourses] = useState(false);
@@ -48,7 +48,8 @@ const Semesters = ({ plans, setPlans, displayCourse, courseMap, updateSubjectSem
   function applyHistoryAction(historyFunc) {
     if (showRequiredCourses) return;
     const action = historyFunc();
-    if (action) updateSubjectSemester(action.key, historyFunc.name === "undo" ? action.from : action.to);
+    if (action && action.changes?.semester) 
+      updateSubject(action.key, {semester: historyFunc.name === "undo" ? action.changes.semester.from : action.changes.semester.to});
   }
 
   // Monitors drag-and-drop events and updates the subject's semester accordingly
@@ -56,8 +57,7 @@ const Semesters = ({ plans, setPlans, displayCourse, courseMap, updateSubjectSem
     onDragEnd: (event) => {
       const subjectCode = event.active.id;
       const targetContainer = getContainerName(event.over);
-      const targetSemester = targetContainer === "coursePicker" ? null : targetContainer;
-      const diff = updateSubjectSemester(subjectCode, targetSemester);
+      const diff = updateSubject(subjectCode, {semester: targetContainer === "coursePicker" ? null : targetContainer});
       pushState(plans, diff);
     },
     onDragCancel: () => setPlans(getCurrentState),
