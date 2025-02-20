@@ -30,3 +30,10 @@ Route::get('/test', function() {
     return Inertia::render('Development/Test');
 });
 
+Route::get('/form-trilhas', function () {
+    return Inertia::render('Development/TestForms');
+});
+
+Route::get('/form-obrigatorias', function () {
+    return Inertia::render('Development/TestFormularioObrigatorias');
+});
