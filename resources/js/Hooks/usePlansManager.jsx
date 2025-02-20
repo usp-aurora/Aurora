@@ -16,18 +16,19 @@ import { useAuth } from './useAuthContext.jsx';
  * - Periodic synchronization with the server
  * - Saving plans before the user leaves the page
  *
+ * @param {Array} defaultPlans - The default plans for user.
  * @param {Map} subjectDataMap - The current state of subjects mapped by their codes.
  * @param {Function} updateSubjects - Function to apply bulk updates to the subject data map.
  * @param {Function} setIsPlansLoading - Function to update the plans loading state.
  * @returns {[Array, Function]} Returns `plans` state and `setPlans` function.
  */
-function usePlansManager(subjectDataMap, updateSubjects, setIsPlansLoading) {
+function usePlansManager(defaultPlans, subjectDataMap, updateSubjects, setIsPlansLoading) {
     const { authUser, isAuthLoading } = useAuth();
     
     const [plans, setPlans] = useState([]);
     const hasUnsavedChangesRef = useRef(false);
     const subjectDataMapRef = useRef(subjectDataMap);
-    
+
     /**
      * Initializes plans by:
      * - Syncing any pending changes.
@@ -40,7 +41,7 @@ function usePlansManager(subjectDataMap, updateSubjects, setIsPlansLoading) {
                 await syncPendingPlans(); 
                 retrievedPlans = await fetchUserPlans() ?? [];
             } else {
-                retrievedPlans = fetchGuestPlans() ?? [];
+                retrievedPlans = fetchGuestPlans() ?? defaultPlans;
             }
 
             updateSubjects(retrievedPlans.flatMap(semester =>
@@ -49,10 +50,10 @@ function usePlansManager(subjectDataMap, updateSubjects, setIsPlansLoading) {
                     updates: { plan: subject.plan, semester: semester.semesterId }
                 }))
             ));
-            setPlans(retrievedPlans);
+            setPlans(defaultPlans);
 		} catch (error) {
 			console.warn("Failed to load plans:", error);
-            setPlans([]);
+            setPlans(initializeDefaultPlans());
 		} finally {
 			setIsPlansLoading(false);
 		}

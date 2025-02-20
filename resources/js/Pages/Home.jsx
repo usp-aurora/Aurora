@@ -13,6 +13,7 @@ import LoadingScreen from '../Components/Atomsold/LoadingScreen';
 import usePlansManager from '../Hooks/usePlansManager.jsx';
 import useSubjectDataMap from '../Hooks/useSubjectDataMap.jsx';
 import { DragAndDropProvider } from '../Components/Dnd/DragAndDropContext.jsx';
+import Semester from '../Components/Semesters/Semester.jsx';
 
 const AppContainer = styled("div")(() => ({
   position: 'relative'
@@ -43,8 +44,9 @@ coreCurriculum[0].suggestions.push({
 const Home = ({ groups }) => { 
   const [isLoadingData, setIsLoadingData] = useState(true);
 
+  const defaultPlans = coreCurriculum.map(({ semesterId, subjects }) => ({ semesterId, subjects }));
   const [subjectDataMap, plannedSubjects, updateSubject, bulkUpdateSubjects] = useSubjectDataMap(groups);
-  const [plans, setPlans] = usePlansManager(subjectDataMap, bulkUpdateSubjects, setIsLoadingData);
+  const [plans, setPlans] = usePlansManager(defaultPlans, subjectDataMap, bulkUpdateSubjects, setIsLoadingData);
 
   return  isLoadingData ? (
 	  <LoadingScreen />
