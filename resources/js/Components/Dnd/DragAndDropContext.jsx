@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect, createContext, useContext } from "react";
 import { DndContext, closestCenter, rectIntersection } from "@dnd-kit/core";
 import { useSensor, useSensors, PointerSensor, KeyboardSensor } from "@dnd-kit/core";
+
+import DragOverlayComponent from "./DragOverlayComponent.jsx";
 import { getContainerName, handleDragStart, handleDragOver, handleDragEnd } from "../../Handlers/DragHandlers.jsx";
 import DragOverlayComponent from "./DragOverlayComponent.jsx";
 
@@ -34,7 +36,7 @@ function computeCollision({ droppableContainers, ...props }) {
  * @param {Function} setCourseMap - Function to update the course mapping.
  * @param {Function} setPlans - Function to update the plan structure.
  */
-function DragAndDropProvider({ children, setCourseMap, setPlans }) {
+function DragAndDropProvider({ children, setPlans }) {
   const [isDragDisabled, setIsDragDisabled] = useState(false);
   const [dragOverlay, setDragOverlay] = useState(null);
   const [draggedItem, setDraggedItem] = useState(null);
@@ -64,40 +66,14 @@ function DragAndDropProvider({ children, setCourseMap, setPlans }) {
     }
   }
 
-  /**
-   * Updates `courseMap` when an item is dragged.
-   * Marks changes as unsaved.
-   */
-  useEffect(() => {
-    if (draggedItem) {
-      setCourseMap((prevMap) => {
-        const updatedMap = new Map(prevMap);
-        updatedMap.set(draggedItem.id, {
-          ...prevMap.get(draggedItem.id),
-          semester: draggedItem.container === "coursePicker" ? null : Number(draggedItem.container),
-          unsaved: true,
-        });
-        return updatedMap;
-      });
-    }
-  }, [draggedItem, setCourseMap]);
-
   return (
     <DragAndDropContext.Provider value={{ isDragDisabled, setIsDragDisabled }}>
       <DndContext
         sensors={sensors}
         collisionDetection={computeCollision}
-        onDragStart={(event) => handleDragStart(event, setDragOverlay, setDraggedItem)}
-        onDragOver={handleThrottledDragOver}
-        onDragEnd={(event) => {
-          handleDragEnd(event, draggedItem, setPlans);
-          setDraggedItem(null);
-          setDragOverlay(null);
-        }}
-        onDragCancel={() => {
-          setDraggedItem(null);
-          setDragOverlay(null);
-        }}
+        onDragStart={(e) => handleDragStart(e, setDraggedItem)}
+        onDragOver={(e) => handleThrottledDragOver(e)}
+        onDragEnd={(e) =>  handleDragEnd(e, setPlans)}
       >
         {dragOverlay && <DragOverlayComponent subject={dragOverlay} />}
         {children}

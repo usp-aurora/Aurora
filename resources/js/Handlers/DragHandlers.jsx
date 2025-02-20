@@ -131,11 +131,11 @@ function handleDragOver(event, updatePlans, draggedItem, setDraggedItem) {
  * @param {Object} draggedItem - The currently dragged item.
  * @param {Function} updatePlans - State updater for plans.
  */
-function handleDragEnd(event, draggedItem, updatePlans) {
-  const { over } = event;
+function handleDragEnd(event, updatePlans, setDraggedItem) {
+  const { active, over } = event;
   const targetContainer = getContainerName(over);
 
-  if (!targetContainer || draggedItem.container !== targetContainer) return;
+  if (!targetContainer) return;
 
   updatePlans((prevPlans) => {
     const sourceIndex = getSemesterSubjects(draggedItem.container, prevPlans).findIndex((subject) => subject.code === draggedItem.id);
