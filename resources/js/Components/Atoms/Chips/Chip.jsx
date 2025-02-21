@@ -18,10 +18,10 @@ const StyledChip = styled(MUIChip)(({ theme, color }) => ({
 	},
 }));
 
-const ExportChip = ({label, color="primary", variant="outlined", ...props}) => {
+const Chip = ({label, color="primary", variant="outlined", ...props}) => {
 	return (
 		<StyledChip label={label} color={color} variant={variant} {...props}/>
 	);
 };
 
-export default ExportChip;
+export default Chip;

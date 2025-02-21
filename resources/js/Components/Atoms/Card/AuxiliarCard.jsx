@@ -1,8 +1,8 @@
 import React from "react";
 import { styled } from "@mui/material/styles";
 import { Typography } from "@mui/material";
-import CardContainer from "./Auxiliary/CardContainer";
-import CardBackgroundBase from "./Auxiliary/CardBackgroundBase";
+import CardContainer from "./Pieces/CardContainer";
+import CardBackgroundBase from "./Pieces/CardBackgroundBase";
 
 const CardBackground = styled(({ glassmorphismLevel, ...other }) => (
 	<CardBackgroundBase {...other} />

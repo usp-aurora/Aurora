@@ -4,8 +4,8 @@ import { Typography } from "@mui/material";
 
 import glassmorphismStyle from '../../../styles/MUI/glassmorphismMUI';
 import Planet from '../Planet';
-import CardContainer from "./Auxiliary/CardContainer";
-import CardBackgroundBase from "./Auxiliary/CardBackgroundBase";
+import CardContainer from "./Pieces/CardContainer";
+import CardBackgroundBase from "./Pieces/CardBackgroundBase";
 
 const CardBackground = styled(({ glassmorphismLevel, ...other }) => <CardBackgroundBase {...other} />)(
 	({ theme, ghost, glassmorphismLevel }) => ({

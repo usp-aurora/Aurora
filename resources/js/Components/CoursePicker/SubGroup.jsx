@@ -1,7 +1,7 @@
 import React from "react";
 import { styled } from "@mui/material/styles";
 import { Typography } from "@mui/material";
-import CardContainer from "../Atoms/CardContainer/CardContainer";
+import CardContainer from "../Atoms/CardsGrid/CardsGrid";
 import SubjectCard from "../Atoms/Card/SubjectCard";
 
 import SortableItem from "../Dnd/SortableItem";

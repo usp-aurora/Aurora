@@ -5,7 +5,7 @@ import { Typography } from "@mui/material";
 import CompletionHeader from "../Atoms/CompletionHeader/CompletionHeader";
 import CompletionMetrics from "../Atoms/CompletionHeader/CompletionMetrics";
 import Accordion from "../Atoms/Accordion/Accordion";
-import CardContainer from "../Atoms/CardContainer/CardContainer";
+import CardContainer from "../Atoms/CardsGrid/CardsGrid";
 import SubjectCard from "../Atoms/Card/SubjectCard";
 
 import SortableItem from "../Dnd/SortableItem";
