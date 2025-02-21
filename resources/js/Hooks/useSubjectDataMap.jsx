@@ -136,15 +136,19 @@ function useSubjectDataMap(course) {
       const updatedMap = new Map(prevMap);
 
       updatesList.forEach(({ subjectCode, updates }) => {
-        if (updatedMap.has(subjectCode)) {
-          const existingEntry = updatedMap.get(subjectCode);
-          updatedMap.set(subjectCode, {
-            ...existingEntry,
-            ...updates,
-          });
-        }
-      });
+        const existingEntry = updatedMap.get(subjectCode) || {
+          tags: [],
+          plan: null,
+          semester: null,
+          unsaved: false,
+        };
 
+        updatedMap.set(subjectCode, {
+          ...existingEntry,
+          ...updates,
+        });
+      });
+      console.log(updatedMap);
       return updatedMap;
     });
   }
