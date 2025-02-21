@@ -1,19 +1,18 @@
-import React, { useState, useMemo } from "react";
-import Stack from "@mui/material/Stack";
-
-import Semester from "./Semester";
-import SemestersHeader from "./SemestersHeader";
-import AddIcon from '@mui/icons-material/Add';
-import AuxiliarCard from "../Atoms/Card/AuxiliarCard";
-
+import React, { useState } from "react";
 import { useDndMonitor } from "@dnd-kit/core";
-import { useDragAndDrop } from "../Dnd/DragAndDropContext";
 import { getContainerName } from "../../Handlers/DragHandlers";
 import useHistoryState from "../../Hooks/useHistoryState";
 
+import Stack from "@mui/material/Stack";
+import AddIcon from '@mui/icons-material/Add';
+import AuxiliarCard from "../Atoms/Card/AuxiliarCard";
+
+import Semester from "./Semester";
+import SemestersHeader from "./SemestersHeader";
+import SemesterPlaceHolder from "./SemesterPlaceholder";
+
 
 const Semesters = ({ plans, updatePlans, plannedSubjects, updateSubject, coreCurriculum }) => {
-  const { setIsDragDisabled } = useDragAndDrop();
   const [pushState, getCurrentState, undo, redo] = useHistoryState(plans, updatePlans);
   const [showCurriculum, setShowCurriculum] = useState(false);
   
@@ -22,14 +21,6 @@ const Semesters = ({ plans, updatePlans, plannedSubjects, updateSubject, coreCur
   // Adds a new empty semester to the plans
   function addSemester() {
     pushState([...plans, { semesterId: plans.length + 1, subjects: [] }]);
-  }
-
-  // Toggle display of core curriculum and handles drag and drop disable.
-  function toggleCurriculum() {
-    setShowCurriculum(prev => {
-        setIsDragDisabled(!prev);
-        return !prev;
-    });
   }
 
   /**
@@ -58,10 +49,10 @@ const Semesters = ({ plans, updatePlans, plannedSubjects, updateSubject, coreCur
 
   return (
     <Stack spacing={2}>
-      <SemestersHeader 
-        toggleCurriculum={toggleCurriculum} 
+      <SemestersHeader  
         undo={() => applyHistoryAction(undo)} 
         redo={() => applyHistoryAction(redo)}
+        showCurriculum={setShowCurriculum}
       />
       <Stack spacing={1}>
         {displayedSemesters.map((semester) => (
@@ -70,6 +61,7 @@ const Semesters = ({ plans, updatePlans, plannedSubjects, updateSubject, coreCur
             semesterData={semester}
             plannedSubjects={plannedSubjects}
             coreCurriculum={showCurriculum}
+            placeholder={<SemesterPlaceHolder />}
           />
         ))}
         <AuxiliarCard icon={AddIcon} text="Adicionar período" onClick={addSemester} />

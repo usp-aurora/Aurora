@@ -45,6 +45,7 @@ const DroppableCardContainer = styled(Droppable)(({ theme }) => ({
 }));
 
 const Semester = ({
+    placeholder,
     semesterData,
     plannedSubjects,
     coreCurriculum = false,
@@ -83,7 +84,7 @@ const Semester = ({
                 key={semesterData.semesterId}
                 spacing={{ xs: 1, sm: 2 }}
                 disabled={!isExpanded}
-                placeholder={<AuxiliarCard text="Arraste uma disciplina" ghost={true} sx={{ pointerEvents: "none"}}/>}
+                placeholder={placeholder}
             >
                 <SortableGrid items={semesterData.subjects}>
                     {semesterData.subjects.map((subject) => {
@@ -101,6 +102,7 @@ const Semester = ({
                                     courseCode={subject.code}
                                     courseTitle={subject.name}
                                     planetURL="/icons/planeta.png"
+                                    moon={requiredScheduled}
                                     // onClick={() =>
                                     //    displayCourse(subject)
                                     // }
