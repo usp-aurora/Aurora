@@ -1,7 +1,7 @@
 import CompletionHeader from './CompletionHeader';
 
 export default {
-	title: 'CompletionHeader',
+	title: 'Atoms/CompletionHeader',
 	component: CompletionHeader,
 
 	parameters: {

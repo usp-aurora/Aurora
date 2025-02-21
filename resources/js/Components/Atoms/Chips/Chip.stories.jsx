@@ -1,7 +1,7 @@
 import Chip from './Chip';
 
 export default {
-	title: 'Chip',
+	title: 'Atoms/Chip',
 	component: Chip,
 
 	parameters: {

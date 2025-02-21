@@ -2,7 +2,7 @@ import IconWrapper from './IconWrapper';
 import FullscreenIcon from '@mui/icons-material/FullscreenOutlined';
 
 export default {
-  title: 'IconWrapper',
+  title: 'Atoms/IconWrapper',
   component: IconWrapper,
 
   parameters: {

@@ -3,7 +3,7 @@ import { fn } from '@storybook/test';
 import SubjectCard from './SubjectCard';
 
 export default {
-  title: 'Subject Card',
+  title: 'Atoms/Subject Card',
   component: SubjectCard,
 
   parameters: {

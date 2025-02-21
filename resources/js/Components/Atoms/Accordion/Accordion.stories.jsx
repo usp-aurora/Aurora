@@ -1,9 +1,8 @@
 import Accordion from './Accordion';
-import { fn } from '@storybook/test';
 import Typography from '@mui/material/Typography';
 
 export default {
-	title: 'Accordion',
+	title: 'Atoms/Accordion',
 	component: Accordion,
 
 	parameters: {

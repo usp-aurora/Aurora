@@ -4,7 +4,7 @@ import AuxiliarCard from './AuxiliarCard';
 import AddIcon from "@mui/icons-material/Add";
 
 export default {
-  title: 'Auxiliar Card',
+  title: 'Atoms/Auxiliar Card',
   component: AuxiliarCard,
 
   parameters: {
