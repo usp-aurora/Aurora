@@ -64,7 +64,7 @@ const Group = ({ groupData, plannedSubjects }) => {
                 <GroupText>{groupData.description}</GroupText>
                 <CardContainer>
                     {groupData.subjects.map((subject) => {
-                        const isBlocked = plannedSubjects.has(subject.code);
+                        const blocked = plannedSubjects.has(subject.code);
                         
                         return (
                             <SortableItem
@@ -72,13 +72,13 @@ const Group = ({ groupData, plannedSubjects }) => {
                                 key={subject.code}
                                 subjectData={subject}
                                 containerName={subgroupData.title}
-                                disabled={isBlocked}
+                                disabled={blocked}
                             >
                                 <SubjectCard
                                     courseCode={subject.code}
                                     courseTitle={subject.name}
-                                    planetURL="/icons/planeta.png"
-                                    ghost={isBlocked}
+                                    ghost={blocked}
+                                    planetURL={blocked ? null : "/icons/planeta.png"}
                                     // onClick={openCourseInfoPopUp}
                                 />
                             </SortableItem>

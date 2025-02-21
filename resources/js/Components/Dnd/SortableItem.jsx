@@ -2,7 +2,7 @@ import { useState } from "react";
 import { CSS } from "@dnd-kit/utilities";
 import { useSortable } from "@dnd-kit/sortable";
 import { useDragAndDrop } from "./DragAndDropContext";
-import DragWarningPopup from "./DragWarningPopup";
+import WarningDialog from "./WarningDialog";
 
 function SortableItem({ id, subjectData, containerName, children, disabled = false }) {
     const { isDragDisabled } = useDragAndDrop();
@@ -34,7 +34,7 @@ function SortableItem({ id, subjectData, containerName, children, disabled = fal
 
     return (
         <>
-            {showWarning && <DragWarningPopup isVisible={showWarning} onClose={() => setShowWarning(false)} />}
+            <WarningDialog open={showWarning} onClose={() => setShowWarning(false)} />
             <div
                 ref={isDraggable ? setNodeRef : undefined}
                 style={cardStyle}

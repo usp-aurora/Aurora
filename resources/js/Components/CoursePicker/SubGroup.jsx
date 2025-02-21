@@ -52,7 +52,7 @@ const SubGroup = ({ depth, subgroupData, plannedSubjects }) => {
             <SubGroupText>{subgroupData.description}</SubGroupText>
             <CardContainer>
                 {subgroupData.subjects.map((subject) => {
-                    const isBlocked = plannedSubjects.has(subject.code);
+                    const blocked = plannedSubjects.has(subject.code);
                     
                     return (
                         <SortableItem
@@ -60,13 +60,13 @@ const SubGroup = ({ depth, subgroupData, plannedSubjects }) => {
                             key={subject.code}
                             subjectData={subject}
                             containerName={subgroupData.title}
-                            disabled={isBlocked}
+                            disabled={blocked}
                         >
                             <SubjectCard
                                 courseCode={subject.code}
                                 courseTitle={subject.name}
-                                planetURL="/icons/planeta.png"
-                                ghost={isBlocked}
+                                ghost={blocked}
+                                planetURL={blocked ? null : "/icons/planeta.png"}
                                 // onClick={openCourseInfoPopUp}
                             />
                         </SortableItem>
