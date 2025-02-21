@@ -1,4 +1,4 @@
-import Criteria from '../../Components/AdminFormObrigatoriasOptativas/Course/Details';
+import Mandatory from '../../Components/AdminFormObrigatoriasOptativas/Course/Mandatory';
 import Header from '../../Components/Header/Header';
 
 export default function App() {
@@ -7,7 +7,7 @@ export default function App() {
       <div>
         <Header />
       </div>
-      <Criteria components={[]} />
+      <Mandatory components={[]} />
     </div>
   );
 }
