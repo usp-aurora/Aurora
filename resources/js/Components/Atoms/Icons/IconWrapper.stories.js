@@ -9,7 +9,7 @@ export default {
     layout: 'centered',
   },
   
-  tags: ['docs'],
+  tags: ['autodocs'],
   
   args: {
     icon: "" 

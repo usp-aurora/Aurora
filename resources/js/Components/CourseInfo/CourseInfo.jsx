@@ -1,94 +1,111 @@
 import React from 'react';
-import styled from 'styled-components';
-import { fadeIn, fadeOut } from '../Atoms/Animations'
-import glassmorphismStyle from '../../styles/glassmorphism';
+import { styled } from '@mui/material/styles';
+import useMediaQuery  from '@mui/material/useMediaQuery';
+import { Stack } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 
-import Card from '../Atoms/Card/SubjectCard'
+import { fadeIn, fadeOut } from '../Atoms/Animations';
+import glassmorphismStyle from '../../styles/MUI/glassmorphismMUI';
+
+import Card from '../Atoms/Card/SubjectCard';
 import GraphView from '../GraphView/GraphView';
 import CourseInfoHeader from './CourseInfoHeader';
 import CourseInfoTags from './CourseInfoTags';
 import CourseInfoText from './CourseInfoText';
+import Button from '../Atoms/Buttons/Button';
+import IconWrapper from '../Atoms/Icons/IconWrapper';
 
-const CourseInfoBackground = styled.div`
-	animation: ${({ open }) => (open ? fadeIn : fadeOut)} 1s ease-in-out -0.3s;
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	background: rgba(0, 0, 0, 0.5);
+const CourseInfoBackground = styled('div')(({ theme, open }) => ({
+	animation: `${open ? fadeIn : fadeOut} 1s ease-in-out -0.3s`,
+	position: 'fixed',
+	top: 0,
+	left: 0,
+	width: '100%',
+	height: '100%',
+	background: 'rgba(0, 0, 0, 0.5)',
+	display: open ? 'flex' : 'none',
+	justifyContent: 'center',
+	alignItems: 'center',
+	zIndex: 1000,
 
-	padding: 1em;
+	padding: theme.spacing(1),
+	[theme.breakpoints.up('sm')]:{
+		padding: "5% 10%",
+	}
+}));
 
-	display: ${({ open }) => (open ? "flex" : "none")};
-	justify-content: center;
-	align-items: center;
-	z-index: 1000;
-`;
+const CourseInfoContainer = styled('div')(({ theme }) => ({
+	...glassmorphismStyle(theme, "level2"),
 
-const CourseInfoContainer = styled.div`
-	display: flex;
-	flex-direction: column;
-	gap: 2.5%;
+	display: 'flex',
+	flexDirection: 'column',
 
-	width: 100%;
-	height: 100%;
-	padding: 2%;
+	borderRadius: '12px',
+	width: '100%',
+	height: '100%',
 
-	${glassmorphismStyle}
-`;
+	padding: theme.spacing(1),
+	gap: theme.spacing(2),
+	[theme.breakpoints.up('sm')]:{
+		padding: theme.spacing(3),
+		gap: theme.spacing(3),
+	}
+}));
 
-const CourseInfoBody = styled.div`
-	flex: 90;
-	display: flex;
-	flex-direction: column;
-	justify-content: flex-start;
-	gap: 2.5%;
-`;
+const CourseInfoBody = styled('div')(({ theme }) => ({
+	display: 'flex',
+	flexDirection: 'column',
+	justifyContent: 'flex-start',
 
-const CourseReqsPlaceholder = styled.div`
-	width: 100%;
+	width: "100%",
+	height: "100%",
 
-	border-radius: 16px;
-	flex-grow: 1;
+	gap: theme.spacing(2),
+	[theme.breakpoints.up('sm')]:{
+		gap: theme.spacing(3),
+	}
+}));
 
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	color:white;
-`;
+const CorseInfoGraphContainer = styled('div')(() => ({
+	width: '100%',
+	borderRadius: '16px',
+	flexGrow: 1,
+}));
 
-const ActionsButtonsContainer = styled.div`
-	display: flex;
-	justify-content: flex-end;
-	width: 100%;
-	padding: 10px;
-`;
+const AddButton = styled('div')(({ theme }) => ({
+	// display: "none",
+	width: '30px',
+	height: '30px',
+	backgroundColor: 'red',
+	marginLeft: 'auto',
+}));
 
-const ButtonPlaceholder = styled.div`
-	width: 30px;
-	height: 30px;
-	background-color: red;
-`;
+const RemoveButton = styled('div')(({ theme }) => ({
+	display: "none",
+	width: '30px',
+	height: '30px',
+	backgroundColor: 'red',
+	margiRight: "auto"
+}));
 
 function CourseInfoGraph() {
 	const nodes = new Map([
-		["n1",{code:"MAC0101", name:"Integração na Universidade e na Profissão"}],
-		["n2",{code:"MAC0121", name:"Integração na Universidade e na Profissão"}],
-		["n3",{code:"MAC0216", name:"Integração na Universidade e na Profissão"}],
-		["n4",{code:"MAC0239", name:"Integração na Universidade e na Profissão"}],
-		["n5",{code:"MAE0119", name:"Integração na Universidade e na Profissão"}],
-		["n6",{code:"MAT2425", name:"Integração na Universidade e na Profissão"}],
+		["n1", { code: "MAC0101", name: "Integração na Universidade e na Profissão" }],
+		["n2", { code: "MAC0121", name: "Integração na Universidade e na Profissão" }],
+		["n3", { code: "MAC0216", name: "Integração na Universidade e na Profissão" }],
+		["n4", { code: "MAC0239", name: "Integração na Universidade e na Profissão" }],
+		["n5", { code: "MAE0119", name: "Integração na Universidade e na Profissão" }],
+		["n6", { code: "MAT2425", name: "Integração na Universidade e na Profissão" }],
 	]);
 	const links = new Map([
-		["l1",{a:"n1", b:"n2"}],
-		["l2",{a:"n1", b:"n3"}],
-		["l3",{a:"n4", b:"n1"}],
-		["l4",{a:"n5", b:"n4"}],
-		["l5",{a:"n6", b:"n1"}],
-		["l6",{a:"n5", b:"n6"}],
+		["l1", { a: "n1", b: "n2" }],
+		["l2", { a: "n1", b: "n3" }],
+		["l3", { a: "n4", b: "n1" }],
+		["l4", { a: "n5", b: "n4" }],
+		["l5", { a: "n6", b: "n1" }],
+		["l6", { a: "n5", b: "n6" }],
 	]);
-	for(const [key,node] of nodes) {
+	for (const [key, node] of nodes) {
 		node.content = (
 			<Card
 				courseCode={node.code}
@@ -97,10 +114,12 @@ function CourseInfoGraph() {
 			</Card>
 		);
 	}
-	return (<GraphView nodes={nodes} links={links} root={"n1"} vertical interactive />);
+
+	const isVertical = useMediaQuery((theme) => theme.breakpoints.down('sm'));
+	return (<GraphView nodes={nodes} links={links} root={"n1"} vertical={isVertical} interactive />);
 }
 
-function CourseInfo({ isOpen, onClose, title, code, tags, credits, desc }) {
+function CourseInfo({ isOpen, onClose, isPlanned, title, code, tags, credits, desc }) {
 	return (
 		<CourseInfoBackground onClick={onClose} open={isOpen}>
 			<CourseInfoContainer onClick={(e) => e.stopPropagation()}>
@@ -108,12 +127,15 @@ function CourseInfo({ isOpen, onClose, title, code, tags, credits, desc }) {
 				<CourseInfoBody>
 					<CourseInfoTags tags={tags} credits={credits} />
 					<CourseInfoText desc={desc} />
-					<CourseReqsPlaceholder>
+					<CorseInfoGraphContainer>
 						<CourseInfoGraph />
-					</CourseReqsPlaceholder>
-					<ActionsButtonsContainer>
-						<ButtonPlaceholder />
-					</ActionsButtonsContainer>
+					</CorseInfoGraphContainer>
+					<Stack direction="row" sx={{ display: { xs: 'flex', sm: 'none' } }}>
+						{isPlanned
+							? <IconWrapper color="error" Icon={DeleteIcon} />
+							: <Button color="primary" size="small" sx={{marginLeft: 'auto'}}> Adicionar </Button> 
+						}
+					</Stack>
 				</CourseInfoBody>
 			</CourseInfoContainer>
 		</CourseInfoBackground>

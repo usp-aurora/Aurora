@@ -1,59 +1,62 @@
-import React from 'react';
-import styled from 'styled-components';
+import { React, useState, useRef, useEffect } from 'react';
+import { styled } from '@mui/material/styles';
+import { Typography } from '@mui/material';
 
-const CourseTextContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-`
+const CourseTextContainer = styled('div')(({ theme }) => ({
+	display: 'flex',
+	flexDirection: 'column',
+}));
 
-const CourseDescription = styled.div`
-	max-height: 3lh;
-	overflow: hidden;
-	display: -webkit-box;
-	-webkit-line-clamp: 3;
-	-webkit-box-orient: vertical;
-	transition: max-height 0.5s;
-`;
+const CourseDescription = styled(Typography)(({ theme, isOpen }) => ({
+	...theme.typography.small,
+	...(isOpen ? {} : {
+		display: '-webkit-box',
+		WebkitLineClamp: 3,
+		WebkitBoxOrient: 'vertical',
+		overflow: 'hidden',
+	}),
 
-const ReadMoreLabel = styled.label`
-	cursor: pointer;
-	font-size: 1em;
-	color: #2A85CD;
-	text-decoration: underline;
-`;
+	margin: 0,
+	transition: 'max-height 0.5s',
 
-const ReadMoreCheckbox = styled.input`
-	bottom: 0;
-	clip: rect(0);
-	height: 1px;
-	width: 1px;
-	margin: -1px;
-	overflow: hidden;
-	padding: 0;
-	position: absolute;
+	[theme.breakpoints.up('sm')]: {
+		...theme.typography.p
+	},
+}));
 
-	&:checked + ${CourseDescription} {
-		-webkit-line-clamp: unset;
-		max-height: 100lh;
-	}
+const ReadMoreButton = styled(Typography)(({ theme }) => ({
+	...theme.typography.small,
+	userSelect: 'none',
+	cursor: 'pointer',
+	color: theme.palette.primary.main,
 
-	&:not(:checked) ~ ${ReadMoreLabel}::after {
-		content: "Ver mais";
-	}
-
-	&:checked ~ ${ReadMoreLabel}:after {
-		content: "Ver menos";
-	}
-`;
+	[theme.breakpoints.up('sm')]: {
+		...theme.typography.p
+	},
+}));
 
 const CourseInfoText = ({ desc }) => {
+	const [isOpen, setIsOpen] = useState(false);
+	const [showReadMoreButton, setShowReadMoreButton] = useState(false);
+
+	const descRef = useRef(null);
+
+	useEffect(() => {
+		if(descRef.current){
+			setShowReadMoreButton(descRef.current.clientHeight !== descRef.current.scrollHeight);
+		}
+	}, []);
+
 	return (
 		<CourseTextContainer>
-			<ReadMoreCheckbox type="checkbox" name="read-more" id="read-more" />
-			<CourseDescription>
-				<p>{desc}</p>
+			<CourseDescription isOpen={isOpen} ref={descRef}>
+				{desc}
 			</CourseDescription>
-			<ReadMoreLabel htmlFor="read-more" />
+			{showReadMoreButton && (
+				<ReadMoreButton onClick={() => setIsOpen(!isOpen)}>
+					{isOpen ? "Ver menos" : "Ver mais"}
+				</ReadMoreButton>
+			)}
 		</CourseTextContainer>
 	);
 };

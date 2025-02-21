@@ -1,35 +1,35 @@
 import React from 'react';
-import styled from 'styled-components';
-import CourseTag from '../Atoms/CourseTag';
+import { styled } from '@mui/material/styles';
+import Chip from '../Atoms/Chips/Chip';
+const TagsContainer = styled('div')(({ theme }) => ({
+	display: 'flex',
+	width: '100%',
+	justifyContent: 'flex-start',
+	alignItems: 'center',
+	overflowX: 'auto',
+	whiteSpace: 'nowrap',
+	'-ms-overflow-style': 'none',
+	scrollbarWidth: 'none',
+	'&::-webkit-scrollbar': {
+		display: 'none',
+	},
 
-const TagsContainer = styled.div`
-	display: flex;
-	width: 100%;
-	justify-content: flex-start;
-	align-items: center;
-
-	overflow-x: auto;
-	white-space: nowrap;
-
-
-	-ms-overflow-style: none;
-	scrollbar-width: none;
-
-	&::-webkit-scrollbar {
-		display: none;
-	}
-`;
+	gap: theme.spacing(1),
+	[theme.breakpoints.up('sm')]: {
+		gap: theme.spacing(3),
+	},
+}));
 
 const CourseInfoTags = ({tags, credits}) => {
 	return (
 		<TagsContainer>
 			{tags
 				.map(tag => (
-					<CourseTag key={tag.name} color={tag.color} name={tag.name} />
+					<Chip key={tag.name} label={tag.name} />
 				))}
-			<CourseTag
+			<Chip
 				color="white"
-				name={credits["lectureCredits"] + " + " + credits["workCredits"] + " créditos"} />
+				label={credits["lectureCredits"] + " + " + credits["workCredits"] + " créditos"} />
 		</TagsContainer>
 	);
 };

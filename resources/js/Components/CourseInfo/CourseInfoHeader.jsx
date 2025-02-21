@@ -1,66 +1,84 @@
 import React from 'react';
-import styled from 'styled-components';
+import { styled } from "@mui/material/styles";
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
+
 import Planet from '../Atoms/Planet';
-import CloseButton from '../Atoms/Buttons/CloseButton';
+import CloseIcon from '@mui/icons-material/Close';
 
-const HeaderContainer = styled.div`
-	flex: 10;
-	width: 100%;
-	display: flex;
-	justify-content: space-between;
-`;
+const HeaderContainer = styled('div')(() => ({
+	width: '100%',
+	display: 'flex',
+	justifyContent: 'space-between',
+}));
 
-const HeaderContent = styled.div`
-	display: flex;
-	justify-content: flex-start;
-	align-items: center;
-	width: 100%;
-	gap: 1em;
+const HeaderContent = styled('div')(({ theme }) => ({
+	display: 'flex',
+	justifyContent: 'flex-start',
+	alignItems: 'center',
+	width: '100%',
+	gap: theme.spacing(2),
+}));
 
-	overflow: hidden;
-`;
+const HeaderIconContainer = styled('div')(({ theme }) => ({
+	width: '45px',
+	height: '45px',
 
-const HeaderIconAndCode = styled.div`
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	gap: 0.5em;
-`;
+	[theme.breakpoints.up('sm')]: {
+		width: '104px',
+		height: '104px',
+	},
+}));
 
-const HeaderIconContainer = styled.div`
-	width: 45px;
-	height: 45px;
-`
+const HeaderTitle = styled(Typography)(({ theme }) => ({
+	...theme.typography.h4,
+	margin: '0px',
+	maxHeight: '3lh',
+	overflow: 'hidden',
+	display: '-webkit-box',
+	WebkitLineClamp: 3,
+	WebkitBoxOrient: 'vertical',
+	[theme.breakpoints.up('sm')]: {
+		...theme.typography.h2,
+	}
+}));
 
-const HeaderTitle = styled.h1`
-	max-height: 3lh;
-	overflow: hidden;
-	display: -webkit-box;
-	-webkit-line-clamp: 3;
-	-webkit-box-orient: vertical;
-`
+const SubjectCodeMobile = styled(Typography)(({ theme }) => ({
+	...theme.typography.small,
+	margin: '0px',
+	[theme.breakpoints.up('sm')]: {
+		display: 'none',
+	}
+}));
 
-const CloseButtonContainer = styled.div`
-	display: flex;
-	align-items: flex-start;
-	height: 100%;
-`;
+const SubjectCodeDesktop = styled(Typography)(({ theme }) => ({
+	...theme.typography.h4,
+	margin: '0px',
+	display: 'none',
+	[theme.breakpoints.up('sm')]: {
+		display: 'block',
+	}
+}));
+
 
 const CourseInfoHeader = ({ onClose, title, code }) => {
 	return (
 		<HeaderContainer>
 			<HeaderContent>
-				<HeaderIconAndCode>
+				<Stack alignItems="center">
 					<HeaderIconContainer>
 						<Planet src="./icons/planeta.png"></Planet>
 					</HeaderIconContainer>
-					<p>{code.toUpperCase()}</p>
-				</HeaderIconAndCode>
-				<HeaderTitle>{title.toUpperCase()}</HeaderTitle>
+					<SubjectCodeMobile>{code.toUpperCase()}</SubjectCodeMobile>
+				</Stack>
+				<Stack gap={1}>
+					<HeaderTitle>
+						{title.toUpperCase()}
+					</HeaderTitle>
+					<SubjectCodeDesktop>{code.toUpperCase()}</SubjectCodeDesktop>
+				</Stack>
 			</HeaderContent>
-			<CloseButtonContainer>
-				<CloseButton onClick={onClose} />
-			</CloseButtonContainer>
+			<CloseIcon onClick={onClose} sx={{cursor: 'pointer'}}/>
 		</HeaderContainer>
 	);
 };
