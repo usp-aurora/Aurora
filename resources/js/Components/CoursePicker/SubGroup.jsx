@@ -56,10 +56,10 @@ const SubGroup = ({ depth, subgroupData, plannedSubjects }) => {
                     
                     return (
                         <SortableItem
-                            id={subject.code}
                             key={subject.code}
+                            id={`${subject.code}@${subgroupData.title}`}
+                            container={"coursePicker"}
                             subjectData={subject}
-                            containerName={subgroupData.title}
                             disabled={blocked}
                         >
                             <SubjectCard

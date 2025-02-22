@@ -48,8 +48,9 @@ const Semester = ({
     placeholder,
     semesterData,
     plannedSubjects,
-    coreCurriculum = false,
+    customPlan = true,
 }) => {
+
     let workCredits = 0;
     let lectureCredits = 0;
 
@@ -57,8 +58,6 @@ const Semester = ({
         lectureCredits += parseInt(subject.credits[0], 10);
         workCredits += parseInt(subject.credits[1], 10);
     });
-
-    const [isExpanded, setExpanded] = useState(false);
 
     const Summary = (
         <SummaryContainer>
@@ -73,6 +72,8 @@ const Semester = ({
         </SummaryContainer>
     );
 
+    const [isExpanded, setExpanded] = useState(false);
+
     return (
         <Accordion
             summary={Summary}
@@ -84,18 +85,18 @@ const Semester = ({
                 key={semesterData.semesterId}
                 spacing={{ xs: 1, sm: 2 }}
                 disabled={!isExpanded}
-                placeholder={placeholder}
+                placeholder={customPlan ? placeholder : null}
             >
-                <SortableGrid items={semesterData.subjects}>
+                <SortableGrid items={semesterData.subjects} container={semesterData.semesterId}>
                     {semesterData.subjects.map((subject) => {
-                        const requiredScheduled = coreCurriculum && plannedSubjects.has(subject.code);
+                        const requiredScheduled = !customPlan && plannedSubjects.has(subject.code);
                         
                         return (
                             <SortableItem
                                 id={subject.code}
                                 key={subject.code}
                                 subjectData={subject}
-                                containerName={semesterData.semesterId}
+                                container={semesterData.semesterId}
                                 disabled={!isExpanded}
                             >
                                 <SubjectCard
@@ -111,7 +112,7 @@ const Semester = ({
                         );
                     })}
                     
-                    {coreCurriculum && semesterData.suggestions.map((suggestion, index) => (
+                    {!customPlan && semesterData.suggestions.map((suggestion, index) => (
                         <AuxiliarCard 
                         key={index}
                             text={`Disciplina do grupo ${suggestion.group}`} 

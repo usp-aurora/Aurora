@@ -1,5 +1,12 @@
 import { useState, useMemo } from "react";
 
+const NEW_ENTRY = {
+  tags: [],
+  plan: null,
+  semester: null,
+  unsaved: false,
+};
+
 /**
  * Initializes the subject data map with subjects and their associated tags.
  *
@@ -11,12 +18,7 @@ function initializeSubjectDataMap(course) {
 
   // Populate the map with subjects, initializing metadata
   course.subjects.forEach((subject) => {
-    map.set(subject.code, {
-      tags: [],
-      plan: null,
-      semester: null,
-      unsaved: false,
-    });
+    map.set(subject.code, NEW_ENTRY);
   });
 
   /**
@@ -27,12 +29,7 @@ function initializeSubjectDataMap(course) {
    */
   function processGroup(group, parentGroup) {
     group.subjects.forEach((subject) => {
-      const existingEntry = map.get(subject.code) || {
-        tags: [],
-        plan: null,
-        semester: null,
-        unsaved: false,
-      };
+      const existingEntry = map.get(subject.code) || NEW_ENTRY;
 
       // Define the tag using the parent group
       const newTag = { name: parentGroup };
@@ -96,12 +93,7 @@ function useSubjectDataMap(course) {
    * @returns {Object} - Action details including subject key and the previous values of updated attributes.
    */
   function updateSubject(subjectCode, updates) {
-    const existingEntry = subjectDataMap.get(subjectCode) || {
-      tags: [],
-      plan: null,
-      semester: null,
-      unsaved: false,
-    };
+    const existingEntry = subjectDataMap.get(subjectCode) || NEW_ENTRY;
 
     const action = {
       key: subjectCode,
@@ -136,19 +128,13 @@ function useSubjectDataMap(course) {
       const updatedMap = new Map(prevMap);
 
       updatesList.forEach(({ subjectCode, updates }) => {
-        const existingEntry = updatedMap.get(subjectCode) || {
-          tags: [],
-          plan: null,
-          semester: null,
-          unsaved: false,
-        };
+        const existingEntry = updatedMap.get(subjectCode) || NEW_ENTRY;
 
         updatedMap.set(subjectCode, {
           ...existingEntry,
           ...updates,
         });
       });
-      console.log(updatedMap);
       return updatedMap;
     });
   }

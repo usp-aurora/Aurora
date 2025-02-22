@@ -1,10 +1,9 @@
-import { useState, useRef, useEffect, createContext, useContext } from "react";
+import { useState, useRef, createContext, useContext, useEffect } from "react";
 import { DndContext, closestCenter, rectIntersection } from "@dnd-kit/core";
 import { useSensor, useSensors, PointerSensor, KeyboardSensor } from "@dnd-kit/core";
 
 import DragOverlayComponent from "./DragOverlayComponent.jsx";
-import { getContainerName, handleDragStart, handleDragOver, handleDragEnd } from "../../Handlers/DragHandlers.jsx";
-import DragOverlayComponent from "./DragOverlayComponent.jsx";
+import { getContainerName, handleDragStart, handleDragOver } from "../../Handlers/DragHandlers.jsx";
 
 const DragAndDropContext = createContext();
 
@@ -33,12 +32,9 @@ function computeCollision({ droppableContainers, ...props }) {
  * Drag-and-drop provider that manages drag state, interactions, and event handlers.
  *
  * @param {React.ReactNode} children - Components wrapped inside the provider.
- * @param {Function} setCourseMap - Function to update the course mapping.
- * @param {Function} setPlans - Function to update the plan structure.
+ * @param {Function} setPlans - Function to set the plan structure.
  */
-function DragAndDropProvider({ children, setPlans }) {
-  const [isDragDisabled, setIsDragDisabled] = useState(false);
-  const [dragOverlay, setDragOverlay] = useState(null);
+function DragAndDropProvider({ children, setPlans, resetPlans, disabled = false }) {
   const [draggedItem, setDraggedItem] = useState(null);
   const throttleTimer = useRef(null);
 
@@ -58,7 +54,7 @@ function DragAndDropProvider({ children, setPlans }) {
    */
   function handleThrottledDragOver(event) {
     if (!throttleTimer.current) {
-      handleDragOver(event, setPlans, draggedItem, setDraggedItem);
+      handleDragOver(event, draggedItem, setDraggedItem, setPlans);
 
       throttleTimer.current = setTimeout(() => {
         throttleTimer.current = null;
@@ -67,13 +63,17 @@ function DragAndDropProvider({ children, setPlans }) {
   }
 
   return (
-    <DragAndDropContext.Provider value={{ isDragDisabled, setIsDragDisabled }}>
+    <DragAndDropContext.Provider value={{ isDragDisabled: disabled }}>
       <DndContext
         sensors={sensors}
         collisionDetection={computeCollision}
         onDragStart={(e) => handleDragStart(e, setDraggedItem)}
-        onDragOver={(e) => handleThrottledDragOver(e)}
-        onDragEnd={(e) =>  handleDragEnd(e, setPlans)}
+        onDragOver={handleThrottledDragOver}
+        onDragEnd={() => setDraggedItem(null)}
+        onDragCancel={() => {
+          resetPlans();
+          setDraggedItem(null);
+        }}
       >
         {dragOverlay && <DragOverlayComponent subject={dragOverlay} />}
         {children}
