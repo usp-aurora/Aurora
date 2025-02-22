@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { 
     fetchGuestPlans, 
     fetchUserPlans, 
@@ -16,16 +16,15 @@ import { useAuth } from './useAuthContext.jsx';
  * - Periodic synchronization with the server
  * - Saving plans before the user leaves the page
  *
- * @param {Array} defaultPlans - The default plans for user.
- * @param {Map} subjectDataMap - The current state of subjects mapped by their codes.
+ * @param {Array} plans - The current plans state from useHistoryState.
+ * @param {Array} defaultPlans - The default plans for user. 
+ * @param {Function} pushPlans - Function to update plans and track history.
+ * @param {Map} subjectDataMap - The current state of subjects mapped by their codes. 
  * @param {Function} updateSubjects - Function to apply bulk updates to the subject data map.
  * @param {Function} setIsPlansLoading - Function to update the plans loading state.
- * @returns {[Array, Function]} Returns `plans` state and `setPlans` function.
  */
-function usePlansManager(defaultPlans, subjectDataMap, updateSubjects, setIsPlansLoading) {
+function usePlansManager(plans, defaultPlans, pushPlans, subjectDataMap, updateSubjects, setIsPlansLoading) {
     const { authUser, isAuthLoading } = useAuth();
-    
-    const [plans, setPlans] = useState([]);
     const hasUnsavedChangesRef = useRef(false);
     const subjectDataMapRef = useRef(subjectDataMap);
 
@@ -34,9 +33,9 @@ function usePlansManager(defaultPlans, subjectDataMap, updateSubjects, setIsPlan
      * - Syncing any pending changes.
      * - Fetching plans from the server if authenticated, otherwise from local storage.
      */
-	async function initializePlans() {
-		try {
-			let retrievedPlans;
+    async function initializePlans() {
+        try {
+            let retrievedPlans;
             if (authUser) { 
                 await syncPendingPlans(); 
                 retrievedPlans = await fetchUserPlans() ?? [];
@@ -50,14 +49,15 @@ function usePlansManager(defaultPlans, subjectDataMap, updateSubjects, setIsPlan
                     updates: { plan: subject.plan, semester: semester.semesterId }
                 }))
             ));
-            setPlans(retrievedPlans);
-		} catch (error) {
-			console.warn("Failed to load plans:", error);
-            setPlans([]);
-		} finally {
-			setIsPlansLoading(false);
-		}
-	}
+            
+            pushPlans(retrievedPlans, "Initialize Plans");
+        } catch (error) {
+            console.warn("Failed to load plans:", error);
+            pushPlans([], "Initialize Plans (Error)");
+        } finally {
+            setIsPlansLoading(false);
+        }
+    }
 
     /**
      * Saves plans when the user leaves the page.
@@ -68,9 +68,9 @@ function usePlansManager(defaultPlans, subjectDataMap, updateSubjects, setIsPlan
      */
     function handlePageUnload(event) {
         if (hasUnsavedChangesRef.current || !authUser) {
-             event.preventDefault();
-             if (authUser) saveUserPlans(subjectDataMapRef.current);
-             else saveGuestPlans(plans);      
+            event.preventDefault();
+            if (authUser) saveUserPlans(subjectDataMapRef.current);
+            else saveGuestPlans(plans);      
         }
     }
 
@@ -80,18 +80,18 @@ function usePlansManager(defaultPlans, subjectDataMap, updateSubjects, setIsPlan
         hasUnsavedChangesRef.current = Array.from(subjectDataMapRef.current).some(([, subject]) => subject.unsaved);
     }, [subjectDataMap]);
     
-	// Loads plans on initial render once authentication state is resolved
-	useEffect(() => {
-		if (!isAuthLoading) {
-			initializePlans();
-		}
-	}, [isAuthLoading]);
+    // Loads plans on initial render once authentication state is resolved
+    useEffect(() => {
+        if (!isAuthLoading) {
+            initializePlans();
+        }
+    }, [isAuthLoading]);
 
-	// Adds and removes the beforeunload event listener to save plans when the user leaves
-	useEffect(() => {
-		window.addEventListener("beforeunload", handlePageUnload);
-		return () => window.removeEventListener("beforeunload", handlePageUnload);
-	}, [authUser, plans]);
+    // Adds and removes the beforeunload event listener to save plans when the user leaves
+    useEffect(() => {
+        window.addEventListener("beforeunload", handlePageUnload);
+        return () => window.removeEventListener("beforeunload", handlePageUnload);
+    }, [authUser, plans]);
 
     useEffect(() => {
         if (!authUser) return;
@@ -103,7 +103,7 @@ function usePlansManager(defaultPlans, subjectDataMap, updateSubjects, setIsPlan
             } catch (error) {
                 console.error("Error during synchronization or fetching plans:", error);
             }
-        };
+        }
 
         // Periodic synchronization every 10 seconds
         const intervalId = setInterval(syncPlans, 10000);
@@ -114,7 +114,7 @@ function usePlansManager(defaultPlans, subjectDataMap, updateSubjects, setIsPlan
                 event.preventDefault(); // Prevent the default "Save page" action
                 syncPlans();
             }
-        };
+        }
 
         // Add event listener for keyboard shortcut
         window.addEventListener("keydown", handleKeyDown);
@@ -126,7 +126,7 @@ function usePlansManager(defaultPlans, subjectDataMap, updateSubjects, setIsPlan
         };
     }, [subjectDataMap, authUser]);
 
-    return [plans, setPlans];
+    return null;
 }
 
 export default usePlansManager;

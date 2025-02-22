@@ -2,48 +2,48 @@ import { arrayMove } from '@dnd-kit/sortable';
 
 /**
  * Extracts the base ID from a composite string ID.
- * Useful when an ID includes metadata (e.g., "mac123@1").
+ * Useful when IDs contain additional metadata (e.g., "mac123@1").
  * 
- * @param {string | number} id - The original ID.
- * @returns {string | number} - The extracted base ID.
+ * @param {string | number} id - The original ID, possibly containing metadata.
+ * @returns {string | number} - The base ID without metadata.
  */
 function extractBaseId(id) { 
   return typeof id === 'string' ? id.split('@')[0] : id; 
 }
 
 /**
- * Determines the container (semester or coursePicker) for a given element.
+ * Determines the container (e.g., a semester or the course picker) associated with a given element.
  * 
  * @param {Object} element - The dragged element from DnD.
- * @returns {string} - The container name (e.g., "1" for semester ID or "coursePicker").
+ * @returns {string} - The container name (e.g., semester ID or "coursePicker").
  */
 function getContainerName(element) { 
   return element?.data?.current?.container ?? element?.id; 
 }
 
 /**
- * Retrieves the list of subjects for a specific semester.
+ * Retrieves the list of subjects for a given semester.
  * 
- * @param {string} semesterId - The semester identifier.
- * @param {Array} plans - The list of plans containing semester data.
- * @returns {Array} - List of subjects for the given semester, or an empty array if not found.
+ * @param {string} semesterId - The unique identifier of the semester.
+ * @param {Array} plans - The collection of semester plans.
+ * @returns {Array} - A list of subjects for the specified semester, or an empty array if not found.
  */
 function getSemesterSubjects(semesterId, plans) {
   return plans.find((semester) => semester.semesterId === semesterId)?.subjects || [];
 }
 
 /**
- * Calculates the drop index for a dragged item within a container.
+ * Determines the appropriate drop index for a dragged item within a target container.
  * 
  * @param {Object} over - The target drop area.
  * @param {Object} draggingRect - The bounding rectangle of the dragged item.
- * @param {Array} targetSubjects - List of subjects in the target container.
- * @returns {number} - The index where the item should be inserted.
+ * @param {Array} targetSubjects - The list of subjects currently in the target container.
+ * @returns {number} - The calculated index at which the item should be inserted.
  */
 function calculateDropIndex(over, draggingRect, targetSubjects) {
   const overId = extractBaseId(over.id);
   const overIndex = targetSubjects.findIndex((subject) => subject.code === overId);
-  if (overIndex === -1) return targetSubjects.length; // Place at the end if not found.
+  if (overIndex === -1) return targetSubjects.length; // If not found, place at the end.
 
   const isAfterLastItem =
     over &&
@@ -57,10 +57,10 @@ function calculateDropIndex(over, draggingRect, targetSubjects) {
 
 /**
  * Handles the start of a drag event.
- * Initializes overlay display and sets the dragged item details.
+ * Initializes the overlay display and stores details of the dragged subject.
  * 
  * @param {Object} event - The drag event object.
- * @param {Function} setDraggedItem - State updater for the dragged object.
+ * @param {Function} setDraggedItem - State updater function for storing the dragged item data.
  */
 function handleDragStart(event, setDraggedItem) {
   const { active } = event;
@@ -71,73 +71,89 @@ function handleDragStart(event, setDraggedItem) {
     name: subject.name,
     desc: subject.desc,
     credits: subject.credits,
+    container: active.data.current.container,
   });
 }
 
 /**
  * Handles a drag-over event.
- * Updates the plans when a subject is dragged between semesters or coursePicker.
+ * Updates semester plans when a subject is dragged between different semesters or the course picker.
  * 
  * @param {Object} event - The drag event object.
- * @param {Object} draggedItem - The current dragged item.
- * @param {Function} updatePlans - State updater for plans.
+ * @param {Object} draggedItem - The currently dragged subject.
+ * @param {Function} updatePlans - State updater function for modifying semester plans.
  */
-function handleDragOver(event, draggedItem, updatePlans) {
-  const { active, over, draggingRect } = event;
-
-  const activeContainer = getContainerName(active);
+function handleDragOver(event, draggedItem, setDraggedItem, updatePlans) {
+  const { over } = event;
   const targetContainer = getContainerName(over);
 
-  if (!targetContainer || activeContainer === targetContainer) return;
+  if (!targetContainer || draggedItem.container === targetContainer) return;
 
-  updatePlans((prevPlans) =>
-    prevPlans.map((semester) => {
-      if (semester.semesterId === activeContainer) {
+  updatePlans((prevPlans) => {
+    return prevPlans.map((semester) => {
+      if (semester.semesterId === draggedItem.container) {
+        // Remove the subject from its original semester
         return {
           ...semester,
-          subjects: semester.subjects.filter((subject) => subject.code !== active.id),
+          subjects: semester.subjects.filter((subject) => subject.code !== draggedItem.code),
         };
       } else if (semester.semesterId === targetContainer) {
-        const targetSubjects = semester.subjects.filter((subject) => subject.code !== active.id);
-        const newIndex = calculateDropIndex(over, draggingRect, targetSubjects);
-        
+        // Add the subject to the new semester
         return {
           ...semester,
-          subjects: [...targetSubjects.slice(0, newIndex), draggedItem, ...targetSubjects.slice(newIndex)],
+          subjects: [...semester.subjects.filter((subject) => subject.code !== draggedItem.code), draggedItem],
         };
       }
       return semester;
-    })
-  );
+    });
+  });
+
+  setDraggedItem((prev) => ({
+    ...prev,
+    container: targetContainer,
+  }));
 }
 
 /**
- * Handles the end of a drag event.
- * Updates the plans state by moving the dragged item within the same semester.
+ * Handles the completion of a drag event.
+ * Updates the semester plans by repositioning the dragged subject within the appropriate semester.
  * 
  * @param {Object} event - The drag event object.
- * @param {Function} updatePlans - State updater for plans.
+ * @param {Function} updateSubject - Function to update the subject's metadata.
+ * @param {Function} updatePlans - State updater function for modifying semester plans.
  */
-function handleDragEnd(event, updatePlans, setDraggedItem) {
-  const { active, over } = event;
+function handleDragEnd(event, updateSubject, updatePlans) {
+  const { active, over, draggingRect } = event;
   const targetContainer = getContainerName(over);
-
+  
   if (!targetContainer) return;
 
+  const activeId = extractBaseId(active.id);
+  const action = updateSubject(activeId, { semester: targetContainer === "coursePicker" ? null : targetContainer });
+
   updatePlans((prevPlans) => {
-    const sourceIndex = getSemesterSubjects(targetContainer, prevPlans).findIndex((subject) => subject.code === active.id);
-    const targetIndex = getSemesterSubjects(targetContainer, prevPlans).findIndex((subject) => subject.code === extractBaseId(over.id));
+    const targetSubjects = getSemesterSubjects(targetContainer, prevPlans);
+    const sourceIndex = targetSubjects.findIndex((subject) => subject.code === activeId);
+    const targetIndex =
+      active.data.current.container === "coursePicker"
+        ? targetSubjects.length
+        : calculateDropIndex(over, draggingRect, targetSubjects);
 
     if (sourceIndex !== targetIndex) {
       return prevPlans.map((semester) => {
-        if (semester.semesterId == targetContainer) {
+        if (semester.semesterId === targetContainer) {
           return { ...semester, subjects: arrayMove(semester.subjects, sourceIndex, targetIndex) };
         }
         return semester;
       });
     }
     return prevPlans;
-  });
+  }, action);
 }
 
-export { getContainerName, handleDragStart, handleDragOver, handleDragEnd };
+export { 
+  getContainerName, 
+  handleDragStart, 
+  handleDragOver, 
+  handleDragEnd 
+};

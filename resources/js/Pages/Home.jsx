@@ -6,10 +6,12 @@ import Header from '../Components/Header/Header'
 import CompletionBar from '../Components/CompletionBar/CompletionBar' 
 import Background from '../Components/Background/HomeBackground.jsx';
 
+import MainTools from '../Components/Tools/MainTools.jsx';
 import Semesters from '../Components/Semesters/Semesters.jsx';
 import CoursePicker from '../Components/CoursePicker/CoursePicker.jsx';
 import LoadingScreen from '../Components/Atomsold/LoadingScreen';
 
+import useHistoryState from "../Hooks/useHistoryState";
 import usePlansManager from '../Hooks/usePlansManager.jsx';
 import useSubjectDataMap from '../Hooks/useSubjectDataMap.jsx';
 import { DragAndDropProvider } from '../Components/Dnd/DragAndDropContext.jsx';
@@ -71,12 +73,29 @@ for (let i = 0; i <6; i++) {
 
 const Home = ({ groups }) => { 
   const [isLoadingData, setIsLoadingData] = useState(true);
+  const [showCurriculum, setShowCurriculum] = useState(false);
+
+  const [plans, updatePlans, pushPlans, restoreCurrentPlans, undo, redo] = useHistoryState();
+  const [subjectDataMap, plannedSubjects, updateSubject, bulkUpdateSubjects] = useSubjectDataMap(groups);
 
   const defaultPlans = coreCurriculum.map(({ semesterId, subjects }) => ({ semesterId, subjects }));
-  const [subjectDataMap, plannedSubjects, updateSubject, bulkUpdateSubjects] = useSubjectDataMap(groups);
-  const [plans, setPlans] = usePlansManager(defaultPlans, subjectDataMap, bulkUpdateSubjects, setIsLoadingData);
+  usePlansManager(plans, defaultPlans, pushPlans, subjectDataMap, bulkUpdateSubjects, setIsLoadingData);
+  
+  /**
+  * Applies an undo or redo action and updates the subject semester accordingly.
+  * Prevents history actions when required courses are being displayed.
+  * 
+  * @param {Function} historyFunc - The function to execute (undo or redo)
+  */
+  function applyHistoryAction(historyFunc) {
+    if (showCurriculum) return;
+    const action = historyFunc();
+    if (action?.changes?.semester) 
+      updateSubject(action.key, {semester: historyFunc.name === "undo" ? action.changes.semester.from : action.changes.semester.to});
+  }    
 
-  return  isLoadingData ? (
+
+  return isLoadingData ? (
 	  <LoadingScreen />
   ) : (
     <AppContainer>
@@ -95,16 +114,21 @@ const Home = ({ groups }) => {
       <ContentContainer>
         <Stack spacing={1}>
           <Header />
-          <DragAndDropProvider setPlans={setPlans}>
+          <DragAndDropProvider plans={plans} setPlans={updatePlans} resetPlans={restoreCurrentPlans} disabled={showCurriculum}>
             <Stack spacing={2} direction="row">
               <Stack spacing={2} sx={{ width: "60vw" }}>
                 <CompletionBar />     
-                <Semesters 
-                    plans={plans} 
-                    coreCurriculum={coreCurriculum}
-                    plannedSubjects={plannedSubjects} 
-                    updatePlans={setPlans} 
-                    updateSubject={updateSubject}  
+                <MainTools 
+                    undo={() => applyHistoryAction(undo)} 
+                    redo={() => applyHistoryAction(redo)} 
+                    toggleCurriculum={() => setShowCurriculum(prev => !prev)}
+                />
+                <Semesters
+                    semesters={showCurriculum ? coreCurriculum : plans}
+                    pushPlans={pushPlans}
+                    updateSubject={updateSubject}
+                    plannedSubjects={plannedSubjects}
+                    customPlan={!showCurriculum}
                 />
               </Stack>
               <CoursePicker plannedSubjects={plannedSubjects} data={groups} />        

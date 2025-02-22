@@ -10,7 +10,7 @@ import RedoIcon from '@mui/icons-material/Redo';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 
-const HeaderContainer = styled("div")({
+const Container = styled("div")({
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
@@ -30,17 +30,7 @@ const StyledText = styled(Typography)(({ theme }) => ({
     }
 }));
 
-function SemestersHeader({ undo, redo, showCurriculum }) {
-    const { setIsDragDisabled } = useDragAndDrop();
-  
-    // Toggle display of core curriculum and handles drag and drop disable.
-    function toggleCurriculum() {
-        showCurriculum(prev => {
-            setIsDragDisabled(!prev);
-            return !prev;
-        });
-    }
-
+function MainTools({ undo, redo, toggleCurriculum }) {
     useEffect(() => {
         function handleKeyDown(event) {
             if (event.ctrlKey && event.key === "z") {
@@ -58,7 +48,7 @@ function SemestersHeader({ undo, redo, showCurriculum }) {
     }, [undo, redo]);
 
     return (
-        <HeaderContainer>   
+        <Container>   
             <Stack spacing={1} direction="row">
                 <IconWrapper Icon={UndoIcon} onClick={undo} />
                 <IconWrapper Icon={RedoIcon} onClick={redo} /> 
@@ -68,8 +58,8 @@ function SemestersHeader({ undo, redo, showCurriculum }) {
                 <IconWrapper Icon={VisibilityOutlinedIcon} onClick={toggleCurriculum} />
                 <IconWrapper Icon={FileDownloadOutlinedIcon} /> 
             </Stack>
-        </HeaderContainer>
+        </Container>
     );
 }
 
-export default SemestersHeader;
+export default MainTools;
