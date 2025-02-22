@@ -14,11 +14,15 @@ export default {
   tags: ['autodocs'],
   
   argTypes: {
+    isClickable: {
+      control: 'boolean',
+      description: 'Determina se o card é clicável',
+    },
     text: {
       control: 'text',
       description: 'Texto do card',
     },
-    icon: {
+    Icon: {
       control: 'object',
       description: '(opcional) Ícone do card',
     },
@@ -31,14 +35,16 @@ export default {
 
 export const Card = {
   args: {
+    isClickable: true,
     text: "Adicionar",
-    icon: AddIcon,
+    Icon: AddIcon,
     ghost: false
   },
 };
 
 export const CardGhost = {
   args: {
+    isClickable: false,
     text: "Arraste uma disciplina",
     ghost: "true"
   },

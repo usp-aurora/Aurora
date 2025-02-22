@@ -4,11 +4,10 @@ import { Box, Typography } from "@mui/material";
 
 import glassmorphismStyle from "../../../styles/MUI/glassmorphismMUI";
 import Planet from "../Planet";
-import CardContainer from "./Pieces/CardContainer";
-import CardBackgroundBase from "./Pieces/CardBackgroundBase";
+import { CardBackgroundBase, CardContainer } from "./Pieces/CardPieces";
 
-const CardBackground = styled(({ glassmorphismLevel, ...other }) => (
-    <CardBackgroundBase {...other} />
+const CardBackground = styled(({ isClickable, hasIcon, ghost, glassmorphismLevel, ...props }) => (
+    <CardBackgroundBase isClickable={isClickable} hasIcon={hasIcon} ghost={ghost} {...props} />
 ))(({ theme, ghost, glassmorphismLevel }) => ({
     ...(!ghost && glassmorphismStyle(theme, glassmorphismLevel)),
 }));
@@ -85,8 +84,10 @@ const SubjectCard = ({
     ...props
 }) => {
     return (
-        <CardContainer {...props}>
+        <CardContainer isClickable={!ghost} {...props}>
             <CardBackground
+                isClickable={!ghost}
+                hasIcon={!!planetURL}
                 ghost={ghost}
                 glassmorphismLevel={glassmorphismLevel}
             >
