@@ -2,7 +2,7 @@ import CourseInfo from './CourseInfo';
 import { fn } from '@storybook/test';
 
 export default {
-	title: 'CourseInfo',
+	title: 'CourseInfo/CourseInfo',
 	component: CourseInfo,
 
 	parameters: {
@@ -10,15 +10,36 @@ export default {
 	},
 	
 	tags: ['autodocs'],
-	
-	args: {
-		isOpen: true,
-		onClose: fn(),
-		title: "Título teste",
-		code: "MAC0110",
-		tags: {"name": "MAC0110", "color": "blue"},
-		credits: {"lectureCredits": 2, "workCredits": 2},
-		desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+
+	argTypes: {
+		isOpen: {
+			control: 'boolean',
+			description: 'Define se o modal está aberto',
+		},
+		onClose: {
+			control: 'function',
+			description: 'Função chamada para fechar o modal',
+		},
+		title: {
+			control: 'text',
+			description: 'Título do curso',
+		},
+		code: {
+			control: 'text',
+			description: 'Código do curso',
+		},
+		tags: {
+			control: 'object',
+			description: 'Tags associadas ao curso',
+		},
+		credits: {
+			control: 'object',
+			description: 'Créditos do curso',
+		},
+		desc: {
+			control: 'text',
+			description: 'Descrição do curso',
+		},
 	},
 };
 
@@ -28,7 +49,7 @@ export const Default = {
 		onClose: fn(),
 		title: "Introdução à Computação",
 		code: "MAC0110",
-		tags: [{"name": "MAC0110", "color": "blue"}, {"name": "MAC0110", "color": "blue"}],
+		tags: [{"name": "Obrigatória", "color": "blue"}, {"name": "Outra tag qualquer", "color": "blue"}],
 		credits: {"lectureCredits": 2, "workCredits": 2},
 		desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
 	},

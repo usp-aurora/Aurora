@@ -13,16 +13,22 @@ export default {
   
   tags: ['autodocs'],
   
-  args: { 
-    onClick: fn(),
-    title: "",
-    text: "",
-    icon: "",
-    ghost: false,
+  argTypes: {
+    text: {
+      control: 'text',
+      description: 'Texto do card',
+    },
+    icon: {
+      control: 'object',
+      description: '(opcional) Ícone do card',
+    },
+    ghost: {
+      control: 'boolean',
+      description: 'Determina se o card está no modo fantasma (bordas pontilhadas e sem cor)',
+    },
   },
 };
 
-// More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
 export const Card = {
   args: {
     text: "Adicionar",

@@ -21,9 +21,11 @@ const SummaryContainer = styled("div")(({}) => ({
 }));
 
 const SemesterInfoText = styled(Typography)(({ theme }) => ({
+    textTransform: "uppercase",
+    
     ...theme.typography.h4,
     [theme.breakpoints.up("sm")]: {
-        ...theme.typography.h1,
+        ...theme.typography.h2,
     },
 }));
 
@@ -77,7 +79,7 @@ const Semester = ({
         <Accordion
             summary={Summary}
             expanded={isExpanded}
-            handleClick={() => setExpanded((prev) => !prev)}
+            onClick={() => setExpanded((prev) => !prev)}
         >
             <DroppableCardContainer
                 id={semesterData.semesterId}
@@ -103,7 +105,7 @@ const Semester = ({
                                   >
                                       <SubjectCard
                                           courseCode={subject.code}
-                                          courseTitle={subject.name}
+                                          courseName={subject.name}
                                           planetURL="/icons/planeta.png"
                                           onClick={() =>
                                               displayCourse(subject)

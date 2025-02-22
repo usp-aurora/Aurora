@@ -11,8 +11,16 @@ export default {
   
   tags: ['autodocs'],
   
-  args: {
-    icon: "" 
+  argTypes: {
+    color: {
+			control: "select",
+			options: ["primary", "error", 'neutral', "white", "black", "red", "yellow", "orange", "brown", "green", "cyan", "purple", "pink"],
+			description: "Define a cor do wrapper",
+		},
+    icon: {
+      control: 'object',
+      description: 'Ícone',
+    },
   },
 };
 

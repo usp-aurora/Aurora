@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import Stack from "@mui/material/Stack";
+import Box from "@mui/material/Box";
+import { styled } from "@mui/material/styles";
 
 import AuxiliarCard from "../Atoms/Card/AuxiliarCard";
 
@@ -26,6 +27,12 @@ const mandatoryCurriculum = [
     { semesterId: 8, subjects: [] },
 ];
 
+const SemestersContainer = styled( Box )(({ theme }) => ({
+    display: "flex",
+    flexDirection: "column",
+    gap: theme.spacing(1),
+}));
+
 const Semesters = ({ courseMap, plans, setPlans, displayCourse }) => {
     const { setIsDragDisabled } = useDragAndDrop();
 
@@ -47,7 +54,7 @@ const Semesters = ({ courseMap, plans, setPlans, displayCourse }) => {
     };
 
     return (
-        <Stack spacing={1}>
+        <SemestersContainer>
             {displayedSemesters.map((semester) => (
                 <Semester
                     key={semester.semesterId}
@@ -59,7 +66,7 @@ const Semesters = ({ courseMap, plans, setPlans, displayCourse }) => {
             ))}
 
             <AuxiliarCard text="Adicionar período" onClick={addSemester} />
-        </Stack>
+        </SemestersContainer>
     );
 };
 

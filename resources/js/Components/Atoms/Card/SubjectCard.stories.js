@@ -1,5 +1,3 @@
-import { fn } from '@storybook/test';
-
 import SubjectCard from './SubjectCard';
 
 export default {
@@ -12,39 +10,51 @@ export default {
   
   tags: ['autodocs'],
   
-  args: { 
-    courseCode: "",
-    courseTitle: "",
-    planetURL: "",
-    ghost: false,
-    onClick: fn()
+  argTypes: {
+    courseCode: {
+      description: 'O código do curso',
+      control: 'text',
+    },
+    courseName: {
+      description: 'O nome do curso',
+      control: 'text',
+    },
+    planetURL: {
+      description: 'URL do ícone do planeta',
+      control: 'text',
+    },
+    ghost: {
+      description: 'Booleano para determinar se o cartão está no modo fantasma',
+      control: 'boolean',
+    },
   },
 };
 
-// More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
 export const Card2Lines = {
   args: {
     courseCode: "MAC0105",
-    courseTitle: "Fundamentos de Matemática para a Computação",
+    courseName: "Fundamentos de Matemática para a Computação",
     planetURL: "./public/icons/planeta.png",
     ghost: false
   },
+};
+
+
+export const Card1Line = {
+  args: {
+    courseCode: "MAC0105",
+    courseName: "Cálculo 1",
+    planetURL: "./public/icons/planeta.png",
+    ghost: false
+  }
 };
 
 export const CardGhost = {
   args: {
     courseCode: "MAC0105",
-    courseTitle: "Fundamentos de Matemática para a Computação",
+    courseName: "Fundamentos de Matemática para a Computação",
     planetURL: "",
     ghost: "true"
   }
 };
 
-export const Card1Line = {
-  args: {
-    courseCode: "MAC0105",
-    courseTitle: "Cálculo 1",
-    planetURL: "./public/icons/planeta.png",
-    ghost: false
-  }
-};

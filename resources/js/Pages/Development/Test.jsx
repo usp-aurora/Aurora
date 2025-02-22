@@ -21,7 +21,7 @@ const Teste = () => {
                 courseCode="MAC0110"
                 // ghost="true"
                 planetURL={"./icons/planeta.png"}
-                courseTitle="Introdução à Computação"
+                courseName="Introdução à Computação"
                 onClick={() => {console.log("hi")}}
             />
         </AppContainer>

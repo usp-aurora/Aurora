@@ -2,8 +2,8 @@ import React from "react";
 import { styled } from "@mui/material/styles";
 import { Typography } from "@mui/material";
 
-import CompletionHeader from "../Atoms/CompletionHeader/CompletionHeader";
-import CompletionMetrics from "../Atoms/CompletionHeader/CompletionMetrics";
+import CompletionHeader from "./Completion/CompletionHeader";
+import CompletionMetrics from "./Completion/CompletionMetrics";
 import Accordion from "../Atoms/Accordion/Accordion";
 import CardContainer from "../Atoms/CardsGrid/CardsGrid";
 import SubjectCard from "../Atoms/Card/SubjectCard";
@@ -76,7 +76,7 @@ const Group = ({ groupData, courseMap }) => {
                             >
                                 <SubjectCard
                                     courseCode={subject.code}
-                                    courseTitle={subject.name}
+                                    courseName={subject.name}
                                     planetURL="/icons/planeta.png"
                                     ghost={isBlocked}
                                     // onClick={openCourseInfoPopUp}

@@ -7,7 +7,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { fadeIn, fadeOut } from '../Atoms/Animations';
 import glassmorphismStyle from '../../styles/MUI/glassmorphismMUI';
 
-import Card from '../Atoms/Card/SubjectCard';
+import SubjectCard from '../Atoms/Card/SubjectCard';
 import GraphView from '../GraphView/GraphView';
 import CourseInfoHeader from './CourseInfoHeader';
 import CourseInfoTags from './CourseInfoTags';
@@ -72,22 +72,6 @@ const CorseInfoGraphContainer = styled('div')(() => ({
 	flexGrow: 1,
 }));
 
-const AddButton = styled('div')(({ theme }) => ({
-	// display: "none",
-	width: '30px',
-	height: '30px',
-	backgroundColor: 'red',
-	marginLeft: 'auto',
-}));
-
-const RemoveButton = styled('div')(({ theme }) => ({
-	display: "none",
-	width: '30px',
-	height: '30px',
-	backgroundColor: 'red',
-	margiRight: "auto"
-}));
-
 function CourseInfoGraph() {
 	const nodes = new Map([
 		["n1", { code: "MAC0101", name: "Integração na Universidade e na Profissão" }],
@@ -107,11 +91,11 @@ function CourseInfoGraph() {
 	]);
 	for (const [key, node] of nodes) {
 		node.content = (
-			<Card
+			<SubjectCard
 				courseCode={node.code}
-				courseTitle={node.name}
+				courseName={node.name}
 				planetURL="./icons/planeta.png">
-			</Card>
+			</SubjectCard>
 		);
 	}
 

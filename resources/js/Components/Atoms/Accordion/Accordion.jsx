@@ -7,12 +7,6 @@ import { styled } from "@mui/material/styles";
 
 import glassmorphismStyle from "../../../styles/MUI/glassmorphismMUI";
 
-const Container = styled("div")(() => ({
-    display: "flex",
-    flexDirection: "column",
-    width: "100%",
-}));
-
 const StyledAccordion = styled((props) => (
     <MUIAccordion square={true} {...props} />
 ))(({ theme, glassmorphismLevel }) => ({
@@ -68,20 +62,18 @@ const Accordion = ({
     summary,
     glassmorphismLevel = "level2",
     expanded,
-    handleClick,
+    onClick,
     ...props
 }) => {
     return (
-        <Container {...props}>
-            <StyledAccordion expanded={expanded} glassmorphismLevel={glassmorphismLevel}>
-                <StyledAccordionSummary onClick={handleClick}
-                    expandIcon={<StyledExpandMoreIcon/>}
-                >
-                    {summary}
-                </StyledAccordionSummary>
-                <StyledAccordionDetails>{children}</StyledAccordionDetails>
-            </StyledAccordion>
-        </Container>
+        <StyledAccordion expanded={expanded} glassmorphismLevel={glassmorphismLevel} {...props}>
+            <StyledAccordionSummary onClick={onClick}
+                expandIcon={<StyledExpandMoreIcon/>}
+            >
+                {summary}
+            </StyledAccordionSummary>
+            <StyledAccordionDetails>{children}</StyledAccordionDetails>
+        </StyledAccordion>
     );
 };
 

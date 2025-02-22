@@ -10,10 +10,22 @@ export default {
 	
 	tags: ['autodocs'],
 	
-	args: {
-		label: "Obrigatória",
-		color: "primary"
-	},
+	argTypes: {
+		label: {
+			control: "string", 
+			description: "Define o texto do chip",
+		},
+		color: {
+			control: "select",
+			options: ["primary", "error", 'neutral', "white", "black", "red", "yellow", "orange", "brown", "green", "cyan", "purple", "pink"],
+			description: "Define a cor do chip",
+		},
+		variant: {
+			control: "radio",
+			options: ["contained", "outlined"],
+			description: "Define o tipo de chip",
+		},
+	}
 };
 
 export const ChipDefault = {
@@ -35,10 +47,3 @@ export const ChipColorido = {
 		color: "green"
 	},
 };
-
-// export const OutlinedChip = {
-// 	args: {
-// 		label: "Chip Label",
-// 		variant: "outlined"
-// 	},
-// };

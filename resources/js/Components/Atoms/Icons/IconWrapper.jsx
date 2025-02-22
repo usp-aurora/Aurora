@@ -23,10 +23,10 @@ const IconContainer = styled("div")(({ color, theme }) => ({
 	},
 }));
 
-const IconWrapper = ({ Icon, color="primary", onClick }) => {
+const IconWrapper = ({ Icon, color="primary", ...props }) => {
 	return (
-		<IconContainer color={color} onClick={onClick}>
-			{Icon ? <Icon /> : "!"}
+		<IconContainer color={color} {...props}>
+			{Icon ? <Icon /> : ""}
 		</IconContainer>
 	);
 };

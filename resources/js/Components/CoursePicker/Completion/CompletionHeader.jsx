@@ -1,8 +1,8 @@
 import React from 'react';
 import { styled } from "@mui/material/styles";
-import { Typography } from '@mui/material/';
+import { Box, Typography } from '@mui/material/';
 
-const ContentContainer = styled("div")(({ theme }) => ({
+const ContentContainer = styled( Box )(({ theme }) => ({
 	display: 'flex',
 	flexDirection: 'row',
 	alignItems: 'center',
@@ -25,9 +25,9 @@ const StyledTitle = styled(Typography)(({ theme, open }) => ({
 	}
 }));
 
-const CompletionHeader = ({ title, color, completed }) => {
+const CompletionHeader = ({ title, color, completed, ...props }) => {
 	return (
-		<ContentContainer>
+		<ContentContainer {...props}>
 			<StyledSvg viewBox="0 0 16.5 16.5" color={color} filled={completed} xmlns="http://www.w3.org/2000/svg">
 				<circle cx="8" cy="8" r="6.5" strokeWidth="3" />
 			</StyledSvg>

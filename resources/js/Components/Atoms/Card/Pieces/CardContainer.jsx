@@ -1,8 +1,9 @@
 import React from "react";
-import { styled } from "@mui/system";
+import { styled } from "@mui/material/styles";
 import clickEffect from "../../../../styles/clickEffect";
+import { Box } from "@mui/material";
 
-const Container = styled("div")(({ theme }) => ({
+const Container = styled( Box )(({ theme }) => ({
     ...clickEffect,
     display: "flex",
     flexDirection: "column",

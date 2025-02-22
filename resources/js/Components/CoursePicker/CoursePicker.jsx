@@ -1,10 +1,10 @@
 import React from "react";
 import { styled } from "@mui/material/styles";
 import { Typography } from "@mui/material";
-import Group from "./Group";
 import CloseIcon from "@mui/icons-material/Close";
 import glassmorphismStyle from "../../styles/MUI/glassmorphismMUI";
 import Droppable from "../Dnd/Droppable";
+import Group from "./Group";
 
 const PlaceholderBackground = styled("div")(({ theme }) => ({
     position: "fixed",
@@ -104,7 +104,7 @@ const CoursePicker = ({ open, courseMap, data }) => {
                     <Group
                         key={groupData.title}
                         groupData={groupData}
-						courseMap={courseMap}
+                        courseMap={courseMap}
                         // expanded={expandedCategories[category.name]}
                         // onClick={() => toggleCategory(category.name)}
                     />

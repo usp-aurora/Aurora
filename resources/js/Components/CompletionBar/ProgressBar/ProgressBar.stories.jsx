@@ -1,7 +1,7 @@
 import ProgressBar from './ProgressBar';
 
 export default {
-	title: 'Progress Bar',
+	title: 'CompletionBar/ProgressBar',
 	component: ProgressBar,
 
 	parameters: {
@@ -10,8 +10,32 @@ export default {
 	
 	tags: ['autodocs'],
 	
+	argTypes: {
+		label: {
+			description: 'Rótulo para a barra de progresso',
+			control: 'text',
+		},
+		coursed: {
+			description: 'Quantidade de progresso concluído',
+			control: 'number',
+		},
+		planned: {
+			description: 'Quantidade de progresso planejado',
+			control: 'number',
+		},
+		needed: {
+			description: 'Quantidade total de progresso necessário',
+			control: 'number',
+		},
+		color: {
+			description: 'Cor da barra de progresso',
+			control: "select",
+			options: ["primary", "error", 'neutral', "white", "black", "red", "yellow", "orange", "brown", "green", "cyan", "purple", "pink"],
+		},
+	},
+
 	args: {
-		label: 'Example',
+		label: 'Exemplo',
 		coursed: 50,
 		planned: 75,
 		needed: 100,

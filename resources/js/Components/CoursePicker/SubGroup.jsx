@@ -64,7 +64,7 @@ const SubGroup = ({ depth, courseMap, subgroupData }) => {
                         >
                             <SubjectCard
                                 courseCode={subject.code}
-                                courseTitle={subject.name}
+                                courseName={subject.name}
                                 planetURL="/icons/planeta.png"
                                 ghost={isBlocked}
                                 // onClick={openCourseInfoPopUp}

@@ -8,7 +8,7 @@ function DragOverlayComponent({ subject }) {
       {subject ? (
         <SubjectCard
           courseCode={subject.code}
-          courseTitle={subject.name}
+          courseName={subject.name}
           planetURL="/icons/planeta.png"
         />
       ) : null}

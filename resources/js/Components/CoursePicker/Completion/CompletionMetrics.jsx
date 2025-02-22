@@ -1,8 +1,8 @@
 import React from 'react';
 import { styled } from "@mui/material/styles";
-import { Typography } from '@mui/material/';
+import { Box, Typography } from '@mui/material/';
 
-const TextContainer = styled("div")(() => ({
+const TextContainer = styled( Box )(() => ({
 	display: 'flex',
 	flexDirection: 'column',
 	alignItems: 'flex-start',
@@ -18,9 +18,9 @@ const StyledMetrics = styled(Typography)(({ theme }) => ({
 }));
 
 
-const CompletionHeader = ({ metrics }) => {
+const CompletionHeader = ({ metrics, ...props }) => {
 	return (
-		<TextContainer>
+		<TextContainer {...props}>
 			{metrics.map((metric) => (
 				<StyledMetrics key={`${metric.name}-${metric.total}`}>
 					{`${metric.value.toString().padStart(2, '0')} / ${metric.total.toString().padStart(2, '0')} ${metric.name}`}
