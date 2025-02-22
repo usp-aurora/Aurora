@@ -8,7 +8,7 @@ const TagsContainer = styled('div')(({ theme }) => ({
 	alignItems: 'center',
 	overflowX: 'auto',
 	whiteSpace: 'nowrap',
-	'-ms-overflow-style': 'none',
+	msOverflowStyle: 'none',
 	scrollbarWidth: 'none',
 	'&::-webkit-scrollbar': {
 		display: 'none',
@@ -29,7 +29,7 @@ const CourseInfoTags = ({tags, credits}) => {
 				))}
 			<Chip
 				color="white"
-				label={credits["lectureCredits"] + " + " + credits["workCredits"] + " créditos"} />
+				label={credits[0] + " + " + credits[1] + " créditos"} />
 		</TagsContainer>
 	);
 };

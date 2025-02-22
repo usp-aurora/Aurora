@@ -15,8 +15,10 @@ import CourseInfoText from './CourseInfoText';
 import Button from '../Atoms/Buttons/Button';
 import IconWrapper from '../Atoms/Icons/IconWrapper';
 
+import { useSubjectInfoContext } from '../../Hooks/useSubjectInfoContext';
+
 const CourseInfoBackground = styled('div')(({ theme, open }) => ({
-	animation: `${open ? fadeIn : fadeOut} 1s ease-in-out -0.3s`,
+	// animation: `${open ? fadeIn : fadeOut} 0.5s ease-in-out -0.3s`,
 	position: 'fixed',
 	top: 0,
 	left: 0,
@@ -35,7 +37,7 @@ const CourseInfoBackground = styled('div')(({ theme, open }) => ({
 }));
 
 const CourseInfoContainer = styled('div')(({ theme }) => ({
-	...glassmorphismStyle(theme, "level2"),
+	...glassmorphismStyle(theme, "level3"),
 
 	display: 'flex',
 	flexDirection: 'column',
@@ -99,18 +101,20 @@ function CourseInfoGraph() {
 		);
 	}
 
-	const isVertical = useMediaQuery((theme) => theme.breakpoints.down('sm'));
-	return (<GraphView nodes={nodes} links={links} root={"n1"} vertical={isVertical} interactive />);
+	const isMobile = useMediaQuery((theme) => theme.breakpoints.down('sm'));
+	return (<GraphView nodes={nodes} links={links} root={"n1"} vertical={isMobile} interactive={!isMobile} />);
 }
 
-function CourseInfo({ isOpen, onClose, isPlanned, title, code, tags, credits, desc }) {
+function CourseInfo({ isPlanned }) {
+	const { subjectInfo, isSubjectInfoModalOpen, closeSubjectInfoModal } = useSubjectInfoContext();
+
 	return (
-		<CourseInfoBackground onClick={onClose} open={isOpen}>
+		<CourseInfoBackground onClick={closeSubjectInfoModal} open={isSubjectInfoModalOpen}>
 			<CourseInfoContainer onClick={(e) => e.stopPropagation()}>
-				<CourseInfoHeader onClose={onClose} title={title} code={code} />
+				<CourseInfoHeader onClose={closeSubjectInfoModal} name={subjectInfo.name} code={subjectInfo.code} />
 				<CourseInfoBody>
-					<CourseInfoTags tags={tags} credits={credits} />
-					<CourseInfoText desc={desc} />
+					<CourseInfoTags tags={subjectInfo.tags} credits={subjectInfo.credits} />
+					<CourseInfoText desc={subjectInfo.desc} />
 					<CorseInfoGraphContainer>
 						<CourseInfoGraph />
 					</CorseInfoGraphContainer>

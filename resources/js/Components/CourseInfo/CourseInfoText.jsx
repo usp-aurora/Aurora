@@ -1,27 +1,29 @@
-import { React, useState, useRef, useEffect } from 'react';
+import { React, useState, useRef, useEffect, forwardRef } from 'react';
 import { styled } from '@mui/material/styles';
-import { Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 
-const CourseTextContainer = styled('div')(({ theme }) => ({
+const CourseTextContainer = styled(Box)(({ }) => ({
 	display: 'flex',
 	flexDirection: 'column',
 }));
 
-const CourseDescription = styled(Typography)(({ theme, isOpen }) => ({
+const CourseDescription = styled(forwardRef(({ isOpen, ...props }, ref) => (
+    <Typography ref={ref} {...props} />
+)))(({ theme, isOpen }) => ({
+    ...(isOpen ? {} : {
+        display: '-webkit-box',
+        WebkitLineClamp: 3,
+        WebkitBoxOrient: 'vertical',
+        overflow: 'hidden',
+    }),
+
+    margin: 0,
+    transition: 'max-height 0.5s',
+
 	...theme.typography.small,
-	...(isOpen ? {} : {
-		display: '-webkit-box',
-		WebkitLineClamp: 3,
-		WebkitBoxOrient: 'vertical',
-		overflow: 'hidden',
-	}),
-
-	margin: 0,
-	transition: 'max-height 0.5s',
-
-	[theme.breakpoints.up('sm')]: {
-		...theme.typography.p
-	},
+    [theme.breakpoints.up('sm')]: {
+        ...theme.typography.p
+    },
 }));
 
 const ReadMoreButton = styled(Typography)(({ theme }) => ({
@@ -35,7 +37,7 @@ const ReadMoreButton = styled(Typography)(({ theme }) => ({
 	},
 }));
 
-const CourseInfoText = ({ desc }) => {
+const CourseInfoText = ({ desc, ...props }) => {
 	const [isOpen, setIsOpen] = useState(false);
 	const [showReadMoreButton, setShowReadMoreButton] = useState(false);
 
@@ -48,7 +50,7 @@ const CourseInfoText = ({ desc }) => {
 	}, []);
 
 	return (
-		<CourseTextContainer>
+		<CourseTextContainer {...props}>
 			<CourseDescription isOpen={isOpen} ref={descRef}>
 				{desc}
 			</CourseDescription>

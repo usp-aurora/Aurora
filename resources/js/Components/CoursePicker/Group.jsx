@@ -2,15 +2,14 @@ import React from "react";
 import { styled } from "@mui/material/styles";
 import { Typography } from "@mui/material";
 
-import CompletionHeader from "./Completion/CompletionHeader";
-import CompletionMetrics from "./Completion/CompletionMetrics";
 import Accordion from "../Atoms/Accordion/Accordion";
 import CardContainer from "../Atoms/CardsGrid/CardsGrid";
 import SubjectCard from "../Atoms/Card/SubjectCard";
-
 import SortableItem from "../Dnd/SortableItem";
-
+import CompletionHeader from "./Pieces/Completion/CompletionHeader";
+import CompletionMetrics from "./Pieces/Completion/CompletionMetrics";
 import SubGroup from "./SubGroup";
+import SubjectsContainer from "./Pieces/SubjectsContainer";
 
 const GroupContainer = styled("div")(({ theme }) => ({
     display: "flex",
@@ -62,32 +61,19 @@ const Group = ({ groupData, courseMap }) => {
                     ]}
                 />
                 <GroupText>{groupData.description}</GroupText>
-                <CardContainer>
-                    {groupData.subjects.map((subject) => {
-                        const isBlocked = courseMap.get(subject.code).semester !== null;
-
-                        return (
-                            <SortableItem
-                                id={subject.code}
-                                key={subject.code}
-                                subjectData={subject}
-                                containerName={groupData.title}
-                                disabled={isBlocked}
-                            >
-                                <SubjectCard
-                                    courseCode={subject.code}
-                                    courseName={subject.name}
-                                    planetURL="/icons/planeta.png"
-                                    ghost={isBlocked}
-                                    // onClick={openCourseInfoPopUp}
-                                />
-                            </SortableItem>
-                        );
-                    })}
-                </CardContainer>
+                <SubjectsContainer
+                    groupName={groupData.title}
+                    courseMap={courseMap}
+                    subjects={groupData.subjects}
+                />
                 <SubGroupContainer>
                     {groupData.subgroups.map((subgroup) => (
-                        <SubGroup key={subgroup.title} depth={1} subgroupData={subgroup} courseMap={courseMap}/>
+                        <SubGroup
+                            key={subgroup.title}
+                            depth={1}
+                            subgroupData={subgroup}
+                            courseMap={courseMap}
+                        />
                     ))}
                 </SubGroupContainer>
             </GroupContainer>

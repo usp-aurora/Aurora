@@ -1,11 +1,11 @@
 import { fn } from '@storybook/test';
 
-import AuxiliarCard from './AuxiliarCard';
+import AuxiliaryCard from './AuxiliaryCard';
 import AddIcon from "@mui/icons-material/Add";
 
 export default {
   title: 'Atoms/Auxiliar Card',
-  component: AuxiliarCard,
+  component: AuxiliaryCard,
 
   parameters: {
     layout: 'centered',

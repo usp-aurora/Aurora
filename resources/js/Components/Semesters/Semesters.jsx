@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
 
-import AuxiliarCard from "../Atoms/Card/AuxiliarCard";
+import AuxiliaryCard from "../Atoms/Card/AuxiliaryCard";
 
 import Semester from "./Semester";
 import { useDragAndDrop } from "../Dnd/DragAndDropContext";
@@ -33,8 +33,10 @@ const SemestersContainer = styled( Box )(({ theme }) => ({
     gap: theme.spacing(1),
 }));
 
-const Semesters = ({ courseMap, plans, setPlans, displayCourse }) => {
+const Semesters = ({ courseMap, plans, setPlans }) => {
     const { setIsDragDisabled } = useDragAndDrop();
+                                                      // fazendo o primeiro semestre começar aberto
+    const [semestersExpanded, setSemestersExpanded] = useState(plans.map((_, index) => index === 0)); 
 
     // Controls whether to show required courses or the custom plan
     const [showRequiredCourses, setShowRequiredCourses] = useState(false);
@@ -51,7 +53,9 @@ const Semesters = ({ courseMap, plans, setPlans, displayCourse }) => {
         };
 
         setPlans([...plans, newSemester]);
+        setSemestersExpanded([...semestersExpanded, true]);
     };
+
 
     return (
         <SemestersContainer>
@@ -59,13 +63,14 @@ const Semesters = ({ courseMap, plans, setPlans, displayCourse }) => {
                 <Semester
                     key={semester.semesterId}
                     semesterData={semester}
-                    isRequiredView={showRequiredCourses}
-                    displayCourse={displayCourse}
                     courseMap={courseMap}
+                    isRequiredView={showRequiredCourses}
+                    isExpanded={semestersExpanded[semester.semesterId - 1]}
+                    setExpanded={setSemestersExpanded}
                 />
             ))}
 
-            <AuxiliarCard text="Adicionar período" onClick={addSemester} />
+            <AuxiliaryCard isClickable text="Adicionar período" onClick={addSemester} />
         </SemestersContainer>
     );
 };

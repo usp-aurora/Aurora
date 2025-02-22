@@ -20,9 +20,9 @@ export default {
 			control: 'function',
 			description: 'Função chamada para fechar o modal',
 		},
-		title: {
+		name: {
 			control: 'text',
-			description: 'Título do curso',
+			description: 'Nome do curso',
 		},
 		code: {
 			control: 'text',
@@ -47,10 +47,10 @@ export const Default = {
 	args: {
 		isOpen: true,
 		onClose: fn(),
-		title: "Introdução à Computação",
+		name: "Introdução à Computação",
 		code: "MAC0110",
 		tags: [{"name": "Obrigatória", "color": "blue"}, {"name": "Outra tag qualquer", "color": "blue"}],
-		credits: {"lectureCredits": 2, "workCredits": 2},
-		desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+		credits: [2, 2],
+		desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
 	},
 };

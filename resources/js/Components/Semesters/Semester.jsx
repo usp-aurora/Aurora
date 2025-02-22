@@ -5,11 +5,14 @@ import { styled } from "@mui/material/styles";
 
 import Accordion from "../Atoms/Accordion/Accordion";
 import SubjectCard from "../Atoms/Card/SubjectCard";
-import AuxiliarCard from "../Atoms/Card/AuxiliarCard";
+import AuxiliaryCard from "../Atoms/Card/AuxiliaryCard";
 
 import Droppable from "../Dnd/Droppable";
-import SortableItem from '../Dnd/SortableItem';
-import SortableGrid from '../Dnd/SortableGrid';
+import SortableItem from "../Dnd/SortableItem";
+import SortableGrid from "../Dnd/SortableGrid";
+
+import { useSubjectInfoContext } from '../../Hooks/useSubjectInfoContext';
+
 
 const SummaryContainer = styled("div")(({}) => ({
     width: "100%",
@@ -22,7 +25,7 @@ const SummaryContainer = styled("div")(({}) => ({
 
 const SemesterInfoText = styled(Typography)(({ theme }) => ({
     textTransform: "uppercase",
-    
+
     ...theme.typography.h4,
     [theme.breakpoints.up("sm")]: {
         ...theme.typography.h2,
@@ -48,19 +51,22 @@ const DroppableCardContainer = styled(Droppable)(({ theme }) => ({
 
 const Semester = ({
     semesterData,
+    courseMap,
     isRequiredView,
-    displayCourse,
-//  courseMap,
+    isExpanded,
+    setExpanded
 }) => {
+    const { subjectInfo, isSubjectInfoModalOpen, closeSubjectInfoModal, showSubjectInfo } = useSubjectInfoContext(); 
+
     let workCredits = 0;
     let lectureCredits = 0;
 
-    semesterData.subjects.forEach((subject) => {
-        lectureCredits += parseInt(subject.credits[0], 10);
-        workCredits += parseInt(subject.credits[1], 10);
-    });
-
-    const [isExpanded, setExpanded] = useState(false);
+    if (semesterData.subjects.length > 0) {
+        semesterData.subjects.forEach((subject) => {
+            lectureCredits += parseInt(subject.credits[0], 10);
+            workCredits += parseInt(subject.credits[1], 10);
+        });
+    }
 
     const Summary = (
         <SummaryContainer>
@@ -79,7 +85,11 @@ const Semester = ({
         <Accordion
             summary={Summary}
             expanded={isExpanded}
-            onClick={() => setExpanded((prev) => !prev)}
+            onClick={() => setExpanded((prev) => {
+                const newExpanded = [...prev];
+                newExpanded[semesterData.semesterId - 1] = !newExpanded[semesterData.semesterId - 1];
+                return newExpanded;
+            })}
         >
             <DroppableCardContainer
                 id={semesterData.semesterId}
@@ -90,29 +100,28 @@ const Semester = ({
                 <SortableGrid items={semesterData.subjects}>
                     {semesterData.subjects.length === 0
                         ? !isRequiredView && (
-                              <AuxiliarCard text="Arraste uma disciplina" />
+                            <AuxiliaryCard text="Arraste uma disciplina" />
                           )
                         : semesterData.subjects.map((subject) => {
-                              // const isRequiredScheduled = isRequiredView && courseMap.get(subject.code).semester;
-
-                              return (
-                                  <SortableItem
-                                      id={subject.code}
-                                      key={subject.code}
-                                      subjectData={subject}
-                                      containerName={semesterData.semesterId}
-                                      disabled={!isExpanded}
-                                  >
-                                      <SubjectCard
-                                          courseCode={subject.code}
-                                          courseName={subject.name}
-                                          planetURL="/icons/planeta.png"
-                                          onClick={() =>
-                                              displayCourse(subject)
-                                          }
-                                      />
-                                  </SortableItem>
-                              );
+                            const subjectTags = courseMap.get(subject.code).tags;
+                            return (
+                                <SortableItem
+                                    id={subject.code}
+                                    key={subject.code}
+                                    subjectData={subject}
+                                    containerName={semesterData.semesterId}
+                                    disabled={!isExpanded}
+                                >
+                                    <SubjectCard
+                                        courseCode={subject.code}
+                                        courseName={subject.name}
+                                        planetURL="/icons/planeta.png"
+                                        onClick={() =>
+                                            showSubjectInfo({...subject, tags: subjectTags})
+                                        }
+                                    />
+                                </SortableItem>
+                            );
                           })}
                 </SortableGrid>
             </DroppableCardContainer>

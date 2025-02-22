@@ -1,10 +1,10 @@
 import React from "react";
 import { styled } from "@mui/material/styles";
 import { Typography } from "@mui/material";
-import CardContainer from "../Atoms/CardsGrid/CardsGrid";
-import SubjectCard from "../Atoms/Card/SubjectCard";
 
+import SubjectCard from "../Atoms/Card/SubjectCard";
 import SortableItem from "../Dnd/SortableItem";
+import SubjectsContainer from "./Pieces/SubjectsContainer";
 
 const SubGroupContainer = styled("div")(({ theme, depth }) => ({
     display: "flex",
@@ -50,29 +50,11 @@ const SubGroup = ({ depth, courseMap, subgroupData }) => {
                 <SubGroupText>99/99 créditos</SubGroupText>
             </SubGroupHeader>
             <SubGroupText>{subgroupData.description}</SubGroupText>
-            <CardContainer>
-                {subgroupData.subjects.map((subject) => {
-                    const isBlocked = courseMap.get(subject.code).semester !== null;
-                    
-                    return (
-                        <SortableItem
-                            id={subject.code}
-                            key={subject.code}
-                            subjectData={subject}
-                            containerName={subgroupData.title}
-                            disabled={isBlocked}
-                        >
-                            <SubjectCard
-                                courseCode={subject.code}
-                                courseName={subject.name}
-                                planetURL="/icons/planeta.png"
-                                ghost={isBlocked}
-                                // onClick={openCourseInfoPopUp}
-                            />
-                        </SortableItem>
-                    );
-                })}
-            </CardContainer>
+            <SubjectsContainer 
+                groupName={subgroupData.title}
+                courseMap={courseMap}
+                subjects={subgroupData.subjects}
+            />
             {subgroupData.subgroups.map((subgroup) => (
                 <SubGroup key={subgroup.title} depth={depth + 1} subgroupData={subgroup} />
             ))}

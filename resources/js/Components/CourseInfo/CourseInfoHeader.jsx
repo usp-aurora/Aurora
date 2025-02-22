@@ -61,7 +61,7 @@ const SubjectCodeDesktop = styled(Typography)(({ theme }) => ({
 }));
 
 
-const CourseInfoHeader = ({ onClose, title, code }) => {
+const CourseInfoHeader = ({ onClose, name, code }) => {
 	return (
 		<HeaderContainer>
 			<HeaderContent>
@@ -73,12 +73,12 @@ const CourseInfoHeader = ({ onClose, title, code }) => {
 				</Stack>
 				<Stack gap={1}>
 					<HeaderTitle>
-						{title.toUpperCase()}
+						{name.toUpperCase()}
 					</HeaderTitle>
 					<SubjectCodeDesktop>{code.toUpperCase()}</SubjectCodeDesktop>
 				</Stack>
 			</HeaderContent>
-			<CloseIcon onClick={onClose} sx={{cursor: 'pointer'}}/>
+			<CloseIcon onClick={onClose} sx={{cursor: 'pointer'}} color="white"/>
 		</HeaderContainer>
 	);
 };
