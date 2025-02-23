@@ -35,7 +35,7 @@ const Semesters = ({
             semesterData={semester}
             plannedSubjects={plannedSubjects}
             placeholder={<SemesterPlaceHolder />}
-            customPlan={customPlan}
+            isRequiredView={!customPlan}
           />
       ))}
       {customPlan && <AuxiliarCard icon={AddIcon} text="Adicionar período" onClick={addSemester} />}

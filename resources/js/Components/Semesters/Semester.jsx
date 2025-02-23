@@ -48,7 +48,7 @@ const Semester = ({
     placeholder,
     semesterData,
     plannedSubjects,
-    customPlan = true,
+    isRequiredView = true,
 }) => {
 
     let workCredits = 0;
@@ -85,11 +85,11 @@ const Semester = ({
                 key={semesterData.semesterId}
                 spacing={{ xs: 1, sm: 2 }}
                 disabled={!isExpanded}
-                placeholder={customPlan ? placeholder : null}
+                placeholder={isRequiredView ? null : placeholder}
             >
                 <SortableGrid items={semesterData.subjects} container={semesterData.semesterId}>
                     {semesterData.subjects.map((subject) => {
-                        const requiredScheduled = !customPlan && plannedSubjects.has(subject.code);
+                        const requiredScheduled = isRequiredView && plannedSubjects.has(subject.code);
                         
                         return (
                             <SortableItem
@@ -112,7 +112,7 @@ const Semester = ({
                         );
                     })}
                     
-                    {!customPlan && semesterData.suggestions.map((suggestion, index) => (
+                    {isRequiredView && semesterData.suggestions.map((suggestion, index) => (
                         <AuxiliarCard 
                         key={index}
                             text={`Disciplina do grupo ${suggestion.group}`} 
