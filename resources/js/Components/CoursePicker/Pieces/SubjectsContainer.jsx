@@ -35,6 +35,7 @@ const SubjectsContainer = ({ containerName, courseMap, subjects }) => {
 							onClick={() => {!isBlocked && showSubjectInfo({
 								...subject,
 								tags: subjectInfo.tags,
+								isPlanned: false,
 							})}}
 						/>
 					</SortableItem>

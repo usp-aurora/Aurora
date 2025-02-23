@@ -115,7 +115,7 @@ const Semester = ({
                                     courseName={subject.name}
                                     planetURL="/icons/planeta.png"
                                     onClick={() =>
-                                        showSubjectInfo({...subject, tags: subjectTags})
+                                        showSubjectInfo({...subject, tags: subjectTags, isPlanned: true})
                                     }
                                 />
                             </SortableItem>

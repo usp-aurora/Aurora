@@ -16,7 +16,6 @@ import { DragAndDropProvider } from "../Components/Dnd/DragAndDropContext.jsx";
 import { SubjectInfoProvider } from "../Hooks/useSubjectInfoContext.jsx";
 import { SubjectPickerProvider } from "../Hooks/useSubjectPickerContext.jsx";
 
-
 const AppContainer = styled( Box )(() => ({
     position: "relative",
 }));
@@ -34,7 +33,6 @@ const ContentContainer = styled( Box )(({ theme }) => ({
 
 const Home = ({ subjects, groups }) => {
     const [isLoadingData, setIsLoadingData] = useState(true);
-    const [isAddSubjectModalOpen, setAddSubjectModalOpen] = useState(false);
 
     const [courseMap, setCourseMap] = useCourseMap(subjects, groups);
     const [plans, setPlans] = usePlansManager(
@@ -42,10 +40,6 @@ const Home = ({ subjects, groups }) => {
         setCourseMap,
         setIsLoadingData
     );
-
-    const toggleAddSubjectModal = () => {
-        setAddSubjectModalOpen(!isAddSubjectModalOpen);
-    };
 
     return isLoadingData ? (
         <LoadingScreen />
@@ -58,7 +52,7 @@ const Home = ({ subjects, groups }) => {
                 >
                     <AppContainer>
                         <Background />
-                        <CourseInfo isPlanned={false} />
+                        <CourseInfo />
                         <ContentContainer>
                             <Stack spacing={{ xs: 1, sm: 2 }} sx={{ width: "100%" }} alignItems="center">
                                 <Header />
@@ -72,12 +66,8 @@ const Home = ({ subjects, groups }) => {
                                         />
                                     </Stack>
                                     <CoursePicker
-                                        // open={true}
-                                        open={isAddSubjectModalOpen}
                                         courseMap={courseMap}
                                         data={groups}
-                                        // showSubjectDetails={showSubjectDetails}
-                                        // openSubjectPopUp={toggleAddSubjectModal}
                                     /> 
                                 </Stack>
                             </Stack>

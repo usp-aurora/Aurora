@@ -6,6 +6,7 @@ function SubjectInfoProvider({ children })  {
 	const [isSubjectInfoModalOpen, setSubjectInfoModalOpen] = useState(false);
 
 	const [subjectInfo, setSubjectInfo] = useState({
+		isPlanned: false,
 		name: "",
 		code: "",
 		tags: [],
@@ -16,6 +17,7 @@ function SubjectInfoProvider({ children })  {
 	const showSubjectInfo = (subject) => {
 		setSubjectInfoModalOpen(true);
 		setSubjectInfo({
+			isPlanned: subject.isPlanned,
 			name: subject.name,
 			code: subject.code,
 			tags: subject.tags,

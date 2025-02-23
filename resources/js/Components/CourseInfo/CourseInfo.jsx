@@ -105,9 +105,9 @@ function CourseInfoGraph() {
 	return (<GraphView nodes={nodes} links={links} root={"n1"} vertical={isMobile} interactive={!isMobile} />);
 }
 
-function CourseInfo({ isPlanned }) {
+function CourseInfo() {
 	const { subjectInfo, isSubjectInfoModalOpen, closeSubjectInfoModal } = useSubjectInfoContext();
-	
+
 	return (
 		<CourseInfoBackground onClick={closeSubjectInfoModal} open={isSubjectInfoModalOpen}>
 			<CourseInfoContainer onClick={(e) => e.stopPropagation()}>
@@ -119,8 +119,8 @@ function CourseInfo({ isPlanned }) {
 						<CourseInfoGraph />
 					</CorseInfoGraphContainer>
 					<Stack direction="row" sx={{ display: { xs: 'flex', sm: 'none' } }}>
-						{isPlanned
-							? <IconWrapper color="error" Icon={DeleteIcon} />
+						{subjectInfo.isPlanned
+							? <IconWrapper color="error" Icon={DeleteIcon} sx={{marginLeft: 'auto'}}/>
 							: <Button color="primary" size="small" sx={{marginLeft: 'auto'}}> Adicionar </Button> 
 						}
 					</Stack>
