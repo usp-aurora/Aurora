@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Foundation\Auth;
 use Illuminate\Http\Request;
 use App\Models\Plan;
+use Illuminate\Support\Facades\Log;
 
 class PlanController extends Controller
 {
@@ -111,7 +112,7 @@ class PlanController extends Controller
                 'changedPlans' => $changedPlans,
             ], 200);
         } catch (\Exception $e) {
-            \Log::error('Error synchronizing plans:', ['error' => $e->getMessage()]);
+            Log::error('Error synchronizing plans:', ['error' => $e->getMessage()]);
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
         }
     }
