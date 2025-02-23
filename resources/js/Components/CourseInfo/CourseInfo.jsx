@@ -1,14 +1,13 @@
 import React from 'react';
-import { styled } from '@mui/material/styles';
-import useMediaQuery  from '@mui/material/useMediaQuery';
-import { Stack } from '@mui/material';
+import { styled, useTheme } from '@mui/material/styles';
+import { Stack, useMediaQuery } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 import { fadeIn, fadeOut } from '../Atoms/Animations';
 import glassmorphismStyle from '../../styles/MUI/glassmorphismMUI';
 
 import SubjectCard from '../Atoms/Card/SubjectCard';
-import GraphView from '../GraphView/GraphView';
+import GraphView from './GraphView/GraphView';
 import CourseInfoHeader from './CourseInfoHeader';
 import CourseInfoTags from './CourseInfoTags';
 import CourseInfoText from './CourseInfoText';
@@ -28,7 +27,7 @@ const CourseInfoBackground = styled('div')(({ theme, open }) => ({
 	display: open ? 'flex' : 'none',
 	justifyContent: 'center',
 	alignItems: 'center',
-	zIndex: 1000,
+	zIndex: 3,
 
 	padding: theme.spacing(1),
 	[theme.breakpoints.up('sm')]:{
@@ -101,13 +100,14 @@ function CourseInfoGraph() {
 		);
 	}
 
+	const theme = useTheme();
 	const isMobile = useMediaQuery((theme) => theme.breakpoints.down('sm'));
 	return (<GraphView nodes={nodes} links={links} root={"n1"} vertical={isMobile} interactive={!isMobile} />);
 }
 
 function CourseInfo({ isPlanned }) {
 	const { subjectInfo, isSubjectInfoModalOpen, closeSubjectInfoModal } = useSubjectInfoContext();
-
+	
 	return (
 		<CourseInfoBackground onClick={closeSubjectInfoModal} open={isSubjectInfoModalOpen}>
 			<CourseInfoContainer onClick={(e) => e.stopPropagation()}>

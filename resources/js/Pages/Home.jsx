@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
-import Stack from "@mui/material/Stack";
+import { Stack, Box }  from "@mui/material";
 
 import Header from "../Components/Header/Header";
 import CompletionBar from "../Components/CompletionBar/CompletionBar";
@@ -13,16 +13,18 @@ import LoadingScreen from "../Components/Atoms/LoadingScreen";
 import useCourseMap from "../Hooks/useCourseMap.jsx";
 import usePlansManager from "../Hooks/usePlansManager.jsx";
 import { DragAndDropProvider } from "../Components/Dnd/DragAndDropContext.jsx";
-
 import { SubjectInfoProvider } from "../Hooks/useSubjectInfoContext.jsx";
+import { SubjectPickerProvider } from "../Hooks/useSubjectPickerContext.jsx";
 
-const AppContainer = styled("div")(() => ({
+
+const AppContainer = styled( Box )(() => ({
     position: "relative",
 }));
 
-const ContentContainer = styled("div")(({ theme }) => ({
+const ContentContainer = styled( Box )(({ theme }) => ({
     display: "flex",
     justifyContent: "center",
+    width: "100%",
     padding: "8px",
 
     [theme.breakpoints.up("sm")]: {
@@ -49,37 +51,40 @@ const Home = ({ subjects, groups }) => {
         <LoadingScreen />
     ) : (
         <SubjectInfoProvider>
-            <AppContainer>
-                <Background />
-                <CourseInfo isPlanned={false} />
-                <ContentContainer>
-                    <Stack spacing={1}>
-                        <Header />
-                        <DragAndDropProvider
-                            setCourseMap={setCourseMap}
-                            setPlans={setPlans}
-                        >
-                            <Stack spacing={2} direction="row">
-                                <Stack spacing={1} sx={{ width: "60vw" }}>
-                                    <CompletionBar />
-                                    <Semesters
+            <SubjectPickerProvider>
+                <DragAndDropProvider
+                    setCourseMap={setCourseMap}
+                    setPlans={setPlans}
+                >
+                    <AppContainer>
+                        <Background />
+                        <CourseInfo isPlanned={false} />
+                        <ContentContainer>
+                            <Stack spacing={{ xs: 1, sm: 2 }} sx={{ width: "100%" }} alignItems="center">
+                                <Header />
+                                <Stack spacing={{ xs: 0, sm: 2 }} direction="row" sx={{ width: "100%" }}>
+                                    <Stack spacing={{ xs: 1, sm: 2 }} sx={{ width: { xs: "100%", sm: "64%" } }}>
+                                        <CompletionBar />
+                                        <Semesters
+                                            courseMap={courseMap}
+                                            plans={plans}
+                                            setPlans={setPlans}
+                                        />
+                                    </Stack>
+                                    <CoursePicker
+                                        // open={true}
+                                        open={isAddSubjectModalOpen}
                                         courseMap={courseMap}
-                                        plans={plans}
-                                        setPlans={setPlans}
-                                    />
+                                        data={groups}
+                                        // showSubjectDetails={showSubjectDetails}
+                                        // openSubjectPopUp={toggleAddSubjectModal}
+                                    /> 
                                 </Stack>
-                                <CoursePicker
-                                    open={isAddSubjectModalOpen}
-                                    courseMap={courseMap}
-                                    data={groups}
-                                    // showSubjectDetails={showSubjectDetails}
-                                    // openSubjectPopUp={toggleAddSubjectModal}
-                                />
                             </Stack>
-                        </DragAndDropProvider>
-                    </Stack>
-                </ContentContainer>
-            </AppContainer>
+                        </ContentContainer>
+                    </AppContainer>
+                </DragAndDropProvider>
+            </SubjectPickerProvider>
         </SubjectInfoProvider> 
     );
 };

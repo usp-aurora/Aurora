@@ -34,7 +34,7 @@ const SubGroupContainer = styled("div")(({ theme, depth }) => ({
     gap: theme.spacing(2),
 }));
 
-const Group = ({ groupData, courseMap }) => {
+const Group = ({ groupData, courseMap, expanded, onClick }) => {
     return (
         <Accordion
             summary={
@@ -44,6 +44,8 @@ const Group = ({ groupData, courseMap }) => {
                     completed={false}
                 />
             }
+            expanded={expanded}
+            onClick={onClick}
         >
             <GroupContainer>
                 <CompletionMetrics

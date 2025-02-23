@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 
-import { Typography } from "@mui/material/";
-import { styled } from "@mui/material/styles";
+import { Typography, useMediaQuery } from "@mui/material/";
+import { styled, useTheme } from "@mui/material/styles";
+import AddIcon from "@mui/icons-material/Add";
 
 import Accordion from "../Atoms/Accordion/Accordion";
 import SubjectCard from "../Atoms/Card/SubjectCard";
@@ -12,6 +13,7 @@ import SortableItem from "../Dnd/SortableItem";
 import SortableGrid from "../Dnd/SortableGrid";
 
 import { useSubjectInfoContext } from '../../Hooks/useSubjectInfoContext';
+import { useSubjectPickerContext } from '../../Hooks/useSubjectPickerContext';
 
 
 const SummaryContainer = styled("div")(({}) => ({
@@ -54,9 +56,10 @@ const Semester = ({
     courseMap,
     isRequiredView,
     isExpanded,
-    setExpanded
+    onClick
 }) => {
     const { subjectInfo, isSubjectInfoModalOpen, closeSubjectInfoModal, showSubjectInfo } = useSubjectInfoContext(); 
+    const { isSubjectPickerModalOpen, closeSubjectPickerModal, showSubjectPickerModal } = useSubjectPickerContext();
 
     let workCredits = 0;
     let lectureCredits = 0;
@@ -81,15 +84,14 @@ const Semester = ({
         </SummaryContainer>
     );
 
+    const theme = useTheme();
+    const isMobile = useMediaQuery((theme) => theme.breakpoints.down('sm'));
+
     return (
         <Accordion
             summary={Summary}
             expanded={isExpanded}
-            onClick={() => setExpanded((prev) => {
-                const newExpanded = [...prev];
-                newExpanded[semesterData.semesterId - 1] = !newExpanded[semesterData.semesterId - 1];
-                return newExpanded;
-            })}
+            onClick={onClick}
         >
             <DroppableCardContainer
                 id={semesterData.semesterId}
@@ -98,31 +100,29 @@ const Semester = ({
                 disabled={!isExpanded}
             >
                 <SortableGrid items={semesterData.subjects}>
-                    {semesterData.subjects.length === 0
-                        ? !isRequiredView && (
-                            <AuxiliaryCard text="Arraste uma disciplina" />
-                          )
-                        : semesterData.subjects.map((subject) => {
-                            const subjectTags = courseMap.get(subject.code).tags;
-                            return (
-                                <SortableItem
-                                    id={subject.code}
-                                    key={subject.code}
-                                    subjectData={subject}
-                                    containerName={semesterData.semesterId}
-                                    disabled={!isExpanded}
-                                >
-                                    <SubjectCard
-                                        courseCode={subject.code}
-                                        courseName={subject.name}
-                                        planetURL="/icons/planeta.png"
-                                        onClick={() =>
-                                            showSubjectInfo({...subject, tags: subjectTags})
-                                        }
-                                    />
-                                </SortableItem>
-                            );
-                          })}
+                    {semesterData.subjects.map((subject) => {
+                        const subjectTags = courseMap.get(subject.code).tags;
+                        return (
+                            <SortableItem
+                                id={subject.code}
+                                key={subject.code}
+                                subjectData={subject}
+                                containerName={semesterData.semesterId}
+                                disabled={!isExpanded}
+                            >
+                                <SubjectCard
+                                    courseCode={subject.code}
+                                    courseName={subject.name}
+                                    planetURL="/icons/planeta.png"
+                                    onClick={() =>
+                                        showSubjectInfo({...subject, tags: subjectTags})
+                                    }
+                                />
+                            </SortableItem>
+                    );})}
+                    {isMobile 
+                        ? <AuxiliaryCard Icon={AddIcon} text="Adicionar disciplina" clickable onClick={showSubjectPickerModal}/>
+                        : <AuxiliaryCard text="Arraste uma disciplina" ghost/>}
                 </SortableGrid>
             </DroppableCardContainer>
         </Accordion>

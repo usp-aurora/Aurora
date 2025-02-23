@@ -1,24 +1,14 @@
-import React from "react";
-import { styled } from "@mui/material/styles";
-import { Typography } from "@mui/material";
+import React, { useState } from "react";
+import { styled, useTheme } from "@mui/material/styles";
+import { Typography, useMediaQuery} from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+
 import glassmorphismStyle from "../../styles/MUI/glassmorphismMUI";
 import Droppable from "../Dnd/Droppable";
 import Group from "./Group";
+import Background from "../Background/HomeBackground";
 
-const PlaceholderBackground = styled("div")(({ theme }) => ({
-    position: "fixed",
-    top: 0,
-    left: 0,
-    width: "100vw",
-    height: "100vh",
-    backgroundColor: "#1A1C24",
-    zIndex: -1,
-
-    [theme.breakpoints.up("sm")]: {
-        display: "none",
-    },
-}));
+import { useSubjectPickerContext } from '../../Hooks/useSubjectPickerContext';
 
 const PopUpContainer = styled("div")(({ open, theme }) => ({
     [theme.breakpoints.down("sm")]: {
@@ -26,9 +16,10 @@ const PopUpContainer = styled("div")(({ open, theme }) => ({
         position: "fixed",
         top: 0,
         left: 0,
-        width: "100%",
-        height: "100%",
-        zIndex: 999,
+        width: "100vw",
+        height: "100vh",
+        zIndex: 2,
+        overflowY: "auto",
     },
 }));
 
@@ -71,44 +62,43 @@ const StyledTitle = styled(Typography)(({ theme }) => ({
 const StyledCloseIcon = styled(CloseIcon)(({ theme }) => ({
     display: "block",
     color: theme.palette.white.main,
+    cursor: "pointer",
     [theme.breakpoints.up("sm")]: {
         display: "none",
     },
 }));
 
-const CoursePicker = ({ open, courseMap, data }) => {
-    // const [expandedCategories, setExpandedCategories] = useState(
-    //     categories.reduce((acc, data) => {
-    //         acc[data.subgroups.title] = false;
-    //         return acc;
-    //     }, {})
-    // );
+function CoursePicker({ courseMap, data }){
+    const { isSubjectPickerModalOpen, closeSubjectPickerModal, showSubjectPickerModal } = useSubjectPickerContext();
+    
+    const [expandedCategories, setExpandedCategories] = useState(data.subgroups.map(() => true)); 
+    const toggleCategory = (index) => {
+        const newExpandedCategories = [...expandedCategories];
+        newExpandedCategories[index] = !newExpandedCategories[index];
+        setExpandedCategories(newExpandedCategories);
+    }
 
-    // const toggleCategory = (groupTitle) => {
-    //     setExpandedCategories((prev) => ({
-    //         ...prev,
-    //         [categoryName]: !prev[categoryName],
-    //     }));
-    // };
+    const theme = useTheme(); 
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
     return (
-        <PopUpContainer open={open}>
+        <PopUpContainer open={isSubjectPickerModalOpen}>
             <Container id="coursePicker">
-                <PlaceholderBackground />
+                {isMobile && <Background />}
                 <HeaderContainer>
                     <StyledTitle>Adicionar disciplina</StyledTitle>
-                    <StyledCloseIcon />
+                    <StyledCloseIcon onClick={closeSubjectPickerModal}/>
                 </HeaderContainer>
                 {/* Algum dia vai ter um search bar bem aqui */}
-                {data.subgroups.map((groupData) => (
-                    <Group
-                        key={groupData.title}
-                        groupData={groupData}
-                        courseMap={courseMap}
-                        // expanded={expandedCategories[category.name]}
-                        // onClick={() => toggleCategory(category.name)}
-                    />
-                ))}
+                    {data.subgroups.map((groupData, index) => (
+                        <Group
+                            key={groupData.title}
+                            groupData={groupData}
+                            courseMap={courseMap}
+                            expanded={expandedCategories[index]}
+                            onClick={() => toggleCategory(index)}
+                        />
+                    ))}
             </Container>
         </PopUpContainer>
     );

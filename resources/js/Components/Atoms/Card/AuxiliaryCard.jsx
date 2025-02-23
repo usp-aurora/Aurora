@@ -3,19 +3,13 @@ import { styled } from "@mui/material/styles";
 import { Typography } from "@mui/material";
 import { CardBackgroundBase, CardContainer} from "./Pieces/CardPieces";
 
-const CardBackground = styled(({ isClickable, hasIcon, ghost, ...props }) => (
-    <CardBackgroundBase ghost={ghost} hasIcon={hasIcon} isClickable={isClickable} {...props} />
-))(({ isClickable, ghost, theme }) => {
-    const styles = {};
-
-    if (isClickable && !ghost) {
-        styles["&:hover"] = {
-            backgroundColor: theme.palette.primary.dark,
-        };
-    }
-
-    return styles;
-});
+const CardBackground = styled(({ isClickable, hasIcon, ghost, theme, ...props }) => (
+    <CardBackgroundBase isClickable={isClickable} hasIcon={hasIcon} ghost={ghost} theme={theme} {...props} />
+))(({ isClickable, ghost, theme }) => ({    
+    "&:hover": {
+        backgroundColor: (isClickable && !ghost) ? theme.palette.primary.dark : undefined,
+    },
+}));
 
 const StyledIcon = styled(({ Component, ...props }) => (
     <Component {...props} />
@@ -32,10 +26,10 @@ const StyledText = styled(Typography)(({ theme }) => ({
     },
 }));
 
-function AuxiliaryCard({ isClickable, Icon, text, ghost, ...props }){
+function AuxiliaryCard({ Icon, text, clickable, ghost, ...props }){
     return (
-        <CardContainer isClickable={isClickable} {...props}>
-            <CardBackground isClickable={isClickable} hasIcon={!!Icon} ghost={ghost}>
+        <CardContainer isClickable={clickable} {...props}>
+            <CardBackground isClickable={clickable} hasIcon={!!Icon} ghost={ghost}>
                 {!!Icon && <StyledIcon Component={Icon} />}
                 <StyledText>{text}</StyledText>
             </CardBackground>

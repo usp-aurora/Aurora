@@ -35,11 +35,14 @@ function SubjectInfoProvider({ children })  {
 			}
 		};
 
-		window.addEventListener('keydown', handleKeyDown);
+		if (isSubjectInfoModalOpen) {
+			window.addEventListener('keydown', handleKeyDown);
+		}
+
 		return () => {
 			window.removeEventListener('keydown', handleKeyDown);
 		};
-	}, []);
+	}, [isSubjectInfoModalOpen]);
 
 	return (
 		<SubjectInfoContext.Provider value={{ subjectInfo, isSubjectInfoModalOpen, closeSubjectInfoModal, showSubjectInfo }}>

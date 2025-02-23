@@ -14,7 +14,7 @@ export default {
   tags: ['autodocs'],
   
   argTypes: {
-    isClickable: {
+    clickable: {
       control: 'boolean',
       description: 'Determina se o card é clicável',
     },
@@ -35,7 +35,7 @@ export default {
 
 export const Card = {
   args: {
-    isClickable: true,
+    clickable: true,
     text: "Adicionar",
     Icon: AddIcon,
     ghost: false
@@ -44,7 +44,7 @@ export const Card = {
 
 export const CardGhost = {
   args: {
-    isClickable: false,
+    clickable: false,
     text: "Arraste uma disciplina",
     ghost: "true"
   },

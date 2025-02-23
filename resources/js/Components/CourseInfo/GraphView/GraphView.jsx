@@ -9,7 +9,7 @@ import {
 	getHandleMouseDownNode, handleTouch,
 } from "./EventUtils";
 import {getStartUpdate, stopUpdate, getInitialStablePositions} from "./UpdateUtils";
-import Starfield from "../Background/Starfield";
+import Starfield from "../../Background/Starfield";
 
 const GraphBodyView = styled("div")({
 	position: "relative",

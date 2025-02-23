@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
+import AddIcon from "@mui/icons-material/Add";
 
 import AuxiliaryCard from "../Atoms/Card/AuxiliaryCard";
 
@@ -31,12 +32,20 @@ const SemestersContainer = styled( Box )(({ theme }) => ({
     display: "flex",
     flexDirection: "column",
     gap: theme.spacing(1),
+    [theme.breakpoints.up("sm")]: {
+        gap: theme.spacing(2),
+    }
 }));
 
 const Semesters = ({ courseMap, plans, setPlans }) => {
     const { setIsDragDisabled } = useDragAndDrop();
                                                       // fazendo o primeiro semestre começar aberto
-    const [semestersExpanded, setSemestersExpanded] = useState(plans.map((_, index) => index === 0)); 
+    const [expandedSemesters, setExpandedSemesters] = useState(plans.map((_, index) => index === 0)); 
+    const toggleSemester = (index) => {
+        const newExpandedSemester = [...expandedSemesters];
+        newExpandedSemester[index] = !newExpandedSemester[index];
+        setExpandedSemesters(newExpandedSemester);
+    }
 
     // Controls whether to show required courses or the custom plan
     const [showRequiredCourses, setShowRequiredCourses] = useState(false);
@@ -53,24 +62,24 @@ const Semesters = ({ courseMap, plans, setPlans }) => {
         };
 
         setPlans([...plans, newSemester]);
-        setSemestersExpanded([...semestersExpanded, true]);
+        setExpandedSemesters([...expandedSemesters, true]);
     };
 
 
     return (
         <SemestersContainer>
-            {displayedSemesters.map((semester) => (
+            {displayedSemesters.map((semester, index) => (
                 <Semester
                     key={semester.semesterId}
                     semesterData={semester}
                     courseMap={courseMap}
                     isRequiredView={showRequiredCourses}
-                    isExpanded={semestersExpanded[semester.semesterId - 1]}
-                    setExpanded={setSemestersExpanded}
+                    isExpanded={expandedSemesters[index]}
+                    onClick={() => toggleSemester(index)}
                 />
             ))}
 
-            <AuxiliaryCard isClickable text="Adicionar período" onClick={addSemester} />
+            <AuxiliaryCard Icon={AddIcon} text="Adicionar período" onClick={addSemester} clickable />
         </SemestersContainer>
     );
 };
