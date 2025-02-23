@@ -12,7 +12,7 @@ const SemesterPlaceHolder = ({ openMenu }) => {
       {isLargeScreen ? (
         <AuxiliarCard text="Arraste uma disciplina" ghost={true} sx={{ pointerEvents: "none" }} />
       ) : (
-        <AuxiliarCard icon={AddIcon} />
+        <AuxiliarCard text="Adicionar" icon={AddIcon} />
       )}
     </>
   );

@@ -12,34 +12,22 @@ export default {
 	
 	args: {
 		semesterData: {
-			"semester": 1, 
-			"courses": [
+			"semesterId": 1, 
+			"subjects": [
 				{
-				  id: 1,
-				  title: "Introduction to Computing",
+				  name: "Introduction to Computing",
 				  code: "MAC0101",
-				  semester: 1,
-				  subjectId: 101,
-				  lectureCredits: 4,
-				  workCredits: 2
+				  credits: [4, 2]
 				},
 				{
-				  id: 2,
-				  title: "Calculus I",
+				  name: "Calculus I",
 				  code: "MAT0101",
-				  semester: 1,
-				  subjectId: 102,
-				  lectureCredits: 4,
-				  workCredits: 2
+				  credits: [4, 2]
 				},
 				{
-				  id: 3,
-				  title: "Linear Algebra I",
+				  name: "Linear Algebra I",
 				  code: "MAT0102",
-				  semester: 1,
-				  subjectId: 103,
-				  lectureCredits: 4,
-				  workCredits: 2
+				  credits: [4, 2]
 				}
 			  ]
 		}
