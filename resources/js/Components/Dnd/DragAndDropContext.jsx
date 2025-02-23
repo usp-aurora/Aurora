@@ -1,8 +1,9 @@
-import { useState, useRef, useEffect, createContext, useContext } from "react";
+import { useState, useRef, createContext, useContext, useEffect } from "react";
 import { DndContext, closestCenter, rectIntersection } from "@dnd-kit/core";
 import { useSensor, useSensors, PointerSensor, KeyboardSensor } from "@dnd-kit/core";
-import { getContainerName, handleDragStart, handleDragOver, handleDragEnd } from "../../Handlers/DragHandlers.jsx";
+
 import DragOverlayComponent from "./DragOverlayComponent.jsx";
+import { getContainerName, handleDragStart, handleDragOver } from "../../Handlers/DragHandlers.jsx";
 
 const DragAndDropContext = createContext();
 
@@ -31,12 +32,9 @@ function computeCollision({ droppableContainers, ...props }) {
  * Drag-and-drop provider that manages drag state, interactions, and event handlers.
  *
  * @param {React.ReactNode} children - Components wrapped inside the provider.
- * @param {Function} setCourseMap - Function to update the course mapping.
- * @param {Function} setPlans - Function to update the plan structure.
+ * @param {Function} setPlans - Function to set the plan structure.
  */
-function DragAndDropProvider({ children, setCourseMap, setPlans }) {
-  const [isDragDisabled, setIsDragDisabled] = useState(false);
-  const [dragOverlay, setDragOverlay] = useState(null);
+function DragAndDropProvider({ children, setPlans, resetPlans, disabled = false }) {
   const [draggedItem, setDraggedItem] = useState(null);
   const throttleTimer = useRef(null);
 
@@ -56,7 +54,7 @@ function DragAndDropProvider({ children, setCourseMap, setPlans }) {
    */
   function handleThrottledDragOver(event) {
     if (!throttleTimer.current) {
-      handleDragOver(event, setPlans, draggedItem, setDraggedItem);
+      handleDragOver(event, draggedItem, setDraggedItem, setPlans);
 
       throttleTimer.current = setTimeout(() => {
         throttleTimer.current = null;
@@ -64,42 +62,20 @@ function DragAndDropProvider({ children, setCourseMap, setPlans }) {
     }
   }
 
-  /**
-   * Updates `courseMap` when an item is dragged.
-   * Marks changes as unsaved.
-   */
-  useEffect(() => {
-    if (draggedItem) {
-      setCourseMap((prevMap) => {
-        const updatedMap = new Map(prevMap);
-        updatedMap.set(draggedItem.id, {
-          ...prevMap.get(draggedItem.id),
-          semester: draggedItem.container === "coursePicker" ? null : Number(draggedItem.container),
-          unsaved: true,
-        });
-        return updatedMap;
-      });
-    }
-  }, [draggedItem, setCourseMap]);
-
   return (
-    <DragAndDropContext.Provider value={{ isDragDisabled, setIsDragDisabled }}>
+    <DragAndDropContext.Provider value={{ isDragDisabled: disabled }}>
       <DndContext
         sensors={sensors}
         collisionDetection={computeCollision}
-        onDragStart={(event) => handleDragStart(event, setDragOverlay, setDraggedItem)}
+        onDragStart={(e) => handleDragStart(e, setDraggedItem)}
         onDragOver={handleThrottledDragOver}
-        onDragEnd={(event) => {
-          handleDragEnd(event, draggedItem, setPlans);
-          setDraggedItem(null);
-          setDragOverlay(null);
-        }}
+        onDragEnd={() => setDraggedItem(null)}
         onDragCancel={() => {
+          resetPlans();
           setDraggedItem(null);
-          setDragOverlay(null);
         }}
       >
-        {dragOverlay && <DragOverlayComponent subject={dragOverlay} />}
+        {draggedItem && <DragOverlayComponent subject={draggedItem} />}
         {children}
       </DndContext>
     </DragAndDropContext.Provider>

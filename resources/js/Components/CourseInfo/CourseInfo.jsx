@@ -56,6 +56,7 @@ const CourseReqsPlaceholder = styled.div`
 	align-items: center;
 	justify-content: center;
 	color:white;
+	overflow: hidden;
 `;
 
 const ActionsButtonsContainer = styled.div`

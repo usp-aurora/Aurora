@@ -25,6 +25,12 @@ const CardContent = styled("div")(({ theme }) => ({
 	}
 }));
 
+const PlanetWrapper = styled("div")({
+	position: "relative",
+	display: "inline-flex", // Mantém os elementos alinhados corretamente
+	alignItems: "center", // Garante que fiquem alinhados ao bottom
+});
+
 const PlanetContainer = styled("div")(({ theme }) => ({
 	width: theme.card.mobile.planetSize,
 	height: theme.card.mobile.planetSize,
@@ -32,6 +38,21 @@ const PlanetContainer = styled("div")(({ theme }) => ({
 	[theme.breakpoints.up("sm")]: {
 		width: theme.card.desktop.planetSize,
 		height: theme.card.desktop.planetSize,
+	}
+}));
+
+const Moon = styled("div")(({ theme }) => ({
+	width: theme.card.mobile.moonSize,
+	height: theme.card.mobile.moonSize,
+	position: "absolute",
+	left: "-45%",
+	
+	backgroundColor: theme.palette.green.main,
+	borderRadius: "50%",
+
+	[theme.breakpoints.up("sm")]: {
+		width: theme.card.desktop.moonSize,
+		height: theme.card.desktop.moonSize,
 	}
 }));
 
@@ -71,15 +92,18 @@ const StyledCourseText = styled(Typography)(({theme}) => ({
 	}
 }));
 
-const SubjectCard = ({ courseCode, courseTitle, planetURL, ghost, glassmorphismLevel, ...props }) => {
+const SubjectCard = ({ courseCode, courseTitle, planetURL, ghost, moon, glassmorphismLevel, ...props }) => {
 	
 	return (
 		<CardContainer {...props}>
 			<CardBackground ghost={ghost} glassmorphismLevel={glassmorphismLevel}>
 				<CardContent>
-					<PlanetContainer>
-						{planetURL && <Planet src={planetURL} />}
-					</PlanetContainer>
+					<PlanetWrapper>
+						{moon && <Moon/> }
+						<PlanetContainer>
+							{planetURL && <Planet src={planetURL} />}
+						</PlanetContainer>
+					</PlanetWrapper>
 					<StyledTitle> {courseCode} </StyledTitle>
 					<TextBox>
 						<StyledCourseText component="p">{courseTitle}</StyledCourseText>

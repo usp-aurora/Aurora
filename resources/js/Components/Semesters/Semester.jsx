@@ -45,11 +45,12 @@ const DroppableCardContainer = styled(Droppable)(({ theme }) => ({
 }));
 
 const Semester = ({
+    placeholder,
     semesterData,
-    isRequiredView,
-    displayCourse,
-//  courseMap,
+    plannedSubjects,
+    isRequiredView = true,
 }) => {
+
     let workCredits = 0;
     let lectureCredits = 0;
 
@@ -57,8 +58,6 @@ const Semester = ({
         lectureCredits += parseInt(subject.credits[0], 10);
         workCredits += parseInt(subject.credits[1], 10);
     });
-
-    const [isExpanded, setExpanded] = useState(false);
 
     const Summary = (
         <SummaryContainer>
@@ -73,6 +72,8 @@ const Semester = ({
         </SummaryContainer>
     );
 
+    const [isExpanded, setExpanded] = useState(false);
+
     return (
         <Accordion
             summary={Summary}
@@ -84,34 +85,41 @@ const Semester = ({
                 key={semesterData.semesterId}
                 spacing={{ xs: 1, sm: 2 }}
                 disabled={!isExpanded}
+                placeholder={isRequiredView ? null : placeholder}
             >
-                <SortableGrid items={semesterData.subjects}>
-                    {semesterData.subjects.length === 0
-                        ? !isRequiredView && (
-                              <AuxiliarCard text="Arraste uma disciplina" />
-                          )
-                        : semesterData.subjects.map((subject) => {
-                              // const isRequiredScheduled = isRequiredView && courseMap.get(subject.code).semester;
-
-                              return (
-                                  <SortableItem
-                                      id={subject.code}
-                                      key={subject.code}
-                                      subjectData={subject}
-                                      containerName={semesterData.semesterId}
-                                      disabled={!isExpanded}
-                                  >
-                                      <SubjectCard
-                                          courseCode={subject.code}
-                                          courseTitle={subject.name}
-                                          planetURL="/icons/planeta.png"
-                                          onClick={() =>
-                                              displayCourse(subject)
-                                          }
-                                      />
-                                  </SortableItem>
-                              );
-                          })}
+                <SortableGrid items={semesterData.subjects} container={semesterData.semesterId}>
+                    {semesterData.subjects.map((subject) => {
+                        const requiredScheduled = isRequiredView && plannedSubjects.has(subject.code);
+                        
+                        return (
+                            <SortableItem
+                                id={subject.code}
+                                key={subject.code}
+                                subjectData={subject}
+                                container={semesterData.semesterId}
+                                disabled={!isExpanded}
+                            >
+                                <SubjectCard
+                                    courseCode={subject.code}
+                                    courseTitle={subject.name}
+                                    planetURL="/icons/planeta.png"
+                                    moon={requiredScheduled}
+                                    // onClick={() =>
+                                    //    displayCourse(subject)
+                                    // }
+                                />
+                            </SortableItem>
+                        );
+                    })}
+                    
+                    {isRequiredView && semesterData.suggestions.map((suggestion, index) => (
+                        <AuxiliarCard 
+                        key={index}
+                            text={`Disciplina do grupo ${suggestion.group}`} 
+                            ghost={true}
+                            sx={{ pointerEvents: "none"}}
+                        />
+                    ))}
                 </SortableGrid>
             </DroppableCardContainer>
         </Accordion>

@@ -1,66 +1,46 @@
-import React, { useState } from "react";
-import Stack from "@mui/material/Stack";
+import React from "react";
+import { useDndMonitor } from "@dnd-kit/core";
+import { handleDragEnd } from "../../Handlers/DragHandlers";
 
+import Stack from "@mui/material/Stack";
+import AddIcon from '@mui/icons-material/Add';
 import AuxiliarCard from "../Atoms/Card/AuxiliarCard";
 
 import Semester from "./Semester";
-import { useDragAndDrop } from "../Dnd/DragAndDropContext";
+import SemesterPlaceHolder from "./SemesterPlaceholder";
 
-const mandatoryCurriculum = [
-    {
-        semesterId: 1,
-        subjects: [
-            {
-                id: 1,
-                code: "MAC0110",
-                credits: ["4", "0"],
-            },
-        ],
-    },
-    { semesterId: 2, subjects: [] },
-    { semesterId: 3, subjects: [] },
-    { semesterId: 4, subjects: [] },
-    { semesterId: 5, subjects: [] },
-    { semesterId: 6, subjects: [] },
-    { semesterId: 7, subjects: [] },
-    { semesterId: 8, subjects: [] },
-];
+const Semesters = ({ 
+  semesters,
+  pushPlans,
+  updateSubject,
+  plannedSubjects,
+  customPlan = true
+}) => {
+ 
+  // Adds a new empty semester to the plans
+  function addSemester() {
+    pushPlans((prevPlans) => [...prevPlans, { semesterId: prevPlans.length + 1, subjects: [] }], "Add empty semester");
+  }
 
-const Semesters = ({ courseMap, plans, setPlans, displayCourse }) => {
-    const { setIsDragDisabled } = useDragAndDrop();
+  // Monitors drag-and-drop events and updates the subject's semester accordingly
+  useDndMonitor({
+    onDragEnd: (event) => handleDragEnd(event, updateSubject, pushPlans),
+  });
 
-    // Controls whether to show required courses or the custom plan
-    const [showRequiredCourses, setShowRequiredCourses] = useState(false);
-    const displayedSemesters = showRequiredCourses
-        ? mandatoryCurriculum
-        : plans;
-
-    const addSemester = () => {
-        const newId = plans.length + 1;
-
-        const newSemester = {
-            semesterId: newId,
-            subjects: [],
-        };
-
-        setPlans([...plans, newSemester]);
-    };
-
-    return (
-        <Stack spacing={1}>
-            {displayedSemesters.map((semester) => (
-                <Semester
-                    key={semester.semesterId}
-                    semesterData={semester}
-                    isRequiredView={showRequiredCourses}
-                    displayCourse={displayCourse}
-                    courseMap={courseMap}
-                />
-            ))}
-
-            <AuxiliarCard text="Adicionar período" onClick={addSemester} />
-        </Stack>
-    );
+  return (
+    <Stack spacing={1}>
+      {semesters.map((semester) => (
+        <Semester
+            key={semester.semesterId}
+            semesterData={semester}
+            plannedSubjects={plannedSubjects}
+            placeholder={<SemesterPlaceHolder />}
+            isRequiredView={!customPlan}
+          />
+      ))}
+      {customPlan && <AuxiliarCard icon={AddIcon} text="Adicionar período" onClick={addSemester} />}
+    </Stack>
+  );
 };
 
 export default Semesters;

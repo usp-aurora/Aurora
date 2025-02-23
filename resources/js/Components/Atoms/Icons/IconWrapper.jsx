@@ -23,9 +23,9 @@ const IconContainer = styled("div")(({ theme }) => ({
 	},
 }));
 
-const IconWrapper = ({ Icon, onClick }) => {
+const IconWrapper = ({ Icon, onClick, ...props }) => {
 	return (
-		<IconContainer onClick={onClick}>
+		<IconContainer tabIndex={0} onClick={onClick} {...props}>
 			{Icon ? <Icon /> : ""}
 		</IconContainer>
 	);

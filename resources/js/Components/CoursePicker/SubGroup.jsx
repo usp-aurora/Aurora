@@ -42,7 +42,7 @@ const SubGroupText = styled(Typography)(({ theme }) => ({
     },
 }));
 
-const SubGroup = ({ depth, courseMap, subgroupData }) => {               
+const SubGroup = ({ depth, subgroupData, plannedSubjects }) => {               
     return (
         <SubGroupContainer depth={depth}>
             <SubGroupHeader>
@@ -52,21 +52,21 @@ const SubGroup = ({ depth, courseMap, subgroupData }) => {
             <SubGroupText>{subgroupData.description}</SubGroupText>
             <CardContainer>
                 {subgroupData.subjects.map((subject) => {
-                    const isBlocked = courseMap.get(subject.code).semester !== null;
+                    const blocked = plannedSubjects.has(subject.code);
                     
                     return (
                         <SortableItem
-                            id={subject.code}
                             key={subject.code}
+                            id={`${subject.code}@${subgroupData.title}`}
+                            container={"coursePicker"}
                             subjectData={subject}
-                            containerName={subgroupData.title}
-                            disabled={isBlocked}
+                            disabled={blocked}
                         >
                             <SubjectCard
                                 courseCode={subject.code}
                                 courseTitle={subject.name}
-                                planetURL="/icons/planeta.png"
-                                ghost={isBlocked}
+                                ghost={blocked}
+                                planetURL={blocked ? null : "/icons/planeta.png"}
                                 // onClick={openCourseInfoPopUp}
                             />
                         </SortableItem>
