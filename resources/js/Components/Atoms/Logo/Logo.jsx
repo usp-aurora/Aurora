@@ -7,7 +7,7 @@ const LogoText = styled(Typography)({
 function Logo(props){
     return (
         <LogoText variant="h1" {...props}>
-            Aurora
+            AURORA
         </LogoText>
     );
 }
