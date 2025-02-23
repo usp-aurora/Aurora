@@ -4,17 +4,17 @@ import { Stack, Box }  from "@mui/material";
 
 import Header from "../Components/Header/Header";
 import CompletionBar from "../Components/CompletionBar/CompletionBar";
-import Background from "../Components/Background/HomeBackground.jsx";
-import CourseInfo from "../Components/CourseInfo/CourseInfo.jsx";
-import Semesters from "../Components/Semesters/Semesters.jsx";
-import CoursePicker from "../Components/CoursePicker/CoursePicker.jsx";
+import Background from "../Components/Background/HomeBackground";
+import SubjectInfo from "../Components/SubjectInfo/SubjectInfo";
+import Semesters from "../Components/Semesters/Semesters";
+import SubjectPicker from "../Components/SubjectPicker/SubjectPicker";
 import LoadingScreen from "../Components/Atoms/LoadingScreen";
 
-import useCourseMap from "../Hooks/useCourseMap.jsx";
-import usePlansManager from "../Hooks/usePlansManager.jsx";
-import { DragAndDropProvider } from "../Components/Dnd/DragAndDropContext.jsx";
-import { SubjectInfoProvider } from "../Hooks/useSubjectInfoContext.jsx";
-import { SubjectPickerProvider } from "../Hooks/useSubjectPickerContext.jsx";
+import useSubjectMap from "../Hooks/useSubjectMap";
+import usePlansManager from "../Hooks/usePlansManager";
+import { DragAndDropProvider } from "../Components/Dnd/DragAndDropContext";
+import { SubjectInfoProvider } from "../Hooks/useSubjectInfoContext";
+import { SubjectPickerProvider } from "../Hooks/useSubjectPickerContext";
 
 const AppContainer = styled( Box )(() => ({
     position: "relative",
@@ -34,10 +34,10 @@ const ContentContainer = styled( Box )(({ theme }) => ({
 const Home = ({ subjects, groups }) => {
     const [isLoadingData, setIsLoadingData] = useState(true);
 
-    const [courseMap, setCourseMap] = useCourseMap(subjects, groups);
+    const [subjectMap, setSubjectMap] = useSubjectMap(subjects, groups);
     const [plans, setPlans] = usePlansManager(
-        courseMap,
-        setCourseMap,
+        subjectMap,
+        setSubjectMap,
         setIsLoadingData
     );
 
@@ -47,12 +47,12 @@ const Home = ({ subjects, groups }) => {
         <SubjectInfoProvider>
             <SubjectPickerProvider>
                 <DragAndDropProvider
-                    setCourseMap={setCourseMap}
+                    setSubjectMap={setSubjectMap}
                     setPlans={setPlans}
                 >
                     <AppContainer>
                         <Background />
-                        <CourseInfo />
+                        <SubjectInfo />
                         <ContentContainer>
                             <Stack spacing={{ xs: 1, sm: 2 }} sx={{ width: "100%" }} alignItems="center">
                                 <Header />
@@ -60,13 +60,13 @@ const Home = ({ subjects, groups }) => {
                                     <Stack spacing={{ xs: 1, sm: 2 }} sx={{ width: { xs: "100%", sm: "64%" } }}>
                                         <CompletionBar />
                                         <Semesters
-                                            courseMap={courseMap}
+                                            subjectMap={subjectMap}
                                             plans={plans}
                                             setPlans={setPlans}
                                         />
                                     </Stack>
-                                    <CoursePicker
-                                        courseMap={courseMap}
+                                    <SubjectPicker
+                                        subjectMap={subjectMap}
                                         data={groups}
                                     /> 
                                 </Stack>

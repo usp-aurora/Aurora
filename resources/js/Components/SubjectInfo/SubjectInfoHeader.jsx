@@ -61,7 +61,7 @@ const SubjectCodeDesktop = styled(Typography)(({ theme }) => ({
 }));
 
 
-const CourseInfoHeader = ({ onClose, name, code }) => {
+const SubjectInfoHeader = ({ onClose, name, code }) => {
 	return (
 		<HeaderContainer>
 			<HeaderContent>
@@ -83,4 +83,4 @@ const CourseInfoHeader = ({ onClose, name, code }) => {
 	);
 };
 
-export default CourseInfoHeader;
+export default SubjectInfoHeader;

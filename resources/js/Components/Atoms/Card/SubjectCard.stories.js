@@ -11,11 +11,11 @@ export default {
   tags: ['autodocs'],
   
   argTypes: {
-    courseCode: {
+    subjectCode: {
       description: 'O código do curso',
       control: 'text',
     },
-    courseName: {
+    subjectName: {
       description: 'O nome do curso',
       control: 'text',
     },
@@ -32,8 +32,8 @@ export default {
 
 export const Card2Lines = {
   args: {
-    courseCode: "MAC0105",
-    courseName: "Fundamentos de Matemática para a Computação",
+    subjectCode: "MAC0105",
+    subjectName: "Fundamentos de Matemática para a Computação",
     planetURL: "./public/icons/planeta.png",
     ghost: false
   },
@@ -42,8 +42,8 @@ export const Card2Lines = {
 
 export const Card1Line = {
   args: {
-    courseCode: "MAC0105",
-    courseName: "Cálculo 1",
+    subjectCode: "MAC0105",
+    subjectName: "Cálculo 1",
     planetURL: "./public/icons/planeta.png",
     ghost: false
   }
@@ -51,8 +51,8 @@ export const Card1Line = {
 
 export const CardGhost = {
   args: {
-    courseCode: "MAC0105",
-    courseName: "Fundamentos de Matemática para a Computação",
+    subjectCode: "MAC0105",
+    subjectName: "Fundamentos de Matemática para a Computação",
     planetURL: "",
     ghost: "true"
   }

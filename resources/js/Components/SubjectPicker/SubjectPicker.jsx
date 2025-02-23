@@ -68,7 +68,7 @@ const StyledCloseIcon = styled(CloseIcon)(({ theme }) => ({
     },
 }));
 
-function CoursePicker({ courseMap, data }){
+function SubjectPicker({ subjectMap, data }){
     const { isSubjectPickerModalOpen, closeSubjectPickerModal, showSubjectPickerModal } = useSubjectPickerContext();
     
     const [expandedCategories, setExpandedCategories] = useState(data.subgroups.map(() => true)); 
@@ -83,7 +83,7 @@ function CoursePicker({ courseMap, data }){
 
     return (
         <PopUpContainer open={isSubjectPickerModalOpen}>
-            <Container id="coursePicker">
+            <Container id="subjectPicker">
                 {isMobile && <Background />}
                 <HeaderContainer>
                     <StyledTitle>Adicionar disciplina</StyledTitle>
@@ -94,7 +94,7 @@ function CoursePicker({ courseMap, data }){
                         <Group
                             key={groupData.title}
                             groupData={groupData}
-                            courseMap={courseMap}
+                            subjectMap={subjectMap}
                             expanded={expandedCategories[index]}
                             onClick={() => toggleCategory(index)}
                         />
@@ -104,4 +104,4 @@ function CoursePicker({ courseMap, data }){
     );
 };
 
-export default CoursePicker;
+export default SubjectPicker;

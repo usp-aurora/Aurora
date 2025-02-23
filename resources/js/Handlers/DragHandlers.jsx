@@ -12,10 +12,10 @@ function extractBaseId(id) {
 }
 
 /**
- * Determines the container (semester or coursePicker) for a given element.
+ * Determines the container (semester or subjectPicker) for a given element.
  * 
  * @param {Object} element - The dragged element from DnD.
- * @returns {string} - The container name (e.g., "1" for semester ID or "coursePicker").
+ * @returns {string} - The container name (e.g., "1" for semester ID or "subjectPicker").
  */
 function getContainerName(element) { 
   return element?.data.current?.container ?? element?.id; 
@@ -81,7 +81,7 @@ function handleDragStart(event, setOverlay, setDraggedItem) {
 
 /**
  * Handles a drag-over event.
- * Updates the plans when a subject is dragged between semesters or coursePicker.
+ * Updates the plans when a subject is dragged between semesters or subjectPicker.
  * 
  * @param {Object} event - The drag event object.
  * @param {Function} updatePlans - State updater for plans.

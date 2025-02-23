@@ -20,7 +20,7 @@ const TagsContainer = styled('div')(({ theme }) => ({
 	},
 }));
 
-const CourseInfoTags = ({tags, credits}) => {
+const SubjectInfoTags = ({tags, credits}) => {
 	return (
 		<TagsContainer>
 			{tags
@@ -34,4 +34,4 @@ const CourseInfoTags = ({tags, credits}) => {
 	);
 };
 
-export default CourseInfoTags;
+export default SubjectInfoTags;

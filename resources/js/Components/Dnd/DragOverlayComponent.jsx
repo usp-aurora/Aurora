@@ -7,8 +7,8 @@ function DragOverlayComponent({ subject }) {
     <DragOverlay modifiers={[snapCenterToCursor, restrictToWindowEdges]}>
       {subject ? (
         <SubjectCard
-          courseCode={subject.code}
-          courseName={subject.name}
+          subjectCode={subject.code}
+          subjectName={subject.name}
           planetURL="/icons/planeta.png"
         />
       ) : null}

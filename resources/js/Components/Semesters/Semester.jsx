@@ -53,7 +53,7 @@ const DroppableCardContainer = styled(Droppable)(({ theme }) => ({
 
 const Semester = ({
     semesterData,
-    courseMap,
+    subjectMap,
     isRequiredView,
     isExpanded,
     onClick
@@ -101,7 +101,7 @@ const Semester = ({
             >
                 <SortableGrid items={semesterData.subjects}>
                     {semesterData.subjects.map((subject) => {
-                        const subjectTags = courseMap.get(subject.code).tags;
+                        const subjectTags = subjectMap.get(subject.code).tags;
                         return (
                             <SortableItem
                                 id={subject.code}
@@ -111,8 +111,8 @@ const Semester = ({
                                 disabled={!isExpanded}
                             >
                                 <SubjectCard
-                                    courseCode={subject.code}
-                                    courseName={subject.name}
+                                    subjectCode={subject.code}
+                                    subjectName={subject.name}
                                     planetURL="/icons/planeta.png"
                                     onClick={() =>
                                         showSubjectInfo({...subject, tags: subjectTags, isPlanned: true})

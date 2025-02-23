@@ -3,9 +3,6 @@ import { styled } from "@mui/material/styles";
 import { Typography } from "@mui/material";
 
 import Accordion from "../Atoms/Accordion/Accordion";
-import CardContainer from "../Atoms/CardsGrid/CardsGrid";
-import SubjectCard from "../Atoms/Card/SubjectCard";
-import SortableItem from "../Dnd/SortableItem";
 import CompletionHeader from "./Pieces/Completion/CompletionHeader";
 import CompletionMetrics from "./Pieces/Completion/CompletionMetrics";
 import SubGroup from "./SubGroup";
@@ -34,7 +31,7 @@ const SubGroupContainer = styled("div")(({ theme, depth }) => ({
     gap: theme.spacing(2),
 }));
 
-const Group = ({ groupData, courseMap, expanded, onClick }) => {
+const Group = ({ groupData, subjectMap, expanded, onClick }) => {
     return (
         <Accordion
             summary={
@@ -65,7 +62,7 @@ const Group = ({ groupData, courseMap, expanded, onClick }) => {
                 <GroupText>{groupData.description}</GroupText>
                 <SubjectsContainer
                     groupName={groupData.title}
-                    courseMap={courseMap}
+                    subjectMap={subjectMap}
                     subjects={groupData.subjects}
                 />
                 <SubGroupContainer>
@@ -74,7 +71,7 @@ const Group = ({ groupData, courseMap, expanded, onClick }) => {
                             key={subgroup.title}
                             depth={1}
                             subgroupData={subgroup}
-                            courseMap={courseMap}
+                            subjectMap={subjectMap}
                         />
                     ))}
                 </SubGroupContainer>

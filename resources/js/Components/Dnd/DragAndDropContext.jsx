@@ -22,7 +22,7 @@ function computeCollision({ droppableContainers, ...props }) {
     : closestCenter({ 
         ...props, 
         droppableContainers: droppableContainers.filter(
-          (droppable) => getContainerName(droppable) !== "coursePicker"
+          (droppable) => getContainerName(droppable) !== "subjectPicker"
         ),
       });
 }
@@ -31,10 +31,10 @@ function computeCollision({ droppableContainers, ...props }) {
  * Drag-and-drop provider that manages drag state, interactions, and event handlers.
  *
  * @param {React.ReactNode} children - Components wrapped inside the provider.
- * @param {Function} setCourseMap - Function to update the course mapping.
+ * @param {Function} setSubjectMap - Function to update the subject mapping.
  * @param {Function} setPlans - Function to update the plan structure.
  */
-function DragAndDropProvider({ children, setCourseMap, setPlans }) {
+function DragAndDropProvider({ children, setSubjectMap, setPlans }) {
   const [isDragDisabled, setIsDragDisabled] = useState(false);
   const [dragOverlay, setDragOverlay] = useState(null);
   const [draggedItem, setDraggedItem] = useState(null);
@@ -65,22 +65,22 @@ function DragAndDropProvider({ children, setCourseMap, setPlans }) {
   }
 
   /**
-   * Updates `courseMap` when an item is dragged.
+   * Updates `subjectMap` when an item is dragged.
    * Marks changes as unsaved.
    */
   useEffect(() => {
     if (draggedItem) {
-      setCourseMap((prevMap) => {
+      setSubjectMap((prevMap) => {
         const updatedMap = new Map(prevMap);
         updatedMap.set(draggedItem.id, {
           ...prevMap.get(draggedItem.id),
-          semester: draggedItem.container === "coursePicker" ? null : Number(draggedItem.container),
+          semester: draggedItem.container === "subjectPicker" ? null : Number(draggedItem.container),
           unsaved: true,
         });
         return updatedMap;
       });
     }
-  }, [draggedItem, setCourseMap]);
+  }, [draggedItem, setSubjectMap]);
 
   return (
     <DragAndDropContext.Provider value={{ isDragDisabled, setIsDragDisabled }}>

@@ -16,36 +16,36 @@ import { useAuth } from './useAuthContext.jsx';
  * - Periodic synchronization with the server
  * - Saving plans before the user leaves the page
  *
- * @param {Map} courseMap - The current mapping of courses.
- * @param {Function} updateCourseMap - Function to update the course map.
+ * @param {Map} subjectMap - The current mapping of subjects.
+ * @param {Function} updateSubjectMap - Function to update the subject map.
  * @param {Function} setIsPlansLoading - Function to update the plans loading state.
  * @returns {[Array, Function]} Returns `plans` state and `setPlans` function.
  */
-function usePlansManager(courseMap, updateCourseMap, setIsPlansLoading) {
+function usePlansManager(subjectMap, updateSubjectMap, setIsPlansLoading) {
     const { authUser, isAuthLoading } = useAuth();
     const [plans, setPlans] = useState([]);
-    const courseMapRef = useRef(courseMap);
+    const subjectMapRef = useRef(subjectMap);
     const hasUnsavedChangesRef = useRef(false);
 
     /**
-     * Merges retrieved plan data into the existing course map.
+     * Merges retrieved plan data into the existing subject map.
      *
-     * @param {Map} currentCourseMap - The existing course map.
+     * @param {Map} currentSubjectMap - The existing subject map.
      * @param {Array} retrievedPlans - Plans data to merge.
      */
-    function mergePlansIntoCourseMap(currentCourseMap, retrievedPlans) {
-        const updatedCourseMap = new Map(currentCourseMap);
+    function mergePlansIntoSubjectMap(currentSubjectMap, retrievedPlans) {
+        const updatedSubjectMap = new Map(currentSubjectMap);
         retrievedPlans.forEach((semester) => {
             semester.subjects.forEach((subject) => {
-                updatedCourseMap.set(subject.code, {
-                    ...currentCourseMap.get(subject.code),
+                updatedSubjectMap.set(subject.code, {
+                    ...currentSubjectMap.get(subject.code),
                     plan: subject.plan,
                     semester: semester.semesterId,
                 });
             });
         });
 
-        updateCourseMap(updatedCourseMap);
+        updateSubjectMap(updatedSubjectMap);
     }
 
     /**
@@ -63,7 +63,7 @@ function usePlansManager(courseMap, updateCourseMap, setIsPlansLoading) {
                 retrievedPlans = fetchGuestPlans() ?? [];
             }
 
-            mergePlansIntoCourseMap(courseMap, retrievedPlans);
+            mergePlansIntoSubjectMap(subjectMap, retrievedPlans);
             setPlans(retrievedPlans);     
 		} catch (error) {
 			console.warn("Failed to load plans:", error);
@@ -83,16 +83,16 @@ function usePlansManager(courseMap, updateCourseMap, setIsPlansLoading) {
     function handlePageUnload(event) {
         if (hasUnsavedChangesRef.current || !authUser) {
              event.preventDefault();
-             if (authUser) saveUserPlans(courseMapRef.current);
+             if (authUser) saveUserPlans(subjectMapRef.current);
              else saveGuestPlans(plans);      
         }
     }
 
-    // Keeps the latest reference of courseMap and detects unsaved changes
+    // Keeps the latest reference of subjectMap and detects unsaved changes
     useEffect(() => {
-        courseMapRef.current = courseMap;
-        hasUnsavedChangesRef.current = Array.from(courseMapRef.current).some(([code, subject]) => subject.unsaved);
-    }, [courseMap]);
+        subjectMapRef.current = subjectMap;
+        hasUnsavedChangesRef.current = Array.from(subjectMapRef.current).some(([code, subject]) => subject.unsaved);
+    }, [subjectMap]);
     
 	// Loads plans on initial render once authentication state is resolved
 	useEffect(() => {
@@ -113,7 +113,7 @@ function usePlansManager(courseMap, updateCourseMap, setIsPlansLoading) {
         // Function to sync plans with the server
         async function syncPlans() {
             try {
-                await syncPlansWithServer(courseMapRef.current, updateCourseMap);
+                await syncPlansWithServer(subjectMapRef.current, updateSubjectMap);
             } catch (error) {
                 console.error("Error during synchronization or fetching plans:", error);
             }
@@ -138,7 +138,7 @@ function usePlansManager(courseMap, updateCourseMap, setIsPlansLoading) {
             clearInterval(intervalId);
             window.removeEventListener("keydown", handleKeyDown);
         };
-    }, [courseMap, authUser]);
+    }, [subjectMap, authUser]);
 
     return [plans, setPlans];
 }

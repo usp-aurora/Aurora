@@ -65,7 +65,7 @@ const TextWrapper = styled(Box)({
     wordBreak: "break-word",
 });
 
-const StyledCourseText = styled(Typography)(({ theme }) => ({
+const StyledSubjectText = styled(Typography)(({ theme }) => ({
     width: "90px",
     textAlign: "center",
     ...theme.typography.small,
@@ -76,8 +76,8 @@ const StyledCourseText = styled(Typography)(({ theme }) => ({
 }));
 
 const SubjectCard = ({
-    courseCode,
-    courseName,
+    subjectCode,
+    subjectName,
     planetURL,
     ghost,
     glassmorphismLevel = "level2",
@@ -95,10 +95,10 @@ const SubjectCard = ({
                     <PlanetContainer>
                         {planetURL && !ghost && <Planet src={planetURL} />}
                     </PlanetContainer>
-                    <StyledTitle> {courseCode} </StyledTitle>
+                    <StyledTitle> {subjectCode} </StyledTitle>
                     <TextContainer>
                         <TextWrapper>
-                            <StyledCourseText>{courseName}</StyledCourseText>
+                            <StyledSubjectText>{subjectName}</StyledSubjectText>
                         </TextWrapper>
                     </TextContainer>
                 </CardContent>

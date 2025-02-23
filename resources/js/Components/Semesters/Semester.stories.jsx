@@ -28,7 +28,7 @@ export default {
 
 	decorators: [
 		(Story) => (
-			<DragAndDropProvider setCourseMap={() => {}} setPlans={() => {}}>
+			<DragAndDropProvider setSubjectMap={() => {}} setPlans={() => {}}>
 				<Story />
 			</DragAndDropProvider>
 		),

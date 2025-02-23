@@ -2,12 +2,12 @@ import { React, useState, useRef, useEffect, forwardRef } from 'react';
 import { styled } from '@mui/material/styles';
 import { Box, Typography } from '@mui/material';
 
-const CourseTextContainer = styled(Box)(({ }) => ({
+const SubjectTextContainer = styled(Box)(({ }) => ({
 	display: 'flex',
 	flexDirection: 'column',
 }));
 
-const CourseDescription = styled(forwardRef(({ isOpen, ...props }, ref) => (
+const SubjectDescription = styled(forwardRef(({ isOpen, ...props }, ref) => (
     <Typography ref={ref} {...props} />
 )))(({ theme, isOpen }) => ({
     ...(isOpen ? {} : {
@@ -37,7 +37,7 @@ const ReadMoreButton = styled(Typography)(({ theme }) => ({
 	},
 }));
 
-const CourseInfoText = ({ desc, ...props }) => {
+const SubjectInfoText = ({ desc, ...props }) => {
 	const [isOpen, setIsOpen] = useState(false);
 	const [showReadMoreButton, setShowReadMoreButton] = useState(false);
 
@@ -50,17 +50,17 @@ const CourseInfoText = ({ desc, ...props }) => {
 	}, []);
 
 	return (
-		<CourseTextContainer {...props}>
-			<CourseDescription isOpen={isOpen} ref={descRef}>
+		<SubjectTextContainer {...props}>
+			<SubjectDescription isOpen={isOpen} ref={descRef}>
 				{desc}
-			</CourseDescription>
+			</SubjectDescription>
 			{showReadMoreButton && (
 				<ReadMoreButton onClick={() => setIsOpen(!isOpen)}>
 					{isOpen ? "Ver menos" : "Ver mais"}
 				</ReadMoreButton>
 			)}
-		</CourseTextContainer>
+		</SubjectTextContainer>
 	);
 };
 
-export default CourseInfoText;
+export default SubjectInfoText;

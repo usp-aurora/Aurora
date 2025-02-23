@@ -1,9 +1,9 @@
-import CourseInfo from './CourseInfo';
+import SubjectInfo from './SubjectInfo';
 import { fn } from '@storybook/test';
 
 export default {
-	title: 'CourseInfo/CourseInfo',
-	component: CourseInfo,
+	title: 'SubjectInfo/SubjectInfo',
+	component: SubjectInfo,
 
 	parameters: {
 		layout: 'centered',

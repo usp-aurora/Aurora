@@ -15,7 +15,7 @@ function SortableItem({ id, subjectData, containerName, children, disabled = fal
         id: sortableId,
         data: {
             subject: { ...subjectData },
-            container: typeof containerName === "number" ? containerName : "coursePicker",
+            container: typeof containerName === "number" ? containerName : "subjectPicker",
         },
     });
 

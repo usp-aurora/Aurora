@@ -1,13 +1,13 @@
 import { useState } from "react";
 
 /**
- * Initializes the course map with subjects and their associated tags.
+ * Initializes the subject map with subjects and their associated tags.
  *
  * @param {Array} subjects - List of subjects with their details.
  * @param {Array} course - Course description, containing list of groups with subjects and subgroups.
  * @returns {Map} - A map where the keys are subject IDs and the values contain subject details.
  */
-function initializeCourseMap(subjects, course) {
+function initializeSubjectMap(subjects, course) {
   const map = new Map(
     subjects.map((subject) => [
       subject.code,
@@ -62,16 +62,16 @@ function initializeCourseMap(subjects, course) {
 }
 
 /**
- * Custom hook to initialize and manage the course map state.
+ * Custom hook to initialize and manage the subject map state.
  *
  * @param {Array} subjects - List of subjects with their details.
  * @param {Array} groups - List of groups containing subjects and subgroups.
- * @returns {[Map, Function]} - The `courseMap` state and its setter function.
+ * @returns {[Map, Function]} - The `subjectMap` state and its setter function.
  */
-function useCourseMap(subjects, groups) {
-  const [courseMap, setCourseMap] = useState(() => initializeCourseMap(subjects, groups));
+function useSubjectMap(subjects, groups) {
+  const [subjectMap, setSubjectMap] = useState(() => initializeSubjectMap(subjects, groups));
 
-  return [courseMap, setCourseMap];
+  return [subjectMap, setSubjectMap];
 }
 
-export default useCourseMap;
+export default useSubjectMap;

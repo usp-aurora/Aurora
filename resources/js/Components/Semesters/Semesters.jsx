@@ -37,7 +37,7 @@ const SemestersContainer = styled( Box )(({ theme }) => ({
     }
 }));
 
-const Semesters = ({ courseMap, plans, setPlans }) => {
+const Semesters = ({ subjectMap, plans, setPlans }) => {
     const { setIsDragDisabled } = useDragAndDrop();
                                                       // fazendo o primeiro semestre começar aberto
     const [expandedSemesters, setExpandedSemesters] = useState(plans.map((_, index) => index === 0)); 
@@ -47,9 +47,9 @@ const Semesters = ({ courseMap, plans, setPlans }) => {
         setExpandedSemesters(newExpandedSemester);
     }
 
-    // Controls whether to show required courses or the custom plan
-    const [showRequiredCourses, setShowRequiredCourses] = useState(false);
-    const displayedSemesters = showRequiredCourses
+    // Controls whether to show required subjects or the custom plan
+    const [showRequiredSubjects, setShowRequiredSubjects] = useState(false);
+    const displayedSemesters = showRequiredSubjects
         ? mandatoryCurriculum
         : plans;
 
@@ -72,8 +72,8 @@ const Semesters = ({ courseMap, plans, setPlans }) => {
                 <Semester
                     key={semester.semesterId}
                     semesterData={semester}
-                    courseMap={courseMap}
-                    isRequiredView={showRequiredCourses}
+                    subjectMap={subjectMap}
+                    isRequiredView={showRequiredSubjects}
                     isExpanded={expandedSemesters[index]}
                     onClick={() => toggleSemester(index)}
                 />

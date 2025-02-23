@@ -2,8 +2,6 @@ import React from "react";
 import { styled } from "@mui/material/styles";
 import { Typography } from "@mui/material";
 
-import SubjectCard from "../Atoms/Card/SubjectCard";
-import SortableItem from "../Dnd/SortableItem";
 import SubjectsContainer from "./Pieces/SubjectsContainer";
 
 const SubGroupContainer = styled("div")(({ theme, depth }) => ({
@@ -42,7 +40,7 @@ const SubGroupText = styled(Typography)(({ theme }) => ({
     },
 }));
 
-const SubGroup = ({ depth, courseMap, subgroupData }) => {               
+const SubGroup = ({ depth, subjectMap, subgroupData }) => {               
     return (
         <SubGroupContainer depth={depth}>
             <SubGroupHeader>
@@ -52,7 +50,7 @@ const SubGroup = ({ depth, courseMap, subgroupData }) => {
             <SubGroupText>{subgroupData.description}</SubGroupText>
             <SubjectsContainer 
                 groupName={subgroupData.title}
-                courseMap={courseMap}
+                subjectMap={subjectMap}
                 subjects={subgroupData.subjects}
             />
             {subgroupData.subgroups.map((subgroup) => (
