@@ -3,13 +3,14 @@ import { styled } from "@mui/material";
 
 import NodeView from "./NodeView";
 import LinkView from "./LinkView";
+import GraphTools from "../Tools/GraphTools";
+import Starfield from "../Background/Starfield";
 import { getAdjacencyLists, getLayers } from "./TraversalUtils";
 import {
 	getHandleResize, getHandleMouseDown, getHandleMouseMove, getHandleMouseLeave, getHandleMouseUp,
 	getHandleMouseDownNode, handleTouch,
 } from "./EventUtils";
 import {getStartUpdate, stopUpdate, getInitialStablePositions} from "./UpdateUtils";
-import Starfield from "../Background/Starfield";
 
 const GraphBodyView = styled("div")({
 	position: "relative",
@@ -34,7 +35,6 @@ const GraphBackgroundView = styled(Starfield)({
 	left: 0,
 	width: "100%",
 	height: "100%",
-	borderRadius: "16px",
 })
 
 const NodeContainerView = styled("div")({
@@ -46,7 +46,6 @@ const NodeContainerView = styled("div")({
 });
 
 function GraphView({ nodes, links, root, interactive = false, vertical = false, forceStyle = {} }) {
-
 	const [inLists, outLists] = useMemo(() => getAdjacencyLists(nodes,links), [nodes, links]);
 	const layers = useMemo(() => getLayers(inLists, outLists, root), [inLists, outLists, root]);
 	const initialStablePositions = useMemo(
@@ -103,8 +102,26 @@ function GraphView({ nodes, links, root, interactive = false, vertical = false, 
 			<LinkView key={key} x1={x1} y1={y1} x2={x2} y2={y2} />
 		);
 	});
+	
+	function centerOn(node) {
+		if (!positions.has(node)) return;
+		const nodePos = positions.get(node);
+		setOrigin({ x: nodePos.x, y: nodePos.y });
+	};
+
+	async function toggleFullscreen() {
+		if (!document.fullscreenElement) {
+			await outerDiv.current.requestFullscreen();
+			getHandleResize(setSize, outerDiv)();
+		} else {
+			await document.exitFullscreen();
+			getHandleResize(setSize, outerDiv)();
+		}
+	};
 
 	useEffect(() => {
+		centerOn(root);
+	  
 		const startUpdate = getStartUpdate(
 			setPositions, animationRequest, animationTime,
 			links, layers,
@@ -141,14 +158,15 @@ function GraphView({ nodes, links, root, interactive = false, vertical = false, 
 			removeEventListener("touchmove",touchMoveListener.current);
 			removeEventListener("touchend",touchEndListener.current);
 		};
-	}, []);
-
-	return (
+	  }, []);
+	  
+	  return (
 		<GraphBodyView
-			onMouseDown={getHandleMouseDown(mouseDown,dragStart,origin)}
+			onMouseDown={getHandleMouseDown(mouseDown, dragStart, origin)}
 			onTouchStart={handleTouch}
 			ref={outerDiv}
 		>
+			<GraphTools toggleFullscreen={toggleFullscreen} recenter={() => centerOn(root)}/>
 			<GraphBackgroundView twinkling={false}/>
 			<LinkContainerView>
 				<filter>
@@ -160,7 +178,7 @@ function GraphView({ nodes, links, root, interactive = false, vertical = false, 
 				{NodeViews}
 			</NodeContainerView>
 		</GraphBodyView>
-	);
+	  );
 }
 
 export default GraphView;
