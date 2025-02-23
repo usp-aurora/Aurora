@@ -27,7 +27,7 @@ function usePlansManager(plans, defaultPlans, pushPlans, subjectDataMap, updateS
     const { authUser, isAuthLoading } = useAuth();
     const hasUnsavedChangesRef = useRef(false);
     const subjectDataMapRef = useRef(subjectDataMap);
-    
+
     /**
      * Initializes plans by:
      * - Syncing any pending changes.
@@ -40,7 +40,7 @@ function usePlansManager(plans, defaultPlans, pushPlans, subjectDataMap, updateS
                 await syncPendingPlans(); 
                 retrievedPlans = await fetchUserPlans() ?? [];
             } else {
-                retrievedPlans = fetchGuestPlans() ?? [];
+                retrievedPlans = fetchGuestPlans() ?? defaultPlans;
             }
 
             updateSubjects(retrievedPlans.flatMap(semester =>
@@ -76,9 +76,9 @@ function usePlansManager(plans, defaultPlans, pushPlans, subjectDataMap, updateS
 
     // Keeps the latest reference of subjectDataMap and detects unsaved changes
     useEffect(() => {
-        subjectDataMapRef.current = subjectDataMapRef;
-        hasUnsavedChangesRef.current = Array.from(subjectDataMapRef.current).some(([subjectCode, subject]) => subject.unsaved);
-    }, [subjectDataMapRef]);
+        subjectDataMapRef.current = subjectDataMap;
+        hasUnsavedChangesRef.current = Array.from(subjectDataMapRef.current).some(([, subject]) => subject.unsaved);
+    }, [subjectDataMap]);
     
     // Loads plans on initial render once authentication state is resolved
     useEffect(() => {
@@ -94,7 +94,7 @@ function usePlansManager(plans, defaultPlans, pushPlans, subjectDataMap, updateS
     }, [authUser, plans]);
 
     useEffect(() => {
-        if (!authUser || !hasUnsavedChangesRef.current) return;
+        if (!authUser) return;
 
         // Function to sync plans with the server
         async function syncPlans() {

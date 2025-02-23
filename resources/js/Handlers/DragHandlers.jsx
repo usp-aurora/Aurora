@@ -8,7 +8,7 @@ import { arrayMove } from '@dnd-kit/sortable';
  * @returns {string | number} - The base ID without metadata.
  */
 function extractBaseId(id) { 
-  return (typeof id === 'string' ? id.split('@')[0] : id); 
+  return typeof id === 'string' ? id.split('@')[0] : id; 
 }
 
 /**
@@ -18,7 +18,7 @@ function extractBaseId(id) {
  * @returns {string} - The container name (e.g., semester ID or "coursePicker").
  */
 function getContainerName(element) { 
-  return element?.data.current?.container ?? element?.id; 
+  return element?.data?.current?.container ?? element?.id; 
 }
 
 /**
@@ -62,12 +62,11 @@ function calculateDropIndex(over, draggingRect, targetSubjects) {
  * @param {Object} event - The drag event object.
  * @param {Function} setDraggedItem - State updater function for storing the dragged item data.
  */
-function handleDragStart(event, setOverlay, setDraggedItem) {
+function handleDragStart(event, setDraggedItem) {
   const { active } = event;
   const subject = active.data.current.subject;
-  const container = active.data.current.container;
 
-  setOverlay({
+  setDraggedItem({
     code: subject.code,
     name: subject.name,
     desc: subject.desc,

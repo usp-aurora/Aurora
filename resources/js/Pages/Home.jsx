@@ -13,6 +13,7 @@ import LoadingScreen from '../Components/Atomsold/LoadingScreen';
 
 import useHistoryState from "../Hooks/useHistoryState";
 import usePlansManager from '../Hooks/usePlansManager.jsx';
+import useSubjectDataMap from '../Hooks/useSubjectDataMap.jsx';
 import { DragAndDropProvider } from '../Components/Dnd/DragAndDropContext.jsx';
 
 const AppContainer = styled("div")(() => ({
@@ -99,6 +100,17 @@ const Home = ({ groups }) => {
   ) : (
     <AppContainer>
       <Background />
+      {/** 
+      <CoursePopUp isOpen={coursePopUpActive} onClose={toggleCoursePopUp} 
+                    pokeball_color={course.pokeball_color} 
+                    pokemonURL={course.pokemonURL}
+                    title={course.title}
+                    code={course.code}
+                    tags={course.tags}
+                    credits={course.credits}
+                    desc={course.desc}
+      />
+      */}
       <ContentContainer>
         <Stack spacing={1}>
           <Header />

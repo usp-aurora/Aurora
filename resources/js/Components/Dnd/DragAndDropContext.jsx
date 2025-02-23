@@ -75,7 +75,7 @@ function DragAndDropProvider({ children, setPlans, resetPlans, disabled = false 
           setDraggedItem(null);
         }}
       >
-        {dragOverlay && <DragOverlayComponent subject={dragOverlay} />}
+        {draggedItem && <DragOverlayComponent subject={draggedItem} />}
         {children}
       </DndContext>
     </DragAndDropContext.Provider>
