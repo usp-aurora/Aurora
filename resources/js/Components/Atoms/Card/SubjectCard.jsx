@@ -41,13 +41,13 @@ const PlanetContainer = styled("div")(({ theme }) => ({
 	}
 }));
 
-const Moon = styled("div")(({ theme, color }) => ({
+const Moon = styled("div")(({ theme }) => ({
 	width: theme.card.mobile.moonSize,
 	height: theme.card.mobile.moonSize,
 	position: "absolute",
-	left: "-40%",
+	left: "-45%",
 	
-	backgroundColor: color,
+	backgroundColor: theme.palette.green.main,
 	borderRadius: "50%",
 
 	[theme.breakpoints.up("sm")]: {
@@ -99,7 +99,7 @@ const SubjectCard = ({ courseCode, courseTitle, planetURL, ghost, moon, glassmor
 			<CardBackground ghost={ghost} glassmorphismLevel={glassmorphismLevel}>
 				<CardContent>
 					<PlanetWrapper>
-						{moon && <Moon color="lime"/> }
+						{moon && <Moon/> }
 						<PlanetContainer>
 							{planetURL && <Planet src={planetURL} />}
 						</PlanetContainer>

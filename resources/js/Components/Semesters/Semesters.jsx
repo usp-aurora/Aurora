@@ -19,7 +19,7 @@ const Semesters = ({
  
   // Adds a new empty semester to the plans
   function addSemester() {
-    pushPlans((prevPlans) => [...prevPlans, { semesterId: prevPlans.length + 1, subjects: [] }]);
+    pushPlans((prevPlans) => [...prevPlans, { semesterId: prevPlans.length + 1, subjects: [] }], "Add empty semester");
   }
 
   // Monitors drag-and-drop events and updates the subject's semester accordingly

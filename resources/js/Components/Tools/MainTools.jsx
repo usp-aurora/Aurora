@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { styled } from '@mui/material';
 import { Typography } from "@mui/material";
-import { useDragAndDrop } from "../Dnd/DragAndDropContext";
 import IconWrapper from '../Atoms/Icons/IconWrapper';
 
 import Stack from '@mui/material/Stack';
@@ -19,6 +18,7 @@ const Container = styled("div")({
 });
 
 const StyledText = styled(Typography)(({ theme }) => ({
+    display: "none",
     padding: "1px",
     maxWidth: "100%",
     textAlign: "center",
@@ -27,6 +27,7 @@ const StyledText = styled(Typography)(({ theme }) => ({
 
     [theme.breakpoints.up("sm")]: {
         ...theme.typography.h5,
+        display: "block",
     }
 }));
 
