@@ -72,6 +72,8 @@ function usePlansManager(plans, defaultPlans, pushPlans, subjectDataMap, updateS
             if (authUser) saveUserPlans(subjectDataMapRef.current);
             else saveGuestPlans(plans);      
         }
+
+        return "teste"
     }
 
     // Keeps the latest reference of subjectDataMap and detects unsaved changes

@@ -13,6 +13,22 @@ function fetchGuestPlans() {
 }
 
 /**
+ * Fetches the latest plans from the server.
+ *
+ * @returns {Promise<Array>} A promise that resolves to the list of plans.
+ * @throws {Error} Throws an error if the fetch request fails.
+ */
+async function fetchUserPlans() {
+	try {
+    	const response = await fetch('/api/plans/index');
+    	const data = await response.json();
+    	return data.plans;
+  	} catch (error) {
+    	throw error;
+  	}
+}
+
+/**
  * Saves guest user plans to local storage, ensuring only up to the last non-empty semester is retained.
  *
  * @param {Array} guestPlans - Plans grouped by semester.
@@ -38,22 +54,6 @@ function saveUserPlans(subjectDataMap) {
 
   	if (unsavedSubjects.length > 0)
     	localStorage.setItem('unsyncedPlans', JSON.stringify(unsavedSubjects));
-}
-
-/**
- * Fetches the latest plans from the server.
- *
- * @returns {Promise<Array>} A promise that resolves to the list of plans.
- * @throws {Error} Throws an error if the fetch request fails.
- */
-async function fetchUserPlans() {
-	try {
-    	const response = await fetch('/api/plans/index');
-    	const data = await response.json();
-    	return data.plans;
-  	} catch (error) {
-    	throw error;
-  	}
 }
 
 /**

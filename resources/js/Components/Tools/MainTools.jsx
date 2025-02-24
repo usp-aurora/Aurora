@@ -26,12 +26,12 @@ const StyledText = styled(Typography)(({ theme }) => ({
     ...theme.typography.small,
 
     [theme.breakpoints.up("sm")]: {
-        ...theme.typography.h5,
+        ...theme.typography.p,
         display: "block",
     }
 }));
 
-function MainTools({ undo, redo, toggleCurriculum }) {
+function MainTools({ undo, redo, showCurriculum, toggleCurriculum }) {
     useEffect(() => {
         function handleKeyDown(event) {
             if (event.ctrlKey && event.key === "z") {
@@ -54,10 +54,10 @@ function MainTools({ undo, redo, toggleCurriculum }) {
                 <IconWrapper Icon={UndoIcon} onClick={undo} />
                 <IconWrapper Icon={RedoIcon} onClick={redo} /> 
             </Stack>
-            <StyledText>Arraste uma disciplina para adicioná-la ou removê-la do período desejado.</StyledText>
+            <StyledText> {showCurriculum ? "Você está vendo a grade obrigatória recomendada" : "Arraste uma disciplina para adicioná-la ou removê-la do período desejado"} </StyledText>
             <Stack spacing={1} direction="row">
                 <IconWrapper Icon={VisibilityOutlinedIcon} onClick={toggleCurriculum} />
-                <IconWrapper Icon={FileDownloadOutlinedIcon} /> 
+                {/* <IconWrapper Icon={FileDownloadOutlinedIcon} />  */}
             </Stack>
         </Container>
     );

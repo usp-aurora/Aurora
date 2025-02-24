@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('groups', function ($table) {
             $table->id();
             $table->string('title');
-            $table->string('description')->nullable();
+            $table->text('description')->nullable();
             $table->unsignedBigInteger('parent_group_id')->nullable();
             $table->timestamps();
         });

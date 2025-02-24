@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 
-const STATES_LIMIT = 15;
+const STATES_LIMIT = 35;
 
 /**
  * Custom hook to manage state with history (undo/redo).

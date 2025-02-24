@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Stack from '@mui/material/Stack';
 import { styled } from "@mui/material/styles";
 import glassmorphismStyle from '../../styles/MUI/glassmorphismMUI';
@@ -17,16 +17,39 @@ const CompletionBarContainer = styled(Stack)(({ theme }) => ({
   },
 }));
 
-const CompletionBar = () => {
-  const obrigatorias = {label: "Obrigatórias", coursed: 10, planned: 40, needed: 54 };
-  const eletivas = {label: "Eletivas", coursed: 10, planned: 40, needed: 60 };
-  const livres = {label: "Livres", coursed: 20, planned: 23, needed: 24 }
+function CompletionBar({subjectDataMap, plans}){
+  const [mandatoryCoursed, setMandatoryCoursed] = useState(0);
+  const [electiveCoursed, setElectiveCoursed] = useState(0);
+
+  useEffect(() => {
+    let mandatory = 0;
+    let elective = 0;
+    plans.forEach(semester => {
+      semester.subjects.forEach(subject => {
+        if (subjectDataMap.get(subject.code).tags.some(tag => tag.name === "Obrigatórias")) {
+            mandatory += parseInt(subject.credits[0], 10);
+            mandatory += parseInt(subject.credits[1], 10);
+        } else {
+          elective += parseInt(subject.credits[0], 10);
+          elective += parseInt(subject.credits[1], 10);
+        }
+      });
+    });
+    setMandatoryCoursed(mandatory);
+    setElectiveCoursed(elective);
+  }, [subjectDataMap, plans]);
+
+
+ 
+  const mandatory = {label: "Obrigatórias", coursed: mandatoryCoursed, planned: 0, needed: 111 };
+  const elective = {label: "Optativas", coursed: electiveCoursed, planned: 0, needed: 87 };
+  // const livres = {label: "Livres", coursed: 20, planned: 23, needed: 24 }
 
   return (
     <CompletionBarContainer>
-      <ProgressBar label={obrigatorias.label} coursed={obrigatorias.coursed} planned={obrigatorias.planned} needed={obrigatorias.needed} color="primary" />
-      <ProgressBar label={eletivas.label} coursed={eletivas.coursed} planned={eletivas.planned} needed={eletivas.needed} color="orange" />
-      <ProgressBar label={livres.label} coursed={livres.coursed} planned={livres.planned} needed={livres.needed} color="green" />
+      <ProgressBar label={mandatory.label} coursed={mandatory.coursed} planned={mandatory.planned} needed={mandatory.needed} color="primary" />
+      <ProgressBar label={elective.label} coursed={elective.coursed} planned={elective.planned} needed={elective.needed} color="orange" />
+      {/* <ProgressBar label={livres.label} coursed={livres.coursed} planned={livres.planned} needed={livres.needed} color="green" /> */}
     </CompletionBarContainer>
   );
 };

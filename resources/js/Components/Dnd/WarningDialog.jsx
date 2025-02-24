@@ -1,4 +1,5 @@
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button } from "@mui/material";
+import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
+import Button from "../Atoms/Buttons/Button";
 
 function WarningDialog({ open, onClose }) {
     return (

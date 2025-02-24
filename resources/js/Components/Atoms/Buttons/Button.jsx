@@ -5,9 +5,9 @@ import MUIButton from '@mui/material/Button';
 
 const StyledButton = styled(MUIButton)(({ theme }) => ({
 	...clickEffect,
+	...theme.typography.h4,
 	textTransform: 'none',
 	borderRadius: '1.5rem',
-	...theme.typography.h4,
 
 	'&.MuiButton-sizeSmall': {
 		padding: '2px 26px',

@@ -1,7 +1,7 @@
 import Starfield from "./Starfield";
 
 export default {
-	title: "Background",
+	title: "Background/Starfield",
 	component: Starfield,
 
 	parameters: {

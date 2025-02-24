@@ -23,7 +23,7 @@ function computeCollision({ droppableContainers, ...props }) {
     : closestCenter({ 
         ...props, 
         droppableContainers: droppableContainers.filter(
-          (droppable) => getContainerName(droppable) !== "coursePicker"
+          (droppable) => getContainerName(droppable) !== "subjectPicker"
         ),
       });
 }

@@ -129,13 +129,13 @@ function handleDragEnd(event, updateSubject, updatePlans) {
   if (!targetContainer) return;
 
   const activeId = extractBaseId(active.id);
-  const action = updateSubject(activeId, { semester: targetContainer === "coursePicker" ? null : targetContainer });
+  const action = updateSubject(activeId, { semester: targetContainer === "subjectPicker" ? null : targetContainer });
 
   updatePlans((prevPlans) => {
     const targetSubjects = getSemesterSubjects(targetContainer, prevPlans);
     const sourceIndex = targetSubjects.findIndex((subject) => subject.code === activeId);
     const targetIndex =
-      active.data.current.container === "coursePicker"
+      active.data.current.container === "subjectPicker"
         ? targetSubjects.length
         : calculateDropIndex(over, draggingRect, targetSubjects);
 

@@ -1,14 +1,15 @@
 import React from 'react';
 import { styled } from "@mui/material/styles";
+import { Box } from '@mui/material';
 import clickEffect from '../../../styles/clickEffect';
 
-const IconContainer = styled("div")(({ theme }) => ({
+const IconContainer = styled( Box )(({ color, theme }) => ({
 	...clickEffect,
 
 	display: 'flex',
 	justifyContent: 'center',
 	alignItems: 'center',
-	backgroundColor: theme.palette.primary.main,
+	backgroundColor: theme.palette[color].main,
 	
 	width: 30,
 	height: 30,
@@ -23,9 +24,9 @@ const IconContainer = styled("div")(({ theme }) => ({
 	},
 }));
 
-const IconWrapper = ({ Icon, onClick, ...props }) => {
+const IconWrapper = ({ Icon, color="primary", onClick, ...props }) => {
 	return (
-		<IconContainer tabIndex={0} onClick={onClick} {...props}>
+		<IconContainer tabIndex={0} color={color} onClick={onClick} {...props}>
 			{Icon ? <Icon /> : ""}
 		</IconContainer>
 	);

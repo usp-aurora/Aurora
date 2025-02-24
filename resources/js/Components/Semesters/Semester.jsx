@@ -1,15 +1,18 @@
 import React, { useState } from "react";
 
-import { Typography } from "@mui/material/";
-import { styled } from "@mui/material/styles";
+import { Typography, useMediaQuery } from "@mui/material/";
+import { styled, useTheme } from "@mui/material/styles";
 
 import Accordion from "../Atoms/Accordion/Accordion";
 import SubjectCard from "../Atoms/Card/SubjectCard";
-import AuxiliarCard from "../Atoms/Card/AuxiliarCard";
+import AuxiliaryCard from "../Atoms/Card/AuxiliaryCard";
 
 import Droppable from "../Dnd/Droppable";
-import SortableItem from '../Dnd/SortableItem';
-import SortableGrid from '../Dnd/SortableGrid';
+import SortableItem from "../Dnd/SortableItem";
+import SortableGrid from "../Dnd/SortableGrid";
+
+import { useSubjectInfoContext } from '../../Hooks/useSubjectInfoContext';
+
 
 const SummaryContainer = styled("div")(({}) => ({
     width: "100%",
@@ -21,9 +24,11 @@ const SummaryContainer = styled("div")(({}) => ({
 }));
 
 const SemesterInfoText = styled(Typography)(({ theme }) => ({
+    textTransform: "uppercase",
+
     ...theme.typography.h4,
     [theme.breakpoints.up("sm")]: {
-        ...theme.typography.h1,
+        ...theme.typography.h2,
     },
 }));
 
@@ -45,19 +50,25 @@ const DroppableCardContainer = styled(Droppable)(({ theme }) => ({
 }));
 
 const Semester = ({
-    placeholder,
     semesterData,
+    subjectDataMap,
     plannedSubjects,
+    placeholder,
     isRequiredView = true,
+    isExpanded,
+    onClick
 }) => {
+    const { subjectInfo, isSubjectInfoModalOpen, closeSubjectInfoModal, showSubjectInfo } = useSubjectInfoContext(); 
 
     let workCredits = 0;
     let lectureCredits = 0;
 
-    semesterData.subjects.forEach((subject) => {
-        lectureCredits += parseInt(subject.credits[0], 10);
-        workCredits += parseInt(subject.credits[1], 10);
-    });
+    if (semesterData.subjects.length > 0) {
+        semesterData.subjects.forEach((subject) => {
+            lectureCredits += parseInt(subject.credits[0], 10);
+            workCredits += parseInt(subject.credits[1], 10);
+        });
+    }
 
     const Summary = (
         <SummaryContainer>
@@ -72,13 +83,14 @@ const Semester = ({
         </SummaryContainer>
     );
 
-    const [isExpanded, setExpanded] = useState(false);
+    const theme = useTheme();
+    const isMobile = useMediaQuery((theme) => theme.breakpoints.down('sm'));
 
     return (
         <Accordion
             summary={Summary}
             expanded={isExpanded}
-            handleClick={() => setExpanded((prev) => !prev)}
+            onClick={onClick}
         >
             <DroppableCardContainer
                 id={semesterData.semesterId}
@@ -90,7 +102,8 @@ const Semester = ({
                 <SortableGrid items={semesterData.subjects} container={semesterData.semesterId}>
                     {semesterData.subjects.map((subject) => {
                         const requiredScheduled = isRequiredView && plannedSubjects.has(subject.code);
-                        
+                        const subjectTags = subjectDataMap.get[subject.code]?.tags || [];
+
                         return (
                             <SortableItem
                                 id={subject.code}
@@ -100,26 +113,26 @@ const Semester = ({
                                 disabled={!isExpanded}
                             >
                                 <SubjectCard
-                                    courseCode={subject.code}
-                                    courseTitle={subject.name}
+                                    subjectCode={subject.code}
+                                    subjectName={subject.name}
                                     planetURL="/icons/planeta.png"
+                                    onClick={() =>
+                                        showSubjectInfo({...subject, tags: subjectTags, isPlanned: true})
+                                    }
                                     moon={requiredScheduled}
-                                    // onClick={() =>
-                                    //    displayCourse(subject)
-                                    // }
                                 />
                             </SortableItem>
                         );
                     })}
-                    
                     {isRequiredView && semesterData.suggestions.map((suggestion, index) => (
-                        <AuxiliarCard 
-                        key={index}
-                            text={`Disciplina do grupo ${suggestion.group}`} 
-                            ghost={true}
-                            sx={{ pointerEvents: "none"}}
-                        />
-                    ))}
+                            <AuxiliaryCard 
+                                key={index}
+                                text={`Disciplina do grupo ${suggestion.group}`} 
+                                ghost={true}
+                                sx={{ pointerEvents: "none"}}
+                            />
+                        ))
+                    }
                 </SortableGrid>
             </DroppableCardContainer>
         </Accordion>
