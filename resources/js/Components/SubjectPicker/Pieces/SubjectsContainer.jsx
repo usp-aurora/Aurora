@@ -5,7 +5,7 @@ import SortableItem from "../../Dnd/SortableItem";
 
 import { useSubjectInfoContext } from "../../../Hooks/useSubjectInfoContext";
 
-const SubjectsContainer = ({ containerName, subjectMap, subjects }) => {
+const SubjectsContainer = ({ containerName, subjectDataMap, plannedSubjects, subjects }) => {
     const {
         subjectInfo,
         isSubjectInfoModalOpen,
@@ -16,15 +16,15 @@ const SubjectsContainer = ({ containerName, subjectMap, subjects }) => {
     return (
 		<CardsGrid>
 			{subjects.map((subject) => {
-				const subjectInfo = subjectMap.get(subject.code);
-				const isBlocked = subjectInfo.semester !== null
+				const isBlocked = plannedSubjects.has(subject.code);
+				const subjectTags = subjectDataMap.get[subject.code]?.tags || [];
 
 				return (
 					<SortableItem
-						id={subject.code}
 						key={subject.code}
+						id={`${subject.code}@${containerName}`}
+						container={"subjectPicker"}
 						subjectData={subject}
-						containerName={containerName}
 						disabled={isBlocked}
 					>
 						<SubjectCard
@@ -34,7 +34,7 @@ const SubjectsContainer = ({ containerName, subjectMap, subjects }) => {
 							ghost={isBlocked}
 							onClick={() => {!isBlocked && showSubjectInfo({
 								...subject,
-								tags: subjectInfo.tags,
+								tags: subjectTags,
 								isPlanned: false,
 							})}}
 						/>

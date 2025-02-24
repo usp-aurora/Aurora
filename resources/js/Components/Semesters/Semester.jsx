@@ -2,7 +2,6 @@ import React, { useState } from "react";
 
 import { Typography, useMediaQuery } from "@mui/material/";
 import { styled, useTheme } from "@mui/material/styles";
-import AddIcon from "@mui/icons-material/Add";
 
 import Accordion from "../Atoms/Accordion/Accordion";
 import SubjectCard from "../Atoms/Card/SubjectCard";
@@ -13,7 +12,6 @@ import SortableItem from "../Dnd/SortableItem";
 import SortableGrid from "../Dnd/SortableGrid";
 
 import { useSubjectInfoContext } from '../../Hooks/useSubjectInfoContext';
-import { useSubjectPickerContext } from '../../Hooks/useSubjectPickerContext';
 
 
 const SummaryContainer = styled("div")(({}) => ({
@@ -53,13 +51,14 @@ const DroppableCardContainer = styled(Droppable)(({ theme }) => ({
 
 const Semester = ({
     semesterData,
-    subjectMap,
-    isRequiredView,
+    subjectDataMap,
+    plannedSubjects,
+    placeholder,
+    isRequiredView = true,
     isExpanded,
     onClick
 }) => {
     const { subjectInfo, isSubjectInfoModalOpen, closeSubjectInfoModal, showSubjectInfo } = useSubjectInfoContext(); 
-    const { isSubjectPickerModalOpen, closeSubjectPickerModal, showSubjectPickerModal } = useSubjectPickerContext();
 
     let workCredits = 0;
     let lectureCredits = 0;
@@ -98,16 +97,19 @@ const Semester = ({
                 key={semesterData.semesterId}
                 spacing={{ xs: 1, sm: 2 }}
                 disabled={!isExpanded}
+                placeholder={isRequiredView ? null : placeholder}
             >
-                <SortableGrid items={semesterData.subjects}>
+                <SortableGrid items={semesterData.subjects} container={semesterData.semesterId}>
                     {semesterData.subjects.map((subject) => {
-                        const subjectTags = subjectMap.get(subject.code).tags;
+                        const requiredScheduled = isRequiredView && plannedSubjects.has(subject.code);
+                        const subjectTags = subjectDataMap.get[subject.code]?.tags || [];
+
                         return (
                             <SortableItem
                                 id={subject.code}
                                 key={subject.code}
                                 subjectData={subject}
-                                containerName={semesterData.semesterId}
+                                container={semesterData.semesterId}
                                 disabled={!isExpanded}
                             >
                                 <SubjectCard
@@ -117,12 +119,20 @@ const Semester = ({
                                     onClick={() =>
                                         showSubjectInfo({...subject, tags: subjectTags, isPlanned: true})
                                     }
+                                    moon={requiredScheduled}
                                 />
                             </SortableItem>
-                    );})}
-                    {isMobile 
-                        ? <AuxiliaryCard Icon={AddIcon} text="Adicionar disciplina" clickable onClick={showSubjectPickerModal}/>
-                        : <AuxiliaryCard text="Arraste uma disciplina" ghost/>}
+                        );
+                    })}
+                    {isRequiredView && semesterData.suggestions.map((suggestion, index) => (
+                            <AuxiliaryCard 
+                                key={index}
+                                text={`Disciplina do grupo ${suggestion.group}`} 
+                                ghost={true}
+                                sx={{ pointerEvents: "none"}}
+                            />
+                        ))
+                    }
                 </SortableGrid>
             </DroppableCardContainer>
         </Accordion>

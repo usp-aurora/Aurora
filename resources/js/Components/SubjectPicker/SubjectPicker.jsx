@@ -68,7 +68,7 @@ const StyledCloseIcon = styled(CloseIcon)(({ theme }) => ({
     },
 }));
 
-function SubjectPicker({ subjectMap, data }){
+function SubjectPicker({ subjectDataMap, plannedSubjects, data }){
     const { isSubjectPickerModalOpen, closeSubjectPickerModal, showSubjectPickerModal } = useSubjectPickerContext();
     
     const [expandedCategories, setExpandedCategories] = useState(data.subgroups.map(() => true)); 
@@ -90,15 +90,16 @@ function SubjectPicker({ subjectMap, data }){
                     <StyledCloseIcon onClick={closeSubjectPickerModal}/>
                 </HeaderContainer>
                 {/* Algum dia vai ter um search bar bem aqui */}
-                    {data.subgroups.map((groupData, index) => (
-                        <Group
-                            key={groupData.title}
-                            groupData={groupData}
-                            subjectMap={subjectMap}
-                            expanded={expandedCategories[index]}
-                            onClick={() => toggleCategory(index)}
-                        />
-                    ))}
+                {data.subgroups.map((groupData, index) => (
+                    <Group
+                        key={groupData.title}
+                        groupData={groupData}
+                        subjectDataMap={subjectDataMap}
+						plannedSubjects={plannedSubjects}
+                        expanded={expandedCategories[index]}
+                        onClick={() => toggleCategory(index)}
+                    />
+                ))}
             </Container>
         </PopUpContainer>
     );

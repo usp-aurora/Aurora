@@ -71,6 +71,7 @@ const CorseInfoGraphContainer = styled('div')(() => ({
 	width: '100%',
 	borderRadius: '16px',
 	flexGrow: 1,
+	overflow: "hidden"
 }));
 
 function SubjectInfoGraph() {

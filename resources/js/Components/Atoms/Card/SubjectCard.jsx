@@ -34,6 +34,27 @@ const PlanetContainer = styled(Box)(({ theme }) => ({
     },
 }));
 
+const PlanetWrapper = styled("div")({
+	position: "relative",
+	display: "inline-flex",
+	alignItems: "center",
+});
+
+const Moon = styled("div")(({ theme }) => ({
+	width: theme.card.mobile.moonSize,
+	height: theme.card.mobile.moonSize,
+	position: "absolute",
+	left: "-45%",
+	
+	backgroundColor: theme.palette.green.main,
+	borderRadius: "50%",
+
+	[theme.breakpoints.up("sm")]: {
+		width: theme.card.desktop.moonSize,
+		height: theme.card.desktop.moonSize,
+	}
+}));
+
 const StyledTitle = styled(Typography)(({ theme }) => ({
     color: theme.palette.neutral.main,
 
@@ -81,6 +102,7 @@ const SubjectCard = ({
     planetURL,
     ghost,
     glassmorphismLevel = "level2",
+    moon,
     ...props
 }) => {
     return (
@@ -92,13 +114,16 @@ const SubjectCard = ({
                 glassmorphismLevel={glassmorphismLevel}
             >
                 <CardContent>
-                    <PlanetContainer>
-                        {planetURL && !ghost && <Planet src={planetURL} />}
-                    </PlanetContainer>
-                    <StyledTitle> {subjectCode} </StyledTitle>
+					<PlanetWrapper>
+						{moon && <Moon/> }
+						<PlanetContainer>
+							{planetURL && <Planet src={planetURL} />}
+						</PlanetContainer>
+					</PlanetWrapper>
+                    <StyledTitle component="h3"> {subjectCode} </StyledTitle>
                     <TextContainer>
                         <TextWrapper>
-                            <StyledSubjectText>{subjectName}</StyledSubjectText>
+                            <StyledSubjectText component="p">{subjectName}</StyledSubjectText>
                         </TextWrapper>
                     </TextContainer>
                 </CardContent>

@@ -1,8 +1,9 @@
 import React from 'react';
 import { styled } from "@mui/material/styles";
+import { Box } from '@mui/material';
 import clickEffect from '../../../styles/clickEffect';
 
-const IconContainer = styled("div")(({ color, theme }) => ({
+const IconContainer = styled( Box )(({ color, theme }) => ({
 	...clickEffect,
 
 	display: 'flex',
@@ -23,9 +24,9 @@ const IconContainer = styled("div")(({ color, theme }) => ({
 	},
 }));
 
-const IconWrapper = ({ Icon, color="primary", ...props }) => {
+const IconWrapper = ({ Icon, color="primary", onClick, ...props }) => {
 	return (
-		<IconContainer color={color} {...props}>
+		<IconContainer tabIndex={0} color={color} onClick={onClick} {...props}>
 			{Icon ? <Icon /> : ""}
 		</IconContainer>
 	);

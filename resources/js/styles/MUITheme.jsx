@@ -115,6 +115,7 @@ theme = createTheme({
             outerHeight: 104, 
             borderRadius: 8,
             planetSize: 45,
+            moonSize: 12,
         },
         desktop: {
             innerWidth: 128,
@@ -123,6 +124,7 @@ theme = createTheme({
             outerHeight: 128,
             borderRadius: 12,
             planetSize: 55,
+            moonSize: 15,
         }
     },
 

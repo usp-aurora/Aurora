@@ -31,7 +31,7 @@ const SubGroupContainer = styled("div")(({ theme, depth }) => ({
     gap: theme.spacing(2),
 }));
 
-const Group = ({ groupData, subjectMap, expanded, onClick }) => {
+const Group = ({ groupData, subjectDataMap, plannedSubjects, expanded, onClick }) => {
     return (
         <Accordion
             summary={
@@ -61,8 +61,9 @@ const Group = ({ groupData, subjectMap, expanded, onClick }) => {
                 />
                 <GroupText>{groupData.description}</GroupText>
                 <SubjectsContainer
-                    groupName={groupData.title}
-                    subjectMap={subjectMap}
+                    containerName={groupData.title}
+                    subjectDataMap={subjectDataMap}
+                    plannedSubjects={plannedSubjects}
                     subjects={groupData.subjects}
                 />
                 <SubGroupContainer>
@@ -71,12 +72,13 @@ const Group = ({ groupData, subjectMap, expanded, onClick }) => {
                             key={subgroup.title}
                             depth={1}
                             subgroupData={subgroup}
-                            subjectMap={subjectMap}
+                            subjectDataMap={subjectDataMap}
+                            plannedSubjects={plannedSubjects}
                         />
                     ))}
                 </SubGroupContainer>
-            </GroupContainer>
-        </Accordion>
+            </GroupContainer >
+        </Accordion >
     );
 };
 

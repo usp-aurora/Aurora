@@ -11,11 +11,9 @@ class HomeController extends Controller
 {
     public function index() {
         
-        $subjectController = new SubjectController();
         $groupController = new GroupController();
 
         return Inertia::render('Home', [
-            'subjects' => $subjectController->index(),
             'groups' => $groupController->index(1)
         ]);
     }
