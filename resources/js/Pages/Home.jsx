@@ -80,8 +80,9 @@ const Home = ({ groups }) => {
 
     const [plans, updatePlans, pushPlans, restoreCurrentPlans, undo, redo] = useHistoryState();
     const [subjectDataMap, plannedSubjects, updateSubject, bulkUpdateSubjects] = useSubjectDataMap(groups);
-    console.log(subjectDataMap);
-
+    // console.log("subjectDataMap", subjectDataMap);
+    // console.log("plans", plans);
+    
     const defaultPlans = coreCurriculum.map(({ semesterId, subjects }) => ({ semesterId, subjects })); // keeps only a subset of the properties
     usePlansManager(plans, defaultPlans, pushPlans, subjectDataMap, bulkUpdateSubjects, setIsLoadingData);
 
@@ -105,7 +106,6 @@ const Home = ({ groups }) => {
         <SubjectInfoProvider>
             <SubjectPickerProvider>
                 <DragAndDropProvider
-                    plans={plans}
                     setPlans={updatePlans}
                     resetPlans={restoreCurrentPlans}
                     disabled={showCurriculum}
@@ -118,7 +118,10 @@ const Home = ({ groups }) => {
                                 <Header />
                                 <Stack spacing={{ xs: 0, sm: 2 }} direction="row" sx={{ width: "100%" }}>
                                     <Stack spacing={{ xs: 1, sm: 2 }} sx={{ width: { xs: "100%", sm: "64%" } }}>
-                                        <CompletionBar />
+                                        <CompletionBar 
+                                            subjectDataMap={subjectDataMap}
+                                            plans={plans}
+                                        />
                                         <MainTools
                                             undo={() => applyHistoryAction(undo)}
                                             redo={() => applyHistoryAction(redo)}
