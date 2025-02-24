@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('subjects', function (Blueprint $table) {
             $table->string('code')->primary();
             $table->string('name');
-            $table->string('syllabus');
+            $table->text('syllabus');
             $table->string('lecture_credits');
             $table->string('work_credits');
             $table->timestamps();

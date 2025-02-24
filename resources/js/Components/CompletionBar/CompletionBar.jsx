@@ -24,26 +24,24 @@ function CompletionBar({subjectDataMap, plans}){
   useEffect(() => {
     let mandatory = 0;
     let elective = 0;
-
     plans.forEach(semester => {
       semester.subjects.forEach(subject => {
-        if (subjectDataMap.get(subject.code).tags.includes("Obrigatória")) {
+        if (subjectDataMap.get(subject.code).tags.some(tag => tag.name === "Obrigatórias")) {
             mandatory += parseInt(subject.credits[0], 10);
-          mandatory += parseInt(subject.credits[1], 10);
+            mandatory += parseInt(subject.credits[1], 10);
         } else {
           elective += parseInt(subject.credits[0], 10);
           elective += parseInt(subject.credits[1], 10);
         }
       });
     });
-
     setMandatoryCoursed(mandatory);
     setElectiveCoursed(elective);
   }, [subjectDataMap, plans]);
 
 
  
-  const mandatory = {label: "Obrigatórias", coursed: mandatoryCoursed, planned: 0, needed: 108 };
+  const mandatory = {label: "Obrigatórias", coursed: mandatoryCoursed, planned: 0, needed: 111 };
   const elective = {label: "Optativas", coursed: electiveCoursed, planned: 0, needed: 87 };
   // const livres = {label: "Livres", coursed: 20, planned: 23, needed: 24 }
 

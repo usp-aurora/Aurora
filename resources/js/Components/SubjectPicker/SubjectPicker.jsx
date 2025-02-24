@@ -21,8 +21,10 @@ const PopUpContainer = styled("div")(({ open, theme }) => ({
         zIndex: 2,
         overflowY: "auto",
     },
+    [theme.breakpoints.up("sm")] :{
+        width: "36%",
+    }
 }));
-
 const Container = styled(Droppable)(({ theme }) => ({
     display: "flex",
     flexDirection: "column",
@@ -32,6 +34,9 @@ const Container = styled(Droppable)(({ theme }) => ({
 
     margin: theme.spacing(1),
     marginTop: theme.spacing(2),
+
+    maxHeight: "200vh",
+    overflowY: "auto",
 
     [theme.breakpoints.up("sm")]: {
         ...glassmorphismStyle(theme, "level2"),

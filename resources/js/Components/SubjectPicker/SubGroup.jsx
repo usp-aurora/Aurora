@@ -14,7 +14,7 @@ const SubGroupContainer = styled("div")(({ theme, depth }) => ({
     paddingLeft: theme.spacing(1),
 
     [theme.breakpoints.up("sm")]: {
-        marginLeft: theme.spacing(2 * depth),
+        marginLeft: theme.spacing(depth),
         gap: theme.spacing(2),
     },
 }));
@@ -40,12 +40,12 @@ const SubGroupText = styled(Typography)(({ theme }) => ({
     },
 }));
 
-const SubGroup = ({ depth, subgroupData, subjectDataMap, plannedSubjects }) => {               
+const SubGroup = ({ depth, subgroupData, subjectDataMap, plannedSubjects }) => {    
     return (
         <SubGroupContainer depth={depth}>
             <SubGroupHeader>
                 <SubGroupTitle>{subgroupData.title}</SubGroupTitle>
-                <SubGroupText>99/99 créditos</SubGroupText>
+                {/* <SubGroupText>99/99 créditos</SubGroupText> */}
             </SubGroupHeader>
             <SubGroupText>{subgroupData.description}</SubGroupText>
             <SubjectsContainer 

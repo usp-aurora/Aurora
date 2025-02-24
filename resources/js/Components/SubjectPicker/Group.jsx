@@ -45,7 +45,7 @@ const Group = ({ groupData, subjectDataMap, plannedSubjects, expanded, onClick }
             onClick={onClick}
         >
             <GroupContainer>
-                <CompletionMetrics
+                {/* <CompletionMetrics
                     metrics={[
                         {
                             name: "disciplinas",
@@ -58,7 +58,7 @@ const Group = ({ groupData, subjectDataMap, plannedSubjects, expanded, onClick }
                             total: "10",
                         },
                     ]}
-                />
+                /> */}
                 <GroupText>{groupData.description}</GroupText>
                 <SubjectsContainer
                     containerName={groupData.title}

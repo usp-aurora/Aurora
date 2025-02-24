@@ -16,7 +16,7 @@ function Semesters({
   plannedSubjects,
   customPlan = true
 }){
-  const [expandedSemesters, setExpandedSemesters] = useState(semesters.map((_, index) => index === 0)); 
+  const [expandedSemesters, setExpandedSemesters] = useState(semesters.map(() => true)); 
   const toggleSemester = (index) => {
       const newExpandedSemester = [...expandedSemesters];
       newExpandedSemester[index] = !newExpandedSemester[index];

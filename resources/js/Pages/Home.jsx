@@ -18,6 +18,8 @@ import { DragAndDropProvider } from '../Components/Dnd/DragAndDropContext.jsx';
 import { SubjectInfoProvider } from "../Hooks/useSubjectInfoContext";
 import { SubjectPickerProvider } from "../Hooks/useSubjectPickerContext";
 
+import coreCurriculum from "../ManualData/coreCurriculum.jsx";
+
 const AppContainer = styled(Box)(() => ({
     position: "relative",
 }));
@@ -33,40 +35,6 @@ const ContentContainer = styled(Box)(({ theme }) => ({
     },
 }));
 
-// Define the core curriculum with empty semesters
-const coreCurriculum = Array.from({ length: 8 }, (_, i) => ({ semesterId: i + 1, subjects: [], suggestions: [] }));
-coreCurriculum[0].subjects = [
-    {
-        code: "MAC0101",
-        name: "Integração na Universidade e na Profissão",
-        credits: [2, 0],
-    },
-    {
-        code: "MAC0105",
-        name: "Fundamentos de Matemática para a Computação",
-        credits: [4, 0],
-    },
-    {
-        code: "MAC0110",
-        name: "Introdução à Computação",
-        credits: [4, 0],
-    },
-    {
-        code: "MAC0329",
-        name: "Álgebra Booleana e Aplicações no Projeto de Arquitetura de Computadores",
-        credits: [4, 0],
-    },
-    {
-        code: "MAT2453",
-        name: "Cálculo Diferencial e Integral I",
-        credits: [6, 0],
-    },
-    {
-        code: "MAT0112",
-        name: "Vetores e Geometria",
-        credits: [4, 0],
-    }];
-
 
 for (let i = 0; i < 6; i++) {
     coreCurriculum[5].suggestions.push({
@@ -80,8 +48,6 @@ const Home = ({ groups }) => {
 
     const [plans, updatePlans, pushPlans, restoreCurrentPlans, undo, redo] = useHistoryState();
     const [subjectDataMap, plannedSubjects, updateSubject, bulkUpdateSubjects] = useSubjectDataMap(groups);
-    // console.log("subjectDataMap", subjectDataMap);
-    // console.log("plans", plans);
     
     const defaultPlans = coreCurriculum.map(({ semesterId, subjects }) => ({ semesterId, subjects })); // keeps only a subset of the properties
     usePlansManager(plans, defaultPlans, pushPlans, subjectDataMap, bulkUpdateSubjects, setIsLoadingData);

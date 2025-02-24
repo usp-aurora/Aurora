@@ -5,19 +5,19 @@ import SortableItem from "../../Dnd/SortableItem";
 
 import { useSubjectInfoContext } from "../../../Hooks/useSubjectInfoContext";
 
-const SubjectsContainer = ({ containerName, subjectDataMap, plannedSubjects, subjects }) => {
-    const {
-        subjectInfo,
-        isSubjectInfoModalOpen,
-        closeSubjectInfoModal,
-        showSubjectInfo,
-    } = useSubjectInfoContext();
+const SubjectsContainer = ({ containerName, subjectDataMap, plannedSubjects = new Set(), subjects }) => {
+	const {
+		subjectInfo,
+		isSubjectInfoModalOpen,
+		closeSubjectInfoModal,
+		showSubjectInfo,
+	} = useSubjectInfoContext();
 
-    return (
+	return (
 		<CardsGrid>
 			{subjects.map((subject) => {
 				const isBlocked = plannedSubjects.has(subject.code);
-				const subjectTags = subjectDataMap.get[subject.code]?.tags || [];
+				const subjectTags = subjectDataMap ? subjectDataMap.get(subject.code)?.tags || [] : [];
 
 				return (
 					<SortableItem
@@ -42,7 +42,7 @@ const SubjectsContainer = ({ containerName, subjectDataMap, plannedSubjects, sub
 				);
 			})}
 		</CardsGrid>
-    );
+	);
 };
 
 export default SubjectsContainer;
