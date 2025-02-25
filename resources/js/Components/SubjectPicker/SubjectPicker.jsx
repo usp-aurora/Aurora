@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { styled, useTheme } from "@mui/material/styles";
-import { Typography, useMediaQuery} from "@mui/material";
+import { Box, Typography, useMediaQuery } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
 import glassmorphismStyle from "../../styles/MUI/glassmorphismMUI";
@@ -10,7 +10,7 @@ import Background from "../Background/HomeBackground";
 
 import { useSubjectPickerContext } from '../../Hooks/useSubjectPickerContext';
 
-const PopUpContainer = styled("div")(({ open, theme }) => ({
+const PopUpContainer = styled(Box)(({ open, theme }) => ({
     [theme.breakpoints.down("sm")]: {
         display: open ? "block" : "none",
         position: "fixed",
@@ -18,13 +18,11 @@ const PopUpContainer = styled("div")(({ open, theme }) => ({
         left: 0,
         width: "100vw",
         height: "100vh",
-        zIndex: 2,
+        zIndex: theme.zIndex.subjectPicker,
         overflowY: "auto",
-    },
-    [theme.breakpoints.up("sm")] :{
-        width: "36%",
     }
 }));
+
 const Container = styled(Droppable)(({ theme }) => ({
     display: "flex",
     flexDirection: "column",
@@ -35,14 +33,10 @@ const Container = styled(Droppable)(({ theme }) => ({
     margin: theme.spacing(1),
     marginTop: theme.spacing(2),
 
-    maxHeight: "200vh",
-    overflowY: "auto",
-
     [theme.breakpoints.up("sm")]: {
         ...glassmorphismStyle(theme, "level2"),
         margin: 0,
         padding: theme.spacing(2),
-        minHeight: "93vh",
         borderRadius: "12px",
     },
 }));
@@ -73,17 +67,49 @@ const StyledCloseIcon = styled(CloseIcon)(({ theme }) => ({
     },
 }));
 
-function SubjectPicker({ subjectDataMap, plannedSubjects, data }){
+const GroupContainers = styled(Box)(({ theme }) => ({
+    display: "flex",
+    flexDirection: "column",
+    height: "100vh",
+    paddingBottom: "100vh",
+    overflowY: "auto",
+    gap: theme.spacing(2),
+
+    borderRadius: "12px",
+
+    "&::-webkit-scrollbar": {
+        width: "3px",
+    },
+    "&::-webkit-scrollbar-track": {
+        background: "transparent",
+    },
+    "&::-webkit-scrollbar-thumb": {
+        backgroundColor: "#C9CBCA",
+        borderRadius: "10px",
+        height: "100px",
+        visibility: "hidden", 
+    },
+    "&:hover::-webkit-scrollbar-thumb": {
+        visibility: "visible", 
+    },
+    "&::-webkit-scrollbar-thumb:hover": {
+        visibility: "visible", 
+    },
+}));
+
+function SubjectPicker({ subjectDataMap, plannedSubjects, data }) {
     const { isSubjectPickerModalOpen, closeSubjectPickerModal, showSubjectPickerModal } = useSubjectPickerContext();
-    
-    const [expandedCategories, setExpandedCategories] = useState(data.subgroups.map(() => true)); 
+
+    const [expandedCategories, setExpandedCategories] = useState(
+        data.subgroups.map(group => group.title === "Obrigatórias")
+    );
     const toggleCategory = (index) => {
         const newExpandedCategories = [...expandedCategories];
         newExpandedCategories[index] = !newExpandedCategories[index];
         setExpandedCategories(newExpandedCategories);
     }
 
-    const theme = useTheme(); 
+    const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
     return (
@@ -92,19 +118,21 @@ function SubjectPicker({ subjectDataMap, plannedSubjects, data }){
                 {isMobile && <Background />}
                 <HeaderContainer>
                     <StyledTitle>Adicionar disciplina</StyledTitle>
-                    <StyledCloseIcon onClick={closeSubjectPickerModal}/>
+                    <StyledCloseIcon onClick={closeSubjectPickerModal} />
                 </HeaderContainer>
                 {/* Algum dia vai ter um search bar bem aqui */}
-                {data.subgroups.map((groupData, index) => (
-                    <Group
-                        key={groupData.title}
-                        groupData={groupData}
-                        subjectDataMap={subjectDataMap}
-						plannedSubjects={plannedSubjects}
-                        expanded={expandedCategories[index]}
-                        onClick={() => toggleCategory(index)}
-                    />
-                ))}
+                <GroupContainers>
+                    {data.subgroups.map((groupData, index) => (
+                        <Group
+                            key={groupData.title}
+                            groupData={groupData}
+                            subjectDataMap={subjectDataMap}
+                            plannedSubjects={plannedSubjects}
+                            expanded={expandedCategories[index]}
+                            onClick={() => toggleCategory(index)}
+                        />
+                    ))}
+                </GroupContainers>
             </Container>
         </PopUpContainer>
     );

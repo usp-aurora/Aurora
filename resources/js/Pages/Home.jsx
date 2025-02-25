@@ -29,18 +29,12 @@ const ContentContainer = styled(Box)(({ theme }) => ({
     justifyContent: "center",
     width: "100%",
     padding: "8px",
+    overflow: "hidden", // Prevent general page from being scrollable
 
     [theme.breakpoints.up("sm")]: {
         padding: "16px",
     },
 }));
-
-
-for (let i = 0; i < 6; i++) {
-    coreCurriculum[5].suggestions.push({
-        group: "Optativa Livre",
-    });
-}
 
 const Home = ({ groups }) => {
     const [isLoadingData, setIsLoadingData] = useState(true);
@@ -48,7 +42,7 @@ const Home = ({ groups }) => {
 
     const [plans, updatePlans, pushPlans, restoreCurrentPlans, undo, redo] = useHistoryState();
     const [subjectDataMap, plannedSubjects, updateSubject, bulkUpdateSubjects] = useSubjectDataMap(groups);
-    
+
     const defaultPlans = coreCurriculum.map(({ semesterId, subjects }) => ({ semesterId, subjects })); // keeps only a subset of the properties
     usePlansManager(plans, defaultPlans, pushPlans, subjectDataMap, bulkUpdateSubjects, setIsLoadingData);
 
@@ -68,7 +62,6 @@ const Home = ({ groups }) => {
     return isLoadingData ? (
         <LoadingScreen />
     ) : (
-    // return (
         <SubjectInfoProvider>
             <SubjectPickerProvider>
                 <DragAndDropProvider
@@ -80,11 +73,11 @@ const Home = ({ groups }) => {
                         <Background />
                         <SubjectInfo />
                         <ContentContainer>
-                            <Stack spacing={{ xs: 1, sm: 2 }} sx={{ width: "100%" }} alignItems="center">
+                            <Stack spacing={{ xs: 1, sm: 2 }}>
                                 <Header />
-                                <Stack spacing={{ xs: 0, sm: 2 }} direction="row" sx={{ width: "100%" }}>
+                                <Stack spacing={{ xs: 0, sm: 2 }} direction="row" sx={{ width: "100%", height: "100%" }}>
                                     <Stack spacing={{ xs: 1, sm: 2 }} sx={{ width: { xs: "100%", sm: "64%" } }}>
-                                        <CompletionBar 
+                                        <CompletionBar
                                             subjectDataMap={subjectDataMap}
                                             plans={plans}
                                         />
@@ -103,11 +96,13 @@ const Home = ({ groups }) => {
                                             customPlan={!showCurriculum}
                                         />
                                     </Stack>
-                                    <SubjectPicker
-                                        plannedSubjects={plannedSubjects}
-                                        subjectDataMap={subjectDataMap}
-                                        data={groups}
-                                    />
+                                    <Stack sx={{ width: { xs: "100%", sm: "36%" } }}>
+                                        <SubjectPicker
+                                            plannedSubjects={plannedSubjects}
+                                            subjectDataMap={subjectDataMap}
+                                            data={groups}
+                                        />
+                                    </Stack>
                                 </Stack>
                             </Stack>
                         </ContentContainer>

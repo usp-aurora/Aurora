@@ -128,6 +128,11 @@ theme = createTheme({
         }
     },
 
+    zIndex: {
+        subjectPicker: 2,
+        subjectInfo: 1,
+    },
+
     glassmorphism: {
         level2: {
             backdropFilter: "blur(2px)",
@@ -153,6 +158,8 @@ theme = createTheme({
             // }
         }
     }
+
+
 });
 
 export default theme;

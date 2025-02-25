@@ -48,15 +48,15 @@ const SubGroup = ({ depth, subgroupData, subjectDataMap, plannedSubjects }) => {
                 {/* <SubGroupText>99/99 créditos</SubGroupText> */}
             </SubGroupHeader>
             <SubGroupText>{subgroupData.description}</SubGroupText>
+            {subgroupData.subgroups.map((subgroup) => (
+                <SubGroup key={subgroup.title} depth={depth + 1} subgroupData={subgroup} />
+            ))}
             <SubjectsContainer 
                 containerName={subgroupData.title}
                 subjectDataMap={subjectDataMap}
                 plannedSubjects={plannedSubjects}
                 subjects={subgroupData.subjects}
             />
-            {subgroupData.subgroups.map((subgroup) => (
-                <SubGroup key={subgroup.title} depth={depth + 1} subgroupData={subgroup} />
-            ))}
         </SubGroupContainer>
     );
 };

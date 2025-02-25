@@ -60,12 +60,6 @@ const Group = ({ groupData, subjectDataMap, plannedSubjects, expanded, onClick }
                     ]}
                 /> */}
                 <GroupText>{groupData.description}</GroupText>
-                <SubjectsContainer
-                    containerName={groupData.title}
-                    subjectDataMap={subjectDataMap}
-                    plannedSubjects={plannedSubjects}
-                    subjects={groupData.subjects}
-                />
                 <SubGroupContainer>
                     {groupData.subgroups.map((subgroup) => (
                         <SubGroup
@@ -77,6 +71,12 @@ const Group = ({ groupData, subjectDataMap, plannedSubjects, expanded, onClick }
                         />
                     ))}
                 </SubGroupContainer>
+                <SubjectsContainer
+                    containerName={groupData.title}
+                    subjectDataMap={subjectDataMap}
+                    plannedSubjects={plannedSubjects}
+                    subjects={groupData.subjects}
+                />
             </GroupContainer >
         </Accordion >
     );

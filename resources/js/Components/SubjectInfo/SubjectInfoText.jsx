@@ -47,7 +47,7 @@ const SubjectInfoText = ({ desc, ...props }) => {
 		if(descRef.current){
 			setShowReadMoreButton(descRef.current.clientHeight !== descRef.current.scrollHeight);
 		}
-	}, []);
+	}, [desc]);
 
 	return (
 		<SubjectTextContainer {...props}>
