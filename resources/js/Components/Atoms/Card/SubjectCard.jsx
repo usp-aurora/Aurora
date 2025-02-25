@@ -117,7 +117,7 @@ const SubjectCard = ({
 					<PlanetWrapper>
 						{moon && <Moon/> }
 						<PlanetContainer>
-							{planetURL && <Planet src={planetURL} />}
+							{(!ghost && planetURL) && <Planet src={planetURL} />}
 						</PlanetContainer>
 					</PlanetWrapper>
                     <StyledTitle component="h3"> {subjectCode} </StyledTitle>
