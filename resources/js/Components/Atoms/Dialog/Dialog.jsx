@@ -6,7 +6,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-import glassmorphismStyle from "../../../styles/MUI/glassmorphismMUI";
+import glassmorphismStyle from "../../../styles/Glassmorphism";
 
 const DialogTitle = styled(MUIDialogTitle)(({ theme }) => ({
   color: theme.palette.primary.neutral,

@@ -4,7 +4,7 @@ import { Stack, useMediaQuery } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 import { fadeIn, fadeOut } from '../Atoms/Animations';
-import glassmorphismStyle from '../../styles/MUI/glassmorphismMUI';
+import glassmorphismStyle from "../../styles/Glassmorphism";
 
 import SubjectCard from '../Atoms/Card/SubjectCard';
 import GraphView from './GraphView/GraphView';

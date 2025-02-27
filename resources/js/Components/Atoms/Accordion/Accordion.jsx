@@ -5,7 +5,7 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { styled } from "@mui/material/styles";
 
-import glassmorphismStyle from "../../../styles/MUI/glassmorphismMUI";
+import glassmorphismStyle from "../../../styles/Glassmorphism";
 
 const StyledAccordion = styled(({ glassmorphismLevel, ...props }) => (
     // disableGutters removes the default margin when the accordion is open

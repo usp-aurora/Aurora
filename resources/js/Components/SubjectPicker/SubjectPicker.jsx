@@ -3,7 +3,7 @@ import { styled, useTheme } from "@mui/material/styles";
 import { Box, Typography, useMediaQuery } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
-import glassmorphismStyle from "../../styles/MUI/glassmorphismMUI";
+import glassmorphismStyle from "../../styles/Glassmorphism";
 import Droppable from "../Dnd/Droppable";
 import Group from "./Group";
 import Background from "../Background/HomeBackground";

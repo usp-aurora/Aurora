@@ -1,10 +1,10 @@
 import { createInertiaApp } from '@inertiajs/react'
 import { createRoot } from 'react-dom/client'
-
-import GlobalStyles from './styles/GlobalStyles.jsx'
-
-import MUITheme from './styles/MUITheme.jsx'
+import { Global } from '@emotion/react'
 import { ThemeProvider } from '@mui/material/styles';
+
+import globalStyles from './styles/GlobalStyles.jsx'
+import theme from './styles/Theme.jsx'
 
 import { AuthProvider } from './Hooks/useAuthContext.jsx';
 
@@ -16,9 +16,9 @@ createInertiaApp({
   setup({ el, App, props }) {
     createRoot(el).render(
       <>
+        <Global styles={globalStyles}/> 
         <AuthProvider>
-          <ThemeProvider theme={MUITheme}>
-            <GlobalStyles></GlobalStyles>
+          <ThemeProvider theme={theme}>
             <App {...props} />
           </ThemeProvider>
         </AuthProvider>

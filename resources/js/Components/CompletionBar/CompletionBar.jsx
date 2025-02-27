@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Stack from '@mui/material/Stack';
 import { styled } from "@mui/material/styles";
-import glassmorphismStyle from '../../styles/MUI/glassmorphismMUI';
+import glassmorphismStyle from "../../styles/Glassmorphism";
 import ProgressBar from './ProgressBar/ProgressBar';
 
 const CompletionBarContainer = styled(Stack)(({ theme }) => ({

@@ -1,5 +1,5 @@
 import { ClipLoader } from "react-spinners";
-import styled from "styled-components";
+import { styled } from "@mui/material/styles";
 
 const LoadingContainer = styled.div`
   display: flex;

@@ -1,14 +1,15 @@
-import { createGlobalStyle } from 'styled-components';
+import { css } from '@emotion/react'
 
-const GlobalStyle = createGlobalStyle`
+const globalStyles = css`
   *, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
   }
+
   body {
     overflow: hidden;
   }
 `;
 
-export default GlobalStyle;
+export default globalStyles;
