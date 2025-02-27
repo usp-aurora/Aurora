@@ -1,20 +1,23 @@
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
+import Dialog from "../Atoms/Dialog/Dialog";
 import Button from "../Atoms/Buttons/Button";
+import { Typography } from "@mui/material";
 
 function WarningDialog({ open, onClose }) {
+    const dialogContent = (
+        <Typography>
+            Atualmente, você está visualizando a grade obrigatória. 
+            Retorne ao modo de planejamento para arrastar cursos.
+        </Typography>
+    )
+
     return (
-        <Dialog open={open} onClose={onClose}>
-            <DialogTitle color="black">Aviso</DialogTitle>
-            <DialogContent>
-                <DialogContentText>
-                    Atualmente, você está visualizando a grade obrigatória. 
-                    Retorne ao modo de planejamento para arrastar cursos.
-                </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={onClose} variant="contained">OK</Button>
-            </DialogActions>
-        </Dialog>
+        <Dialog 
+            open={open} 
+            onClose={onClose} 
+            title={"Visualização de grade obrigatória"}
+            content={dialogContent}
+            actions={<Button onClick={onClose} variant="contained">OK</Button>}
+        />
     );
 }
 
