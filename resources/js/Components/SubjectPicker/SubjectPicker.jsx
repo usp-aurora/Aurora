@@ -76,25 +76,6 @@ const GroupContainers = styled(Box)(({ theme }) => ({
     gap: theme.spacing(2),
 
     borderRadius: "12px",
-
-    "&::-webkit-scrollbar": {
-        width: "3px",
-    },
-    "&::-webkit-scrollbar-track": {
-        background: "transparent",
-    },
-    "&::-webkit-scrollbar-thumb": {
-        backgroundColor: "#C9CBCA",
-        borderRadius: "10px",
-        height: "100px",
-        visibility: "hidden", 
-    },
-    "&:hover::-webkit-scrollbar-thumb": {
-        visibility: "visible", 
-    },
-    "&::-webkit-scrollbar-thumb:hover": {
-        visibility: "visible", 
-    },
 }));
 
 function SubjectPicker({ subjectDataMap, plannedSubjects, data }) {

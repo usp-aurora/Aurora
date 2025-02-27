@@ -14,25 +14,6 @@ const SemestersContainer = styled(Stack)(({ theme }) => ({
   overflowY: "auto",
   borderRadius: "12px",
   paddingBottom: "100vh",
-
-  "&::-webkit-scrollbar": {
-    width: "3px",
-  },
-  "&::-webkit-scrollbar-track": {
-      background: "transparent",
-  },
-  "&::-webkit-scrollbar-thumb": {
-      backgroundColor: "#C9CBCA",
-      borderRadius: "10px",
-      height: "100px",
-      visibility: "hidden", 
-  },
-  "&:hover::-webkit-scrollbar-thumb": {
-      visibility: "visible", 
-  },
-  "&::-webkit-scrollbar-thumb:hover": {
-      visibility: "visible", 
-  },
 }));
 
 function Semesters({
