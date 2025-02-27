@@ -1,7 +1,7 @@
 import { ClipLoader } from "react-spinners";
 import { styled } from "@mui/material/styles";
 
-const LoadingContainer = styled.div`
+const LoadingContainer = styled('div')`
   display: flex;
   justify-content: center;
   align-items: center;

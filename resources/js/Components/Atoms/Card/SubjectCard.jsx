@@ -2,7 +2,7 @@ import React from "react";
 import { styled } from "@mui/material/styles";
 import { Box, Typography } from "@mui/material";
 
-import glassmorphismStyle from "../../../styles/Glassmorphism";
+import glassmorphismStyle from "../../../styles/glassmorphism";
 import Planet from "../Planet";
 import { CardBackgroundBase, CardContainer } from "./Pieces/CardPieces";
 

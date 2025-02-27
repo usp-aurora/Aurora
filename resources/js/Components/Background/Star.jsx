@@ -1,6 +1,6 @@
 import React from "react";
 import { styled } from "@mui/material/styles";
-import { twinkle } from "../Atoms/Animations";
+import twinkle from "../Atoms/Animations/twinkle";
 
 const StarGroup = styled("g")(({ twinkling, delay }) => ({ 
     filter: `drop-shadow(0px 0px 8px rgba(255, 255, 255, 0.15))`,

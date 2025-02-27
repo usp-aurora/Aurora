@@ -3,8 +3,8 @@ import { createRoot } from 'react-dom/client'
 import { Global } from '@emotion/react'
 import { ThemeProvider } from '@mui/material/styles';
 
-import globalStyles from './styles/GlobalStyles.jsx'
-import theme from './styles/Theme.jsx'
+import globalStyles from './styles/globalStyles.jsx'
+import theme from './styles/theme.jsx'
 
 import { AuthProvider } from './Hooks/useAuthContext.jsx';
 

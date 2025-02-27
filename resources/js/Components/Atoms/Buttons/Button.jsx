@@ -1,6 +1,6 @@
 import React from 'react';
 import { styled } from "@mui/material/styles";
-import clickEffect from '../../../styles/clickEffect';
+import clickEffect from '../../../Components/Atoms/Animations/clickEffect';
 import MUIButton from '@mui/material/Button';
 
 const StyledButton = styled(MUIButton)(({ theme }) => ({

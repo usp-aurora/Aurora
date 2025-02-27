@@ -3,8 +3,7 @@ import { styled, useTheme } from '@mui/material/styles';
 import { Stack, useMediaQuery } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-import { fadeIn, fadeOut } from '../Atoms/Animations';
-import glassmorphismStyle from "../../styles/Glassmorphism";
+import glassmorphismStyle from "../../styles/glassmorphism";
 
 import SubjectCard from '../Atoms/Card/SubjectCard';
 import GraphView from './GraphView/GraphView';
@@ -17,7 +16,6 @@ import IconWrapper from '../Atoms/Icons/IconWrapper';
 import { useSubjectInfoContext } from '../../Hooks/useSubjectInfoContext';
 
 const SubjectInfoBackground = styled('div')(({ theme, open }) => ({
-	// animation: `${open ? fadeIn : fadeOut} 0.5s ease-in-out -0.3s`,
 	position: 'fixed',
 	top: 0,
 	left: 0,

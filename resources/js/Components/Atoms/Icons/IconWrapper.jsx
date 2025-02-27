@@ -1,7 +1,7 @@
 import React from 'react';
 import { styled } from "@mui/material/styles";
 import { Box } from '@mui/material';
-import clickEffect from '../../../styles/clickEffect';
+import clickEffect from '../../../Components/Atoms/Animations/clickEffect';
 
 const IconContainer = styled( Box )(({ color, theme }) => ({
 	...clickEffect,
