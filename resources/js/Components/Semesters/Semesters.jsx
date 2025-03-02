@@ -7,9 +7,9 @@ import AuxiliaryCard from "../Atoms/Card/AuxiliaryCard";
 import { useDndMonitor } from "@dnd-kit/core";
 import { handleDragEnd } from "../../Handlers/DragHandlers";
 import Semester from "./Semester";
-import SemesterPlaceHolder from "./SemesterPlaceholder";
+import SubjectPlaceholder from "./SubjectPlaceholder";
 
-const SemestersContainer = styled(Stack)(({ theme }) => ({
+const SemestersContainer = styled(Stack)(({ }) => ({
   height: "100vh",
   overflowY: "auto",
   borderRadius: "12px",
@@ -48,7 +48,7 @@ function Semesters({
           semesterData={semester}
           subjectDataMap={subjectDataMap}
           plannedSubjects={plannedSubjects}
-          placeholder={<SemesterPlaceHolder />}
+          placeholder={<SubjectPlaceholder />}
           isRequiredView={!customPlan}
           isExpanded={expandedSemesters[index]}
           onClick={() => toggleSemester(index)}

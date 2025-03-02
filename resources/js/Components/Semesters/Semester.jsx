@@ -1,7 +1,7 @@
 import React from "react";
 
-import { Typography, useMediaQuery } from "@mui/material/";
-import { styled, useTheme } from "@mui/material/styles";
+import { Typography } from "@mui/material/";
+import { styled } from "@mui/material/styles";
 
 import Accordion from "../Atoms/Accordion/Accordion";
 import SubjectCard from "../Atoms/Card/SubjectCard";
@@ -82,9 +82,6 @@ const Semester = ({
             </SemesterCreditsText>
         </SummaryContainer>
     );
-
-    const theme = useTheme();
-    const isMobile = useMediaQuery((theme) => theme.breakpoints.down('sm'));
 
     return (
         <Accordion

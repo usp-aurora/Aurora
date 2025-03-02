@@ -1,6 +1,6 @@
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { withThemeFromJSXProvider } from '@storybook/addon-themes';
-import theme from '../resources/js/styles/MUITheme';
+import theme from '../resources/js/styles/theme';
 
 /** @type { import('@storybook/react').Preview } */
 const preview = {

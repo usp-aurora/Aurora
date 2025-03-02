@@ -2,8 +2,8 @@ import { createContext, useContext, useState, useEffect } from 'react';
 
 const SubjectPickerContext = createContext();
 
-function SubjectPickerProvider({ children })  {
-	const [isSubjectPickerModalOpen, setSubjectPickerModalOpen] = useState(false);
+function SubjectPickerProvider({ children, subjectPickerStartsOpened = false })  {
+	const [isSubjectPickerModalOpen, setSubjectPickerModalOpen] = useState(subjectPickerStartsOpened);
 
 	const showSubjectPickerModal = () => {
 		setSubjectPickerModalOpen(true);
@@ -12,23 +12,6 @@ function SubjectPickerProvider({ children })  {
 	const closeSubjectPickerModal = () => {
 		setSubjectPickerModalOpen(false);
 	}
-
-	useEffect(() => {
-		const handleKeyDown = (event) => {
-			if (event.key === 'Escape') {
-				closeSubjectPickerModal();
-			}
-		};
-		
-		if (isSubjectPickerModalOpen) {
-			window.addEventListener('keydown', handleKeyDown);
-		}
-
-		return () => {
-			window.removeEventListener('keydown', handleKeyDown);
-		};
-	}, [isSubjectPickerModalOpen]);
-
 
 	return (
 		<SubjectPickerContext.Provider value={{ isSubjectPickerModalOpen, closeSubjectPickerModal, showSubjectPickerModal }}>

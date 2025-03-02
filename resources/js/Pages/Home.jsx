@@ -1,13 +1,15 @@
 import React, { useState } from "react";
-import { styled } from "@mui/material/styles";
-import { Stack, Box } from "@mui/material";
+import { styled, useTheme } from "@mui/material/styles";
+import { Stack, Box, useMediaQuery } from "@mui/material";
 
-import Header from "../Components/Header/Header";
+import HeaderDesktop from "../Components/Header/HeaderDesktop";
+import HeaderMobile from "../Components/Header/HeaderMobile";
 import CompletionBar from "../Components/CompletionBar/CompletionBar";
 import Background from "../Components/Background/HomeBackground";
 import SubjectInfo from "../Components/SubjectInfo/SubjectInfo";
 import Semesters from "../Components/Semesters/Semesters";
-import SubjectPicker from "../Components/SubjectPicker/SubjectPicker";
+import SubjectPickerDesktop from "../Components/SubjectPicker/SubjectPickerDesktop";
+import SubjectPickerMobile from "../Components/SubjectPicker/SubjectPickerMobile";
 import LoadingScreen from "../Components/Atoms/LoadingScreen";
 
 import MainTools from '../Components/Tools/MainTools.jsx';
@@ -59,6 +61,9 @@ const Home = ({ groups }) => {
             updateSubject(action.key, { semester: historyFunc.name === "undo" ? action.changes.semester.from : action.changes.semester.to });
     }
 
+    const theme = useTheme();
+    const isAboveSmall = useMediaQuery(theme.breakpoints.up('sm'));
+
     return isLoadingData ? (
         <LoadingScreen />
     ) : (
@@ -70,11 +75,16 @@ const Home = ({ groups }) => {
                     disabled={showCurriculum}
                 >
                     <AppContainer>
-                        <Background />
                         <SubjectInfo />
+                        {!isAboveSmall && <SubjectPickerMobile
+                            plannedSubjects={plannedSubjects}
+                            subjectDataMap={subjectDataMap}
+                            data={groups} />}
+                        <Background />
+
                         <ContentContainer>
                             <Stack spacing={{ xs: 1, sm: 2 }}>
-                                <Header />
+                                {isAboveSmall ? <HeaderDesktop /> : <HeaderMobile />}
                                 <Stack spacing={{ xs: 0, sm: 2 }} direction="row" sx={{ width: "100%", height: "100%" }}>
                                     <Stack spacing={{ xs: 1, sm: 2 }} sx={{ width: { xs: "100%", sm: "64%" } }}>
                                         <CompletionBar
@@ -96,13 +106,15 @@ const Home = ({ groups }) => {
                                             customPlan={!showCurriculum}
                                         />
                                     </Stack>
-                                    <Stack sx={{ width: { xs: "100%", sm: "36%" } }}>
-                                        <SubjectPicker
-                                            plannedSubjects={plannedSubjects}
-                                            subjectDataMap={subjectDataMap}
-                                            data={groups}
-                                        />
-                                    </Stack>
+                                    {isAboveSmall &&
+                                        (<Stack sx={{ width: "36%" }}>        
+                                            <SubjectPickerDesktop
+                                                plannedSubjects={plannedSubjects}
+                                                subjectDataMap={subjectDataMap}
+                                                data={groups}
+                                            />
+                                        </Stack>)
+                                    }
                                 </Stack>
                             </Stack>
                         </ContentContainer>

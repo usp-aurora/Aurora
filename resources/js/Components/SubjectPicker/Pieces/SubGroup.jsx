@@ -2,7 +2,7 @@ import React from "react";
 import { styled } from "@mui/material/styles";
 import { Typography } from "@mui/material";
 
-import SubjectsContainer from "./Pieces/SubjectsContainer";
+import SubjectsContainer from "./SubjectsContainer";
 
 const SubGroupContainer = styled("div")(({ theme, depth }) => ({
     display: "flex",

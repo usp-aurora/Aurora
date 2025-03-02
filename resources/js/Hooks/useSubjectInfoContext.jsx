@@ -2,17 +2,18 @@ import { createContext, useContext, useState, useEffect } from 'react';
 
 const SubjectInfoContext = createContext();
 
-function SubjectInfoProvider({ children })  {
-	const [isSubjectInfoModalOpen, setSubjectInfoModalOpen] = useState(false);
+const defaultSubjectInfo = {
+    isPlanned: false,
+    name: "",
+    code: "",
+    // tags: [{ name: "", color: "" }],
+    credits: 0,
+    desc: "",
+};
 
-	const [subjectInfo, setSubjectInfo] = useState({
-		isPlanned: false,
-		name: "",
-		code: "",
-		tags: [],
-		credits: 0,
-		desc: "",
-	});
+function SubjectInfoProvider({ children, subjectInfoStartsOpened = false, initialSubjectInfo = defaultSubjectInfo})  {
+	const [isSubjectInfoModalOpen, setSubjectInfoModalOpen] = useState(subjectInfoStartsOpened);
+	const [subjectInfo, setSubjectInfo] = useState(initialSubjectInfo);
 	
 	const showSubjectInfo = (subject) => {
 		setSubjectInfoModalOpen(true);
@@ -29,22 +30,6 @@ function SubjectInfoProvider({ children })  {
 	const closeSubjectInfoModal = () => {
 		setSubjectInfoModalOpen(false);
 	}
-
-	useEffect(() => {
-		const handleKeyDown = (event) => {
-			if (event.key === 'Escape') {
-				closeSubjectInfoModal();
-			}
-		};
-
-		if (isSubjectInfoModalOpen) {
-			window.addEventListener('keydown', handleKeyDown);
-		}
-
-		return () => {
-			window.removeEventListener('keydown', handleKeyDown);
-		};
-	}, [isSubjectInfoModalOpen]);
 
 	return (
 		<SubjectInfoContext.Provider value={{ subjectInfo, isSubjectInfoModalOpen, closeSubjectInfoModal, showSubjectInfo }}>

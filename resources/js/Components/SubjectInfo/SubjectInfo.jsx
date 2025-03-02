@@ -1,6 +1,6 @@
 import React from 'react';
 import { styled, useTheme } from '@mui/material/styles';
-import { Stack, useMediaQuery } from '@mui/material';
+import { Modal, Stack, useMediaQuery } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 import glassmorphismStyle from "../../styles/glassmorphism";
@@ -15,22 +15,8 @@ import IconWrapper from '../Atoms/Icons/IconWrapper';
 
 import { useSubjectInfoContext } from '../../Hooks/useSubjectInfoContext';
 
-const SubjectInfoBackground = styled('div')(({ theme, open }) => ({
-	position: 'fixed',
-	top: 0,
-	left: 0,
-	width: '100%',
-	height: '100%',
-	background: 'rgba(0, 0, 0, 0.5)',
-	display: open ? 'flex' : 'none',
-	justifyContent: 'center',
-	alignItems: 'center',
-	zIndex: 3,
-
+const SubjectInfoBackground = styled(Modal)(({ theme }) => ({
 	padding: theme.spacing(1),
-	[theme.breakpoints.up('sm')]:{
-		padding: "5% 10%",
-	}
 }));
 
 const SubjectInfoContainer = styled('div')(({ theme }) => ({
@@ -73,6 +59,9 @@ const CorseInfoGraphContainer = styled('div')(() => ({
 }));
 
 function SubjectInfoGraph() {
+	const theme = useTheme();
+	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+	
 	const nodes = new Map([
 		["n1", { code: "MAC0101", name: "Integração na Universidade e na Profissão" }],
 		["n2", { code: "MAC0121", name: "Integração na Universidade e na Profissão" }],
@@ -99,20 +88,22 @@ function SubjectInfoGraph() {
 		);
 	}
 
-	const theme = useTheme();
-	const isMobile = useMediaQuery((theme) => theme.breakpoints.down('sm'));
 	return (<GraphView nodes={nodes} links={links} root={"n1"} vertical={isMobile} interactive={!isMobile} />);
 }
 
 function SubjectInfo() {
-	const { subjectInfo, isSubjectInfoModalOpen, closeSubjectInfoModal } = useSubjectInfoContext();
+	const { subjectInfo, isSubjectInfoModalOpen, closeSubjectInfoModal, showSubjectInfo } = useSubjectInfoContext(); 
 
 	return (
-		<SubjectInfoBackground onClick={closeSubjectInfoModal} open={isSubjectInfoModalOpen}>
-			<SubjectInfoContainer onClick={(e) => e.stopPropagation()}>
-				<SubjectInfoHeader onClose={closeSubjectInfoModal} name={subjectInfo.name} code={subjectInfo.code} />
+		<SubjectInfoBackground onClose={closeSubjectInfoModal} open={isSubjectInfoModalOpen}>
+			<SubjectInfoContainer>
+				<SubjectInfoHeader onClose={closeSubjectInfoModal} 
+								   name={subjectInfo.name} 
+								   code={subjectInfo.code} />
 				<SubjectInfoBody>
-					<SubjectInfoTags tags={subjectInfo.tags} credits={subjectInfo.credits} />
+					<SubjectInfoTags 
+						tags={subjectInfo.tags} 
+						credits={subjectInfo.credits} />
 					<SubjectInfoText desc={subjectInfo.desc} />
 					<CorseInfoGraphContainer>
 						<SubjectInfoGraph />

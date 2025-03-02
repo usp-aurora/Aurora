@@ -2,11 +2,11 @@ import React from "react";
 import { styled } from "@mui/material/styles";
 import { Typography } from "@mui/material";
 
-import Accordion from "../Atoms/Accordion/Accordion";
-import CompletionHeader from "./Pieces/Completion/CompletionHeader";
-import CompletionMetrics from "./Pieces/Completion/CompletionMetrics";
+import Accordion from "../../Atoms/Accordion/Accordion";
+import CompletionHeader from "./Completion/CompletionHeader";
+import CompletionMetrics from "./Completion/CompletionMetrics";
 import SubGroup from "./SubGroup";
-import SubjectsContainer from "./Pieces/SubjectsContainer";
+import SubjectsContainer from "./SubjectsContainer";
 
 const GroupContainer = styled("div")(({ theme }) => ({
     display: "flex",
