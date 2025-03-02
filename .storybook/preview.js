@@ -25,8 +25,6 @@ export const decorators = [
   }),
 ];
 
-export default preview;
-
 export const parameters = {
   backgrounds: {
     values: [
@@ -41,3 +39,5 @@ export const parameters = {
     ],
   },
 };
+
+export default preview;
