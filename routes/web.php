@@ -14,9 +14,9 @@ Route::get('/', [HomeController::class, 'index']);
 Route::middleware('auth')->prefix('api/plans')->group(function () {
     Route::get('/index', [PlanController::class, 'index']);
     Route::post('/sync', [PlanController::class, 'sync']);
-    Route::post('', [PlanController::class, 'store']);
-    Route::put('/{id}', [PlanController::class, 'update']);
-    Route::delete('/{id}', [PlanController::class, 'destroy']);
+    // Route::post('', [PlanController::class, 'store']);
+    // Route::put('/{id}', [PlanController::class, 'update']);
+    // Route::delete('/{id}', [PlanController::class, 'destroy']);
 });
 
 Route::get('/api/user', function () {

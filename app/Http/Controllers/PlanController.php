@@ -9,17 +9,13 @@ use Illuminate\Support\Facades\Log;
 
 class PlanController extends Controller
 {
-    /**
-     * Retrieve all plans for the authenticated user, grouped by semester.
-     *
-     * This function fetches all plans associated with the logged-in user,
-     * includes their related subjects, and organizes them by semester.
-     *
-     * @return \Illuminate\Http\JsonResponse A JSON response containing grouped plans by semester.
-     */
     public function index()
     {
-        $plans = Plan::where('user_id', auth()->user()->id )
+        if (auth()->user() == null) {
+            return;
+        }
+
+        $plans = Plan::where('user_id', auth()->user()->id)
             ->join('subjects', 'plans.subject_code', '=', 'subjects.code')
             ->select('plans.*', 'subjects.name', 'subjects.syllabus', 'subjects.lecture_credits', 'subjects.work_credits')
             ->get();
@@ -43,51 +39,33 @@ class PlanController extends Controller
             ];
         }
 
-        return response()->json(['plans' => $groupedPlans], 200);
+        return $groupedPlans;
     }
 
-
-    /**
-     * Synchronize plans with the database.
-     *
-     * Processes a batch of changes from the frontend, performing create, update, and delete actions.
-     * Returns a summary of the changes made.
-     *
-     * @param \Illuminate\Http\Request $request The request object containing JSON data of changes.
-     * @return \Illuminate\Http\JsonResponse A JSON response indicating success or failure, along with the changed plans.
-     */
     public function sync(Request $request)
     {
-        $userId = auth()->user()->id; 
-        $data = $request->json()->all();
+        $userId = auth()->user()->id;
+        $changes = $request->json()->all();
         $userPlans = Plan::where('user_id', $userId)->get();
         $changedPlans = [];
 
         try {
-            foreach ($data as $plan) {
-                $existingPlan = $userPlans->where('subject_code', $plan['subject_code'])->first();
-                if ($existingPlan && isset($plan['semester'])) {
-                    // Update existing plan
-                    $this->update(new Request([
-                        'subject_code' => $plan['subject_code'],
-                        'semester' => $plan['semester'],
-                    ]), $existingPlan['id']);
+            foreach ($changes as $change) {
+                $existingPlan = $userPlans->where('subject_code', $change['subject_code'])->first();
+                if ($existingPlan && isset($change['semester'])) {
+                    $this->update($change['subject_code'], $change['semester'], $existingPlan['id']);
 
                     $changedPlans[] = [
                         'id' => $existingPlan['id'],
-                        'subject_code' => $plan['subject_code'],
+                        'subject_code' => $change['subject_code'],
                         'action' => 'updated',
                     ];
-                } elseif (!$existingPlan && isset($plan['semester'])) {
-                    // Create a new plan
-                    $this->store(new Request([
-                        'subject_code' => $plan['subject_code'],
-                        'semester' => $plan['semester'],
-                    ]));
+                } elseif (!$existingPlan && isset($change['semester'])) {
+                    $this->store($change['subject_code'], $change['semester']);
 
                     $newPlan = Plan::where('user_id', $userId)
-                        ->where('subject_code', $plan['subject_code'])
-                        ->where('semester', $plan['semester'])
+                        ->where('subject_code', $change['subject_code'])
+                        ->where('semester', $change['semester'])
                         ->latest()
                         ->first();
 
@@ -96,12 +74,12 @@ class PlanController extends Controller
                         'subject_code' => $newPlan->subject_id,
                         'action' => 'created',
                     ];
-                } elseif ($existingPlan && isset($plan['id'])) {
-                    $this->destroy($plan['id']);
+                } elseif ($existingPlan && isset($change['id'])) {
+                    $this->destroy($change['id']);
 
                     $changedPlans[] = [
-                        'id' => $plan['id'],
-                        'subject_code' => $plan['subject_code'],
+                        'id' => $change['id'],
+                        'subject_code' => $change['subject_code'],
                         'action' => 'deleted',
                     ];
                 }
@@ -117,102 +95,67 @@ class PlanController extends Controller
         }
     }
 
- 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    private function store($subject_code, $semester)
     {
-        $validated = $request->validate([
+        $validated = validator(compact('subject_code', 'semester'), [
             'subject_code' => 'required|exists:subjects,code',
             'semester' => 'required|integer',
-        ]);
+        ])->validate();
 
         try {
             $plan = Plan::create([
-                'user_id' => auth()->user()->id ,
+                'user_id' => auth()->user()->id,
                 'subject_code' => $validated['subject_code'],
                 'semester' => $validated['semester'],
             ]);
 
-            return response()->json([
-                'status' => 'success',
-                'data' => $plan
-            ], 201);
+            return $plan;
         } catch (\Exception $e) {
             Log::error('Error creating plan:', ['error' => $e->getMessage()]);
 
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Failed to create plan'
-            ], 500);
+            return null;
         }
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
+    private function update($subject_code, $semester, $plan_id)
     {
-        $validated = $request->validate([
+        $validated = validator(compact('subject_code', 'semester', 'plan_id'), [
             'subject_code' => 'required|exists:subjects,code',
             'semester' => 'required|integer',
-        ]);
+            'plan_id' => 'required|exists:plans,id',
+        ])->validate();
 
         try {
-            $plan = Plan::findOrFail($id);
+            $plan = Plan::findOrFail($validated['plan_id']);
 
             $plan->update([
                 'subject_code' => $validated['subject_code'],
                 'semester' => $validated['semester'],
             ]);
 
-            return response()->json([
-                'status' => 'success',
-                'data' => $plan
-            ], 200);
+            return $plan;
         } catch (\Exception $e) {
-            Log::error('Error updating plan:', ['error' => $e->getMessage()]);
+            Log::error('Error updating plan:', ['plan_id' => $plan_id, 'error' => $e->getMessage()]);
 
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Failed to update plan'
-            ], 500);
+            return null;
         }
     }
-    
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
+    private function destroy($id)
     {
+        $validated = validator(compact('id'), [
+            'id' => 'required|exists:plans,id',
+        ])->validate();
+
         try {
-            $plan = Plan::findOrFail($id);
+            $plan = Plan::findOrFail($validated['id']);
             $plan->delete();
 
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Plan deleted successfully'
-            ], 200);
+            return true;
         } catch (\Exception $e) {
             Log::error('Error deleting plan:', ['error' => $e->getMessage()]);
 
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Failed to delete plan'
-            ], 500);
+            return false;
         }
     }
-
 }
