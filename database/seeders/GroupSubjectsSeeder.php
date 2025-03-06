@@ -728,11 +728,6 @@ class GroupSubjectsSeeder extends Seeder
                 'group_id' => 28,
                 'subject_code' => 'MAC0499',
             ],
-            [	
-                'id' => 139,
-                'group_id' => 28,
-                'subject_code' => 'MAC0499',
-            ]
         ];
 
         foreach ($groupSubjects as $groupSubject) {
