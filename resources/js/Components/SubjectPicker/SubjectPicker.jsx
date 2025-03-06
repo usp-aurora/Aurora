@@ -76,11 +76,10 @@ const StyledCloseIcon = styled(CloseIcon)(({ theme }) => ({
 function SubjectPicker({ subjectDataMap, plannedSubjects, data }){
     const { isSubjectPickerModalOpen, closeSubjectPickerModal, showSubjectPickerModal } = useSubjectPickerContext();
     
-    const [expandedCategories, setExpandedCategories] = useState(data.subgroups.map(() => true)); 
+    const [expandedCategory, setExpandedCategory] = useState(); 
     const toggleCategory = (index) => {
-        const newExpandedCategories = [...expandedCategories];
-        newExpandedCategories[index] = !newExpandedCategories[index];
-        setExpandedCategories(newExpandedCategories);
+        setExpandedCategory((prevCategory) => 
+            (prevCategory === index) ? null : index);
     }
 
     const theme = useTheme(); 
@@ -100,8 +99,8 @@ function SubjectPicker({ subjectDataMap, plannedSubjects, data }){
                         key={groupData.title}
                         groupData={groupData}
                         subjectDataMap={subjectDataMap}
-						plannedSubjects={plannedSubjects}
-                        expanded={expandedCategories[index]}
+                    	plannedSubjects={plannedSubjects}
+                        expanded={expandedCategory === index}
                         onClick={() => toggleCategory(index)}
                     />
                 ))}

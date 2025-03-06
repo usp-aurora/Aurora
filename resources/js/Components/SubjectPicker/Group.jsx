@@ -43,6 +43,7 @@ const Group = ({ groupData, subjectDataMap, plannedSubjects, expanded, onClick }
             }
             expanded={expanded}
             onClick={onClick}
+            TransitionProps={{ unmountOnExit: true }}
         >
             <GroupContainer>
                 {/* <CompletionMetrics
