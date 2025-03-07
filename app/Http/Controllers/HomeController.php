@@ -4,35 +4,34 @@ namespace App\Http\Controllers;
 
 use Inertia\Inertia;
 use Illuminate\Http\Request;
-use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\PlanController;
+use App\Http\Controllers\SubjectController;
+use App\Http\Controllers\UserController;
 
 class HomeController extends Controller
 {
-    public function index() {
-        
-        $planController = new PlanController();
+    public function index()
+    {
+
         $groupController = new GroupController();
+        $planController = new PlanController();
         $subjectController = new SubjectController();
+        $userController = new UserController();
 
         $plans = $planController->index();
         $groups = $groupController->index(1);
         $subjects = $subjectController->index()->toArray();
-
         foreach ($subjects as &$subject) {
             $subject["groups"] = $groupController->getSubjectRootGroups($subject["code"]);
         }
-        unset($subject);
+        $user = $userController->index();
 
-        dd([
+        return Inertia::render('Home', [
             'plans' => $plans,
             'groups' => $groups,
             'subjects' => $subjects,
+            'user' => $user,
         ]);
-        // dd($groupController->index(1));
-        // return Inertia::render('Home', [
-        //     'groups' => $groupController->index(1)
-        // ]);
     }
 }
