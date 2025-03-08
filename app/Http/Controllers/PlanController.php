@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Foundation\Auth;
 use Illuminate\Http\Request;
 use App\Models\Plan;
+use App\Models\SuggestedPlan;
 use Illuminate\Support\Facades\Log;
 
 class PlanController extends Controller
@@ -12,13 +13,16 @@ class PlanController extends Controller
     public function index()
     {
         if (auth()->user() == null) {
-            return;
+            $plans = SuggestedPlan::join('subjects', 'suggested_plans.subject_code', '=', 'subjects.code')
+                ->select('suggested_plans.*', 'subjects.name', 'subjects.syllabus', 'subjects.lecture_credits', 'subjects.work_credits')
+                ->get();
         }
-
-        $plans = Plan::where('user_id', auth()->user()->id)
-            ->join('subjects', 'plans.subject_code', '=', 'subjects.code')
-            ->select('plans.*', 'subjects.name', 'subjects.syllabus', 'subjects.lecture_credits', 'subjects.work_credits')
-            ->get();
+        else{
+            $plans = Plan::where('user_id', auth()->user()->id)
+                ->join('subjects', 'plans.subject_code', '=', 'subjects.code')
+                ->select('plans.*', 'subjects.name', 'subjects.syllabus', 'subjects.lecture_credits', 'subjects.work_credits')
+                ->get();
+        }
 
         $groupedPlans = [];
 

@@ -28,7 +28,7 @@ class HomeController extends Controller
         $user = $userController->index();
 
         return Inertia::render('Home', [
-            'plans' => $plans,
+            'initialPlans' => $plans,
             'groups' => $groups,
             'subjects' => $subjects,
             'user' => $user,

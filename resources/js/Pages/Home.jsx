@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { styled, useTheme } from "@mui/material/styles";
 import { Stack, Box, useMediaQuery } from "@mui/material";
 
@@ -10,11 +10,10 @@ import SubjectInfo from "../Components/SubjectInfo/SubjectInfo";
 import Semesters from "../Components/Semesters/Semesters";
 import SubjectPickerDesktop from "../Components/SubjectPicker/SubjectPickerDesktop";
 import SubjectPickerMobile from "../Components/SubjectPicker/SubjectPickerMobile";
-import LoadingScreen from "../Components/Atoms/LoadingScreen";
 
 import MainTools from '../Components/Tools/MainTools.jsx';
 import useHistoryState from "../Hooks/useHistoryState";
-import usePlansManager from '../Hooks/usePlansManager.jsx';
+import usePlansManager from '../Hooks/newPlansManager.jsx';
 import useSubjectDataMap from '../Hooks/useSubjectDataMap.jsx';
 import { DragAndDropProvider } from '../Components/Dnd/DragAndDropContext.jsx';
 import { SubjectInfoProvider } from "../Hooks/useSubjectInfoContext";
@@ -38,15 +37,14 @@ const ContentContainer = styled(Box)(({ theme }) => ({
     },
 }));
 
-const Home = ({ groups }) => {
-    const [isLoadingData, setIsLoadingData] = useState(true);
+const Home = ({ groups, initialPlans, subjects, user }) => {
     const [showCurriculum, setShowCurriculum] = useState(false);
 
-    const [plans, updatePlans, pushPlans, restoreCurrentPlans, undo, redo] = useHistoryState();
+    const [plans, updatePlans, pushPlans, restoreCurrentPlans, undo, redo] = useHistoryState(initialPlans);
+    
     const [subjectDataMap, plannedSubjects, updateSubject, bulkUpdateSubjects] = useSubjectDataMap(groups);
 
-    const defaultPlans = coreCurriculum.map(({ semesterId, subjects }) => ({ semesterId, subjects })); // keeps only a subset of the properties
-    usePlansManager(plans, defaultPlans, pushPlans, subjectDataMap, bulkUpdateSubjects, setIsLoadingData);
+    // usePlansManager(user, initialPlans, defaultPlans, pushPlans, subjectDataMap, bulkUpdateSubjects);
 
     /**
      * Applies an undo or redo action and updates the subject semester accordingly.
@@ -64,9 +62,7 @@ const Home = ({ groups }) => {
     const theme = useTheme();
     const isAboveSmall = useMediaQuery(theme.breakpoints.up('sm'));
 
-    return isLoadingData ? (
-        <LoadingScreen />
-    ) : (
+    return (
         <SubjectInfoProvider>
             <SubjectPickerProvider>
                 <DragAndDropProvider
