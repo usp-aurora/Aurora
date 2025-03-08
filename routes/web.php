@@ -5,7 +5,9 @@ use Inertia\Inertia;
 use App\Http\Controllers\PlansController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\LoginController;
-
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ProfessorController;
+use App\Http\Controllers\StudentController;
 
 Route::get('/', [PlansController::class, 'index']);
 
@@ -15,10 +17,16 @@ Route::prefix('plans')->group(function () {
     Route::delete('/delete/{id}', [PlansController::class, 'destroy'])->name('plans.destroy');
 });
 Route::get('/teste-login', [IndexController::class, 'index']);
-Route::get('login', [LoginController::class, 'redirectToProvider']);
-Route::get('callback', [LoginController::class, 'handleProviderCallback']);
-Route::get('logout', [LoginController::class, 'logout']);
 
+Route::middleware(['auth'])->group(function () {
+    Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
+    Route::get('/professor/dashboard', [ProfessorController::class, 'index'])->name('professor.dashboard');
+    Route::get('/student/dashboard', [StudentController::class, 'index'])->name('student.dashboard');
+});
+
+/*Route::group(['middleware' => ['redirectIfAuthenticated']], function () {
+    Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+});*/
 
 // Routing para as páginas que estamos utilizando pra desenvolvimento
 // !!! Lembre que apenas os arquivos em resources/js/Pages são acessíveis aqui !!!

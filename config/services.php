@@ -33,14 +33,6 @@ return [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
-    ],
-    
-    'senhaunica' => [
-    	'client_id' => env('SENHAUNICA_KEY'),
-    	'client_secret' => env('SENHAUNICA_SECRET'),
-    	'callback_id' => env('SENHAUNICA_CALLBACK_ID'),
-    	'dev' => env('SENHAUNICA_DEV', 'no'),
-    	'redirect' => '/',
-    ],
+    ]
 
 ];
