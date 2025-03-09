@@ -1,4 +1,7 @@
 import React from "react";
+import { useTheme } from "@mui/material/styles";
+import { useMediaQuery} from "@mui/material";
+
 import CardsGrid from "../../Atoms/CardsGrid/CardsGrid";
 import SubjectCard from "../../Atoms/Card/SubjectCard";
 import SortableItem from "../../Dnd/SortableItem";
@@ -13,6 +16,9 @@ const SubjectsContainer = ({ containerName, subjectDataMap, plannedSubjects = ne
 		showSubjectInfo,
 	} = useSubjectInfoContext();
 
+	const theme = useTheme(); 
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
 	return (
 		<CardsGrid>
 			{subjects.map((subject) => {
@@ -23,8 +29,8 @@ const SubjectsContainer = ({ containerName, subjectDataMap, plannedSubjects = ne
 					<SortableItem
 						key={subject.code}
 						id={`${subject.code}@${containerName}`}
-						itemData={{subject, container: "coursePicker"}}
-						isStatic={isBlocked}
+						itemData={{subject, container: "subjectPicker"}}
+						isStatic={isBlocked || isMobile}
 					>
 						<SubjectCard
 							subjectCode={subject.code}
