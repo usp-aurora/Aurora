@@ -1,10 +1,9 @@
 import { DragOverlay } from "@dnd-kit/core";
-import { restrictToWindowEdges, snapCenterToCursor } from "@dnd-kit/modifiers";
 import SubjectCard from "../Atoms/Card/SubjectCard";
 
 function DragOverlayComponent({ subject }) {
   return (
-    <DragOverlay modifiers={[snapCenterToCursor, restrictToWindowEdges]}>
+    <DragOverlay>
       {subject ? (
         <SubjectCard
           subjectCode={subject.code}
