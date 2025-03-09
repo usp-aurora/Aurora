@@ -35,13 +35,6 @@ const ContentContainer = styled(Box)(({ theme }) => ({
     },
 }));
 
-
-for (let i = 0; i < 6; i++) {
-    coreCurriculum[5].suggestions.push({
-        group: "Optativa Livre",
-    });
-}
-
 const Home = ({ groups }) => {
     const [isLoadingData, setIsLoadingData] = useState(true);
     const [showCurriculum, setShowCurriculum] = useState(false);
