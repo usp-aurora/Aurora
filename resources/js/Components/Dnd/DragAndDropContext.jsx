@@ -75,6 +75,9 @@ function DragAndDropProvider({ children, setPlans, resetPlans, disabled = false 
    * @param {Object} event - Drag event from DnD Kit.
    */
   function preventDragIfDisabled(event) {
+    if (event.type === "ondragstart") event.preventDefault();
+    else if (event.type === "ontouchmove") event.stopPropagation();
+    
     if (!disabledRef.current) return;
     setShowWarning(true);
   }

@@ -20,18 +20,7 @@ function SortableItem({ id, children, itemData, isStatic = false }) {
     };
 
     const dndProps = isDraggable ? { ...attributes, ...listeners } : {};
-
-    const draggableProps = isStatic ? {} : {
-              draggable: "true",
-              onDragStart: (e) => {
-                  e.preventDefault();
-                  preventDragIfDisabled();
-              },
-              onTouchMove: (e) => {
-                  e.stopPropagation();
-                  preventDragIfDisabled();
-              },
-          };
+    const draggableProps = isStatic ? {} : { draggable: "true", onDragStart: preventDragIfDisabled, onTouchMove: preventDragIfDisabled };
 
     return (
         <div ref={isDraggable ? setNodeRef : undefined} style={cardStyle} {...dndProps} {...draggableProps}>
