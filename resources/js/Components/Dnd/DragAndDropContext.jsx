@@ -76,8 +76,6 @@ function DragAndDropProvider({ children, setPlans, resetPlans, disabled = false 
    */
   function preventDragIfDisabled(event) {
     if (!disabledRef.current) return;
-
-    event.stopPropagation();
     setShowWarning(true);
   }
 

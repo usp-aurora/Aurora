@@ -2,18 +2,8 @@ import { CSS } from "@dnd-kit/utilities";
 import { useSortable } from "@dnd-kit/sortable";
 import { useDragAndDrop } from "./DragAndDropContext";
 
-/**
- * Universal drag-and-drop item that supports both draggable and sortable behaviors.
- *
- * @param {string} id - Unique identifier for the item.
- * @param {React.ReactNode} children - The content of the draggable item.
- * @param {Object} itemData - Object containing metadata related to the item, including container info.
- * @param {boolean} disabled - Determines if dragging should be disabled.
- */
 function SortableItem({ id, children, itemData, isStatic = false }) {
     const { dndDisabled, preventDragIfDisabled } = useDragAndDrop();
-
-    // Disable dragging if globally disabled or if the specific item is static
     const isDraggable = !(dndDisabled || isStatic);
 
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
@@ -29,13 +19,22 @@ function SortableItem({ id, children, itemData, isStatic = false }) {
         touchAction: "none",
     };
 
+    const dndProps = isDraggable ? { ...attributes, ...listeners } : {};
+
+    const draggableProps = isStatic ? {} : {
+              draggable: "true",
+              onDragStart: (e) => {
+                  e.preventDefault();
+                  preventDragIfDisabled();
+              },
+              onTouchMove: (e) => {
+                  e.stopPropagation();
+                  preventDragIfDisabled();
+              },
+          };
+
     return (
-        <div
-            ref={isDraggable ? setNodeRef : undefined}
-            style={cardStyle}
-            {...(isDraggable ? { ...attributes, ...listeners } : {})}
-            {...(!isStatic ? {draggable: "true", onDragStart: preventDragIfDisabled, onTouchMove: preventDragIfDisabled } : {})}
-        >   
+        <div ref={isDraggable ? setNodeRef : undefined} style={cardStyle} {...dndProps} {...draggableProps}>
             {children}
         </div>
     );
