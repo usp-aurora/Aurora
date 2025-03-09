@@ -1,6 +1,7 @@
 import React from 'react';
 import { styled } from "@mui/material/styles";
 import Typography from '@mui/material/Typography';
+import LinearProgress from '@mui/material/LinearProgress';
 
 const ProgressBarContainer = styled("div")(({}) => ({
 	display: "flex",
@@ -40,36 +41,20 @@ const ProgressValue = styled(Typography)(({ theme }) => ({
 	},
 }));
 
-const BaseBar = styled("div")(({ theme }) => ({
+const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
 	flexGrow: 1,
-	borderRadius: '80px',
+	borderRadius: 25,
 	position: 'relative',
-	
-	height: '8px',
-	backgroundColor: theme.palette.white.main,
+	backgroundColor: "white",
+	height: "8px",
+
 	[theme.breakpoints.up('sm')]: {
-		height: '12px',
+		height: "12px",
 	},
-}));
 
-const PlannedBar = styled("div")(({ theme, percentage, color }) => ({
-	width: percentage === 100 ? `calc(${percentage}% + 0.6px)` : `${percentage}%`,
-	height: '100%',
-	backgroundColor: theme.palette[color].light,
-	position: 'absolute',
-	top: 0,
-	left: "-0.3px",
-	borderRadius: 'inherit',
-}));
-
-const CoursedBar = styled("div")(({ theme, percentage, color }) => ({
-	width: percentage === 100 ? `calc(${percentage}% + 1px)` : `${percentage}%`,
-	height: '100%',
-	backgroundColor: theme.palette[color].dark,
-	position: 'absolute',
-	top: 0,
-	left: "-0.5px",
-	borderRadius: 'inherit',
+	"& .MuiLinearProgress-dashed": {
+		display: "none", 
+	}
 }));
 
 const ProgressBar = ({ label, coursed, planned, needed, color}) => {
@@ -79,10 +64,7 @@ const ProgressBar = ({ label, coursed, planned, needed, color}) => {
 	return (
 		<ProgressBarContainer>
 			<ProgressLabel variant="body2">{label}</ProgressLabel>
-			<BaseBar>
-				<PlannedBar color={color} percentage={plannedPercentage} />
-				<CoursedBar color={color} percentage={coursedPercentage} />
-			</BaseBar>
+			<BorderLinearProgress variant="buffer" value={coursedPercentage} valueBuffer={plannedPercentage} color={color} />
 			<ProgressValue variant="caption">{`${coursed} / ${needed}`}</ProgressValue>
 		</ProgressBarContainer>
 	);
