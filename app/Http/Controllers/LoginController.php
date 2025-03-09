@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\User;
@@ -7,40 +8,51 @@ use App\Enums\RoleName;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 
-class GlobalController extends Controller
-{   
-public function callbackHandler()
+class LoginController extends Controller
 {
-    $userSenhaUnica = Socialite::driver('senhaunica')->user();
 
-    $user = User::firstOrNew(['codpes' => $userSenhaUnica->codpes]);
+    // $userSenhaUnica = Socialite::driver('senhaunica')->user();
+    // $user = User::where('codpes', $userSenhaUnica->codpes)->first();
+    // if (is_null($user)) {
+    //     $user = new User;
+    //     $user->codpes = $userSenhaUnica->codpes;
+    //     $user->email = $userSenhaUnica->email;
+    //     $user->name = $userSenhaUnica->nompes;
+    //     $user->current_role_id = RoleId::STUDENT;
+    //     $user->save();
+    // }
+    // Auth::login($user, true);
+    // return redirect()->route('list');
 
-    $user->codpes = $userSenhaUnica->codpes;
-    $user->email = $userSenhaUnica->emailUsp ?? $userSenhaUnica->emailAlternativo ?? 'invalido'.$userSenhaUnica->codpes.'@usp.br';
-    $user->name = $userSenhaUnica->nompes;
-    $user->save();
+    public function callbackHandler()
+    {
+        $userSenhaUnica = Socialite::driver('senhaunica')->user();
 
-    // Fazer login com o usuário
-    Auth::login($user, true);
+        $user = User::where(['codpes' => $userSenhaUnica->codpes])->first();
+        if(is_null($user)){
+            $user = new User;
+            $user->codpes = $userSenhaUnica->codpes;
+            $user->email = $userSenhaUnica->emailUsp ?? $userSenhaUnica->emailAlternativo ?? 'invalido' . $userSenhaUnica->codpes . '@usp.br';
+            $user->name = $userSenhaUnica->nompes;
+            $user->current_role_id = RoleId::STUDENT;
+            $user->save();
 
-    // Atribuir role student
-    if ($user->roles()->count() == 0) {
-        $user->assignRole(RoleName::STUDENT); 
+            $user->assignRole(RoleId::STUDENT);
+        }
+
+        Auth::login($user, true);
+
+        if ($user->hasRole(RoleName::ADMIN)) {
+            return redirect()->route('admin.dashboard');
+        } elseif ($user->hasRole(RoleName::PROFESSOR)) {
+            return redirect()->route('professor.dashboard');
+        } elseif ($user->hasRole(RoleName::STUDENT)) {
+            return redirect()->route('student.dashboard');
+        }
+
+        // Redirecionar fallback
+        return redirect('/')->with('error', 'User role not recognized');
     }
-
-  
-    if ($user->hasRole(RoleName::ADMIN)) {
-        return redirect()->route('admin.dashboard');
-    } elseif ($user->hasRole(RoleName::PROFESSOR)) {
-        return redirect()->route('professor.dashboard');
-    } elseif ($user->hasRole(RoleName::STUDENT)) {
-        return redirect()->route('student.dashboard');
-    }
-
-    // Redirecionar fallback
-    return redirect('/')->with('error', 'User role not recognized');
-}
-
 }
 /*namespace App\Http\Controllers;
 
@@ -103,4 +115,3 @@ class GlobalController extends Controller
         }
     }
 }*/
-

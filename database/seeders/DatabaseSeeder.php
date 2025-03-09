@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use Database\Seeders\SubjectSeeder;
 use Database\Seeders\PlanSeeder;
+use Database\Seeders\RoleAndPermissionSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -15,16 +16,21 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        $this->call([
+            RoleAndPermissionSeeder::class
+        ]);
 
-        // User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        User::factory()->create([
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'codpes' => 999999999
+        ]);
 
         $this->call([
             SubjectSeeder::class,
-            PlanSeeder::class
+            PlanSeeder::class,
+            RoleAndPermissionSeeder::class
         ]);
+
     }
 }
