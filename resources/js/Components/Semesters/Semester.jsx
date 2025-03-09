@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 import { Typography, useMediaQuery } from "@mui/material/";
 import { styled, useTheme } from "@mui/material/styles";
@@ -108,9 +108,7 @@ const Semester = ({
                             <SortableItem
                                 id={subject.code}
                                 key={subject.code}
-                                subjectData={subject}
-                                container={semesterData.semesterId}
-                                disabled={!isExpanded}
+                                itemData={{subject, container: semesterData.semesterId}}
                             >
                                 <SubjectCard
                                     subjectCode={subject.code}

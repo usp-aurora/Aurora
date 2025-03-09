@@ -23,9 +23,8 @@ const SubjectsContainer = ({ containerName, subjectDataMap, plannedSubjects = ne
 					<SortableItem
 						key={subject.code}
 						id={`${subject.code}@${containerName}`}
-						container={"subjectPicker"}
-						subjectData={subject}
-						disabled={isBlocked}
+						itemData={{subject, container: "coursePicker"}}
+						isStatic={isBlocked}
 					>
 						<SubjectCard
 							subjectCode={subject.code}
