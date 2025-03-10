@@ -55,7 +55,13 @@ const SubGroup = ({ depth, subgroupData, subjectDataMap, plannedSubjects }) => {
                 subjects={subgroupData.subjects}
             />
             {subgroupData.subgroups.map((subgroup) => (
-                <SubGroup key={subgroup.title} depth={depth + 1} subgroupData={subgroup} />
+                <SubGroup
+                    key={subgroup.title}
+                    depth={depth + 1}
+                    subgroupData={subgroup}
+                    plannedSubjects={plannedSubjects}
+                    subjectDataMap={subjectDataMap}
+                />
             ))}
         </SubGroupContainer>
     );
