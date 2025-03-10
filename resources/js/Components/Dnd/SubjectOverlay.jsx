@@ -1,7 +1,7 @@
 import { DragOverlay } from "@dnd-kit/core";
 import SubjectCard from "../Atoms/Card/SubjectCard";
 
-function DragOverlayComponent({ subject }) {
+function SubjectOverlay({ subject }) {
   return (
     <DragOverlay>
       {subject ? (
@@ -15,4 +15,4 @@ function DragOverlayComponent({ subject }) {
   );
 }
 
-export default DragOverlayComponent;
+export default SubjectOverlay;

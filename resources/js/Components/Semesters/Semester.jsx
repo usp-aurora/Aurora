@@ -99,7 +99,7 @@ const Semester = ({
                 disabled={!isExpanded}
                 placeholder={isRequiredView ? null : placeholder}
             >
-                <SortableGrid items={semesterData.subjects} container={semesterData.semesterId}>
+                <SortableGrid items={semesterData.subjects}>
                     {semesterData.subjects.map((subject) => {
                         const requiredScheduled = isRequiredView && plannedSubjects.has(subject.code);
                         const subjectTags = subjectDataMap.get[subject.code]?.tags || [];

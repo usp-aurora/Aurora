@@ -4,10 +4,10 @@ import { Typography, useMediaQuery} from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
 import glassmorphismStyle from "../../styles/MUI/glassmorphismMUI";
-import Droppable from "../Dnd/Droppable";
 import Group from "./Group";
 import Background from "../Background/HomeBackground";
 
+import { useDroppable } from "@dnd-kit/core";
 import { useSubjectPickerContext } from '../../Hooks/useSubjectPickerContext';
 
 const PopUpContainer = styled("div")(({ open, theme }) => ({
@@ -25,7 +25,7 @@ const PopUpContainer = styled("div")(({ open, theme }) => ({
         width: "36%",
     }
 }));
-const Container = styled(Droppable)(({ theme }) => ({
+const Container = styled("div")(({ theme }) => ({
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-start",
@@ -75,6 +75,7 @@ const StyledCloseIcon = styled(CloseIcon)(({ theme }) => ({
 
 function SubjectPicker({ subjectDataMap, plannedSubjects, data }){
     const { isSubjectPickerModalOpen, closeSubjectPickerModal, showSubjectPickerModal } = useSubjectPickerContext();
+    const { setNodeRef } = useDroppable({ id: "subjectPicker" });
     
     const [expandedCategory, setExpandedCategory] = useState(); 
     const toggleCategory = (index) => {
@@ -87,7 +88,7 @@ function SubjectPicker({ subjectDataMap, plannedSubjects, data }){
 
     return (
         <PopUpContainer open={isSubjectPickerModalOpen}>
-            <Container id="subjectPicker">
+            <Container ref={setNodeRef}>
                 {isMobile && <Background />}
                 <HeaderContainer>
                     <StyledTitle>Adicionar disciplina</StyledTitle>

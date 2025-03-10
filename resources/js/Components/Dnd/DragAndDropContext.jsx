@@ -3,7 +3,7 @@ import { DndContext, closestCenter, rectIntersection } from "@dnd-kit/core";
 import { useSensor, useSensors, PointerSensor, KeyboardSensor } from "@dnd-kit/core";
 
 import WarningDialog from "./WarningDialog.jsx";
-import DragOverlayComponent from "./DragOverlayComponent.jsx";
+import SubjectOverlay from "./SubjectOverlay.jsx";
 import { getContainerName, handleDragStart, handleDragOver } from "../../Handlers/DragHandlers.jsx";
 
 const DragAndDropContext = createContext();
@@ -40,7 +40,6 @@ function determineCollisionStrategy({ droppableContainers, ...props }) {
 function DragAndDropProvider({ children, setPlans, resetPlans, disabled = false }) {
   const [draggedItem, setDraggedItem] = useState(null);
   const [showWarning, setShowWarning] = useState(false);
-  const throttleTimer = useRef(null);
   const disabledRef = useRef(disabled);
 
   /**
@@ -52,21 +51,6 @@ function DragAndDropProvider({ children, setPlans, resetPlans, disabled = false 
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
     useSensor(KeyboardSensor)
   );
-
-  /**
-   * Handles `onDragOver` event with throttling to optimize performance.
-   *
-   * @param {Object} event - Drag event from DnD Kit.
-   */
-  function throttledDragOverHandler(event) {
-    if (!throttleTimer.current) {
-      handleDragOver(event, draggedItem, setDraggedItem, setPlans);
-
-      throttleTimer.current = setTimeout(() => {
-        throttleTimer.current = null;
-      }, 5);
-    }
-  }
 
   /**
    * Prevents drag actions when the feature is disabled.
@@ -88,12 +72,12 @@ function DragAndDropProvider({ children, setPlans, resetPlans, disabled = false 
   }, [disabled]);
 
   return (
-    <DragAndDropContext.Provider value={{ dndDisabled: disabled, preventDragIfDisabled }}>
+    <DragAndDropContext.Provider value={{ dndDisabled: disabled, overContainer: draggedItem?.container, preventDragIfDisabled }}>
       <DndContext
         sensors={sensors}
         collisionDetection={determineCollisionStrategy}
         onDragStart={(e) => handleDragStart(e, setDraggedItem)}
-        onDragOver={throttledDragOverHandler}
+        onDragOver={(e) => handleDragOver(e, draggedItem, setDraggedItem, setPlans)}
         onDragEnd={() => setDraggedItem(null)}
         onDragCancel={() => {
           resetPlans();
@@ -104,7 +88,7 @@ function DragAndDropProvider({ children, setPlans, resetPlans, disabled = false 
         <WarningDialog open={showWarning} onClose={() => setShowWarning(false)} />
 
         {/* Render drag overlay if an item is currently being dragged */}
-        {draggedItem && <DragOverlayComponent subject={draggedItem} />}
+        {draggedItem && <SubjectOverlay subject={draggedItem} />}
 
         {children}
       </DndContext>
