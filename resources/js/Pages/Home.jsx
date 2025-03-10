@@ -62,7 +62,7 @@ const Home = ({ groups }) => {
         <LoadingScreen />
     ) : (
     // return (
-        <SubjectInfoProvider>
+        <SubjectInfoProvider subjectDataMap={subjectDataMap}>
             <SubjectPickerProvider>
                 <DragAndDropProvider
                     setPlans={updatePlans}
@@ -92,14 +92,12 @@ const Home = ({ groups }) => {
                                             pushPlans={pushPlans}
                                             updateSubject={updateSubject}
                                             plannedSubjects={plannedSubjects}
-                                            subjectDataMap={subjectDataMap}
                                             customPlan={!showCurriculum}
                                         />
                                     </Stack>
                                     <SubjectPicker
-                                        plannedSubjects={plannedSubjects}
-                                        subjectDataMap={subjectDataMap}
                                         data={groups}
+                                        plannedSubjects={plannedSubjects}
                                     />
                                 </Stack>
                             </Stack>

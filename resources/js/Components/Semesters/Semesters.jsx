@@ -12,7 +12,6 @@ function Semesters({
   semesters,
   pushPlans,
   updateSubject,
-  subjectDataMap,
   plannedSubjects,
   customPlan = true
 }){
@@ -38,7 +37,6 @@ function Semesters({
             <Semester
                 key={semester.semesterId}
                 semesterData={semester}
-                subjectDataMap={subjectDataMap}
                 plannedSubjects={plannedSubjects}
                 placeholder={<SemesterPlaceHolder />}
                 isRequiredView={!customPlan}

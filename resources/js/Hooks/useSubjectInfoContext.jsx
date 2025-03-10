@@ -2,7 +2,7 @@ import { createContext, useContext, useState, useEffect } from 'react';
 
 const SubjectInfoContext = createContext();
 
-function SubjectInfoProvider({ children })  {
+function SubjectInfoProvider({ children, subjectDataMap })  {
 	const [isSubjectInfoModalOpen, setSubjectInfoModalOpen] = useState(false);
 
 	const [subjectInfo, setSubjectInfo] = useState({
@@ -20,7 +20,7 @@ function SubjectInfoProvider({ children })  {
 			isPlanned: subject.isPlanned,
 			name: subject.name,
 			code: subject.code,
-			tags: subject.tags,
+			tags: subjectDataMap.get(subject.code)?.tags || [],
 			credits: subject.credits,
 			desc: subject.desc
 		});

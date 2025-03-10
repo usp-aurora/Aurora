@@ -31,7 +31,7 @@ const SubGroupContainer = styled("div")(({ theme, depth }) => ({
     gap: theme.spacing(2),
 }));
 
-const Group = ({ groupData, subjectDataMap, plannedSubjects, expanded, onClick }) => {
+const Group = ({ groupData, plannedSubjects, expanded, onClick }) => {
     return (
         <Accordion
             summary={
@@ -63,7 +63,6 @@ const Group = ({ groupData, subjectDataMap, plannedSubjects, expanded, onClick }
                 <GroupText>{groupData.description}</GroupText>
                 <SubjectsContainer
                     containerName={groupData.title}
-                    subjectDataMap={subjectDataMap}
                     plannedSubjects={plannedSubjects}
                     subjects={groupData.subjects}
                 />
@@ -73,7 +72,6 @@ const Group = ({ groupData, subjectDataMap, plannedSubjects, expanded, onClick }
                             key={subgroup.title}
                             depth={1}
                             subgroupData={subgroup}
-                            subjectDataMap={subjectDataMap}
                             plannedSubjects={plannedSubjects}
                         />
                     ))}

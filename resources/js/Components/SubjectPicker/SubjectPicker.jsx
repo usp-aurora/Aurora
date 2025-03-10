@@ -73,7 +73,7 @@ const StyledCloseIcon = styled(CloseIcon)(({ theme }) => ({
     },
 }));
 
-function SubjectPicker({ subjectDataMap, plannedSubjects, data }){
+function SubjectPicker({ data, plannedSubjects }){
     const { isSubjectPickerModalOpen, closeSubjectPickerModal, showSubjectPickerModal } = useSubjectPickerContext();
     const { setNodeRef } = useDroppable({ id: "subjectPicker" });
     
@@ -99,7 +99,6 @@ function SubjectPicker({ subjectDataMap, plannedSubjects, data }){
                     <Group
                         key={groupData.title}
                         groupData={groupData}
-                        subjectDataMap={subjectDataMap}
                     	plannedSubjects={plannedSubjects}
                         expanded={expandedCategory === index}
                         onClick={() => toggleCategory(index)}

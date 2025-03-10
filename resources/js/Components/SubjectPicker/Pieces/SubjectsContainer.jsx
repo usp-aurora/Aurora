@@ -8,7 +8,7 @@ import SortableItem from "../../Dnd/SortableItem";
 
 import { useSubjectInfoContext } from "../../../Hooks/useSubjectInfoContext";
 
-const SubjectsContainer = ({ containerName, subjectDataMap, plannedSubjects = new Set(), subjects }) => {
+const SubjectsContainer = ({ containerName, plannedSubjects = new Set(), subjects }) => {
 	const {
 		subjectInfo,
 		isSubjectInfoModalOpen,
@@ -23,7 +23,6 @@ const SubjectsContainer = ({ containerName, subjectDataMap, plannedSubjects = ne
 		<CardsGrid>
 			{subjects.map((subject) => {
 				const isBlocked = plannedSubjects.has(subject.code);
-				const subjectTags = subjectDataMap ? subjectDataMap.get(subject.code)?.tags || [] : [];
 
 				return (
 					<SortableItem
@@ -39,7 +38,6 @@ const SubjectsContainer = ({ containerName, subjectDataMap, plannedSubjects = ne
 							ghost={isBlocked}
 							onClick={() => {!isBlocked && showSubjectInfo({
 								...subject,
-								tags: subjectTags,
 								isPlanned: false,
 							})}}
 						/>
