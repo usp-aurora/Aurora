@@ -88,8 +88,9 @@ const Semester = ({
     return (
         <Accordion
             summary={Summary}
-            expanded={isExpanded}
             onClick={onClick}
+            expanded={isExpanded}
+            TransitionProps={{ unmountOnExit: true }}
         >
             <DroppableCardContainer
                 id={semesterData.semesterId}
