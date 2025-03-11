@@ -19,64 +19,53 @@ class Institutes extends Model
         } else {
 
             $query = parent::newQuery()->fromSub(function ($query) {
-                $query->select(
-                    'c.codcam',
-                    'c.nomcam'
-                )
-                ->from('CAMPUS AS c')
-                ->groupBy('c.codcam', 'c.nomcam');
-            }, 'cidades_agrupadas');
-    
-
-            $query = $query->fromSub(function ($query) {
-                $query->select(
-                    'e.codund',
-                    'e.numpticam'
-                )
-                ->from('ENDUSP AS e')
-                ->selectRaw('COUNT(*) AS frequencia')
-                ->selectRaw('ROW_NUMBER() OVER (PARTITION BY e.codund ORDER BY COUNT(*) DESC) AS rn')
-                ->groupBy('e.codund', 'e.numpticam')
-                ->havingRaw('rn = 1');
-            }, 'subcampus');
-    
-            $query = $query->fromSub(function ($query) {
-                $query->select(
-                    'c.codcam',
-                    'c.numpticam',
-                    'c.sglpticam'
-                )
-                ->from('CAMPUS AS c');
-            }, 'campus');
-
-            $query = $query->fromSub(function ($query) {
-                $query->select(
-                    'u.codund AS id_unidade',
-                    'u.nomund AS nome_unidade',
-                    'ca.codcam AS id_cidade',
-                    'ca.nomcam AS nome_cidade',
-                    's.numpticam AS id_campus',
-                    'u.dtainival AS created_at'
-                )
-                ->from('UNIDADE AS u')
-                ->join('cidades_agrupadas AS ca', 'u.codcam', '=', 'ca.codcam')
-                ->join('subcampus AS s', 'u.codund', '=', 's.codund');
-            }, 'tabela');
-    
-            $query->join('campus AS c', function ($join) {
-                $join->on('tabela.id_campus', '=', 'c.numpticam')
-                     ->whereColumn('tabela.id_cidade', '=', 'c.codcam');
-            });
-    
-            $query->select(
-                'tabela.id_unidade AS id_institute',
-                'tabela.nome_unidade AS name_institute',
-                'tabela.id_cidade AS id_city',
-                'tabela.nome_cidade AS name_city',
-                'tabela.id_campus',
-                'c.sglpticam AS name_campus',
-                'tabela.created_at'
-            );
+                $query->select(DB::raw("WITH 
+                    cidades_agrupadas AS (
+                        SELECT codcam, nomcam
+                        FROM replicado.dbo.CAMPUS c
+                        GROUP BY codcam, nomcam
+                    ),
+                    subcampus AS (
+                        SELECT codund, numpticam
+                        FROM (
+                            SELECT codund, numpticam, COUNT(*) AS frequencia,
+                                ROW_NUMBER() OVER (PARTITION BY codund ORDER BY COUNT(*) DESC) AS rn
+                            FROM replicado.dbo.ENDUSP
+                            GROUP BY codund, numpticam
+                        ) AS subconsulta
+                        WHERE rn = 1
+                    ),
+                    campus AS (
+                        SELECT codcam, numpticam, sglpticam FROM replicado.dbo.CAMPUS
+                    ),
+                    tabela AS (
+                        SELECT
+                            u.codund AS id_unidade,
+                            u.nomund AS nome_unidade,
+                            ca.codcam AS id_cidade,
+                            ca.nomcam AS nome_cidade,
+                            s.numpticam AS id_campus,
+                            u.dtainival AS created_at
+                        FROM
+                            replicado.dbo.UNIDADE u
+                        INNER JOIN cidades_agrupadas ca ON u.codcam = ca.codcam
+                        INNER JOIN subcampus s ON u.codund = s.codund
+                    )
+                    SELECT
+                        t.id_unidade,
+                        t.nome_unidade,
+                        t.id_cidade,
+                        t.nome_cidade,
+                        t.id_campus,
+                        c.sglpticam AS nome_campus,
+                        t.created_at
+                    FROM
+                        tabela t
+                    INNER JOIN campus c ON (t.id_campus = c.numpticam AND t.id_cidade = c.codcam)
+                    ")
+                    
+                );
+            })
         }
 
         return $query;
