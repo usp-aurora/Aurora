@@ -106,13 +106,21 @@ class Requisits extends Model
         $faker = Faker::create();
         $fakeData = [];
         for ($i = 0; $i < 20; $i++) {
-            $subj = $faker->randomElement($requisitos);
-            $fakeData[] = [
-                'id_subject' => $subj,
-                'ver_subject' => 1,
-                'id_subject_req' => $requisitos[$subj],
-                'ver_subject_req' => 1,
-            ];
+            $subj = $faker->randomElement(array_keys($requisitos));
+            $requirements = $requisitos[$subj];
+
+            if (is_array($requirements)) {
+                foreach ($requirements as $req) {
+                    $fakeData[] = [
+                        'id_subject' => $subj,
+                        'ver_subject' => 1,
+                        'id_subject_req' => $req,
+                        'ver_subject_req' => 1,
+                    ];
+                }
+            } else {
+                $i--;
+            }
         }
 
         $query = collect($fakeData)->map(function ($row) {
