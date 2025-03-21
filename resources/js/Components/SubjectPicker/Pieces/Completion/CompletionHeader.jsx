@@ -1,13 +1,12 @@
 import React from 'react';
 import { styled } from "@mui/material/styles";
 import { Box, Typography } from '@mui/material/';
-
-const ContentContainer = styled( Box )(({ theme }) => ({
+const ContentContainer = styled(Box)(({ theme }) => ({
 	display: 'flex',
 	flexDirection: 'row',
 	alignItems: 'center',
 	justifyContent: 'flex-start',
-	gap: theme.spacing(1)
+	gap: theme.spacing(1),
 }));
 
 const StyledSvg = styled("svg")(({ theme, color, filled }) => ({

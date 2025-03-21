@@ -1,19 +1,17 @@
 import { DragOverlay } from "@dnd-kit/core";
-import { restrictToWindowEdges, snapCenterToCursor } from "@dnd-kit/modifiers";
 import SubjectCard from "../Atoms/Card/SubjectCard";
+import { restrictToWindowEdges, snapCenterToCursor } from "@dnd-kit/modifiers";
 
-function DragOverlayComponent({ subject }) {
+function SubjectOverlay({ subject }) {
   return (
     <DragOverlay modifiers={[snapCenterToCursor, restrictToWindowEdges]}>
       {subject ? (
         <SubjectCard
           subjectCode={subject.code}
-          subjectName={subject.name}
-          planetURL="/icons/planeta.png"
         />
       ) : null}
     </DragOverlay>
   );
 }
 
-export default DragOverlayComponent;
+export default SubjectOverlay;

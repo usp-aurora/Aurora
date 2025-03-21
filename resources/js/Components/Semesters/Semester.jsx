@@ -4,14 +4,16 @@ import { Typography } from "@mui/material/";
 import { styled } from "@mui/material/styles";
 
 import Accordion from "../Atoms/Accordion/Accordion";
-import SubjectCard from "../Atoms/Card/SubjectCard";
+import SortableCard from "../Atoms/Card/SortableCard";
 import AuxiliaryCard from "../Atoms/Card/AuxiliaryCard";
 
 import Droppable from "../Dnd/Droppable";
-import SortableItem from "../Dnd/SortableItem";
 import SortableGrid from "../Dnd/SortableGrid";
 
+import { useSubjectMapContext } from "../../Hooks/useSubjectMapContext";
+import { usePlansContext } from "../../Hooks/usePlansContext";
 import { useSubjectInfoContext } from '../../Hooks/useSubjectInfoContext';
+
 
 
 const SummaryContainer = styled("div")(({}) => ({
@@ -51,22 +53,25 @@ const DroppableCardContainer = styled(Droppable)(({ theme }) => ({
 
 const Semester = ({
     semesterData,
-    subjectDataMap,
-    plannedSubjects,
     placeholder,
-    isRequiredView = true,
+    isRecommendedView,
     isExpanded,
     onClick
 }) => {
-    const { subjectInfo, isSubjectInfoModalOpen, closeSubjectInfoModal, showSubjectInfo } = useSubjectInfoContext(); 
+    const { subjectDataMap } = useSubjectMapContext();
+    const { plansSet } = usePlansContext();
+    const { showSubjectInfo } = useSubjectInfoContext(); 
 
     let workCredits = 0;
     let lectureCredits = 0;
 
     if (semesterData.subjects.length > 0) {
         semesterData.subjects.forEach((subject) => {
-            lectureCredits += parseInt(subject.credits[0], 10);
-            workCredits += parseInt(subject.credits[1], 10);
+            const subjectData = subjectDataMap[subject.code];
+            if (subjectData) {
+                lectureCredits += parseInt(subjectData.credits[0], 10);
+                workCredits += parseInt(subjectData.credits[1], 10);
+            }
         });
     }
 
@@ -86,42 +91,35 @@ const Semester = ({
     return (
         <Accordion
             summary={Summary}
-            expanded={isExpanded}
             onClick={onClick}
+            expanded={isExpanded}
+            TransitionProps={{ unmountOnExit: true }}
         >
             <DroppableCardContainer
                 id={semesterData.semesterId}
                 key={semesterData.semesterId}
                 spacing={{ xs: 1, sm: 2 }}
                 disabled={!isExpanded}
-                placeholder={isRequiredView ? null : placeholder}
+                placeholder={isRecommendedView ? null : placeholder}
             >
-                <SortableGrid items={semesterData.subjects} container={semesterData.semesterId}>
+                <SortableGrid items={semesterData.subjects}>
                     {semesterData.subjects.map((subject) => {
-                        const requiredScheduled = isRequiredView && plannedSubjects.has(subject.code);
-                        const subjectTags = subjectDataMap.get[subject.code]?.tags || [];
+                        const subjectData = subjectDataMap[subject.code];
+                        if(!subjectData) return null;
+
+                        const requiredScheduled = isRecommendedView && plansSet.has(subject.code);
 
                         return (
-                            <SortableItem
+                            <SortableCard
                                 id={subject.code}
                                 key={subject.code}
-                                subjectData={subject}
+                                subjectCode={subject.code}
                                 container={semesterData.semesterId}
-                                disabled={!isExpanded}
-                            >
-                                <SubjectCard
-                                    subjectCode={subject.code}
-                                    subjectName={subject.name}
-                                    planetURL="/icons/planeta.png"
-                                    onClick={() =>
-                                        showSubjectInfo({...subject, tags: subjectTags, isPlanned: true})
-                                    }
-                                    moon={requiredScheduled}
-                                />
-                            </SortableItem>
+                                isBlocked={false}
+                                requiredScheduled={requiredScheduled}/>
                         );
                     })}
-                    {isRequiredView && semesterData.suggestions.map((suggestion, index) => (
+                    {isRecommendedView && semesterData.suggestions.map((suggestion, index) => (
                             <AuxiliaryCard 
                                 key={index}
                                 text={`Disciplina do grupo ${suggestion.group}`} 

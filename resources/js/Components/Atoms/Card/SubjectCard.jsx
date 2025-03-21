@@ -5,11 +5,12 @@ import { Box, Typography } from "@mui/material";
 import glassmorphismStyle from "../../../styles/glassmorphism";
 import Planet from "../Planet";
 import { CardBackgroundBase, CardContainer } from "./Pieces/CardPieces";
+import { useSubjectMapContext } from "../../../Hooks/useSubjectMapContext";
 
-const CardBackground = styled(({ isClickable, hasIcon, ghost, glassmorphismLevel, ...props }) => (
+const CardBackground = styled(({ isClickable, hasIcon, ghost, ...props }) => (
     <CardBackgroundBase isClickable={isClickable} hasIcon={hasIcon} ghost={ghost} {...props} />
-))(({ theme, ghost, glassmorphismLevel }) => ({
-    ...(!ghost && glassmorphismStyle(theme, glassmorphismLevel)),
+))(({ theme, ghost}) => ({
+    ...(!ghost && glassmorphismStyle(theme, "level2")),
 }));
 
 const CardContent = styled(Box)(({ theme }) => ({
@@ -35,24 +36,24 @@ const PlanetContainer = styled(Box)(({ theme }) => ({
 }));
 
 const PlanetWrapper = styled("div")({
-	position: "relative",
-	display: "inline-flex",
-	alignItems: "center",
+    position: "relative",
+    display: "inline-flex",
+    alignItems: "center",
 });
 
 const Moon = styled("div")(({ theme }) => ({
-	width: theme.card.mobile.moonSize,
-	height: theme.card.mobile.moonSize,
-	position: "absolute",
-	left: "-45%",
-	
-	backgroundColor: theme.palette.green.main,
-	borderRadius: "50%",
+    width: theme.card.mobile.moonSize,
+    height: theme.card.mobile.moonSize,
+    position: "absolute",
+    left: "-45%",
+    
+    backgroundColor: theme.palette.green.main,
+    borderRadius: "50%",
 
-	[theme.breakpoints.up("sm")]: {
-		width: theme.card.desktop.moonSize,
-		height: theme.card.desktop.moonSize,
-	}
+    [theme.breakpoints.up("sm")]: {
+        width: theme.card.desktop.moonSize,
+        height: theme.card.desktop.moonSize,
+    }
 }));
 
 const StyledTitle = styled(Typography)(({ theme }) => ({
@@ -98,32 +99,32 @@ const StyledSubjectText = styled(Typography)(({ theme }) => ({
 
 const SubjectCard = ({
     subjectCode,
-    subjectName,
-    planetURL,
     ghost,
-    glassmorphismLevel = "level2",
     moon,
     ...props
 }) => {
+    const { subjectDataMap } = useSubjectMapContext();
+    const planetUrl = "/icons/planeta.png";
+    if(subjectDataMap[subjectCode] === undefined) return null;
+
     return (
         <CardContainer isClickable={!ghost} {...props}>
             <CardBackground
                 isClickable={!ghost}
-                hasIcon={!!planetURL}
+                hasIcon={!!planetUrl}
                 ghost={ghost}
-                glassmorphismLevel={glassmorphismLevel}
             >
                 <CardContent>
 					<PlanetWrapper>
 						{moon && <Moon/> }
 						<PlanetContainer>
-							{(!ghost && planetURL) && <Planet src={planetURL} />}
+							{(!ghost && planetUrl) && <Planet src={planetUrl} />}
 						</PlanetContainer>
 					</PlanetWrapper>
                     <StyledTitle component="h3"> {subjectCode} </StyledTitle>
                     <TextContainer>
                         <TextWrapper>
-                            <StyledSubjectText component="p">{subjectName}</StyledSubjectText>
+                            <StyledSubjectText component="p">{ subjectDataMap[subjectCode].name }</StyledSubjectText>
                         </TextWrapper>
                     </TextContainer>
                 </CardContent>

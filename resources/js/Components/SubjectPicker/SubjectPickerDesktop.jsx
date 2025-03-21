@@ -1,12 +1,12 @@
 import React from "react";
 import { styled } from "@mui/material/styles";
-import { Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 
+import { useDroppable } from "@dnd-kit/core";
 import glassmorphismStyle from "../../styles/glassmorphism";
-import Droppable from "../Dnd/Droppable";
 import SubjectList from "./Pieces/SubjectList";
 
-const Container = styled(Droppable)(({ theme }) => ({
+const Container = styled( Box )(({ theme }) => ({
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-start",
@@ -32,13 +32,15 @@ const StyledTitle = styled(Typography)(({ theme }) => ({
     ...theme.typography.h2,
 }));
 
-function SubjectPickerDesktop({ subjectDataMap, plannedSubjects, data }) {
+function SubjectPickerDesktop({ groupsData }) {
+    const { setNodeRef } = useDroppable({ id: "subjectPicker" });
+
     return (
-        <Container id="subjectPicker">
+        <Container ref={setNodeRef}>
             <HeaderContainer>
                 <StyledTitle>Adicionar disciplina</StyledTitle>
             </HeaderContainer>
-            <SubjectList subjectDataMap={subjectDataMap} plannedSubjects={plannedSubjects} data={data} />
+            <SubjectList groupsData={groupsData} />
         </Container>
     );
 };

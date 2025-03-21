@@ -10,12 +10,13 @@ class SubjectController extends Controller
 	{
 		$subjects = Subject::all();
 
-		$transformedSubjects = $subjects->map(function ($subject) {
+		$transformedSubjects = $subjects->mapWithKeys(function ($subject) {
 			return [
-				'code'         => $subject->code,
-				'name'         => $subject->name,
-				'syllabus'     => $subject->syllabus,
-				'credits'      => [$subject->lecture_credits, $subject->work_credits],
+				$subject->code => [
+					'name'         => $subject->name,
+					'syllabus'     => $subject->syllabus,
+					'credits'      => [$subject->lecture_credits, $subject->work_credits],
+				],
 			];
 		});
 

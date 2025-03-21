@@ -1,5 +1,5 @@
 const clickEffect = {
-	"&:active, &:focus": {
+	"&:active": {
 		transform: "translateY(-2px)",
 	},
 };

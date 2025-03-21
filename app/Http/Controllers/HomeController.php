@@ -21,10 +21,12 @@ class HomeController extends Controller
 
         $plans = $planController->index();
         $groups = $groupController->index(1);
-        $subjects = $subjectController->index()->toArray();
-        foreach ($subjects as &$subject) {
-            $subject["groups"] = $groupController->getSubjectRootGroups($subject["code"]);
+        $subjects = $subjectController->index()->toArray();;
+
+        foreach ($subjects as $code => $subject) {
+            $subjects[$code]["groups"] = $groupController->getSubjectRootGroups($code);
         }
+
         $user = $userController->index();
 
         return Inertia::render('Home', [

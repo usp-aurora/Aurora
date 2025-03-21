@@ -13,15 +13,10 @@ class PlanController extends Controller
     public function index()
     {
         if (auth()->user() == null) {
-            $plans = SuggestedPlan::join('subjects', 'suggested_plans.subject_code', '=', 'subjects.code')
-                ->select('suggested_plans.*', 'subjects.name', 'subjects.syllabus', 'subjects.lecture_credits', 'subjects.work_credits')
-                ->get();
+            $plans = SuggestedPlan::all();
         }
         else{
-            $plans = Plan::where('user_id', auth()->user()->id)
-                ->join('subjects', 'plans.subject_code', '=', 'subjects.code')
-                ->select('plans.*', 'subjects.name', 'subjects.syllabus', 'subjects.lecture_credits', 'subjects.work_credits')
-                ->get();
+            $plans = Plan::where('user_id', auth()->user()->id)->get();
         }
 
         $groupedPlans = [];
@@ -35,9 +30,6 @@ class PlanController extends Controller
                     return [
                         'plan' => $plan->id,
                         'code' => $plan->subject_code,
-                        'name' => $plan->name,
-                        'desc' => $plan->syllabus,
-                        'credits' => [$plan->lecture_credits, $plan->work_credits],
                     ];
                 })->values()->all(),
             ];

@@ -13,6 +13,7 @@ const Container = styled("div")({
     padding: "10px",
     display: "flex",
     zIndex: "1",    
+    color: "white",
     justifyContent: "flex-end",
 });
 

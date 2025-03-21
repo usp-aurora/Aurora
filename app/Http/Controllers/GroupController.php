@@ -63,7 +63,7 @@ class GroupController extends Controller {
         $groupRoots = [];
         foreach($groups as $group){
             $rootGroup = $this->getGroupRoot($group->group_id);
-            $groupRoots[$rootGroup->id] = $rootGroup->title;
+            $groupRoots[] = $rootGroup->title;
         }
 
         return $groupRoots;

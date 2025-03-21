@@ -5,6 +5,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import Background from "../Background/HomeBackground";
 import SubjectList from "./Pieces/SubjectList";
 import { useSubjectPickerContext } from '../../Hooks/useSubjectPickerContext';
+import { useSubjectMapContext } from "../../Hooks/useSubjectMapContext";
+
 
 const ModalContainer = styled(Modal)(({ theme }) => ({
     display: "flex",
@@ -48,9 +50,8 @@ const GroupContainers = styled(Box)(({ theme }) => ({
     borderRadius: "12px",
 }));
 
-function SubjectPicker({ subjectDataMap, plannedSubjects, data }) {
-    const { isSubjectPickerModalOpen, closeSubjectPickerModal, showSubjectPickerModal } = useSubjectPickerContext();
-
+function SubjectPicker({ groupsData }) {
+    const { isSubjectPickerModalOpen, closeSubjectPickerModal } = useSubjectPickerContext();
     return (
         <ModalContainer
 			open={isSubjectPickerModalOpen}
@@ -61,7 +62,7 @@ function SubjectPicker({ subjectDataMap, plannedSubjects, data }) {
                     <StyledTitle>Adicionar disciplina</StyledTitle>
                     <StyledCloseIcon onClick={closeSubjectPickerModal} />
                 </HeaderContainer>
-                <SubjectList subjectDataMap={subjectDataMap} plannedSubjects={plannedSubjects} data={data} />
+                <SubjectList groupsData={groupsData} />
             </>
         </ModalContainer>
     );

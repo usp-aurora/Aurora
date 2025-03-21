@@ -25,7 +25,7 @@ const SubjectInfoTags = ({tags, credits}) => {
 		<TagsContainer>
 			{tags
 				.map(tag => (
-					<Chip key={tag.name} label={tag.name} />
+					<Chip key={tag} label={tag} />
 				))}
 			<Chip
 				color="white"

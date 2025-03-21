@@ -25,13 +25,13 @@ const GroupText = styled(Typography)(({ theme }) => ({
     },
 }));
 
-const SubGroupContainer = styled("div")(({ theme, depth }) => ({
+const SubGroupContainer = styled("div")(({ theme }) => ({
     display: "flex",
     flexDirection: "column",
     gap: theme.spacing(2),
 }));
 
-const Group = ({ groupData, subjectDataMap, plannedSubjects, expanded, onClick }) => {
+const Group = ({ groupData, expanded, onClick }) => {
     return (
         <Accordion
             summary={
@@ -43,6 +43,7 @@ const Group = ({ groupData, subjectDataMap, plannedSubjects, expanded, onClick }
             }
             expanded={expanded}
             onClick={onClick}
+            TransitionProps={{ unmountOnExit: true }}
         >
             <GroupContainer>
                 {/* <CompletionMetrics
@@ -60,21 +61,21 @@ const Group = ({ groupData, subjectDataMap, plannedSubjects, expanded, onClick }
                     ]}
                 /> */}
                 <GroupText>{groupData.description}</GroupText>
+                <SubjectsContainer
+                    containerName={groupData.title}
+                    subjects={groupData.subjects}
+                />
                 <SubGroupContainer>
                     {groupData.subgroups.map((subgroup) => (
                         <SubGroup
                             key={subgroup.title}
                             depth={1}
                             subgroupData={subgroup}
-                            subjectDataMap={subjectDataMap}
-                            plannedSubjects={plannedSubjects}
                         />
                     ))}
                 </SubGroupContainer>
                 <SubjectsContainer
                     containerName={groupData.title}
-                    subjectDataMap={subjectDataMap}
-                    plannedSubjects={plannedSubjects}
                     subjects={groupData.subjects}
                 />
             </GroupContainer >

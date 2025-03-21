@@ -1,28 +1,15 @@
-import { useState } from "react";
 import { CSS } from "@dnd-kit/utilities";
 import { useSortable } from "@dnd-kit/sortable";
 import { useDragAndDrop } from "./DragAndDropContext";
 
-import WarningDialog from "./WarningDialog";
-
-function SortableItem({ id, subjectData, container, children, disabled = false }) {
-    const { isDragDisabled } = useDragAndDrop();
-    const [showWarning, setShowWarning] = useState(false);
-
-    const isDraggable = !isDragDisabled && !disabled;
+function SortableItem({ id, children, itemData, isStatic = false }) {
+    const { dndDisabled, preventDragIfDisabled } = useDragAndDrop();
+    const isDraggable = !(dndDisabled || isStatic);
 
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
-        id: id,
-        data: {
-            subject: subjectData,
-            container: container,
-        },
+        id,
+        data: itemData,
     });
-
-    function handleDragStart(event) {
-        event.preventDefault(); // prevent native drag behavior
-        if (isDragDisabled) setShowWarning(true);
-    };
 
     const cardStyle = {
         transform: CSS.Transform.toString(transform),
@@ -32,20 +19,13 @@ function SortableItem({ id, subjectData, container, children, disabled = false }
         touchAction: "none",
     };
 
+    const dndProps = isDraggable ? { ...attributes, ...listeners } : {};
+    const draggableProps = isStatic ? {} : { draggable: "true", onDragStart: preventDragIfDisabled, onTouchMove: preventDragIfDisabled };
+
     return (
-        <>
-            <WarningDialog open={showWarning} onClose={() => setShowWarning(false)} />
-            <div
-                ref={isDraggable ? setNodeRef : undefined}
-                style={cardStyle}
-                draggable="true"
-                onDragStart={handleDragStart}
-                onTouchMove={() => isDragDisabled && setShowWarning(true)}
-                {...(isDraggable ? { ...attributes, ...listeners } : {})}
-            >   
-                {children}
-            </div>
-        </>
+        <div ref={isDraggable ? setNodeRef : undefined} style={cardStyle} {...dndProps} {...draggableProps}>
+            {children}
+        </div>
     );
 }
 

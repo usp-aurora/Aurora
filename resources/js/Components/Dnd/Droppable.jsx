@@ -1,17 +1,12 @@
-import { useState } from 'react';
-import { getContainerName } from '../../Handlers/DragHandlers';
-import { useDroppable,  useDndMonitor } from '@dnd-kit/core';
+import { useDroppable } from '@dnd-kit/core';
+import { useDragAndDrop } from './DragAndDropContext';
 
 function Droppable ({ id, children, placeholder, disabled = false, ...props }) {
+  const { overContainer } = useDragAndDrop();
   const { setNodeRef } = useDroppable({ id });
-  const [isOver, setIsOver] = useState(false);
 
-  useDndMonitor({
-    onDragOver: (event) => setIsOver(getContainerName(event.over) === id),
-    onDragEnd: () => setIsOver(false),
-    onDragCancel: () => setIsOver(false),
-  });
-
+  const isOver = (overContainer === id);
+  
   return (
     <div ref={disabled ? undefined : setNodeRef} {...props}>
       {children}

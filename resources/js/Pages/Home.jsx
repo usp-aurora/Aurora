@@ -13,11 +13,13 @@ import SubjectPickerMobile from "../Components/SubjectPicker/SubjectPickerMobile
 
 import MainTools from '../Components/Tools/MainTools.jsx';
 import useHistoryState from "../Hooks/useHistoryState";
-import usePlansManager from '../Hooks/newPlansManager.jsx';
+// import usePlansManager from '../Hooks/newPlansManager.jsx';
 import useSubjectDataMap from '../Hooks/useSubjectDataMap.jsx';
 import { DragAndDropProvider } from '../Components/Dnd/DragAndDropContext.jsx';
 import { SubjectInfoProvider } from "../Hooks/useSubjectInfoContext";
 import { SubjectPickerProvider } from "../Hooks/useSubjectPickerContext";
+import { SubjectMapProvider } from "../Hooks/useSubjectMapContext";
+import { PlansProvider } from "../Hooks/usePlansContext";
 
 import coreCurriculum from "../ManualData/coreCurriculum.jsx";
 
@@ -38,86 +40,76 @@ const ContentContainer = styled(Box)(({ theme }) => ({
 }));
 
 const Home = ({ groups, initialPlans, subjects, user }) => {
-    const [showCurriculum, setShowCurriculum] = useState(false);
+    const [isRecommendedView, setRecommendedView] = useState(false);
 
-    const [plans, updatePlans, pushPlans, restoreCurrentPlans, undo, redo] = useHistoryState(initialPlans);
+    // const [plans, updatePlans, pushPlans, restoreCurrentPlans, undo, redo] = useHistoryState(initialPlans);
     
-    const [subjectDataMap, plannedSubjects, updateSubject, bulkUpdateSubjects] = useSubjectDataMap(groups);
+    // const [subjectDataMap, plannedSubjects, updateSubject, bulkUpdateSubjects] = useSubjectDataMap(groups);
 
     // usePlansManager(user, initialPlans, defaultPlans, pushPlans, subjectDataMap, bulkUpdateSubjects);
 
-    /**
-     * Applies an undo or redo action and updates the subject semester accordingly.
-     * Prevents history actions when required courses are being displayed.
-     * 
-     * @param {Function} historyFunc - The function to execute (undo or redo)
-     */
-    function applyHistoryAction(historyFunc) {
-        if (showCurriculum) return;
-        const action = historyFunc();
-        if (action?.changes?.semester)
-            updateSubject(action.key, { semester: historyFunc.name === "undo" ? action.changes.semester.from : action.changes.semester.to });
-    }
+    // /**
+    //  * Applies an undo or redo action and updates the subject semester accordingly.
+    //  * Prevents history actions when required courses are being displayed.
+    //  * 
+    //  * @param {Function} historyFunc - The function to execute (undo or redo)
+    //  */
+    // function applyHistoryAction(historyFunc) {
+    //     if (isRecommendedView) return;
+    //     const action = historyFunc();
+    //     if (action?.changes?.semester)
+    //         updateSubject(action.key, { semester: historyFunc.name === "undo" ? action.changes.semester.from : action.changes.semester.to });
+    // }
 
     const theme = useTheme();
     const isAboveSmall = useMediaQuery(theme.breakpoints.up('sm'));
 
     return (
+        <SubjectMapProvider subjectDataMap={subjects}>
+        <PlansProvider initialPlans={initialPlans}>
         <SubjectInfoProvider>
-            <SubjectPickerProvider>
-                <DragAndDropProvider
-                    setPlans={updatePlans}
-                    resetPlans={restoreCurrentPlans}
-                    disabled={showCurriculum}
-                >
-                    <AppContainer>
-                        <SubjectInfo />
-                        {!isAboveSmall && <SubjectPickerMobile
-                            plannedSubjects={plannedSubjects}
-                            subjectDataMap={subjectDataMap}
-                            data={groups} />}
-                        <Background />
+        <SubjectPickerProvider>
+            
+                    <DragAndDropProvider disabled={isRecommendedView}>
+                        <AppContainer>
+                            <SubjectInfo />
+                            {!isAboveSmall && <SubjectPickerMobile
+                                groupsData={groups} />}
+                            <Background />
 
-                        <ContentContainer>
-                            <Stack spacing={{ xs: 1, sm: 2 }}>
-                                {isAboveSmall ? <HeaderDesktop /> : <HeaderMobile />}
-                                <Stack spacing={{ xs: 0, sm: 2 }} direction="row" sx={{ width: "100%", height: "100%" }}>
-                                    <Stack spacing={{ xs: 1, sm: 2 }} sx={{ width: { xs: "100%", sm: "64%" } }}>
-                                        <CompletionBar
-                                            subjectDataMap={subjectDataMap}
-                                            plans={plans}
-                                        />
-                                        <MainTools
-                                            undo={() => applyHistoryAction(undo)}
-                                            redo={() => applyHistoryAction(redo)}
-                                            showCurriculum={showCurriculum}
-                                            toggleCurriculum={() => setShowCurriculum(prev => !prev)}
-                                        />
-                                        <Semesters
-                                            semesters={showCurriculum ? coreCurriculum : plans}
-                                            pushPlans={pushPlans}
-                                            updateSubject={updateSubject}
-                                            plannedSubjects={plannedSubjects}
-                                            subjectDataMap={subjectDataMap}
-                                            customPlan={!showCurriculum}
-                                        />
-                                    </Stack>
-                                    {isAboveSmall &&
-                                        (<Stack sx={{ width: "36%" }}>        
-                                            <SubjectPickerDesktop
-                                                plannedSubjects={plannedSubjects}
-                                                subjectDataMap={subjectDataMap}
-                                                data={groups}
+                            <ContentContainer>
+                                <Stack spacing={{ xs: 1, sm: 2 }}>
+                                    {isAboveSmall ? <HeaderDesktop /> : <HeaderMobile />}
+                                    <Stack spacing={{ xs: 0, sm: 2 }} direction="row" sx={{ width: "100%", height: "100%" }}>
+                                        <Stack spacing={{ xs: 1, sm: 2 }} sx={{ width: { xs: "100%", sm: "64%" } }}>
+                                            <CompletionBar />
+                                            {/* <MainTools
+                                                undo={() => applyHistoryAction(undo)}
+                                                redo={() => applyHistoryAction(redo)}
+                                                isRecommendedView={isRecommendedView}
+                                                toggleCurriculum={() => setShowCurriculum(prev => !prev)}
+                                            /> */}
+                                            <Semesters
+                                                isRecommendedView={isRecommendedView}
                                             />
-                                        </Stack>)
-                                    }
+                                        </Stack>
+                                        {isAboveSmall &&
+                                            (<Stack sx={{ width: "36%" }}>        
+                                                <SubjectPickerDesktop
+                                                    groupsData={groups}
+                                                />
+                                            </Stack>)
+                                        }
+                                    </Stack>
                                 </Stack>
-                            </Stack>
-                        </ContentContainer>
-                    </AppContainer>
-                </DragAndDropProvider>
-            </SubjectPickerProvider>
+                            </ContentContainer>
+                        </AppContainer>
+                    </DragAndDropProvider>
+
+        </SubjectPickerProvider>
         </SubjectInfoProvider>
+        </PlansProvider>
+        </SubjectMapProvider>
     );
 };
 

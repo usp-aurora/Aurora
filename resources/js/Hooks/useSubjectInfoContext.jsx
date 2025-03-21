@@ -1,4 +1,7 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState } from 'react';
+import { useSubjectMapContext } from "../Hooks/useSubjectMapContext";
+import { usePlansContext } from "../Hooks/usePlansContext";
+
 
 const SubjectInfoContext = createContext();
 
@@ -15,15 +18,21 @@ function SubjectInfoProvider({ children, subjectInfoStartsOpened = false, initia
 	const [isSubjectInfoModalOpen, setSubjectInfoModalOpen] = useState(subjectInfoStartsOpened);
 	const [subjectInfo, setSubjectInfo] = useState(initialSubjectInfo);
 	
-	const showSubjectInfo = (subject) => {
+	const { subjectDataMap } = useSubjectMapContext();
+    const { plansSet } = usePlansContext();
+	
+	const showSubjectInfo = (subjectCode) => {
+		const subjectData = subjectDataMap[subjectCode];
+		if (!subjectData) return;
+
 		setSubjectInfoModalOpen(true);
 		setSubjectInfo({
-			isPlanned: subject.isPlanned,
-			name: subject.name,
-			code: subject.code,
-			tags: subject.tags,
-			credits: subject.credits,
-			desc: subject.desc
+			isPlanned: plansSet.has(subjectCode),
+			name: subjectData.name,
+			code: subjectCode,
+			tags: subjectData.groups,
+			credits: subjectData.credits,
+			desc: subjectData.syllabus
 		});
 	};
 

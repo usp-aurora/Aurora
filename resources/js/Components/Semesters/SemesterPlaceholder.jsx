@@ -4,10 +4,10 @@ import AuxiliaryCard from "../Atoms/Card/AuxiliaryCard";
 import AddIcon from "@mui/icons-material/Add";
 import { useSubjectPickerContext } from '../../Hooks/useSubjectPickerContext';
 
-const SubjectPlaceholder = () => {
+const SemesterPlaceholder = () => {
   const theme = useTheme();
   const isLargeScreen = useMediaQuery(theme.breakpoints.up("sm"));
-  const { isSubjectPickerModalOpen, closeSubjectPickerModal, showSubjectPickerModal } = useSubjectPickerContext();
+  const { showSubjectPickerModal } = useSubjectPickerContext();
 
   return (
     <>
@@ -18,4 +18,4 @@ const SubjectPlaceholder = () => {
   );
 };
 
-export default SubjectPlaceholder;
+export default SemesterPlaceholder;

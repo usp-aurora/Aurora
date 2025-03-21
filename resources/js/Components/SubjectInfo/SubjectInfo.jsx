@@ -68,7 +68,7 @@ function SubjectInfoGraph() {
 		["n3", { code: "MAC0216", name: "Integração na Universidade e na Profissão" }],
 		["n4", { code: "MAC0239", name: "Integração na Universidade e na Profissão" }],
 		["n5", { code: "MAE0119", name: "Integração na Universidade e na Profissão" }],
-		["n6", { code: "MAT2425", name: "Integração na Universidade e na Profissão" }],
+		["n6", { code: "MAT2454", name: "Integração na Universidade e na Profissão" }],
 	]);
 	const links = new Map([
 		["l1", { a: "n1", b: "n2" }],

@@ -7,6 +7,7 @@ const GroupContainer = styled(Box)(({ theme }) => ({
     display: "flex",
     flexDirection: "column",
     height: "100vh",
+    width: "100%",
     paddingBottom: "100vh",
     overflowY: "auto",
     gap: theme.spacing(2),
@@ -14,26 +15,21 @@ const GroupContainer = styled(Box)(({ theme }) => ({
     borderRadius: "12px",
 }));
 
-function SubjectList({ subjectDataMap, plannedSubjects, data }) {
-    const [expandedCategories, setExpandedCategories] = useState(
-        data.subgroups.map(group => group.title === "Obrigatórias")
-    );
+function SubjectList({ groupsData }) {
+    const [expandedCategory, setExpandedCategory] = useState(groupsData.subgroups.length - 1);
 
     const toggleCategory = (index) => {
-        const newExpandedCategories = [...expandedCategories];
-        newExpandedCategories[index] = !newExpandedCategories[index];
-        setExpandedCategories(newExpandedCategories);
+        setExpandedCategory((prevCategory) => (prevCategory === index) ? null : index);
     }
+
     return (
         // Algum dia vai ter um search bar bem aqui
         <GroupContainer>
-            {data.subgroups.map((groupData, index) => (
+            {groupsData.subgroups.map((groupData, index) => (
                 <Group
                     key={groupData.title}
                     groupData={groupData}
-                    subjectDataMap={subjectDataMap}
-                    plannedSubjects={plannedSubjects}
-                    expanded={expandedCategories[index]}
+                    expanded={expandedCategory == index}
                     onClick={() => toggleCategory(index)}
                 />
             ))}

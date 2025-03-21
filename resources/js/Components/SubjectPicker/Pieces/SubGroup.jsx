@@ -40,7 +40,7 @@ const SubGroupText = styled(Typography)(({ theme }) => ({
     },
 }));
 
-const SubGroup = ({ depth, subgroupData, subjectDataMap, plannedSubjects }) => {    
+const SubGroup = ({ depth, subgroupData }) => {    
     return (
         <SubGroupContainer depth={depth}>
             <SubGroupHeader>
@@ -53,10 +53,15 @@ const SubGroup = ({ depth, subgroupData, subjectDataMap, plannedSubjects }) => {
             ))}
             <SubjectsContainer 
                 containerName={subgroupData.title}
-                subjectDataMap={subjectDataMap}
-                plannedSubjects={plannedSubjects}
                 subjects={subgroupData.subjects}
             />
+            {subgroupData.subgroups.map((subgroup) => (
+                <SubGroup
+                    key={subgroup.title}
+                    depth={depth + 1}
+                    subgroupData={subgroup}
+                />
+            ))}
         </SubGroupContainer>
     );
 };
