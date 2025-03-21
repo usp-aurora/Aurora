@@ -19,7 +19,7 @@ class Institutes extends Model
         } else {
 
             $query = parent::newQuery()->fromSub(function ($query) {
-                DB::raw("WITH 
+                $query->select(DB::raw("WITH 
                     cidades_agrupadas AS (
                         SELECT codcam, nomcam
                         FROM replicado.dbo.CAMPUS c
@@ -50,20 +50,19 @@ class Institutes extends Model
                             replicado.dbo.UNIDADE u
                         INNER JOIN cidades_agrupadas ca ON u.codcam = ca.codcam
                         INNER JOIN subcampus s ON u.codund = s.codund
+                    )"),
+                        't.id_unidade',
+                        't.nome_unidade',
+                        't.id_cidade',
+                        't.nome_cidade',
+                        't.id_campus',
+                        'c.sglpticam AS nome_campus',
+                        't.created_at'
                     )
-                    SELECT
-                        t.id_unidade,
-                        t.nome_unidade,
-                        t.id_cidade,
-                        t.nome_cidade,
-                        t.id_campus,
-                        c.sglpticam AS nome_campus,
-                        t.created_at
-                    FROM
-                        tabela t
-                    INNER JOIN campus c ON (t.id_campus = c.numpticam AND t.id_cidade = c.codcam)
-                    ")
-                    
+                    ->from('tabela t')
+                    ->join('campus c')
+                    ->where('t.id_campus', '=', 'c.numpticam')
+                    ->where('t.id_cidade', '=', 'c.codcam');
             })
         }
 
