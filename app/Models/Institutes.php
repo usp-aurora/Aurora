@@ -51,12 +51,12 @@ class Institutes extends Model
                         INNER JOIN cidades_agrupadas ca ON u.codcam = ca.codcam
                         INNER JOIN subcampus s ON u.codund = s.codund
                     )"),
-                        't.id_unidade',
-                        't.nome_unidade',
-                        't.id_cidade',
-                        't.nome_cidade',
-                        't.id_campus',
-                        'c.sglpticam AS nome_campus',
+                        't.id_unidade AS id_institute',
+                        't.nome_unidade AS name_institute',
+                        't.id_cidade AS id_city',
+                        't.nome_cidade AS name_city',
+                        't.id_campus AS id_campus',
+                        'c.sglpticam AS id_campus',
                         't.created_at'
                     )
                     ->from('tabela t')
