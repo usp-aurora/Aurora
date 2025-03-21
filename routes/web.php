@@ -5,6 +5,9 @@ use Inertia\Inertia;
 use App\Http\Controllers\PlansController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\TestController;
+
+Route::get('/meu', [TestController::class, 'index']);
 
 
 Route::get('/', [PlansController::class, 'index']);
