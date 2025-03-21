@@ -18,6 +18,7 @@ class Institutes extends Model
             $query = parent::newQuery()->fromSub($this->fakeInstitutoQuery(), 'subtable');
         } else {
 
+            /*
             $query = parent::newQuery()->fromSub(function ($query) {
                 $query->select(DB::raw("WITH 
                     cidades_agrupadas AS (
@@ -60,11 +61,57 @@ class Institutes extends Model
                         't.created_at'
                     )
                     ->from('tabela t')
-                    ->join('campus c')
-                    ->where('t.id_campus', '=', 'c.numpticam')
-                    ->where('t.id_cidade', '=', 'c.codcam');
-            })
+                    ->join('campus c', 't.id_campus', '=', 'c.numpticam', 'AND', 't.id_cidade', '=', 'c.codcam');
+            }, 'subtable');
         }
+            */
+
+            $query = parent::newQuery()->fromSub(DB::raw("WITH 
+                cidades_agrupadas AS (
+                    SELECT codcam, nomcam
+                    FROM replicado.dbo.CAMPUS c
+                    GROUP BY codcam, nomcam
+                ),
+                subcampus AS (
+                    SELECT codund, numpticam
+                    FROM (
+                        SELECT codund, numpticam, COUNT(*) AS frequencia,
+                            ROW_NUMBER() OVER (PARTITION BY codund ORDER BY COUNT(*) DESC) AS rn
+                        FROM replicado.dbo.ENDUSP
+                        GROUP BY codund, numpticam
+                    ) AS subconsulta
+                    WHERE rn = 1
+                ),
+                campus AS (
+                    SELECT codcam, numpticam, sglpticam FROM replicado.dbo.CAMPUS
+                ),
+                tabela AS (
+                    SELECT
+                        u.codund AS id_unidade,
+                        u.nomund AS nome_unidade,
+                        ca.codcam AS id_cidade,
+                        ca.nomcam AS nome_cidade,
+                        s.numpticam AS id_campus,
+                        u.dtainival AS created_at
+                    FROM
+                        replicado.dbo.UNIDADE u
+                    INNER JOIN cidades_agrupadas ca ON u.codcam = ca.codcam
+                    INNER JOIN subcampus s ON u.codund = s.codund
+                )
+                SELECT 
+                    t.id_unidade AS id_institute,
+                    t.nome_unidade AS name_institute,
+                    t.id_cidade AS id_city,
+                    t.nome_cidade AS name_city,
+                    t.id_campus AS id_campus,
+                    c.sglpticam AS campus_code,
+                    t.created_at
+                FROM tabela t
+                JOIN campus c ON t.id_campus = c.numpticam
+                WHERE t.id_campus = c.numpticam
+                AND t.id_cidade = c.codcam
+            "), 'subtable');
+        }        
 
         return $query;
     }
