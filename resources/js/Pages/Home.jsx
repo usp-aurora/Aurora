@@ -1,116 +1,103 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { styled, useTheme } from "@mui/material/styles";
-import { Stack, Box, useMediaQuery } from "@mui/material";
-
-import HeaderDesktop from "../Components/Header/HeaderDesktop";
-import HeaderMobile from "../Components/Header/HeaderMobile";
-import CompletionBar from "../Components/CompletionBar/CompletionBar";
-import Background from "../Components/Background/HomeBackground";
-import SubjectInfo from "../Components/SubjectInfo/SubjectInfo";
-import Semesters from "../Components/Semesters/Semesters";
-import SubjectPickerDesktop from "../Components/SubjectPicker/SubjectPickerDesktop";
-import SubjectPickerMobile from "../Components/SubjectPicker/SubjectPickerMobile";
-
-import MainTools from '../Components/Tools/MainTools.jsx';
-import useHistoryState from "../Hooks/useHistoryState";
-// import usePlansManager from '../Hooks/newPlansManager.jsx';
-import useSubjectDataMap from '../Hooks/useSubjectDataMap.jsx';
-import { DragAndDropProvider } from '../Components/Dnd/DragAndDropContext.jsx';
-import { SubjectInfoProvider } from "../Hooks/useSubjectInfoContext";
-import { SubjectPickerProvider } from "../Hooks/useSubjectPickerContext";
+import { Box, useMediaQuery, TextField, Autocomplete } from '@mui/material';
 import { SubjectMapProvider } from "../Hooks/useSubjectMapContext";
-import { PlansProvider } from "../Hooks/usePlansContext";
+import SubjectCard from '../Components/Atoms/Card/SubjectCard';
+import GraphView from '../Components/SubjectInfo/GraphView/GraphView';
+import axios from 'axios'; // Import axios for API requests
 
-import coreCurriculum from "../ManualData/coreCurriculum.jsx";
-
-const AppContainer = styled(Box)(() => ({
-    position: "relative",
+const MainContainer = styled(Box)(() => ({
+	display: "flex",
+	flexDirection: "column",
+	width: '100vw',
+	height: '100vh',
 }));
 
-const ContentContainer = styled(Box)(({ theme }) => ({
-    display: "flex",
-    justifyContent: "center",
-    width: "100%",
-    padding: "8px",
-    overflow: "hidden", // Prevent general page from being scrollable
-
-    [theme.breakpoints.up("sm")]: {
-        padding: "16px",
-    },
+const Header = styled(Box)(() => ({
+	height: "100px",
+	width: "100%",
+	backgroundColor: "red",
 }));
+
+const SearchBarContainer = styled(Box)(() => ({
+	padding: "16px",
+}));
+
+const SubjectInfoGraphContainer = styled(Box)(() => ({
+	flex: 1,
+	display: "flex",
+	flexDirection: "column",
+}));
+
+const Footer = styled(Box)(() => ({
+	height: "100px",
+	width: "100%",
+	backgroundColor: "red"
+}));
+
+function SubjectInfoGraph({ selectedSubject }) {
+	const nodes = new Map([
+		["n1", { code: "MAC0101"}],
+		["n2", { code: "MAC0121"}],
+		["n3", { code: "MAC0216"}],
+		["n4", { code: "MAC0239"}],
+		["n5", { code: "MAE0119"}],
+		["n6", { code: "MAC0323"}],
+	]);
+	const links = new Map([
+		["l1", { a: "n1", b: "n2" }],
+		["l2", { a: "n1", b: "n3" }],
+		["l3", { a: "n4", b: "n1" }],
+		["l4", { a: "n5", b: "n4" }],
+		["l5", { a: "n6", b: "n1" }],
+		["l6", { a: "n5", b: "n6" }],
+	]);
+	for (const [key, node] of nodes) {
+		node.content = (
+			<SubjectCard
+				subjectCode={node.code}
+			/>
+		);
+	}
+
+	const theme = useTheme();
+	const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+	return (<GraphView nodes={nodes} links={links} root={selectedSubject || "n1"} vertical={isMobile} interactive={!isMobile} />);
+}
 
 const Home = ({ groups, initialPlans, subjects, user }) => {
-    const [isRecommendedView, setRecommendedView] = useState(false);
+	const [selectedSubject, setSelectedSubject] = useState(null);
 
-    // const [plans, updatePlans, pushPlans, restoreCurrentPlans, undo, redo] = useHistoryState(initialPlans);
-    
-    // const [subjectDataMap, plannedSubjects, updateSubject, bulkUpdateSubjects] = useSubjectDataMap(groups);
+	const handleSubjectChange = async (event, newValue) => {
+		if (newValue) {
+			try {
+				await axios.post('/api/update-graph', { subjectCode: newValue.code });
+				setSelectedSubject(newValue.code);
+			} catch (error) {
+				console.error("Error updating graph:", error);
+			}
+		}
+	};
 
-    // usePlansManager(user, initialPlans, defaultPlans, pushPlans, subjectDataMap, bulkUpdateSubjects);
-
-    // /**
-    //  * Applies an undo or redo action and updates the subject semester accordingly.
-    //  * Prevents history actions when required courses are being displayed.
-    //  * 
-    //  * @param {Function} historyFunc - The function to execute (undo or redo)
-    //  */
-    // function applyHistoryAction(historyFunc) {
-    //     if (isRecommendedView) return;
-    //     const action = historyFunc();
-    //     if (action?.changes?.semester)
-    //         updateSubject(action.key, { semester: historyFunc.name === "undo" ? action.changes.semester.from : action.changes.semester.to });
-    // }
-
-    const theme = useTheme();
-    const isAboveSmall = useMediaQuery(theme.breakpoints.up('sm'));
-
-    return (
-        <SubjectMapProvider subjectDataMap={subjects}>
-        <PlansProvider initialPlans={initialPlans}>
-        <SubjectInfoProvider>
-        <SubjectPickerProvider>
-            
-                    <DragAndDropProvider disabled={isRecommendedView}>
-                        <AppContainer>
-                            <SubjectInfo />
-                            {!isAboveSmall && <SubjectPickerMobile
-                                groupsData={groups} />}
-                            <Background />
-
-                            <ContentContainer>
-                                <Stack spacing={{ xs: 1, sm: 2 }}>
-                                    {isAboveSmall ? <HeaderDesktop /> : <HeaderMobile />}
-                                    <Stack spacing={{ xs: 0, sm: 2 }} direction="row" sx={{ width: "100%", height: "100%" }}>
-                                        <Stack spacing={{ xs: 1, sm: 2 }} sx={{ width: { xs: "100%", sm: "64%" } }}>
-                                            <CompletionBar />
-                                            {/* <MainTools
-                                                undo={() => applyHistoryAction(undo)}
-                                                redo={() => applyHistoryAction(redo)}
-                                                isRecommendedView={isRecommendedView}
-                                                toggleCurriculum={() => setShowCurriculum(prev => !prev)}
-                                            /> */}
-                                            <Semesters
-                                                isRecommendedView={isRecommendedView}
-                                            />
-                                        </Stack>
-                                        {isAboveSmall &&
-                                            (<Stack sx={{ width: "36%" }}>        
-                                                <SubjectPickerDesktop
-                                                    groupsData={groups}
-                                                />
-                                            </Stack>)
-                                        }
-                                    </Stack>
-                                </Stack>
-                            </ContentContainer>
-                        </AppContainer>
-                    </DragAndDropProvider>
-
-        </SubjectPickerProvider>
-        </SubjectInfoProvider>
-        </PlansProvider>
-        </SubjectMapProvider>
-    );
+	return (
+		<SubjectMapProvider subjectDataMap={subjects}>
+			<MainContainer>
+				<Header />
+				<SearchBarContainer>
+					<Autocomplete
+						options={subjects}
+						getOptionLabel={(option) => option.code}
+						renderInput={(params) => <TextField {...params} label="Search Subject" variant="outlined" />}
+						onChange={handleSubjectChange}
+					/>
+				</SearchBarContainer>
+				<SubjectInfoGraphContainer>
+					<SubjectInfoGraph selectedSubject={selectedSubject} />
+				</SubjectInfoGraphContainer>
+				<Footer />
+			</MainContainer>
+		</SubjectMapProvider>
+	);
 };
 
 export default Home;

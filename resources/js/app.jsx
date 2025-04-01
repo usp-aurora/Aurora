@@ -6,8 +6,6 @@ import { ThemeProvider } from '@mui/material/styles';
 import globalStyles from './styles/globalStyles.jsx'
 import theme from './styles/theme.jsx'
 
-import { AuthProvider } from './Hooks/useAuthContext.jsx';
-
 createInertiaApp({
   resolve: name => {
     const pages = import.meta.glob('./Pages/**/*.jsx', { eager: true })
@@ -17,11 +15,9 @@ createInertiaApp({
     createRoot(el).render(
       <>
         <Global styles={globalStyles}/> 
-        <AuthProvider>
           <ThemeProvider theme={theme}>
             <App {...props} />
           </ThemeProvider>
-        </AuthProvider>
       </>
     )
   },
