@@ -8,32 +8,42 @@ use App\Http\Controllers\GroupController;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\UserController;
+use App\Models\Subject; // Import the Subject model
 
 class HomeController extends Controller
 {
     public function index()
     {
-
         $groupController = new GroupController();
-        $planController = new PlanController();
         $subjectController = new SubjectController();
-        $userController = new UserController();
 
-        $plans = $planController->index();
-        $groups = $groupController->index(1);
         $subjects = $subjectController->index()->toArray();;
 
         foreach ($subjects as $code => $subject) {
             $subjects[$code]["groups"] = $groupController->getSubjectRootGroups($code);
         }
 
-        $user = $userController->index();
-
         return Inertia::render('Home', [
-            'initialPlans' => $plans,
-            'groups' => $groups,
             'subjects' => $subjects,
-            'user' => $user,
         ]);
+    }
+
+    public function graph($subjectCode)
+    {
+        $subject = Subject::where('code', $subjectCode)->first();
+
+        if (!$subject) {
+            return response()->json(['error' => 'Subject not found'], 404);
+        }
+
+        // Example response structure
+        $response = [
+            'code' => $subject->code,
+            'name' => $subject->name,
+            'description' => $subject->description,
+            'prerequisites' => $subject->prerequisites, // Assuming this is a relationship or attribute
+        ];
+
+        return response()->json($response);
     }
 }

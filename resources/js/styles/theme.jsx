@@ -5,6 +5,7 @@ let theme = createTheme({});
 theme = createTheme({
     spacing: 8,
     palette: {
+        mode: 'dark',
         // special colors have the palette generate automatically
         primary: {main: '#2A85CD'},
         error: {main: '#E83030'},

@@ -1,10 +1,11 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { styled, useTheme } from "@mui/material/styles";
-import { Box, useMediaQuery, TextField, Autocomplete } from '@mui/material';
+import { Box, useMediaQuery, TextField, Autocomplete, Button } from '@mui/material';
+import axios from 'axios';
 import { SubjectMapProvider } from "../Hooks/useSubjectMapContext";
 import SubjectCard from '../Components/Atoms/Card/SubjectCard';
-import GraphView from '../Components/SubjectInfo/GraphView/GraphView';
-import axios from 'axios'; // Import axios for API requests
+import GraphView from '../Components/GraphView/GraphView';
+import { Search } from '@mui/icons-material';
 
 const MainContainer = styled(Box)(() => ({
 	display: "flex",
@@ -20,11 +21,22 @@ const Header = styled(Box)(() => ({
 }));
 
 const SearchBarContainer = styled(Box)(() => ({
+	position: "absolute",
+	top: "16px",
+	left: "16px",
+	width: "33%",
+	zIndex: "999",
+	display: "flex",
+	flexDirection: "row",
+	gap: "16px",
 	padding: "16px",
+	alignItems: "center",
+	borderRadius: "8px",
 }));
 
 const SubjectInfoGraphContainer = styled(Box)(() => ({
 	flex: 1,
+	position: "relative",
 	display: "flex",
 	flexDirection: "column",
 }));
@@ -65,16 +77,22 @@ function SubjectInfoGraph({ selectedSubject }) {
 	return (<GraphView nodes={nodes} links={links} root={selectedSubject || "n1"} vertical={isMobile} interactive={!isMobile} />);
 }
 
-const Home = ({ groups, initialPlans, subjects, user }) => {
+const Home = ({ subjects }) => {
 	const [selectedSubject, setSelectedSubject] = useState(null);
 
-	const handleSubjectChange = async (event, newValue) => {
-		if (newValue) {
+	const handleSubjectChange = (event, value) => {
+		setSelectedSubject(value ? value[0] : null);
+	};
+
+	const handleSearchClick = async () => {
+		if (selectedSubject) {
 			try {
-				await axios.post('/api/update-graph', { subjectCode: newValue.code });
-				setSelectedSubject(newValue.code);
+				console.log(selectedSubject)
+				const response = await axios.get(`/api/subject/${selectedSubject}`);
+			
+				console.log(response.data);
 			} catch (error) {
-				console.error("Error updating graph:", error);
+				console.error("Error fetching subject data:", error);
 			}
 		}
 	};
@@ -83,16 +101,24 @@ const Home = ({ groups, initialPlans, subjects, user }) => {
 		<SubjectMapProvider subjectDataMap={subjects}>
 			<MainContainer>
 				<Header />
-				<SearchBarContainer>
-					<Autocomplete
-						options={subjects}
-						getOptionLabel={(option) => option.code}
-						renderInput={(params) => <TextField {...params} label="Search Subject" variant="outlined" />}
-						onChange={handleSubjectChange}
-					/>
-				</SearchBarContainer>
 				<SubjectInfoGraphContainer>
-					<SubjectInfoGraph selectedSubject={selectedSubject} />
+					<SearchBarContainer>
+						<Autocomplete
+							options={Object.entries(subjects)}
+							getOptionLabel={([code, subject]) => `${code} - ${subject.name}`}
+							renderInput={(params) => <TextField {...params} label="Search Subject" variant="outlined" />}
+							onChange={handleSubjectChange}
+							sx={{ flexGrow: 1 }}
+						/>
+							<Button
+								variant="contained"
+								color="primary"
+								onClick={handleSearchClick}
+							>
+								<Search />
+							</Button>
+					</SearchBarContainer>
+					<SubjectInfoGraph />
 				</SubjectInfoGraphContainer>
 				<Footer />
 			</MainContainer>

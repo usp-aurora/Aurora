@@ -3,8 +3,8 @@ import { styled } from "@mui/material";
 
 import NodeView from "./NodeView";
 import LinkView from "./LinkView";
-import GraphTools from "../../Tools/GraphTools";
-import Starfield from "../../Background/Starfield";
+import GraphTools from "../GraphView/GraphTools";
+import Starfield from "../Background/Starfield";
 import { getAdjacencyLists, getLayers } from "./TraversalUtils";
 import {
 	getHandleResize, getHandleMouseDown, getHandleMouseMove, getHandleMouseLeave, getHandleMouseUp,
