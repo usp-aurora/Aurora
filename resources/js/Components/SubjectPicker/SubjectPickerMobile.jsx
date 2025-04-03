@@ -1,11 +1,10 @@
-import React, { useState } from "react";
-import { styled, useTheme } from "@mui/material/styles";
-import { Box, Modal, Typography, useMediaQuery } from "@mui/material";
+import React from "react";
+import { styled } from "@mui/material/styles";
+import { Box, Modal, Typography } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import Background from "../Background/HomeBackground";
-import SubjectList from "./Pieces/SubjectList";
+import SubjectPickerList from "./Pieces/SubjectPickerList";
 import { useSubjectPickerContext } from '../../Hooks/useSubjectPickerContext';
-import { useSubjectMapContext } from "../../Hooks/useSubjectMapContext";
 
 
 const ModalContainer = styled(Modal)(({ theme }) => ({
@@ -39,17 +38,6 @@ const StyledCloseIcon = styled(CloseIcon)(({ theme }) => ({
     cursor: "pointer"
 }));
 
-const GroupContainers = styled(Box)(({ theme }) => ({
-    display: "flex",
-    flexDirection: "column",
-    height: "100vh",
-    paddingBottom: "100vh",
-    overflowY: "auto",
-    gap: theme.spacing(2),
-
-    borderRadius: "12px",
-}));
-
 function SubjectPicker({ groupsData }) {
     const { isSubjectPickerModalOpen, closeSubjectPickerModal } = useSubjectPickerContext();
     return (
@@ -62,7 +50,7 @@ function SubjectPicker({ groupsData }) {
                     <StyledTitle>Adicionar disciplina</StyledTitle>
                     <StyledCloseIcon onClick={closeSubjectPickerModal} />
                 </HeaderContainer>
-                <SubjectList groupsData={groupsData} />
+                <SubjectPickerList groupsData={groupsData} />
             </>
         </ModalContainer>
     );

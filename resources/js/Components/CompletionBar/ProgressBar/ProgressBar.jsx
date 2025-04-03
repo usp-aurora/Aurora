@@ -62,8 +62,8 @@ const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
 }));
 
 const ProgressBar = ({ label, coursed, planned, needed, color}) => {
-	const plannedPercentage = (planned / needed) * 100;
-	const coursedPercentage = (coursed / needed) * 100;
+	const plannedPercentage = Math.min((planned / needed) * 100, 100);
+	const coursedPercentage = Math.min((coursed / needed) * 100, 100);
 
 	return (
 		<ProgressBarContainer>

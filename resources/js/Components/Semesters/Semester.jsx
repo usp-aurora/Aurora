@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { Typography } from "@mui/material/";
 import { styled } from "@mui/material/styles";
@@ -7,14 +7,12 @@ import Accordion from "../Atoms/Accordion/Accordion";
 import SortableCard from "../Atoms/Card/SortableCard";
 import AuxiliaryCard from "../Atoms/Card/AuxiliaryCard";
 
+import SemesterPlaceholder from "./SemesterPlaceholder";
+
 import Droppable from "../Dnd/Droppable";
 import SortableGrid from "../Dnd/SortableGrid";
 
 import { useSubjectMapContext } from "../../Hooks/useSubjectMapContext";
-import { usePlansContext } from "../../Hooks/usePlansContext";
-import { useSubjectInfoContext } from '../../Hooks/useSubjectInfoContext';
-
-
 
 const SummaryContainer = styled("div")(({}) => ({
     width: "100%",
@@ -53,14 +51,14 @@ const DroppableCardContainer = styled(Droppable)(({ theme }) => ({
 
 const Semester = ({
     semesterData,
-    placeholder,
     isRecommendedView,
-    isExpanded,
-    onClick
 }) => {
     const { subjectDataMap } = useSubjectMapContext();
-    const { plansSet } = usePlansContext();
-    const { showSubjectInfo } = useSubjectInfoContext(); 
+    const [isExpanded, setExpanded] = useState(true);
+
+    function toggleExpanded(){
+        setExpanded(!isExpanded);
+    }
 
     let workCredits = 0;
     let lectureCredits = 0;
@@ -91,7 +89,7 @@ const Semester = ({
     return (
         <Accordion
             summary={Summary}
-            onClick={onClick}
+            onClick={toggleExpanded}
             expanded={isExpanded}
             TransitionProps={{ unmountOnExit: true }}
         >
@@ -100,14 +98,12 @@ const Semester = ({
                 key={semesterData.semesterId}
                 spacing={{ xs: 1, sm: 2 }}
                 disabled={!isExpanded}
-                placeholder={isRecommendedView ? null : placeholder}
+                placeholder={isRecommendedView ? null : <SemesterPlaceholder />}
             >
                 <SortableGrid items={semesterData.subjects}>
                     {semesterData.subjects.map((subject) => {
                         const subjectData = subjectDataMap[subject.code];
                         if(!subjectData) return null;
-
-                        const requiredScheduled = isRecommendedView && plansSet.has(subject.code);
 
                         return (
                             <SortableCard
@@ -116,7 +112,7 @@ const Semester = ({
                                 subjectCode={subject.code}
                                 container={semesterData.semesterId}
                                 isBlocked={false}
-                                requiredScheduled={requiredScheduled}/>
+                                isRecommendedView={isRecommendedView}/>
                         );
                     })}
                     {isRecommendedView && semesterData.suggestions.map((suggestion, index) => (
@@ -128,6 +124,7 @@ const Semester = ({
                             />
                         ))
                     }
+                    
                 </SortableGrid>
             </DroppableCardContainer>
         </Accordion>

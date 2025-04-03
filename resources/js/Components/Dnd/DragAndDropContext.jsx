@@ -72,7 +72,7 @@ function DragAndDropProvider({ children, disabled = false }) {
 				collisionDetection={determineCollisionStrategy}
 				onDragStart={(e) => handleDragStart(e, setDraggedItem)}
 				onDragOver={(e) => handleDragOver(e, draggedItem, setDraggedItem, updatePlans)}
-				onDragEnd={() => setDraggedItem(null)}
+				onDragEnd={() => {handleDragEnd(event, commitPlans); setDraggedItem(null);}}
 				onDragCancel={() => {
 					restoreCurrentPlans();
 					setDraggedItem(null);

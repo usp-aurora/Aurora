@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { styled } from "@mui/material/styles";
 import { Box } from "@mui/material";
 import Group from "./Group";
@@ -11,16 +11,15 @@ const GroupContainer = styled(Box)(({ theme }) => ({
     paddingBottom: "100vh",
     overflowY: "auto",
     gap: theme.spacing(2),
-
     borderRadius: "12px",
 }));
 
-function SubjectList({ groupsData }) {
+function SubjectPickerList({ groupsData }) {
     const [expandedCategory, setExpandedCategory] = useState(groupsData.subgroups.length - 1);
 
-    const toggleCategory = (index) => {
+    const toggleCategory = useCallback(function(index){
         setExpandedCategory((prevCategory) => (prevCategory === index) ? null : index);
-    }
+    }, []);
 
     return (
         // Algum dia vai ter um search bar bem aqui
@@ -29,12 +28,12 @@ function SubjectList({ groupsData }) {
                 <Group
                     key={groupData.title}
                     groupData={groupData}
-                    expanded={expandedCategory == index}
-                    onClick={() => toggleCategory(index)}
+                    expanded={expandedCategory === index}
+                    onClick={() => {toggleCategory(index)}}
                 />
             ))}
         </GroupContainer>
     );
 };
 
-export default SubjectList;
+export default SubjectPickerList;

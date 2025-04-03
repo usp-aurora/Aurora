@@ -1,10 +1,10 @@
-import React from "react";
+import React, { memo, useMemo } from "react";
 import { styled } from "@mui/material/styles";
 import { Box, Typography } from "@mui/material";
 
 import { useDroppable } from "@dnd-kit/core";
 import glassmorphismStyle from "../../styles/glassmorphism";
-import SubjectList from "./Pieces/SubjectList";
+import SubjectPickerList from "./Pieces/SubjectPickerList";
 
 const Container = styled( Box )(({ theme }) => ({
     display: "flex",
@@ -32,6 +32,8 @@ const StyledTitle = styled(Typography)(({ theme }) => ({
     ...theme.typography.h2,
 }));
 
+const MemoizedSubjectPickerList = memo(SubjectPickerList);
+
 function SubjectPickerDesktop({ groupsData }) {
     const { setNodeRef } = useDroppable({ id: "subjectPicker" });
 
@@ -40,7 +42,7 @@ function SubjectPickerDesktop({ groupsData }) {
             <HeaderContainer>
                 <StyledTitle>Adicionar disciplina</StyledTitle>
             </HeaderContainer>
-            <SubjectList groupsData={groupsData} />
+            <MemoizedSubjectPickerList groupsData={groupsData} />
         </Container>
     );
 };
