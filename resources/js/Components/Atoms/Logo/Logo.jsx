@@ -1,16 +1,22 @@
-import { Typography } from '@mui/material/';
+import { Typography, Box } from '@mui/material/';
 import { styled } from "@mui/material/styles";
+
 const LogoText = styled(Typography)(({}) => ({
     textShadow: '0px 0px 16px rgba(255, 255, 255, 0.5)',
+    display: 'inline',
 }));
 
-function Logo(props){
+const GrayText = styled(LogoText)(({}) => ({
+    color: 'gray',
+}));
+
+function Logo(props) {
     return (
-        <LogoText variant="h1" {...props}>
-            AURORA
-        </LogoText>
+        <Box component="div" {...props}>
+            <LogoText variant="h1">AURORA</LogoText>
+            {/* <GrayText variant="h1">RORA</GrayText> */}
+        </Box>
     );
 }
-
 
 export default Logo;

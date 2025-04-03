@@ -1,8 +1,6 @@
 import React from 'react';
 import { Box, Stack, Typography, useMediaQuery } from '@mui/material/';
 import { styled, useTheme } from "@mui/material/styles";
-
-
 import Logo from '../Atoms/Logo/Logo';
 import Button from '../Atoms/Buttons/Button';
 

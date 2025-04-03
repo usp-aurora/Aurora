@@ -1,10 +1,8 @@
 import { useState, useEffect, useRef, useMemo } from "react";
-import { styled } from "@mui/material";
+import { styled, Box } from "@mui/material";
 
 import NodeView from "./NodeView";
 import LinkView from "./LinkView";
-import GraphTools from "../GraphView/GraphTools";
-import Starfield from "../Background/Starfield";
 import { getAdjacencyLists, getLayers } from "./TraversalUtils";
 import {
 	getHandleResize, getHandleMouseDown, getHandleMouseMove, getHandleMouseLeave, getHandleMouseUp,
@@ -28,14 +26,6 @@ const LinkContainerView = styled("svg")({
 	width: "100%",
 	height: "100%",
 });
-
-const GraphBackgroundView = styled(Starfield)({
-	position: "absolute",
-	top: 0,
-	left: 0,
-	width: "100%",
-	height: "100%",
-})
 
 const NodeContainerView = styled("div")({
 	position: "absolute",
@@ -166,8 +156,6 @@ function GraphView({ nodes, links, root, interactive = false, vertical = false, 
 			onTouchStart={handleTouch}
 			ref={outerDiv}
 		>
-			<GraphTools toggleFullscreen={toggleFullscreen} recenter={() => centerOn(root)}/>
-			<GraphBackgroundView twinkling={false}/>
 			<LinkContainerView>
 				<filter>
 					<feDropShadow dx="0" dy="0" stdDeviation="2" floodColor="white" />
