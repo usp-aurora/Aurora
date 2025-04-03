@@ -47,16 +47,22 @@ const Footer = styled(Box)(() => ({
 	backgroundColor: "red"
 }));
 
-function SubjectInfoGraph({ selectedSubject }) {
-	const nodes = new Map([
-		["n1", { code: "MAC0101"}],
-		["n2", { code: "MAC0121"}],
-		["n3", { code: "MAC0216"}],
-		["n4", { code: "MAC0239"}],
-		["n5", { code: "MAE0119"}],
-		["n6", { code: "MAC0323"}],
+function SubjectInfoGraph({ selectedSubject, nodes, links }) {
+
+	console.log("links: ", links);
+	console.log("typeof links: ", typeof links);
+	console.log("nodes: ", nodes);
+	console.log("typeof nodes: ", typeof nodes);
+
+	const nodesM = new Map([
+		["n1", { code: "MAC0101" }],
+		["n2", { code: "MAC0121" }],
+		["n3", { code: "MAC0216" }],
+		["n4", { code: "MAC0239" }],
+		["n5", { code: "MAE0119" }],
+		["n6", { code: "MAC0323" }],
 	]);
-	const links = new Map([
+	const linksM = new Map([
 		["l1", { a: "n1", b: "n2" }],
 		["l2", { a: "n1", b: "n3" }],
 		["l3", { a: "n4", b: "n1" }],
@@ -64,21 +70,29 @@ function SubjectInfoGraph({ selectedSubject }) {
 		["l5", { a: "n6", b: "n1" }],
 		["l6", { a: "n5", b: "n6" }],
 	]);
-	for (const [key, node] of nodes) {
+	for (const [key, node] of nodesM) {
 		node.content = (
 			<SubjectCard
 				subjectCode={node.code}
 			/>
-		);
+		)
 	}
+
+	console.log("linksM: ", linksM);
+	console.log("typeof linksM: ", typeof linksM);
+	console.log("nodesM: ", nodesM);
+	console.log("typeof nodesM: ", typeof nodesM);
 
 	const theme = useTheme();
 	const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-	return (<GraphView nodes={nodes} links={links} root={selectedSubject || "n1"} vertical={isMobile} interactive={!isMobile} />);
+
+	return (<GraphView nodes={nodesM} links={linksM} root={'n1'} vertical={isMobile} interactive={!isMobile} />);
 }
 
 const Home = ({ subjects }) => {
 	const [selectedSubject, setSelectedSubject] = useState(null);
+	const [data, setData] = useState({ links: [], nodes: [] });
+
 
 	const handleSubjectChange = (event, value) => {
 		setSelectedSubject(value ? value[0] : null);
@@ -87,10 +101,24 @@ const Home = ({ subjects }) => {
 	const handleSearchClick = async () => {
 		if (selectedSubject) {
 			try {
-				console.log(selectedSubject)
 				const response = await axios.get(`/api/subject/${selectedSubject}`);
-			
-				console.log(response.data);
+
+				const formattedNodes = Map(Object.entries(response.data.nodes).map(([index, subjectCode]) => [
+					subjectCode, {
+						code: subjectCode,
+						content: (
+							<SubjectCard
+							subjectCode={subjectCode}
+							/>
+						)
+					}
+				]));
+
+				const formattedLinks = Map(Object.entries(response.data.links).map(([index, links]) => [
+					`l${index}`, { a: links[0], b: links[1] }
+				]));
+
+				setData({ links: formattedLinks, nodes: formattedNodes })
 			} catch (error) {
 				console.error("Error fetching subject data:", error);
 			}
@@ -110,15 +138,15 @@ const Home = ({ subjects }) => {
 							onChange={handleSubjectChange}
 							sx={{ flexGrow: 1 }}
 						/>
-							<Button
-								variant="contained"
-								color="primary"
-								onClick={handleSearchClick}
-							>
-								<Search />
-							</Button>
+						<Button
+							variant="contained"
+							color="primary"
+							onClick={handleSearchClick}
+						>
+							<Search />
+						</Button>
 					</SearchBarContainer>
-					<SubjectInfoGraph />
+					<SubjectInfoGraph root={selectedSubject} nodes={data.nodes} links={data.links} />
 				</SubjectInfoGraphContainer>
 				<Footer />
 			</MainContainer>
@@ -127,3 +155,5 @@ const Home = ({ subjects }) => {
 };
 
 export default Home;
+
+

@@ -3,12 +3,10 @@
 namespace App\Http\Controllers;
 
 use Inertia\Inertia;
-use Illuminate\Http\Request;
 use App\Http\Controllers\GroupController;
-use App\Http\Controllers\PlanController;
 use App\Http\Controllers\SubjectController;
-use App\Http\Controllers\UserController;
-use App\Models\Subject; // Import the Subject model
+use App\Models\Subject; 
+use App\Models\Requirement; 
 
 class HomeController extends Controller
 {
@@ -26,24 +24,62 @@ class HomeController extends Controller
         return Inertia::render('Home', [
             'subjects' => $subjects,
         ]);
+
     }
 
-    public function graph($subjectCode)
+    public function getSubjectRequirements($subjectCode)
     {
-        $subject = Subject::where('code', $subjectCode)->first();
+        $visited = [];
+        $backwardRequirements = $this->getRequirementsBackwardRecursive($subjectCode, $visited);
+        if (($key = array_search($subjectCode, $visited)) !== false) {
+            unset($visited[$key]);
+        }
+        $forwardRequirements = $this->getRequirementsForwardRecursive($subjectCode, $visited);
 
-        if (!$subject) {
-            return response()->json(['error' => 'Subject not found'], 404);
+        $requirements = array_merge($backwardRequirements, $forwardRequirements);
+
+        return response()->json([
+            'nodes' => $visited,
+            'links' => $requirements,
+        ]);
+    }
+
+    private function getRequirementsBackwardRecursive($subjectCode, &$visited)
+    {
+        if (in_array($subjectCode, $visited)) {
+            return [];
         }
 
-        // Example response structure
-        $response = [
-            'code' => $subject->code,
-            'name' => $subject->name,
-            'description' => $subject->description,
-            'prerequisites' => $subject->prerequisites, // Assuming this is a relationship or attribute
-        ];
+        $visited[] = $subjectCode;
 
-        return response()->json($response);
+        $requirements = Requirement::where('subject_code', $subjectCode)->get();
+        $result = [];
+
+        foreach ($requirements as $requirement) {
+            $result[] = [$subjectCode, $requirement->required_subject_code];
+            $result = array_merge($result, $this->getRequirementsBackwardRecursive($requirement->required_subject_code, $visited));
+        }
+
+        return $result;
+    }
+
+    private function getRequirementsForwardRecursive($subjectCode, &$visited = [])
+    {
+        if (in_array($subjectCode, $visited)) {
+            return [];
+        }
+
+        $visited[] = $subjectCode;
+
+        $requirements = Requirement::where('required_subject_code', $subjectCode)->get();
+        
+        $result = [];
+
+        foreach ($requirements as $requirement) {
+            $result[] = [$requirement->subject_code, $subjectCode];
+            $result = array_merge($result, $this->getRequirementsForwardRecursive($requirement->subject_code, $visited));
+        }
+
+        return $result;
     }
 }

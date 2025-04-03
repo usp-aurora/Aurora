@@ -9,7 +9,7 @@ use App\Http\Controllers\LoginController;
 
 Route::get('/', [HomeController::class, 'index']);
 
-Route::get('/api/subject/{subjectCode}', [HomeController::class, 'graph']);
+Route::get('/api/subject/{subjectCode}', [HomeController::class, 'getSubjectRequirements']);
 
 Route::get('login', [LoginController::class, 'redirectToProvider']);
 Route::get('callback', [LoginController::class, 'handleProviderCallback']);
