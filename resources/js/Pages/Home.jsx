@@ -85,6 +85,7 @@ const Footer = styled(Box)(() => ({
 }));
 
 function SubjectInfoGraph({ selectedSubject, nodes, links }) {
+	console.log("vai funcinoar agora: ", selectedSubject);
 	console.log("links: ", links);
 	console.log("typeof links: ", typeof links);
 	console.log("nodes: ", nodes);
@@ -195,7 +196,7 @@ const Home = ({ subjects }) => {
 				</SearchBarContainer>
 				{console.log(data.nodes.size, data.links.size)}
 				{data.nodes.size > 0 && data.links.size > 0 && (
-					<SubjectInfoGraph root={selectedSubject} nodes={data.nodes} links={data.links} />
+					<SubjectInfoGraph selectedSubject={selectedSubject} nodes={data.nodes} links={data.links} />
 				)}
 				{/* <Footer /> */}
 			</AppContainer>

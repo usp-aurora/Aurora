@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from "react";
-import { styled, Box } from "@mui/material";
+import { styled } from "@mui/material";
 
 import NodeView from "./NodeView";
 import LinkView from "./LinkView";
@@ -37,6 +37,8 @@ const NodeContainerView = styled("div")({
 
 function GraphView({ nodes, links, root, interactive = false, vertical = false, forceStyle = {} }) {
 	const [inLists, outLists] = useMemo(() => getAdjacencyLists(nodes,links), [nodes, links]);
+	console.log("inLists ",inLists);
+	console.log("outLists ",outLists);
 	const layers = useMemo(() => getLayers(inLists, outLists, root), [inLists, outLists, root]);
 	const initialStablePositions = useMemo(
 		() => getInitialStablePositions(links,layers,vertical,forceStyle),
