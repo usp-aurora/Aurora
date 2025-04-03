@@ -6,7 +6,7 @@ function Droppable ({ id, children, placeholder, disabled = false, ...props }) {
   const { setNodeRef } = useDroppable({ id });
 
   const isOver = (overContainer === id);
-  
+
   return (
     <div ref={disabled ? undefined : setNodeRef} {...props}>
       {children}

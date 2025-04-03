@@ -55,13 +55,6 @@ const SubGroup = ({ depth, subgroupData }) => {
                 containerName={subgroupData.title}
                 subjects={subgroupData.subjects}
             />
-            {subgroupData.subgroups.map((subgroup) => (
-                <SubGroup
-                    key={subgroup.title}
-                    depth={depth + 1}
-                    subgroupData={subgroup}
-                />
-            ))}
         </SubGroupContainer>
     );
 };

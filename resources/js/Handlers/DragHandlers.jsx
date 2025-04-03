@@ -141,11 +141,6 @@ function handleDragEnd(event, commitPlans) {
 				? targetSubjects.length
 				: calculateDropIndex(over, draggingRect, targetSubjects);
 
-		console.log("targetSubjects: ", targetSubjects);
-		console.log("sourceIndex: ", sourceIndex);
-		console.log("targetIndex: ", targetIndex);
-		console.log("targetContainer: ", targetContainer);
-
 		if (sourceIndex !== targetIndex) {
 			return prevPlans.map((semester) => {
 				if (semester.semesterId === targetContainer) {

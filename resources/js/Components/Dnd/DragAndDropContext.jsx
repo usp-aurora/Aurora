@@ -4,7 +4,7 @@ import { useSensor, useSensors, PointerSensor, KeyboardSensor } from "@dnd-kit/c
 
 import WarningDialog from "./WarningDialog.jsx";
 import SubjectOverlay from "./SubjectOverlay.jsx";
-import { getContainerName, handleDragStart, handleDragOver } from "../../Handlers/DragHandlers.jsx";
+import { getContainerName, handleDragStart, handleDragOver, handleDragEnd } from "../../Handlers/DragHandlers.jsx";
 import { usePlansContext } from "../../Hooks/usePlansContext.jsx";
 
 const DragAndDropContext = createContext();
@@ -39,7 +39,7 @@ function determineCollisionStrategy({ droppableContainers, ...props }) {
 function DragAndDropProvider({ children, disabled = false }) {
 	const [draggedItem, setDraggedItem] = useState(null);
 	const [showWarning, setShowWarning] = useState(false);
-	const { restoreCurrentPlans, updatePlans } = usePlansContext();
+	const { restoreCurrentPlans, updatePlans, commitPlans } = usePlansContext();
 
 	/**
 	 * Defines sensors for drag detection.
@@ -72,7 +72,7 @@ function DragAndDropProvider({ children, disabled = false }) {
 				collisionDetection={determineCollisionStrategy}
 				onDragStart={(e) => handleDragStart(e, setDraggedItem)}
 				onDragOver={(e) => handleDragOver(e, draggedItem, setDraggedItem, updatePlans)}
-				onDragEnd={() => {handleDragEnd(event, commitPlans); setDraggedItem(null);}}
+				onDragEnd={(e) => { handleDragEnd(e, commitPlans); setDraggedItem(null);}}
 				onDragCancel={() => {
 					restoreCurrentPlans();
 					setDraggedItem(null);
@@ -80,7 +80,6 @@ function DragAndDropProvider({ children, disabled = false }) {
 			>
 				{/* Display warning dialog if drag is disabled */}
 				<WarningDialog open={showWarning} onClose={() => setShowWarning(false)} />
-				{console.log("draggedItem: ", draggedItem)}
 				{/* Render drag overlay if an item is currently being dragged */}
 				{draggedItem && <SubjectOverlay subject={draggedItem} />}
 

@@ -74,10 +74,6 @@ const Group = ({ groupData, expanded, onClick }) => {
                         />
                     ))}
                 </SubGroupContainer>
-                <SubjectsContainer
-                    containerName={groupData.title}
-                    subjects={groupData.subjects}
-                />
             </GroupContainer >
         </Accordion >
     );

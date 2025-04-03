@@ -7,7 +7,7 @@ import Accordion from "../Atoms/Accordion/Accordion";
 import SortableCard from "../Atoms/Card/SortableCard";
 import AuxiliaryCard from "../Atoms/Card/AuxiliaryCard";
 
-import SemesterPlaceholder from "./SemesterPlaceholder";
+import SubjectPlaceholder from "./SubjectPlaceholder";
 
 import Droppable from "../Dnd/Droppable";
 import SortableGrid from "../Dnd/SortableGrid";
@@ -98,7 +98,7 @@ const Semester = ({
                 key={semesterData.semesterId}
                 spacing={{ xs: 1, sm: 2 }}
                 disabled={!isExpanded}
-                placeholder={isRecommendedView ? null : <SemesterPlaceholder />}
+                placeholder={isRecommendedView ? null : <SubjectPlaceholder />}
             >
                 <SortableGrid items={semesterData.subjects}>
                     {semesterData.subjects.map((subject) => {
