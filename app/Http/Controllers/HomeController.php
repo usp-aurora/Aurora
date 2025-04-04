@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Inertia\Inertia;
-use App\Http\Controllers\GroupController;
 use App\Http\Controllers\SubjectController;
 use App\Models\Subject; 
 use App\Models\Requirement; 
@@ -12,17 +11,23 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $groupController = new GroupController();
-        $subjectController = new SubjectController();
 
-        $subjects = $subjectController->index()->toArray();;
+        $subjectCodes = Requirement::distinct()->pluck('subject_code');
+        $requiredSubjectCodes = Requirement::distinct()->pluck('required_subject_code');
+        $uniqueSubjectsCodes = $subjectCodes->merge($requiredSubjectCodes)->unique();
+        
+        $subjects = Subject::whereIn('code', $uniqueSubjectsCodes)->get();
 
-        foreach ($subjects as $code => $subject) {
-            $subjects[$code]["groups"] = $groupController->getSubjectRootGroups($code);
-        }
+        $mappedSubjects = $subjects->mapWithKeys(function ($subject) {
+            return [
+                $subject->code => [
+                    'name' => $subject->name,
+                ],
+            ];
+        });
 
         return Inertia::render('Home', [
-            'subjects' => $subjects,
+            'subjects' => $mappedSubjects,
         ]);
 
     }
@@ -44,7 +49,7 @@ class HomeController extends Controller
         ]);
     }
 
-    private function getRequirementsBackwardRecursive($subjectCode, &$visited)
+    private function getRequirementsForwardRecursive($subjectCode, &$visited)
     {
         if (in_array($subjectCode, $visited)) {
             return [];
@@ -56,14 +61,14 @@ class HomeController extends Controller
         $result = [];
 
         foreach ($requirements as $requirement) {
-            $result[] = [$subjectCode, $requirement->required_subject_code];
-            $result = array_merge($result, $this->getRequirementsBackwardRecursive($requirement->required_subject_code, $visited));
+            $result[] = [$requirement->required_subject_code, $subjectCode];
+            $result = array_merge($result, $this->getRequirementsForwardRecursive($requirement->required_subject_code, $visited));
         }
 
         return $result;
     }
 
-    private function getRequirementsForwardRecursive($subjectCode, &$visited = [])
+    private function getRequirementsBackwardRecursive($subjectCode, &$visited = [])
     {
         if (in_array($subjectCode, $visited)) {
             return [];
@@ -76,8 +81,8 @@ class HomeController extends Controller
         $result = [];
 
         foreach ($requirements as $requirement) {
-            $result[] = [$requirement->subject_code, $subjectCode];
-            $result = array_merge($result, $this->getRequirementsForwardRecursive($requirement->subject_code, $visited));
+            $result[] = [$subjectCode, $requirement->subject_code];
+            $result = array_merge($result, $this->getRequirementsBackwardRecursive($requirement->subject_code, $visited));
         }
 
         return $result;

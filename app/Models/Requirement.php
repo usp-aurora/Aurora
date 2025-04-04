@@ -18,16 +18,42 @@ class Requirement extends Model
         else{
             $this->connection = "jupiter";
             $query = parent::newQuery()->fromSub(function ($query) {
-                $query->select(
-                    'coddis AS subject_code',
-                    'verdis AS subject_version',
-                    'coddisreq AS required_subject_code',
-                    'verdisreq AS required_subject_version'
-                )
-                ->from('REQUISITOGR')
-                ->where('codcur', '=', 45052) // Curso de Ciência da Computação
-                ->where('codhab', '=', 1);   // Habilitação
-            }, 'subtable');
+                $query->selectRaw("
+                    coddis AS subject_code,
+                    coddisreq AS required_subject_code
+                ")
+                ->fromSub(function ($subQuery) {
+                    $subQuery->selectRaw("
+                        coddis,
+                        verdis,
+                        coddisreq,
+                        verdisreq,
+                        row_num_dis,
+                        ROW_NUMBER() OVER (
+                            PARTITION BY coddis, coddisreq 
+                            ORDER BY verdisreq DESC
+                        ) AS row_num_req
+                    ")
+                    ->fromSub(function ($innerQuery) {
+                        $innerQuery->selectRaw("
+                            coddis,
+                            verdis,
+                            coddisreq,
+                            verdisreq,
+                            ROW_NUMBER() OVER (
+                                PARTITION BY coddis
+                                ORDER BY verdis DESC
+                            ) AS row_num_dis
+                        ")
+                        ->from('REQUISITOGR')
+                        ->where('codcur', '=', 45052) // Curso de Ciência da Computação
+                        ->where('codhab', '=', 1);
+                    }, 'filtered_course')
+                    ->where('filtered_course.row_num_dis', '=', 1);
+                }, 'filtered_dis_version')
+                ->where('filtered_dis_version.row_num_req', '=', 1);
+            }, 'dummy');
+    
         }
 
         return $query;
@@ -110,9 +136,9 @@ class Requirement extends Model
                 foreach ($requirements as $requirement) {
                     $fakeData[] = [
                         'subject_code' => $subject_code,
-                        'subject_version' => 1,
+                        // 'subject_version' => 1,
                         'required_subject_code' => $requirement,
-                        'required_subject_version' => 1,
+                        // 'required_subject_version' => 1,
                     ];
                 }
             }
@@ -120,11 +146,22 @@ class Requirement extends Model
 
         $query = collect($fakeData)->map(function ($row) {
             return "SELECT  '{$row['subject_code']}' as subject_code, 
-                            {$row['subject_version']} as subject_version, 
+                            -- {$row['subject_version']} as subject_version, 
                             '{$row['required_subject_code']}' as required_subject_code, 
-                            {$row['required_subject_version']} as required_subject_version";
+                            -- {$row['required_subject_version']} as required_subject_version
+                            ";
         })->implode(' UNION ALL ');
 
         return $query;
+    }
+
+    public function subject()
+    {
+        return $this->belongsTo(Subject::class, 'subject_code', 'code');
+    }
+
+    public function requiredSubject()
+    {
+        return $this->belongsTo(Subject::class, 'required_subject_code', 'code');
     }
 }
