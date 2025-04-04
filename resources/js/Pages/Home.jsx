@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { styled, useTheme } from "@mui/material/styles";
-import { Box, useMediaQuery, TextField, Autocomplete, Button, IconButton } from '@mui/material';
+import { Box, useMediaQuery, TextField, Autocomplete, Button, IconButton, Typography, Stack } from '@mui/material';
 import { Search } from '@mui/icons-material';
+import LoginIcon from '@mui/icons-material/Login';
 import axios from 'axios';
 
 import Starfield from "../Components/Background/Starfield";
@@ -40,6 +41,7 @@ const HeaderContainer = styled(Box)(({ theme }) => ({
 
 	display: "flex",
 	alignItems: "center",
+	justifyContent: "space-between",
 	padding: "16px",
 }));
 
@@ -82,6 +84,11 @@ const Footer = styled(Box)(() => ({
 
 	backgroundColor: "red",
 	height: "100px",
+}));
+
+const LogoText = styled(Typography)(({}) => ({
+	textShadow: '0px 0px 16px rgba(255, 255, 255, 0.5)',
+	display: 'inline',
 }));
 
 function SubjectInfoGraph({ selectedSubject, nodes, links }) {
@@ -170,6 +177,25 @@ const Home = ({ subjects }) => {
 				<Background />
 				<HeaderContainer>
 					<Logo />
+					<Stack 
+						direction="row" 
+						justifyContent="center" 
+						alignItems="center"
+						spacing={1}
+					>
+						<Typography variant="body2">
+							Para se manter atualizado sobre o sistema, faça o
+						</Typography>
+						<Button 
+							variant="contained"
+							href="login" 
+							style={{ borderRadius: 50 }}
+						>
+							<LogoText variant="h7">
+							✨Login✨
+							</LogoText>
+						</Button>
+					</Stack>
 				</HeaderContainer>
 				<SearchBarContainer>
 					<StyledAutocomplete
