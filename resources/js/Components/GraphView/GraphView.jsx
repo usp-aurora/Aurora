@@ -8,7 +8,7 @@ import {
 	getHandleResize, getHandleMouseDown, getHandleMouseMove, getHandleMouseLeave, getHandleMouseUp,
 	getHandleMouseDownNode, handleTouch,
 } from "./EventUtils";
-import {getStartUpdate, stopUpdate, getInitialStablePositions} from "./UpdateUtils";
+import { getStartUpdate, stopUpdate, getInitialStablePositions } from "./UpdateUtils";
 
 const GraphBodyView = styled("div")({
 	position: "relative",
@@ -36,18 +36,17 @@ const NodeContainerView = styled("div")({
 });
 
 function GraphView({ nodes, links, root, interactive = false, vertical = false, forceStyle = {} }) {
-	const [inLists, outLists] = useMemo(() => getAdjacencyLists(nodes,links), [nodes, links]);
-	console.log("inLists ",inLists);
-	console.log("outLists ",outLists);
+	const [inLists, outLists] = useMemo(() => getAdjacencyLists(nodes, links), [nodes, links]);
 	const layers = useMemo(() => getLayers(inLists, outLists, root), [inLists, outLists, root]);
+	
 	const initialStablePositions = useMemo(
-		() => getInitialStablePositions(links,layers,vertical,forceStyle),
-		[links,layers],
+		() => getInitialStablePositions(links, layers, vertical, forceStyle),
+		[links, layers, nodes, root]
 	);
-
 	const [positions, setPositions] = useState(initialStablePositions);
+
 	const [origin, setOrigin] = useState({ x: 0, y: 0 });
-	const [size, setSize] = useState({ width: 0, height: 0});
+	const [size, setSize] = useState({ width: 0, height: 0 });
 
 	const animationRequest = useRef();
 	const animationTime = useRef();
@@ -67,14 +66,14 @@ function GraphView({ nodes, links, root, interactive = false, vertical = false, 
 
 	const outerDiv = useRef(null);
 
-	const NodeViews = Array.from(nodes, ([key,node], idx) => {
+	const NodeViews = Array.from(nodes, ([key, node], idx) => {
 		const pos = positions.get(key);
-		const x = pos.x-origin.x + size.width/2;
-		const y = pos.y-origin.y + size.height/2;
+		const x = pos.x - origin.x + size.width / 2;
+		const y = pos.y - origin.y + size.height / 2;
 		const handleMouseDownNode = (
 			interactive ?
-			getHandleMouseDownNode(alphaNode, alphaStart, key, pos) :
-			undefined
+				getHandleMouseDownNode(alphaNode, alphaStart, key, pos) :
+				undefined
 		);
 		return (
 			<NodeView key={key} x={x} y={y} onMouseDown={handleMouseDownNode} >
@@ -83,37 +82,27 @@ function GraphView({ nodes, links, root, interactive = false, vertical = false, 
 		);
 	});
 
-	const LinkViews = Array.from(links, ([key,link],idx) => {
+	const LinkViews = Array.from(links, ([key, link], idx) => {
 		const pos1 = positions.get(link.a);
 		const pos2 = positions.get(link.b);
-		const x1 = pos1.x-origin.x + size.width/2;
-		const y1 = pos1.y-origin.y + size.height/2;
-		const x2 = pos2.x-origin.x + size.width/2;
-		const y2 = pos2.y-origin.y + size.height/2;
+		const x1 = pos1.x - origin.x + size.width / 2;
+		const y1 = pos1.y - origin.y + size.height / 2;
+		const x2 = pos2.x - origin.x + size.width / 2;
+		const y2 = pos2.y - origin.y + size.height / 2;
 		return (
 			<LinkView key={key} x1={x1} y1={y1} x2={x2} y2={y2} />
 		);
 	});
-	
+
 	function centerOn(node) {
 		if (!positions.has(node)) return;
 		const nodePos = positions.get(node);
 		setOrigin({ x: nodePos.x, y: nodePos.y });
 	};
 
-	async function toggleFullscreen() {
-		if (!document.fullscreenElement) {
-			await outerDiv.current.requestFullscreen();
-			getHandleResize(setSize, outerDiv)();
-		} else {
-			await document.exitFullscreen();
-			getHandleResize(setSize, outerDiv)();
-		}
-	};
-
 	useEffect(() => {
 		centerOn(root);
-	  
+
 		const startUpdate = getStartUpdate(
 			setPositions, animationRequest, animationTime,
 			links, layers,
@@ -140,19 +129,19 @@ function GraphView({ nodes, links, root, interactive = false, vertical = false, 
 		touchMoveListener.current = addEventListener("touchmove", handleTouch);
 		touchEndListener.current = addEventListener("touchmove", handleTouch);
 
-		return function() {
+		return function () {
 			stopUpdate(animationRequest);
 
-			removeEventListener("mousemove",mouseMoveListener.current);
-			removeEventListener("mouseup",mouseUpListener.current);
-			removeEventListener("mouseleave",mouseLeaveListener.current);
+			removeEventListener("mousemove", mouseMoveListener.current);
+			removeEventListener("mouseup", mouseUpListener.current);
+			removeEventListener("mouseleave", mouseLeaveListener.current);
 
-			removeEventListener("touchmove",touchMoveListener.current);
-			removeEventListener("touchend",touchEndListener.current);
+			removeEventListener("touchmove", touchMoveListener.current);
+			removeEventListener("touchend", touchEndListener.current);
 		};
-	  }, []);
-	  
-	  return (
+	}, []);
+
+	return (
 		<GraphBodyView
 			onMouseDown={getHandleMouseDown(mouseDown, dragStart, origin)}
 			onTouchStart={handleTouch}
@@ -168,7 +157,7 @@ function GraphView({ nodes, links, root, interactive = false, vertical = false, 
 				{NodeViews}
 			</NodeContainerView>
 		</GraphBodyView>
-	  );
+	);
 }
 
 export default GraphView;

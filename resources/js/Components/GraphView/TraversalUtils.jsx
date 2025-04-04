@@ -20,11 +20,6 @@ function getLayers(inLists, outLists, root) {
 		while(stack.length > 0) {
 			const [node,foward] = stack.pop();
 			const list = (foward ? outLists : inLists).get(node);
-			console.log("Lista: ", list);
-			console.log("Lista out: ", outLists);
-			console.log("Lista in: ", inLists);
-			console.log("node: ", node);
-			console.log("root: ", root);
 
 			for(const otherNode of list) {
 				const counter = counters.get(otherNode);

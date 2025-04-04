@@ -84,51 +84,15 @@ const Footer = styled(Box)(() => ({
 	height: "100px",
 }));
 
-function SubjectInfoGraph({ selectedSubject, nodes, links }) {
-	console.log("vai funcinoar agora: ", selectedSubject);
-	console.log("links: ", links);
-	console.log("typeof links: ", typeof links);
-	console.log("nodes: ", nodes);
-	console.log("typeof nodes: ", typeof nodes);
-
-	const nodesM = new Map([
-		["n1", { code: "AAA0001" }],
-		["n2", { code: "AAB0001" }],
-		["n3", { code: "ABC0001" }],
-		["n4", { code: "CCC0001" }],
-		["n5", { code: "ABA0001" }],
-		["n6", { code: "BAA0001" }],
-	]);
-	const linksM = new Map([
-		["l1", { a: "n1", b: "n2" }],
-		["l2", { a: "n1", b: "n3" }],
-		["l3", { a: "n4", b: "n1" }],
-		["l4", { a: "n5", b: "n4" }],
-		["l5", { a: "n6", b: "n1" }],
-		["l6", { a: "n5", b: "n6" }],
-	]);
-	for (const [key, node] of nodesM) {
-		node.content = (
-			<SubjectCard
-				subjectCode={node.code}
-			/>
-		)
-	}
-
-	console.log("linksM: ", linksM);
-	console.log("typeof linksM: ", typeof linksM);
-	console.log("nodesM: ", nodesM);
-	console.log("typeof nodesM: ", typeof nodesM);
-
+function SubjectInfoGraph({ root, nodes, links }) {
 	const theme = useTheme();
 	const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-
-	return (<GraphView nodes={nodes} links={links} root={selectedSubject} vertical={isMobile} interactive={!isMobile} />);
+	return (<GraphView key={root} nodes={nodes} links={links} root={root} vertical={isMobile} interactive={!isMobile} />);
 }
 
 const Home = ({ subjects }) => {
 	const [selectedSubject, setSelectedSubject] = useState(null);
-	const [data, setData] = useState({ links: [], nodes: [] });
+	const [data, setData] = useState({ links: [], nodes: [], root: null });
 
 
 	const handleSubjectChange = (event, value) => {
@@ -152,12 +116,10 @@ const Home = ({ subjects }) => {
 				]));
 
 				const formattedLinks = new Map(Object.entries(response.data.links).map(([index, links]) => [
-					`l${index + 1}`, { a: links[0], b: links[1] }
+					`l${parseInt(index, 10) + 1}`, { a: links[0], b: links[1] }
 				]));
 
-				setData({ links: formattedLinks, nodes: formattedNodes })
-
-				console.log(data);
+				setData({ links: formattedLinks, nodes: formattedNodes, root: selectedSubject });
 			} catch (error) {
 				console.error("Error fetching subject data:", error);
 			}
@@ -194,9 +156,8 @@ const Home = ({ subjects }) => {
 						<Search />
 					</Button>
 				</SearchBarContainer>
-				{console.log(data.nodes.size, data.links.size)}
-				{data.nodes.size > 0 && data.links.size > 0 && (
-					<SubjectInfoGraph selectedSubject={selectedSubject} nodes={data.nodes} links={data.links} />
+				{data.nodes.size > 0 && data.links.size > 0 && data.root && (
+					<SubjectInfoGraph root={data.root} nodes={data.nodes} links={data.links} />
 				)}
 				{/* <Footer /> */}
 			</AppContainer>

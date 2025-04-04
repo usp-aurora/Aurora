@@ -1,5 +1,5 @@
 function applyRadialForce(positions, velocities, {
-	radialLength = 150,
+	radialLength = 250,
 	radialStrength = 10,
 }) {
 	for(const [key1,pos1] of positions) {
@@ -37,7 +37,7 @@ function applyLinkForce(positions, velocities, links, vertical = false, { linkSt
 
 function applyLayerForce(positions, velocities, layers, vertical = false, {
 	layerStart = 0,
-	layerSeparation = 200,
+	layerSeparation = 300,
 	layerStrength = 5,
 }) {
 	const axis = (vertical ? "y" : "x");
