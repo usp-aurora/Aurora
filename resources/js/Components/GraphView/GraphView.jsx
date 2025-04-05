@@ -38,7 +38,7 @@ const NodeContainerView = styled("div")({
 function GraphView({ nodes, links, root, interactive = false, vertical = false, forceStyle = {} }) {
 	const [inLists, outLists] = useMemo(() => getAdjacencyLists(nodes, links), [nodes, links]);
 	const layers = useMemo(() => getLayers(inLists, outLists, root), [inLists, outLists, root]);
-	
+
 	const initialStablePositions = useMemo(
 		() => getInitialStablePositions(links, layers, vertical, forceStyle),
 		[links, layers, nodes, root]
