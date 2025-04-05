@@ -1,8 +1,7 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { styled, useTheme } from "@mui/material/styles";
-import { Box, useMediaQuery, TextField, Autocomplete, Button, IconButton, Typography, Stack } from '@mui/material';
-import { Search } from '@mui/icons-material';
-import LoginIcon from '@mui/icons-material/Login';
+import { Box, useMediaQuery, TextField, Autocomplete, Button, Typography } from '@mui/material';
+import { Search, SignalCellularNull } from '@mui/icons-material';
 import axios from 'axios';
 
 import Starfield from "../Components/Background/Starfield";
@@ -10,14 +9,15 @@ import Starfield from "../Components/Background/Starfield";
 import { SubjectMapProvider } from "../Hooks/useSubjectMapContext";
 import GraphView from '../Components/GraphView/GraphView';
 import SubjectCard from '../Components/Atoms/Card/SubjectCard';
-import Logo from '../Components/Atoms/Logo/Logo';
-import glassmorphismStyle from "../styles/glassmorphism";
+import HeaderDesktop from '../Components/Header/HeaderDesktop';
+import HeaderMobile from '../Components/Header/HeaderMobile';
 
 const AppContainer = styled(Box)(() => ({
 	position: "relative",
 	width: "100vw",
 	height: "100vh",
 	overflow: "hidden",
+	padding: "16px"
 }));
 
 const Background = styled(Starfield)(() => ({
@@ -29,30 +29,15 @@ const Background = styled(Starfield)(() => ({
 	height: "100%",
 }));
 
-const HeaderContainer = styled(Box)(({ theme }) => ({
-	...glassmorphismStyle(theme, "level2"),
+const HeaderContainer = styled(Box)(({ }) => ({
 	position: "relative",
 	top: 0,
 	zIndex: 1,
-
-	width: "calc(100% - 32px)",
-	margin: "16px",
-	borderRadius: "8px",
-
-	display: "flex",
-	alignItems: "center",
-	justifyContent: "space-between",
-	padding: "16px",
-}));
-
-const LogoText = styled(Typography)(({}) => ({
-	textShadow: '0px 0px 16px rgba(255, 255, 255, 0.5)',
-	display: 'inline',
+	marginBottom: "24px",
 }));
 
 const SearchBarContainer = styled(Box)(({ theme }) => ({
 	position: "relative",
-	left: "16px",
 	width: "33%",
 	minWidth: "400px",
 	zIndex: "999",
@@ -64,6 +49,7 @@ const SearchBarContainer = styled(Box)(({ theme }) => ({
 
 	[theme.breakpoints.down("sm")]: {
 		width: "100%",
+		minWidth: "0",
 		left: "0",
 		top: "0",
 		borderRadius: "0",
@@ -71,7 +57,7 @@ const SearchBarContainer = styled(Box)(({ theme }) => ({
 }));
 
 const StyledAutocomplete = styled(Autocomplete)(({ theme }) => ({
-	flex: 1, 
+	flex: 1,
 	display: "flex",
 	justifyContent: "center",
 	flexDirection: "column",
@@ -82,18 +68,28 @@ const StyledAutocomplete = styled(Autocomplete)(({ theme }) => ({
 	},
 }));
 
-const Footer = styled(Box)(() => ({
-	position: "absolute",
-	bottom: "0px",
+const EmptyGraphContainer = styled(Box)(({ theme }) => ({
 	width: "100%",
-
-	backgroundColor: "red",
-	height: "100px",
+	height: "100%",
+	overflow: "hidden",
+	marginTop: "20vh"
 }));
 
-function SubjectInfoGraph({ root, nodes, links }) {
-	const theme = useTheme();
-	const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
+const Footer = styled(Box)(({ theme }) => ({
+	position: "absolute",
+	bottom: 0,
+	zIndex: 1,
+	display: "flex",
+	justifyContent: "center",
+	alignItems: "center",
+	width: "100%",
+	padding: "16px",
+}));
+
+
+function SubjectInfoGraph({ isMobile, root, nodes, links }) {
+	console.log("subjectInfoGraph:", nodes, links, root);
 	return (<GraphView key={root} nodes={nodes} links={links} root={root} vertical={isMobile} interactive={!isMobile} />);
 }
 
@@ -101,15 +97,19 @@ const Home = ({ subjects }) => {
 	const [selectedSubject, setSelectedSubject] = useState(null);
 	const [data, setData] = useState({ links: [], nodes: [], root: null });
 
+	const theme = useTheme();
+	const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
 	const handleSubjectChange = (event, value) => {
-		setSelectedSubject(value ? value[0] : null);
+		setSelectedSubject(value ? value : null);
 	};
 
+
 	const handleSearchClick = async () => {
+		console.log("Selected subject:", selectedSubject);
 		if (selectedSubject) {
 			try {
-				const response = await axios.get(`/api/subject/${selectedSubject}`);
+				const response = await axios.get(`/api/subject/${selectedSubject[0]}`);
 
 				const formattedNodes = new Map(Object.entries(response.data.nodes).map(([index, subjectCode]) => [
 					subjectCode, {
@@ -126,7 +126,7 @@ const Home = ({ subjects }) => {
 					`l${parseInt(index, 10) + 1}`, { a: links[0], b: links[1] }
 				]));
 
-				setData({ links: formattedLinks, nodes: formattedNodes, root: selectedSubject });
+				setData({ links: formattedLinks, nodes: formattedNodes, root: selectedSubject[0] });
 			} catch (error) {
 				console.error("Error fetching subject data:", error);
 			}
@@ -138,54 +138,51 @@ const Home = ({ subjects }) => {
 			<AppContainer>
 				<Background />
 				<HeaderContainer>
-					<Logo />
-					<Stack 
-						direction="row" 
-						justifyContent="center" 
-						alignItems="center"
-						spacing={1}
-					>
-						<Typography variant="body2">
-							Para se manter atualizado sobre o sistema, faça o
-						</Typography>
-						<Button 
-							variant="contained"
-							href="login" 
-							style={{ borderRadius: 50 }}
-						>
-							<LogoText variant="h7">
-							✨Login✨
-							</LogoText>
-						</Button>
-					</Stack>
+					{isMobile ? <HeaderMobile /> : <HeaderDesktop />}
 				</HeaderContainer>
 				<SearchBarContainer>
 					<StyledAutocomplete
 						options={Object.entries(subjects)}
+						size="small"
+						value={selectedSubject}
 						getOptionLabel={([code, subject]) => `${code} - ${subject.name}`}
 						renderInput={(params) =>
 							<TextField {...params}
 								label="Selecionar matéria"
-								variant="outlined" />}
+								variant="outlined" 
+								sx={{textAlign: "left"}}
+								/>}
 						onChange={handleSubjectChange}
-					/>
+						/>
 					<Button
 						variant="contained"
 						color="primary"
 						onClick={handleSearchClick}
 						sx={{
-							height: "50px",
-							width: "40px !important",
+							height: "40px",
+							width: "40px",
 							borderRadius: "16px",
 						}}
 					>
 						<Search />
 					</Button>
 				</SearchBarContainer>
-				{data.nodes.size > 0 && data.links.size > 0 && data.root && (
-					<SubjectInfoGraph root={data.root} nodes={data.nodes} links={data.links} />
+				{console.log("Data:", data)}
+				{data.nodes.size > 0 && data.links.size > 0 && data.root ? (
+					<SubjectInfoGraph isMobile={isMobile} root={data.root} nodes={data.nodes} links={data.links} />
+				) : (
+					<EmptyGraphContainer>
+						<Typography variant="h6" align="center" sx={{ marginTop: "20px" }}>
+							Selecione uma matéria para visualizar a árvore de requisitos. <br/> Matérias sem requisitos cadastrados para o BCC não aparecem no seletor.
+						</Typography>
+					</EmptyGraphContainer>
 				)}
-				{/* <Footer /> */}
+				<Footer>
+					<Typography variant="body2" align="center" sx={{ color: "white" }}>
+						made with <span style={{ color: "red" }}>❤️</span> at 
+						<span style={{ color: "white", textShadow: '0px 0px 16px rgba(255, 255, 255, 0.5)', fontWeight:"600"}}> Aurora </span>
+					</Typography>
+				</Footer>
 			</AppContainer>
 		</SubjectMapProvider>
 	);
