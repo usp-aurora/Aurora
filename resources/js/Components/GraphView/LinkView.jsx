@@ -19,8 +19,8 @@ function LinkView({x1=0,y1=0,x2=10,y2=10,r=80}) {
 	y2 -= r*cy;
 	return (
 		<Link
-			x1={x1} y1={y1}
-			x2={x2} y2={y2}
+			x1={String(x1)} y1={String(y1)}
+			x2={String(x2)} y2={String(y2)}
 		/>
 	);
 }
