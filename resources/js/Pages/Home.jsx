@@ -56,7 +56,7 @@ const SearchBarContainer = styled(Box)(({ theme }) => ({
 	},
 }));
 
-const StyledAutocomplete = styled(Autocomplete)(({ theme }) => ({
+const StyledAutocomplete = styled(Autocomplete)(({ }) => ({
 	flex: 1,
 	display: "flex",
 	justifyContent: "center",
@@ -68,7 +68,7 @@ const StyledAutocomplete = styled(Autocomplete)(({ theme }) => ({
 	},
 }));
 
-const EmptyGraphContainer = styled(Box)(({ theme }) => ({
+const EmptyGraphContainer = styled(Box)(({ }) => ({
 	width: "100%",
 	height: "100%",
 	overflow: "hidden",
@@ -76,7 +76,7 @@ const EmptyGraphContainer = styled(Box)(({ theme }) => ({
 }));
 
 
-const Footer = styled(Box)(({ theme }) => ({
+const Footer = styled(Box)(({ }) => ({
 	position: "absolute",
 	bottom: 0,
 	zIndex: 1,
@@ -92,7 +92,7 @@ function SubjectInfoGraph({ isMobile, root, nodes, links }) {
 	return (<GraphView key={root} nodes={nodes} links={links} root={root} vertical={isMobile} interactive={!isMobile} />);
 }
 
-const Home = ({ subjects, user }) => {
+const Home = ({ subjects }) => {
 	const [selectedSubject, setSelectedSubject] = useState(null);
 	const [data, setData] = useState({ links: [], nodes: [], root: null });
 
@@ -102,7 +102,6 @@ const Home = ({ subjects, user }) => {
 	const handleSubjectChange = (event, value) => {
 		setSelectedSubject(value ? value : null);
 	};
-
 
 	const handleSearchClick = async () => {
 		if (selectedSubject) {
@@ -140,13 +139,12 @@ const Home = ({ subjects, user }) => {
 			}
 		}
 	};
-	console.log(user);
 	return (
 		<SubjectMapProvider subjectDataMap={subjects}>
 			<AppContainer>
 				<Background />
 				<HeaderContainer>
-					{isMobile ? <HeaderMobile user={user} /> : <HeaderDesktop user={user} />}
+					{isMobile ? <HeaderMobile /> : <HeaderDesktop />}
 				</HeaderContainer>
 				<SearchBarContainer>
 					<StyledAutocomplete
@@ -181,14 +179,17 @@ const Home = ({ subjects, user }) => {
 				) : (
 					<EmptyGraphContainer>
 						<Typography variant="h6" align="center" sx={{ marginTop: "20px" }}>
-							Selecione uma matéria para visualizar a árvore de requisitos. <br/> Matérias sem requisitos cadastrados para o BCC não aparecem no seletor.
+							Selecione uma matéria para visualizar a árvore de requisitos. 
+						</Typography>
+						<Typography variant="body2" align="center" sx={{ marginTop: "8px" }}>
+							Matérias sem requisitos cadastrados para o BCC não aparecem no seletor.
 						</Typography>
 					</EmptyGraphContainer>
 				)}
 				<Footer>
 					<Typography variant="body2" align="center" sx={{ color: "white" }}>
-						made with <span style={{ color: "red" }}>❤️</span> at 
-						<span style={{ color: "white", textShadow: '0px 0px 16px rgba(255, 255, 255, 0.5)', fontWeight:"600"}}> Aurora </span>
+						feito com <span style={{ color: "red" }}>❤️</span> por 
+						<span style={{ color: "white", textShadow: '0px 0px 16px rgba(255, 255, 255, 0.5)', fontWeight:"900"}}> AURORA </span>
 					</Typography>
 				</Footer>
 			</AppContainer>

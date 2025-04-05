@@ -2,8 +2,7 @@ import React from 'react';
 import { Box, Stack, Typography } from '@mui/material/';
 import { styled } from "@mui/material/styles";
 import Logo from '../Atoms/Logo/Logo';
-import LoginButton from './LoginButton';
-import LoginText from './LoginText';
+import HeaderText from './HeaderText';
 
 
 const HeaderContainer = styled(Box)({
@@ -14,15 +13,14 @@ const HeaderContainer = styled(Box)({
     height: "24px",
 });
 
-const Header = ({user, ...props}) => {
+const Header = (props) => {
     return (
         <Stack spacing={1} direction="column" alignItems="center">
             
             <HeaderContainer {...props}>
                 <Logo />
-                {!user && <LoginButton />}
             </HeaderContainer>
-            <LoginText user={user} />
+            <HeaderText/>
         </Stack>
     );
 };

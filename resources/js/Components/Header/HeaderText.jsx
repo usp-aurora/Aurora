@@ -6,13 +6,10 @@ const LoginTextTypography = styled(Typography)(({ theme }) => ({
     ...theme.typography.p,
 }));
 
-const LoginText = ({user}) => {
+const LoginText = () => {
     return (
 		<LoginTextTypography>
-			{user.name
-				? `Bem vindo, ${user.name.split(" ")[0]}! Vamos te avisar assim que o Aurora estiver completo!`
-				: "Entre com seu e-mail USP para ser avisado assim que o Aurora estiver pronto!"
-			}	
+			Essa é um prévia do que vem por aí! Fique de olho nas próximas atualizações.  
 		</LoginTextTypography>
     );
 };
