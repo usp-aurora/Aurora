@@ -127,7 +127,7 @@ function GraphView({ nodes, links, root, interactive = false, vertical = false, 
 		));
 
 		touchMoveListener.current = addEventListener("touchmove", handleTouch);
-		touchEndListener.current = addEventListener("touchmove", handleTouch);
+		touchEndListener.current = addEventListener("touchend", handleTouch); 
 
 		return function () {
 			stopUpdate(animationRequest);
