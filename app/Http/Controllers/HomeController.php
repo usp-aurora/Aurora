@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Inertia\Inertia;
 use App\Http\Controllers\SubjectController;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Subject; 
 use App\Models\Requirement; 
 
@@ -24,9 +25,12 @@ class HomeController extends Controller
                 ],
             ];
         });
+        
+        $user = Auth::user();
 
         return Inertia::render('Home', [
             'subjects' => $mappedSubjects,
+            'user' => $user
         ]);
 
     }

@@ -13,13 +13,13 @@ const HeaderContainer = styled(Box)({
     height: "24px",
 });
 
-const Header = (props) => {
+const Header = ({user, ...props}) => {
     return (
         <HeaderContainer {...props}>
             <Logo sx={{marginRight: "32px"}}/>
             <Stack spacing={4} direction="row" alignItems="center">
-                <LoginText />
-                <LoginButton />
+                <LoginText user={user} />
+                {!user && <LoginButton />}
             </Stack>
         </HeaderContainer>
     );

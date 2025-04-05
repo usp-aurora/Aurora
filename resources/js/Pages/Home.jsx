@@ -92,7 +92,7 @@ function SubjectInfoGraph({ isMobile, root, nodes, links }) {
 	return (<GraphView key={root} nodes={nodes} links={links} root={root} vertical={isMobile} interactive={!isMobile} />);
 }
 
-const Home = ({ subjects }) => {
+const Home = ({ subjects, user }) => {
 	const [selectedSubject, setSelectedSubject] = useState(null);
 	const [data, setData] = useState({ links: [], nodes: [], root: null });
 
@@ -140,13 +140,13 @@ const Home = ({ subjects }) => {
 			}
 		}
 	};
-
+	console.log(user);
 	return (
 		<SubjectMapProvider subjectDataMap={subjects}>
 			<AppContainer>
 				<Background />
 				<HeaderContainer>
-					{isMobile ? <HeaderMobile /> : <HeaderDesktop />}
+					{isMobile ? <HeaderMobile user={user} /> : <HeaderDesktop user={user} />}
 				</HeaderContainer>
 				<SearchBarContainer>
 					<StyledAutocomplete

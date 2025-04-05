@@ -14,14 +14,15 @@ const HeaderContainer = styled(Box)({
     height: "24px",
 });
 
-const Header = (props) => {
+const Header = ({user, ...props}) => {
     return (
         <Stack spacing={1} direction="column" alignItems="center">
+            
             <HeaderContainer {...props}>
                 <Logo />
-                <LoginButton />
+                {!user && <LoginButton />}
             </HeaderContainer>
-            <LoginText />
+            <LoginText user={user} />
         </Stack>
     );
 };
