@@ -146,9 +146,7 @@ class Requirement extends Model
 
         $query = collect($fakeData)->map(function ($row) {
             return "SELECT  '{$row['subject_code']}' as subject_code, 
-                            -- {$row['subject_version']} as subject_version, 
-                            '{$row['required_subject_code']}' as required_subject_code, 
-                            -- {$row['required_subject_version']} as required_subject_version
+                            '{$row['required_subject_code']}' as required_subject_code
                             ";
         })->implode(' UNION ALL ');
 

@@ -54,7 +54,7 @@ class Subject extends Model
 
         $query = collect($fakeData)->map(function ($row) {
             return "SELECT '{$row['code']}' as code,
-                            '{$row['name']}' as name,
+                            '{$row['name']}' as name
                             ";
         })->implode(' UNION ALL ');
 
