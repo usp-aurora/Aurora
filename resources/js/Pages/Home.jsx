@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { styled, useTheme } from "@mui/material/styles";
 import { Box, useMediaQuery, TextField, Autocomplete, Button, Typography } from '@mui/material';
-import { Search, SignalCellularNull } from '@mui/icons-material';
+import { Search } from '@mui/icons-material';
 import axios from 'axios';
 
 import Starfield from "../Components/Background/Starfield";
