@@ -107,22 +107,32 @@ const Home = ({ subjects }) => {
 	const handleSearchClick = async () => {
 		if (selectedSubject) {
 			try {
+				const subjectSet = new Set(Object.keys(subjects));
+
 				const response = await axios.get(`/api/subject/${selectedSubject[0]}`);
 
-				const formattedNodes = new Map(Object.entries(response.data.nodes).map(([index, subjectCode]) => [
-					subjectCode, {
-						code: subjectCode,
-						content: (
-							<SubjectCard
-								subjectCode={subjectCode}
-							/>
-						)
-					}
-				]));
+				const formattedNodes = new Map(
+					Object.entries(response.data.nodes)
+						.filter(([_, subjectCode]) => subjectSet.has(subjectCode))
+						.map(([index, subjectCode]) => [
+							subjectCode, {
+								code: subjectCode,
+								content: (
+									<SubjectCard
+										subjectCode={subjectCode}
+									/>
+								)
+							}
+						])
+				);
 
-				const formattedLinks = new Map(Object.entries(response.data.links).map(([index, links]) => [
-					`l${parseInt(index, 10) + 1}`, { a: links[0], b: links[1] }
-				]));
+				const formattedLinks = new Map(
+					Object.entries(response.data.links)
+						.filter(([_, links]) => subjectSet.has(links[0]) && subjectSet.has(links[1]))
+						.map(([index, links]) => [
+							`l${parseInt(index, 10) + 1}`, { a: links[0], b: links[1] }
+						])
+				);
 
 				setData({ links: formattedLinks, nodes: formattedNodes, root: selectedSubject[0] });
 			} catch (error) {
