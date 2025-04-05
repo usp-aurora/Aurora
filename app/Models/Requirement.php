@@ -40,7 +40,7 @@ class Requirement extends Model
                             verdis,
                             coddisreq,
                             verdisreq,
-                            ROW_NUMBER() OVER (
+                            DENSE_RANK() OVER (
                                 PARTITION BY coddis
                                 ORDER BY verdis DESC
                             ) AS row_num_dis
@@ -55,7 +55,7 @@ class Requirement extends Model
             }, 'dummy');
     
         }
-
+        
         return $query;
     }
 

@@ -89,7 +89,6 @@ const Footer = styled(Box)(({ theme }) => ({
 
 
 function SubjectInfoGraph({ isMobile, root, nodes, links }) {
-	console.log("subjectInfoGraph:", nodes, links, root);
 	return (<GraphView key={root} nodes={nodes} links={links} root={root} vertical={isMobile} interactive={!isMobile} />);
 }
 
@@ -106,7 +105,6 @@ const Home = ({ subjects }) => {
 
 
 	const handleSearchClick = async () => {
-		console.log("Selected subject:", selectedSubject);
 		if (selectedSubject) {
 			try {
 				const response = await axios.get(`/api/subject/${selectedSubject[0]}`);
@@ -142,6 +140,7 @@ const Home = ({ subjects }) => {
 				</HeaderContainer>
 				<SearchBarContainer>
 					<StyledAutocomplete
+						id="subject-selector"
 						options={Object.entries(subjects)}
 						size="small"
 						value={selectedSubject}
@@ -167,7 +166,6 @@ const Home = ({ subjects }) => {
 						<Search />
 					</Button>
 				</SearchBarContainer>
-				{console.log("Data:", data)}
 				{data.nodes.size > 0 && data.links.size > 0 && data.root ? (
 					<SubjectInfoGraph isMobile={isMobile} root={data.root} nodes={data.nodes} links={data.links} />
 				) : (

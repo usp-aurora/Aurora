@@ -11,7 +11,6 @@ class HomeController extends Controller
 {
     public function index()
     {
-
         $subjectCodes = Requirement::distinct()->pluck('subject_code');
         $requiredSubjectCodes = Requirement::distinct()->pluck('required_subject_code');
         $uniqueSubjectsCodes = $subjectCodes->merge($requiredSubjectCodes)->unique();
@@ -34,12 +33,18 @@ class HomeController extends Controller
 
     public function getSubjectRequirements($subjectCode)
     {
+        $allRequirements = Requirement::all();
+
+        $forwardLookup = $allRequirements->groupBy('subject_code');
+        $backwardLookup = $allRequirements->groupBy('required_subject_code');
+
         $visited = [];
-        $backwardRequirements = $this->getRequirementsBackwardRecursive($subjectCode, $visited);
+
+        $backwardRequirements = $this->getRequirementsBackward($subjectCode, $backwardLookup, $visited);
         if (($key = array_search($subjectCode, $visited)) !== false) {
             unset($visited[$key]);
         }
-        $forwardRequirements = $this->getRequirementsForwardRecursive($subjectCode, $visited);
+        $forwardRequirements = $this->getRequirementsForward($subjectCode, $forwardLookup, $visited);
 
         $requirements = array_merge($backwardRequirements, $forwardRequirements);
 
@@ -49,7 +54,7 @@ class HomeController extends Controller
         ]);
     }
 
-    private function getRequirementsForwardRecursive($subjectCode, &$visited)
+    private function getRequirementsForward($subjectCode, $forwardLookup, &$visited)
     {
         if (in_array($subjectCode, $visited)) {
             return [];
@@ -57,18 +62,18 @@ class HomeController extends Controller
 
         $visited[] = $subjectCode;
 
-        $requirements = Requirement::where('subject_code', $subjectCode)->get();
+        $requirements = $forwardLookup->get($subjectCode, collect());
         $result = [];
 
         foreach ($requirements as $requirement) {
             $result[] = [$requirement->required_subject_code, $subjectCode];
-            $result = array_merge($result, $this->getRequirementsForwardRecursive($requirement->required_subject_code, $visited));
+            $result = array_merge($result, $this->getRequirementsForward($requirement->required_subject_code, $forwardLookup, $visited));
         }
 
         return $result;
     }
 
-    private function getRequirementsBackwardRecursive($subjectCode, &$visited = [])
+    private function getRequirementsBackward($subjectCode, $backwardLookup, &$visited)
     {
         if (in_array($subjectCode, $visited)) {
             return [];
@@ -76,13 +81,12 @@ class HomeController extends Controller
 
         $visited[] = $subjectCode;
 
-        $requirements = Requirement::where('required_subject_code', $subjectCode)->get();
-        
+        $requirements = $backwardLookup->get($subjectCode, collect());
         $result = [];
 
         foreach ($requirements as $requirement) {
             $result[] = [$subjectCode, $requirement->subject_code];
-            $result = array_merge($result, $this->getRequirementsBackwardRecursive($requirement->subject_code, $visited));
+            $result = array_merge($result, $this->getRequirementsBackward($requirement->subject_code, $backwardLookup, $visited));
         }
 
         return $result;
