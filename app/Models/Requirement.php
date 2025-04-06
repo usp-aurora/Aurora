@@ -12,30 +12,17 @@ class Requirement extends Model
 
     public function newQuery()
     {
-        if(!env('JUPITER_DB_HOST')) {
+        if (!env('JUPITER_DB_HOST')) {
             $query = parent::newQuery()->fromSub($this->fakeRequisitionsQuery(), 'subtable');
-        }
-        else{
+        } else {
             $this->connection = "jupiter";
             $query = parent::newQuery()->fromSub(function ($query) {
                 $query->selectRaw("
                     coddis AS subject_code,
                     coddisreq AS required_subject_code
                 ")
-                ->fromSub(function ($subQuery) {
-                    $subQuery->selectRaw("
-                        coddis,
-                        verdis,
-                        coddisreq,
-                        verdisreq,
-                        row_num_dis,
-                        ROW_NUMBER() OVER (
-                            PARTITION BY coddis, coddisreq 
-                            ORDER BY verdisreq DESC
-                        ) AS row_num_req
-                    ")
-                    ->fromSub(function ($innerQuery) {
-                        $innerQuery->selectRaw("
+                    ->fromSub(function ($subQuery) {
+                        $subQuery->selectRaw("
                             coddis,
                             verdis,
                             coddisreq,
@@ -43,28 +30,35 @@ class Requirement extends Model
                             DENSE_RANK() OVER (
                                 PARTITION BY coddis
                                 ORDER BY verdis DESC
-                            ) AS row_num_dis
+                            ) AS subject_version_rank,
+                            DENSE_RANK() OVER (
+                                PARTITION BY coddis, verdis, coddisreq
+                                ORDER BY verdisreq DESC
+                            ) AS requisition_version_rank,
+                            RANK() OVER (
+                                PARTITION BY coddis, verdis
+                                ORDER BY numgrpreq DESC 
+                            ) AS group_rank
                         ")
-                        ->from('REQUISITOGR')
-                        ->where('codcur', '=', 45052) // Curso de Ciência da Computação
-                        ->where('codhab', '=', 1);
-                    }, 'filtered_course')
-                    ->where('filtered_course.row_num_dis', '=', 1);
-                }, 'filtered_dis_version')
-                ->where('filtered_dis_version.row_num_req', '=', 1);
+                            ->from('REQUISITOGR')
+                            ->where('codcur', '=', 45052) // Curso de Ciência da Computação
+                            ->where('codhab', '=', 1);
+                    }, 'subquery')
+                    ->where('subquery.subject_version_rank', '=', 1)
+                    ->where('subquery.requisition_version_rank', '=', 1)
+                    ->where('subquery.group_rank', '=', 1);
             }, 'dummy');
-    
         }
-        
+
         return $query;
     }
 
-    
+
     private function fakeRequisitionsQuery()
     {
         $fakeRequirements = [
-            'AAA0000' => null, 
-            'AAA0001' => null, 
+            'AAA0000' => null,
+            'AAA0001' => null,
             'AAB0000' => ['AAA0000'],
             'AAB0001' => ['AAB0000'],
             'AAC0000' => ['AAA0001'],
@@ -90,14 +84,14 @@ class Requirement extends Model
             'ABB0001' => ['AAA0000'],
             'ABA0000' => ['AAB0000', 'ABC0000'],
             'ABA0001' => ['ABC0001', 'AAC0001'],
-            
+
             'ACC0000' => ['AAB0001'],
             'ACC0001' => null,
             'ACB0000' => ['AAB0001', 'AAC0000'],
             'ACB0001' => ['AAB0001', 'AAC0001'],
             'ACA0000' => ['AAB0001', 'ABC0000'],
             'ACA0001' => ['ABC0000', 'AAC0001'],
-            
+
             'BAC0000' => ['BBA0000', 'BBC0000'],
             'BAC0001' => ['BBA0000', 'BBC0001'],
             'BAB0000' => ['BBA0000', 'BAC0000'],
@@ -126,7 +120,7 @@ class Requirement extends Model
             'CBC0000' => ['CCA0001', 'CCB0000'],
             'CBC0001' => ['CCA0000', 'ABC0001'],
         ];
-    
+
         $fakeData = [];
         for ($i = 0; $i < count($fakeRequirements); $i++) {
             $subject_code = array_keys($fakeRequirements)[$i];
