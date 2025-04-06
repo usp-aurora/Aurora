@@ -78,6 +78,7 @@ const EmptyGraphContainer = styled(Box)(({ }) => ({
 
 const Footer = styled(Box)(({ }) => ({
 	position: "absolute",
+	left: 0,
 	bottom: 0,
 	zIndex: 1,
 	display: "flex",
