@@ -147,7 +147,10 @@ function GraphView({ nodes, links, root, interactive = false, vertical = false, 
 			onTouchStart={handleTouch}
 			ref={outerDiv}
 		>
-			<LinkContainerView>
+			<LinkContainerView
+				viewBox={`0 0 ${size.width} ${size.height}`}
+				preserveAspectRatio="xMidYMid meet"
+			>
 				<filter>
 					<feDropShadow dx="0" dy="0" stdDeviation="2" floodColor="white" />
 				</filter>
