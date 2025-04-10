@@ -151,9 +151,11 @@ function GraphView({ nodes, links, root, interactive = false, vertical = false, 
 				viewBox={`0 0 ${size.width} ${size.height}`}
 				preserveAspectRatio="xMidYMid meet"
 			>
-				<filter>
-					<feDropShadow dx="0" dy="0" stdDeviation="2" floodColor="white" />
-				</filter>
+				<defs>
+					<filter id="glow">
+						<feDropShadow dx="0" dy="0" stdDeviation="2" floodColor="white" />
+					</filter>
+				</defs>
 				{LinkViews}
 			</LinkContainerView>
 			<NodeContainerView>
