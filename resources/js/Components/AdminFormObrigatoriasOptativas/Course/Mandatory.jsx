@@ -34,9 +34,9 @@ const AccordionSummaryStyled = styled(AccordionSummary)({
   alignItems: "center",
   justifyContent: "space-between",
   width: "100%",
-  minHeight: "40px", // 🔥 Mantém a altura fixa ao expandir
+  minHeight: "40px", 
   "&.Mui-expanded": {
-    minHeight: "40px", // 🔥 Mantém a altura fixa ao expandir
+    minHeight: "40px", 
   },
 });
 
@@ -46,7 +46,7 @@ const FixedContainer = styled(Box)({
   position: "absolute",
   left: "12px",
   top: "50%",
-  transform: "translateY(-50%)", // 🔥 Mantém alinhado verticalmente
+  transform: "translateY(-50%)", 
 });
 
 

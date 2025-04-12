@@ -1,13 +1,21 @@
-import Mandatory from '../../Components/AdminFormObrigatoriasOptativas/Course/Mandatory';
-import Header from '../../Components/Header/Header';
+import Course from '../../Components/AdminFormObrigatoriasOptativas/Course/Course';
 
 export default function App() {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', backgroundColor: 'lightblue' }}>
-      <div>
-        <Header />
+    <div style={{ 
+      display: 'flex', 
+      flexDirection: 'column', 
+      height: '100vh', 
+      justifyContent: 'center', 
+      alignItems: 'center', 
+      opacity: 0.75, 
+      background: 'var(--color-escala-de-cinza-cinza-3, #212121)', 
+      backgroundColor: 'lightblue',
+    }}>
+      <div style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <Course components={[]} />
       </div>
-      <Mandatory components={[]} />
     </div>
   );
 }
+
