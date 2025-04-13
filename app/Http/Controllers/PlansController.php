@@ -97,7 +97,7 @@ class PlansController extends Controller
         $plans = Plan::where('user_id', 1)->get();
 
         $plans_subjects_grouped_by_semester = $plans->groupBy('semester')->map(function ($semester) {
-            return $semester->map(function ($plan) {
+            $formatted_semester = $semester->map(function ($plan) {
                 return [
                     'name' => $plan->subject->name,
                     'code' => $plan->subject->code,
@@ -105,10 +105,23 @@ class PlansController extends Controller
                     'work_credits' => $plan->subject->work_credits,
                 ];
             });
+            $formatted_semester['total_credits'] = $formatted_semester->sum('lecture_credits') + $formatted_semester->sum('work_credits');
+            return $formatted_semester;
         });
 
-        // dd($plans_subjects_grouped_by_semester);
+        [$completed_semesters, $planned_semesters] = $plans_subjects_grouped_by_semester->split(2);
+        // dd($completed_semesters, $planned_semesters);
 
-        return pdf()->view('exportTemplate', [ 'plans_subjects_grouped_by_semester' => $plans_subjects_grouped_by_semester ])->name('export.pdf');
+        $half = $plans_subjects_grouped_by_semester->count() / 2;
+        [$completed_semesters, $planned_semesters] = $plans_subjects_grouped_by_semester->sortKeys()->chunk($half);
+        // dd($completed_semesters, $planned_semesters);
+
+        return pdf()->view('exportTemplate', [ 
+            'user_name' => "Daiki Teruya Inoue",
+            'user_code' => 14565201,
+            'completed_semesters' => $completed_semesters, 
+            'planned_semesters' => $planned_semesters 
+        ])->name('export.pdf');
+        // return view('exportTemplate', [ 'completed_semesters' => $completed_semesters, 'planned_semesters' => $planned_semesters ]);
     }
 }
