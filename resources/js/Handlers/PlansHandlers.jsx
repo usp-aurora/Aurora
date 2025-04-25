@@ -3,23 +3,33 @@ import axios from 'axios';
 async function saveWithServer(unsavedPlans) {
 	try {
 		const response = await axios.post('/api/plans/sync', unsavedPlans);
-
-		if (!(response.status === 200)) {
+		
+		if (response.status === 200) {
+			return true
+		}
+		else{
 			console.error('Server synchronization failed:', response.data);
 		}
 	} catch (error) {
 		console.error('Error communicating with the server:', error);
 	}
+	return false;
 }
 
 async function saveWithLocalStorage(plans) {
-	localStorage.setItem('plans', JSON.stringify(plans));
+    try {
+        const serializedPlans = JSON.stringify(plans);
+        localStorage.setItem('plans', serializedPlans);
+        return true;
+    } catch (error) {
+        console.error('Failed to save plans to localStorage:', error);
+        return false;
+    }
 }
 
 export async function savePlans(user, lastSavedPlans, currentPlans) {
 	if(!user) {
-		saveWithLocalStorage(currentPlans);
-		return;
+		return await saveWithLocalStorage(currentPlans);
 	}
 	
 	const unsavedPlans = [];
@@ -44,5 +54,5 @@ export async function savePlans(user, lastSavedPlans, currentPlans) {
 		});
 	});
 
-	await saveWithServer(unsavedPlans);
+	return await saveWithServer(unsavedPlans);
 }

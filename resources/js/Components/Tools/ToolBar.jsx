@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { styled } from '@mui/material';
 import { Typography } from "@mui/material";
+import CircularProgress from '@mui/material/CircularProgress';
 
 import Stack from '@mui/material/Stack';
 import UndoIcon from '@mui/icons-material/Undo';
@@ -34,7 +35,7 @@ const StyledText = styled(Typography)(({ theme }) => ({
 }));
 
 function ToolBar({ showCurriculum, toggleRecommendedView }) {
-    const { undo, redo } = usePlansContext();
+    const { undo, redo, isSaved } = usePlansContext();
 
     useEffect(() => {
         function handleKeyDown(event) {
@@ -60,6 +61,7 @@ function ToolBar({ showCurriculum, toggleRecommendedView }) {
             </Stack>
             <StyledText> {showCurriculum ? "Você está vendo a grade obrigatória recomendada" : "Arraste uma disciplina para adicioná-la ou removê-la do período desejado"} </StyledText>
             <Stack spacing={1} direction="row">
+                {!isSaved && <CircularProgress size={20} color="inherit" />}
                 {/* <IconWrapper Icon={VisibilityOutlinedIcon} onClick={toggleRecommendedView} /> */}
                 {/* <IconWrapper Icon={FileDownloadOutlinedIcon} />  */}
             </Stack>

@@ -1,8 +1,8 @@
-import { createContext, useContext, useCallback, useState, useMemo, useEffect, useRef } from 'react';
+import { createContext, useContext, useCallback, useState, useMemo, useEffect } from 'react';
 import { savePlans } from '../Handlers/PlansHandlers';
 
 const STATES_LIMIT = 35;
-const SYNC_INTERVAL = 10000; 
+const SYNC_INTERVAL = 1000; 
 
 const PlansContext = createContext();
 
@@ -19,8 +19,8 @@ function PlansProvider({ children, initialPlans, user }) {
 
 	const [plansHistory, _setPlansHistory] = useState(initialPlans ? [{ state: initialPlans, action: null }] : []);
 	const [historyPointer, _setHistoryPointer] = useState(initialPlans ? 0 : -1);
-	const lastSavedPlans = useRef([]);
-	const isSaved = useRef(false);
+	const [lastSavedPlans, setLastSavedPlans] = useState(initialPlans);
+	const [isSaved, setIsSaved] = useState(true);
 
 	const plansSet = useMemo(() => new Set(plans.flatMap(semester => semester.subjects.map(subject => subject.code))), [plans]);
 
@@ -53,14 +53,14 @@ function PlansProvider({ children, initialPlans, user }) {
 
 			_setHistoryPointer(prev => Math.min(prev + 1, STATES_LIMIT - 1));
 
-			if (isSaved.current === true) {
-				isSaved.current = false;
-				lastSavedPlans.current = prevState;
+			if (isSaved) {
+				setIsSaved(false);
+				setLastSavedPlans(prevState);
 			}
 			return evaluatedState;
 		});
 
-	}, [historyPointer]);
+	}, [historyPointer, isSaved]);
 
 	/**
 	 * Reverts to the current state in history. 
@@ -76,11 +76,11 @@ function PlansProvider({ children, initialPlans, user }) {
 	 */
 	function undo() {
 		if (historyPointer > 0) {
-			const prevState = plansHistory[historyPointer - 1];
 			const newPointer = historyPointer - 1;
+			const prevState = plansHistory[newPointer];
 			_setHistoryPointer(newPointer);
 			_setPlans(prevState.state);
-			return plansHistory[newPointer].action;
+			return prevState.action;
 		}
 		return null;
 	}
@@ -92,21 +92,24 @@ function PlansProvider({ children, initialPlans, user }) {
 	 */
 	function redo() {
 		if (historyPointer < plansHistory.length - 1) {
-			const nextState = plansHistory[historyPointer + 1];
-			_setHistoryPointer(historyPointer + 1);
+			const newPointer = historyPointer + 1;
+			const nextState = plansHistory[newPointer];
+			_setHistoryPointer(newPointer);
 			_setPlans(nextState.state);
 			return nextState.action;
 		}
 		return null;
 	}
 
-	const savePendingPlans = useCallback(async function(){
-		if (isSaved.current) return;
+	const savePendingPlans = useCallback(async function() {
+		if (isSaved) return;
 
-		await savePlans(user, lastSavedPlans.current, plans);
-		lastSavedPlans.current = plans;
-		isSaved.current = true;
-	}, [user, plans]);
+		const success = await savePlans(user, lastSavedPlans, plans);
+		if (success) {
+			setLastSavedPlans(plans);
+			setIsSaved(true);
+		}
+	}, [user, plans, isSaved, lastSavedPlans]);
 
 	useEffect(() => {
 		const intervalId = setInterval(savePendingPlans, SYNC_INTERVAL);
@@ -119,7 +122,7 @@ function PlansProvider({ children, initialPlans, user }) {
 		}
 
 		function handleBeforeUnload(e) {
-			if (!isSaved.current) {
+			if (!isSaved) {
 				e.preventDefault();
 				e.returnValue = ''; 
 			}
@@ -134,11 +137,11 @@ function PlansProvider({ children, initialPlans, user }) {
 			window.removeEventListener('keydown', handleKeyDown);
 			window.removeEventListener('beforeunload', handleBeforeUnload);
 		};
-	}, [savePendingPlans]);
+	}, [savePendingPlans, isSaved]);
 
 
 	return (
-		<PlansContext.Provider value={{ plans, plansSet, updatePlans, commitPlans, restoreCurrentPlans, undo, redo }}>
+		<PlansContext.Provider value={{ plans, plansSet, updatePlans, commitPlans, restoreCurrentPlans, undo, redo, isSaved }}>
 			{children}
 		</PlansContext.Provider>
 	);

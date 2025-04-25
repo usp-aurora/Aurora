@@ -11,7 +11,7 @@ import Semesters from "../Components/Semesters/Semesters";
 import SubjectPickerDesktop from "../Components/SubjectPicker/SubjectPickerDesktop";
 import SubjectPickerMobile from "../Components/SubjectPicker/SubjectPickerMobile";
 
-import MainTools from '../Components/Tools/MainTools.jsx';
+import ToolBar from '../Components/Tools/ToolBar.jsx';
 import useHistoryState from "../Hooks/useHistoryState";
 // import usePlansManager from '../Hooks/newPlansManager.jsx';
 import useSubjectDataMap from '../Hooks/useSubjectDataMap.jsx';
@@ -42,11 +42,11 @@ const ContentContainer = styled(Box)(({ theme }) => ({
 const Home = ({ groups, initialPlans, subjects, user }) => {
     const [isRecommendedView, setRecommendedView] = useState(false);
 
-    // const [plans, updatePlans, pushPlans, restoreCurrentPlans, undo, redo] = useHistoryState(initialPlans);
+    // const [plans, updatePlans, pushPlans, restoreCurrentPlans, undo, redo] = useHistoryState(plans);
     
     // const [subjectDataMap, plannedSubjects, updateSubject, bulkUpdateSubjects] = useSubjectDataMap(groups);
 
-    // usePlansManager(user, initialPlans, defaultPlans, pushPlans, subjectDataMap, bulkUpdateSubjects);
+    // usePlansManager(user, plans, defaultPlans, pushPlans, subjectDataMap, bulkUpdateSubjects);
 
     // /**
     //  * Applies an undo or redo action and updates the subject semester accordingly.
@@ -69,7 +69,6 @@ const Home = ({ groups, initialPlans, subjects, user }) => {
         <PlansProvider initialPlans={initialPlans} user={user}>
         <SubjectInfoProvider>
         <SubjectPickerProvider>
-            
                     <DragAndDropProvider disabled={isRecommendedView}>
                         <AppContainer>
                             <SubjectInfo />
@@ -83,12 +82,10 @@ const Home = ({ groups, initialPlans, subjects, user }) => {
                                     <Stack spacing={{ xs: 0, sm: 2 }} direction="row" sx={{ width: "100%", height: "100%" }}>
                                         <Stack spacing={{ xs: 1, sm: 2 }} sx={{ width: { xs: "100%", sm: "64%" } }}>
                                             <CompletionBar />
-                                            {/* <MainTools
-                                                undo={() => applyHistoryAction(undo)}
-                                                redo={() => applyHistoryAction(redo)}
+                                            <ToolBar
                                                 isRecommendedView={isRecommendedView}
-                                                toggleCurriculum={() => setShowCurriculum(prev => !prev)}
-                                            /> */}
+                                                toggleRecommendedView={() => setRecommendedView(prev => !prev)}
+                                            />
                                             <Semesters
                                                 isRecommendedView={isRecommendedView}
                                             />
