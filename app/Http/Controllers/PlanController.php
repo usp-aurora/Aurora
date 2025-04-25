@@ -70,7 +70,7 @@ class PlanController extends Controller
                         'subject_code' => $newPlan->subject_id,
                         'action' => 'created',
                     ];
-                } elseif ($existingPlan && isset($change['id'])) {
+                } elseif ($existingPlan && isset($change['id']) && !isset($change['semester'])) {
                     $this->destroy($change['id']);
 
                     $changedPlans[] = [

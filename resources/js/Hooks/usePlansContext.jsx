@@ -1,16 +1,28 @@
-import { createContext, useContext, useCallback, useState, useMemo, useEffect } from 'react';
-
+import { createContext, useContext, useCallback, useState, useMemo, useEffect, useRef } from 'react';
+import { savePlans } from '../Handlers/PlansHandlers';
 
 const STATES_LIMIT = 35;
+const SYNC_INTERVAL = 10000; 
 
 const PlansContext = createContext();
 
-function PlansProvider({ children, initialPlans }) {
-	const [plans, _setPlans] = useState(initialPlans);
+function PlansProvider({ children, initialPlans, user }) {
+	const [plans, _setPlans] = useState(() => {
+		if (!user) {
+			const storedPlans = localStorage.getItem('plans');
+			if (storedPlans) {
+				return JSON.parse(storedPlans);
+			}
+		}
+		return initialPlans;
+	});
+
 	const [plansHistory, _setPlansHistory] = useState(initialPlans ? [{ state: initialPlans, action: null }] : []);
 	const [historyPointer, _setHistoryPointer] = useState(initialPlans ? 0 : -1);
+	const lastSavedPlans = useRef([]);
+	const isSaved = useRef(false);
 
-    const plansSet = useMemo(() => new Set(plans.flatMap(semester => semester.subjects.map(subject => subject.code))), [plans]);
+	const plansSet = useMemo(() => new Set(plans.flatMap(semester => semester.subjects.map(subject => subject.code))), [plans]);
 
 	/**
 	 * Updates the plans state locally without modifying history.
@@ -40,15 +52,21 @@ function PlansProvider({ children, initialPlans }) {
 			});
 
 			_setHistoryPointer(prev => Math.min(prev + 1, STATES_LIMIT - 1));
+
+			if (isSaved.current === true) {
+				isSaved.current = false;
+				lastSavedPlans.current = prevState;
+			}
 			return evaluatedState;
 		});
+
 	}, [historyPointer]);
 
 	/**
 	 * Reverts to the current state in history. 
 	 */
 	function restoreCurrentPlans() {
-		return updatePlans(history[historyPointer].state);
+		return updatePlans(plansHistory[historyPointer].state);
 	}
 
 	/**
@@ -58,10 +76,11 @@ function PlansProvider({ children, initialPlans }) {
 	 */
 	function undo() {
 		if (historyPointer > 0) {
-			const prevState = history[historyPointer - 1];
-			_setHistoryPointer(historyPointer - 1);
+			const prevState = plansHistory[historyPointer - 1];
+			const newPointer = historyPointer - 1;
+			_setHistoryPointer(newPointer);
 			_setPlans(prevState.state);
-			return history[historyPointer].action;
+			return plansHistory[newPointer].action;
 		}
 		return null;
 	}
@@ -72,14 +91,50 @@ function PlansProvider({ children, initialPlans }) {
 	 * @returns {any | null} - The action associated with the redone state, or null if no redo is possible.
 	 */
 	function redo() {
-		if (historyPointer + 1 < history.length) {
-			const nextState = history[historyPointer + 1];
+		if (historyPointer < plansHistory.length - 1) {
+			const nextState = plansHistory[historyPointer + 1];
 			_setHistoryPointer(historyPointer + 1);
 			_setPlans(nextState.state);
 			return nextState.action;
 		}
 		return null;
 	}
+
+	const savePendingPlans = useCallback(async function(){
+		if (isSaved.current) return;
+
+		await savePlans(user, lastSavedPlans.current, plans);
+		lastSavedPlans.current = plans;
+		isSaved.current = true;
+	}, [user, plans]);
+
+	useEffect(() => {
+		const intervalId = setInterval(savePendingPlans, SYNC_INTERVAL);
+
+		function handleKeyDown(e) {
+			if (e.ctrlKey && e.key === 's') {
+				e.preventDefault();
+				savePendingPlans();
+			}
+		}
+
+		function handleBeforeUnload(e) {
+			if (!isSaved.current) {
+				e.preventDefault();
+				e.returnValue = ''; 
+			}
+		}
+		
+		window.addEventListener('keydown', handleKeyDown);
+		window.addEventListener('beforeunload', handleBeforeUnload);
+		
+
+		return () => {
+			clearInterval(intervalId);
+			window.removeEventListener('keydown', handleKeyDown);
+			window.removeEventListener('beforeunload', handleBeforeUnload);
+		};
+	}, [savePendingPlans]);
 
 
 	return (

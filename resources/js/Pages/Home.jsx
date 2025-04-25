@@ -66,7 +66,7 @@ const Home = ({ groups, initialPlans, subjects, user }) => {
 
     return (
         <SubjectMapProvider subjectDataMap={subjects}>
-        <PlansProvider initialPlans={initialPlans}>
+        <PlansProvider initialPlans={initialPlans} user={user}>
         <SubjectInfoProvider>
         <SubjectPickerProvider>
             
