@@ -4,10 +4,8 @@ import { createRoot } from 'react-dom/client'
 import { Global } from '@emotion/react'
 import { ThemeProvider } from '@mui/material/styles';
 
-import globalStyles from './styles/globalStyles.jsx'
-import theme from './styles/theme.jsx'
-
-import { AuthProvider } from './Hooks/useAuthContext.jsx';
+import globalStyles from './styles/globalStyles'
+import theme from './styles/theme'
 
 createInertiaApp({
   resolve: name => {
@@ -19,11 +17,9 @@ createInertiaApp({
       <>
         <StrictMode>
           <Global styles={globalStyles} />
-          <AuthProvider>
             <ThemeProvider theme={theme}>
               <App {...props} />
             </ThemeProvider>
-          </AuthProvider>
         </StrictMode>
       </>
     )
