@@ -20,6 +20,7 @@ class Students extends Model
             $query = parent::newQuery()->fromSub(function ($query) {
                 $query->select(
                     'h.codpes AS nusp',
+                    'v.codcurgrd AS id_major',
                     'h.coddis AS id_subject',
                     'h.codtur AS id_class',
                     'h.codpgm AS program',
@@ -30,7 +31,8 @@ class Students extends Model
                     'h.dtacrihst AS created_at',
                     'h.dtaultalt AS updated_at'
                 )
-                ->from('HISTESCOLARGR AS h');
+                ->from('HISTESCOLARGR AS h')
+                ->join('VINCULOPESSOAUSP AS v', 'h.codpes', '=', 'v.codpes');
             }, 'subtable');
         }
 
@@ -49,7 +51,7 @@ class Students extends Model
             $idCidade = $faker->randomElement([10, 20, 30, 40, 50, 60, 70]);
             $fakeData[] = [
                 'nusp' => $faker->numerify('########'),
-                'id_subject' => 'id_subject' => $faker->randomElement($letras) . $faker->randomElement($letras) . $faker->randomElement($letras) . '000' . $faker->randomElement($numeros),
+                'id_subject' => $faker->randomElement($letras) . $faker->randomElement($letras) . $faker->randomElement($letras) . '000' . $faker->randomElement($numeros),
                 'id_class' => '201' . $faker->numberBetween(0, 26) . $faker->numerify('####'),
                 'program' => $faker->numberBetween(1, 3),
                 'grade' => $faker->numberBetween(0, 10),
@@ -71,7 +73,7 @@ class Students extends Model
                            '{$row['status_approved']}' as status_approved,
                            '{$row['mandatory']}' as mandatory,
                            '{$row['created_at']}' as created_at
-                           '{$row['updated_at']}' as updated_at";,
+                           '{$row['updated_at']}' as updated_at";
         })->implode(' UNION ALL ');
 
         return $query;

@@ -23,6 +23,7 @@ class Majors extends Model
                     'c.codcrl AS id_curriculum',
                     'c.codcur AS id_major',
                     'cg.nomcur AS name_major',
+                    'u.codund AS id_institute',
                     'c.codhab AS id_hab',
                     'c.duridlcur AS periods_ideal',
                     'c.durmaxcurusp AS periods_max',
@@ -33,7 +34,9 @@ class Majors extends Model
                     'c.dtaultalt AS updated_at'
                 )
                 ->from('CURRICULOGR AS c')
-                ->join('CURSOGR AS cg', 'cg.codcur', '=', 'c.codcur');
+                ->join('CURSOGR AS cg', 'cg.codcur', '=', 'c.codcur')
+                ->join('COLEGIADO AS cl', function ($join) {$join->on('cg.sglclg', '=', 'cl.sglclg')->on('cg.codclg', '=', 'cl.codclg');})
+                ->join('UNIDADE AS u', 'cl.nomclg', '=', 'u.nomund');
             }, 'subtable');
         }
 
@@ -52,6 +55,7 @@ class Majors extends Model
                 'id_curriculum' => $curri . $habi . $faker->numerify('###'),
                 'id_major' => $curri,
                 'name_major' => $faker->word(),
+                'id_institute' => $faker->numberBetween(1, 100),
                 'id_hab' => $habi,
                 'periods_ideal' => $faker->numberBetween(5,7),
                 'periods_max' => $faker->numberBetween(7,9),
@@ -67,6 +71,7 @@ class Majors extends Model
             return "SELECT  '{$row['id_curriculum']}' as id_curriculum, 
                             '{$row['id_major']}' as id_major, 
                             '{$row['name_major']}' as name_major, 
+                            '{$row['id_institute']}' as id_institute, 
                             '{$row['id_hab']}' as id_hab, 
                             '{$row['periods_ideal']}' as periods_ideal, 
                             '{$row['periods_max']}' as periods_max, 
