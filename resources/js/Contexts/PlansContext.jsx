@@ -55,7 +55,7 @@ function PlansProvider({ children, initialPlans, user }) {
 
 			if (isSaved) {
 				setIsSaved(false);
-				setLastSavedPlans(prevState);
+				setLastSavedPlans(plansHistory[historyPointer].state);
 			}
 			return evaluatedState;
 		});
@@ -80,6 +80,9 @@ function PlansProvider({ children, initialPlans, user }) {
 			const prevState = plansHistory[newPointer];
 			_setHistoryPointer(newPointer);
 			_setPlans(prevState.state);
+			setLastSavedPlans(plansHistory[historyPointer].state);
+			setIsSaved(false);
+	
 			return prevState.action;
 		}
 		return null;
@@ -96,6 +99,9 @@ function PlansProvider({ children, initialPlans, user }) {
 			const nextState = plansHistory[newPointer];
 			_setHistoryPointer(newPointer);
 			_setPlans(nextState.state);
+			setLastSavedPlans(plansHistory[historyPointer].state);
+			setIsSaved(false);
+
 			return nextState.action;
 		}
 		return null;

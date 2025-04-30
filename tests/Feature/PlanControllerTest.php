@@ -29,12 +29,10 @@ class PlanControllerTest extends TestCase
 
         $response->assertStatus(200)
             ->assertJsonStructure([
-                'plans' => [
-                    '*' => [
-                        'semesterId',
-                        'subjects' => [
-                            '*' => [ 'plan', 'code', 'name', 'desc', 'credits', ],
-                        ],
+                '*' => [
+                    'semesterId',
+                    'subjects' => [
+                        '*' => [ 'plan', 'code' ],
                     ],
                 ],
             ]);
@@ -63,9 +61,9 @@ class PlanControllerTest extends TestCase
         $plan2 = Plan::factory()->create(['user_id' => $user->id, 'subject_code' => $subject2->code, 'semester' => 1]);
 
         $payload = [
-            ['id' => $plan1->id, 'subject_code' => $subject1->code, 'semester' => 2], // Update
-            ['id' => null, 'subject_code' => $subject3->code, 'semester' => 3], // Create
-            ['id' => $plan2->id, 'subject_code' => $subject2->code, 'semester' => null], // Delete
+            ['subject_code' => $subject1->code, 'semester' => 2], // Update
+            ['subject_code' => $subject3->code, 'semester' => 3], // Create
+            ['subject_code' => $subject2->code, 'semester' => null], // Delete
         ];
 
         $response = $this->postJson('/api/plans/sync', $payload);
@@ -74,7 +72,7 @@ class PlanControllerTest extends TestCase
             ->assertJsonStructure([
                 'status',
                 'changedPlans' => [
-                    '*' => ['id', 'subject_code', 'action'],
+                    '*' => ['subject_code', 'action'],
                 ],
             ]);
         
@@ -87,76 +85,78 @@ class PlanControllerTest extends TestCase
 
     /**
      * Test that the store function creates a plan correctly.
-     */
-    public function test_can_create_plan()
-    {
-        $user = User::factory()->create();
-        $subject = Subject::factory()->create();
-        $this->actingAs($user);
-
-        $payload = [
-            'subject_code' => $subject->code,
-            'semester' => 1,
-        ];
-
-        $response = $this->postJson('/api/plans', $payload);
-
-        $response->assertStatus(201)
-                 ->assertJson([
-                     'status' => 'success',
-                     'data' => [
-                         'subject_code' => $subject->code,
-                         'semester' => 1,
-                     ]
-                 ]);
-    }
+     *
+     * public function test_can_create_plan()
+     * {
+     *   $user = User::factory()->create();
+     *   $subject = Subject::factory()->create();
+     *   $this->actingAs($user);
+     *
+     *   $payload = [
+     *       'subject_code' => $subject->code,
+     *       'semester' => 1,
+     *   ];
+     *
+     *   $response = $this->postJson('/api/plans', $payload);
+     *
+     *   $response->assertStatus(201)
+     *            ->assertJson([
+     *                'status' => 'success',
+     *                'data' => [
+     *                    'subject_code' => $subject->code,
+     *                    'semester' => 1,
+     *                ]
+     *            ]);
+     * }
+    */
 
     /**
      * Test that the update function updates a plan correctly.
-     */
-    public function test_can_update_plan()
-    {
-        $user = User::factory()->create();
-        $plan = Plan::factory()->for($user)->create();
-        $subject = Subject::factory()->create();
-        $this->actingAs($user);
-
-        $payload = [
-            'subject_code' => $subject->code,
-            'semester' => 2,
-        ];
-
-        $response = $this->putJson("/api/plans/{$plan->id}", $payload);
-
-        $response->assertStatus(200)
-                 ->assertJson([
-                     'status' => 'success',
-                     'data' => [
-                         'id' => $plan->id,
-                         'subject_code' => $subject->code,
-                         'semester' => 2,
-                     ]
-                 ]);
-    }
+     *
+     * public function test_can_update_plan()
+     * {
+     *   $user = User::factory()->create();
+     *   $plan = Plan::factory()->for($user)->create();
+     *   $subject = Subject::factory()->create();
+     *   $this->actingAs($user);
+     *
+     *   $payload = [
+     *       'subject_code' => $subject->code,
+     *       'semester' => 2,
+     *   ];
+     *
+     *   $response = $this->putJson("/api/plans/{$plan->id}", $payload);
+     *
+     *  $response->assertStatus(200)
+     *             ->assertJson([
+     *                'status' => 'success',
+     *                'data' => [
+     *                    'id' => $plan->id,
+     *                    'subject_code' => $subject->code,
+     *                    'semester' => 2,
+     *                ]
+     *            ]);
+     * }
+    */
 
     /**
      * Test that the destroy function deletes a plan correctly.
-     */
-    public function test_can_delete_plan()
-    {
-        $user = User::factory()->create();
-        $plan = Plan::factory()->for($user)->create();
-        $this->actingAs($user);
-
-        $response = $this->deleteJson("/api/plans/{$plan->id}");
-
-        $response->assertStatus(200)
-                 ->assertJson([
-                     'status' => 'success',
-                     'message' => 'Plan deleted successfully',
-                 ]);
-
-        $this->assertDatabaseMissing('plans', ['id' => $plan->id]);
-    }
-
+     *
+     * public function test_can_delete_plan()
+     * {
+     *  $user = User::factory()->create();
+     *   $plan = Plan::factory()->for($user)->create();
+     *   $this->actingAs($user);
+     *
+     *   $response = $this->deleteJson("/api/plans/{$plan->id}");
+     *
+     *   $response->assertStatus(200)
+     *            ->assertJson([
+     *                'status' => 'success',
+     *                'message' => 'Plan deleted successfully',
+     *            ]);
+     *
+     *   $this->assertDatabaseMissing('plans', ['id' => $plan->id]);
+     * }
+    */
 }

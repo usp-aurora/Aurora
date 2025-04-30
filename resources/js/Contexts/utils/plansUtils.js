@@ -33,6 +33,13 @@ export async function savePlans(user, lastSavedPlans, currentPlans) {
 	}
 	
 	const unsavedPlans = [];
+	const lastSubjectsSet = new Set();
+
+	lastSavedPlans.forEach((lastSemester) => {
+		lastSemester.subjects.forEach((lastSubject) => {
+			lastSubjectsSet.add(lastSubject.code);
+		});
+	});
 
 	currentPlans.forEach((currentSemester) => {
 		const lastSemester = lastSavedPlans.find(
@@ -40,17 +47,26 @@ export async function savePlans(user, lastSavedPlans, currentPlans) {
 		);
 
 		currentSemester.subjects.forEach((currentSubject) => {
+			lastSubjectsSet.delete(currentSubject.code);
+
 			const lastSubject = lastSemester?.subjects.find(
 				(subject) => subject.code === currentSubject.code
 			);
 
 			if (!lastSubject) {
 				unsavedPlans.push({
-					id: currentSubject.plan,
 					subject_code: currentSubject.code,
 					semester: currentSemester.semesterId,
 				});
 			}
+		});
+	});
+
+	// Add subjects that were removed from the current plans
+	lastSubjectsSet.forEach((subjectCode) => {
+		unsavedPlans.push({
+			subject_code: subjectCode,
+			semester: null,
 		});
 	});
 
