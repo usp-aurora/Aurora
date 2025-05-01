@@ -5,7 +5,8 @@ import { styled } from "@mui/material/styles";
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 
 const SubjectAdded = styled(Box)({
-    width: '760px',
+    width: '100%',
+    maxwidth: '760px',
     height: '40px',
     padding: "8px 12px",
     border: "2px solid var(--texto-noturno, #FFFFFF)",

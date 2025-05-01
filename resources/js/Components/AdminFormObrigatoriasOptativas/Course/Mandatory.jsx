@@ -1,3 +1,4 @@
+// Mandatory.jsx
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
@@ -19,7 +20,6 @@ const FixedIcon = styled(ArrowDropDownIcon)({
   transform: "rotate(360deg)", 
   marginRight: "8px", 
   marginLeft: "8px",
-
 });
 
 const AccordionSummaryStyled = styled(AccordionSummary)({
@@ -34,6 +34,7 @@ const AccordionSummaryStyled = styled(AccordionSummary)({
   alignItems: "center",
   justifyContent: "space-between",
   width: "100%",
+  maxWidth: "848px",
   minHeight: "40px", 
   "&.Mui-expanded": {
     minHeight: "40px", 
@@ -49,26 +50,42 @@ const FixedContainer = styled(Box)({
   transform: "translateY(-50%)", 
 });
 
-
-export default function AccordionUsage() {
-  return (
-    <div>
-      <Accordion>
+export default function Mandatory({ onChangeCriteria, onChangeSubjects }) {
+  return ( 
+    <Box 
+      sx={{ 
+        width: '100%', 
+        display: 'flex', 
+        justifyContent: 'center',
+      }}
+    >
+      <Accordion 
+        disableGutters
+        elevation={0}
+        square 
+        sx={{ width: '848px', borderRadius: '12px', borderWidth: '1px',
+          background: 'var(--glass-diurno, #FFFFFF33)',
+          border: '1px solid white',
+          backdropFilter: 'blur(20px)', overflow: 'hidden' }}>
         <AccordionSummaryStyled
           expandIcon={<ArrowDropDownIcon htmlColor="blue"/>}
           aria-controls="panel1-content"
           id="panel1-header"
         >
-          <FixedContainer display="flex" alignItems="center">
+          <FixedContainer>
             <PanoramaFishEyeIcon htmlColor="blue" />
             <FixedIcon htmlColor="blue"/>
             <MandatoryText>Obrigatórias</MandatoryText>
           </FixedContainer>
         </AccordionSummaryStyled>
         <AccordionDetails>
-          <MandatoryDetails />
+          <MandatoryDetails 
+            tipo="obrigatorias"
+            onChangeCriteria={onChangeCriteria} 
+            onChangeSubjects={onChangeSubjects}
+          />
         </AccordionDetails>
       </Accordion>
-    </div>
+    </Box>
   );
 }

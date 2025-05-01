@@ -115,6 +115,7 @@ theme = createTheme({
             outerHeight: 104, 
             borderRadius: 8,
             planetSize: 45,
+            moonSize: 12,
         },
         desktop: {
             innerWidth: 128,
@@ -123,12 +124,13 @@ theme = createTheme({
             outerHeight: 128,
             borderRadius: 12,
             planetSize: 55,
+            moonSize: 15,
         }
     },
 
     glassmorphism: {
         level2: {
-            backdropFilter: "blur(20)",
+            backdropFilter: "blur(2px)",
             color: "rgb(194, 220, 245, 0.2)",
             boxShadow: '3px 3px 3px rgba(0, 0, 0, 0.089)',
             // light: {
@@ -140,7 +142,7 @@ theme = createTheme({
         },
 
         level3: {
-            backdropFilter: "blur(50)",
+            backdropFilter: "blur(5px)",
             color: "rgb(194, 220, 245, 0.2)",
             boxShadow: '3px 3px 3px rgba(0, 0, 0, 0.089)',
             // light: {
@@ -153,4 +155,4 @@ theme = createTheme({
     }
 });
 
-export default theme;
+export default theme; 

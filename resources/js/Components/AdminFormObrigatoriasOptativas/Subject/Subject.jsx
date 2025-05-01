@@ -6,7 +6,8 @@ import CloseIcon from '@mui/icons-material/Close';
 import { styled } from "@mui/material/styles";
 
 const Container = styled('div')({
-    width: '824px',
+    width: '100%',
+    maxwidth: '824px',
 });
 
 const RemoveButton = styled(Button)({
@@ -32,18 +33,24 @@ const Text = styled(Typography)({
     marginBottom: '12px',
 });
 
-const Subject = () => {
+const Subject = ({ tipo, onChange }) => {
+
   const [subjects, setSubjects] = useState([]);
 
   const addSubject = (value) => {
     if (value && !subjects.includes(value)) {
-      setSubjects((prev) => [...prev, value]);
+      const updated = [...subjects, value];
+      setSubjects(updated);
+      onChange?.(tipo, updated); // avisa o pai
     }
   };
-
+  
   const removeSubject = (subjectToRemove) => {
-    setSubjects((prev) => prev.filter((s) => s !== subjectToRemove));
+    const updated = subjects.filter((s) => s !== subjectToRemove);
+    setSubjects(updated);
+    onChange?.(tipo, updated); // avisa o pai
   };
+  
 
 return (
     <Container>

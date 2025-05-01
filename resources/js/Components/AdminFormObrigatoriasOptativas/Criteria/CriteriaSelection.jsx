@@ -4,6 +4,7 @@ import { styled } from '@mui/material/styles';
 const SelectionBox = styled(Autocomplete)({
   
   '& .MuiOutlinedInput-root': {
+    //width: '100%',
     width: '297px',
     height: '32px',
     borderRadius: '16px',
@@ -66,7 +67,7 @@ const SelectionBoxOptions = {
 const options = [
     { label: 'Créditos', id: 1 },
     { label: 'Disciplinas', id: 2 },
-    { label: 'Módulos', id: 3 },
+    { label: 'Blocos', id: 3 },
 ];
 
 export default function CriteriaSelection({ type, onChangeType }) {

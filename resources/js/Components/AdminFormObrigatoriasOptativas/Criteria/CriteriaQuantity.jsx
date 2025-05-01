@@ -1,15 +1,17 @@
 import { TextField, Box } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
+
 const QuantityBox = styled(Box)({
   
   '& .MuiOutlinedInput-root': {
+    //width: '100%',
     width: '297px',
     height: '32px',
     borderRadius: '16px',
     backgroundColor: 'transparent',
-    padding: '10px 12px',
-    border: '2px solid var(--texto-noturno, #FFFFFF)'
+    border: '2px solid var(--texto-noturno, #FFFFFF)',
+    padding: '10px 12px'
   },
   
   '& fieldset': {
@@ -18,18 +20,19 @@ const QuantityBox = styled(Box)({
     
 });
 
-const QuantityBoxText = styled(TextField)({
+
+const QuantityBoxText = styled(TextField)(({ theme }) => ({
 
   "& .MuiInputBase-input": {
-    fontSize: "11px",
+    ...theme.typography.p,
+    fontFamily: theme.typography.fontFamily,
     color: "#424242",
-    fontFamily: "Rubik, sans-serif",
   },
 
   "& .MuiInputLabel-root": {
-    fontSize: "11px",
+    ...theme.typography.p,
+    fontFamily: theme.typography.fontFamily,
     color: "#424242",
-    fontFamily: "Rubik, sans-serif",
     top: "-25%",
     transition: "opacity 0.3s ease-out",
   },
@@ -41,7 +44,8 @@ const QuantityBoxText = styled(TextField)({
     opacity: 0,
   },
 
-});
+}));
+
 
 // Adicionar style do botão de subir ou descer (vai deixar?)
 

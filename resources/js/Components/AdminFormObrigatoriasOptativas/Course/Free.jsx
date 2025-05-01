@@ -50,10 +50,24 @@ const FixedContainer = styled(Box)({
 });
 
 
-export default function AccordionUsage() {
+export default function Free({ onChangeCriteria, onChangeSubjects }) {
   return (
-    <div>
-      <Accordion>
+    <Box 
+      sx={{ 
+        width: '100%', 
+        display: 'flex', 
+        justifyContent: 'center' 
+      }}
+    >
+       <Accordion 
+        disableGutters
+        elevation={0}
+        square 
+        sx={{ width: '848px', borderRadius: '12px', 
+          borderWidth: '1px',
+          background: 'var(--glass-diurno, #FFFFFF33)',
+          border: '1px solid white',
+          backdropFilter: 'blur(20px)', overflow: 'hidden' }}>
         <AccordionSummaryStyled
           expandIcon={<ArrowDropDownIcon htmlColor="green"/>}
           aria-controls="panel1-content"
@@ -66,9 +80,13 @@ export default function AccordionUsage() {
           </FixedContainer>
         </AccordionSummaryStyled>
         <AccordionDetails>
-          <MandatoryDetails />
+          <MandatoryDetails 
+            tipo="livres"
+            onChangeCriteria={onChangeCriteria} 
+            onChangeSubjects={onChangeSubjects}
+          />
         </AccordionDetails>
       </Accordion>
-    </div>
+    </Box>
   );
 }

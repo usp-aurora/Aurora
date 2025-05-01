@@ -6,6 +6,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { styled } from '@mui/material/styles';
 
 const Container = styled('div')({
+    //width: '100%',
     width: '824px',
 });
 
@@ -37,7 +38,8 @@ const AddButton = styled(Button)({
 });
 
 
-const Criteria = () => {
+const Criteria = ({ tipo, onChange }) => {
+
 
     const generateId = () => Date.now() + Math.random();
 
@@ -46,18 +48,32 @@ const Criteria = () => {
     ]);
 
     const addCriteria = () => {
-        setCriteria((prev) => [...prev, { key: generateId(), quantity: "", type: "" }]);
+        setCriteria((prev) => {
+            const updated = [...prev, { key: generateId(), quantity: "", type: "" }];
+            onChange?.(tipo, updated);
+            return updated;
+        });
     };
-
+    
     const removeCriteria = (keyToRemove) => {
-        setCriteria((prev) => prev.filter((c) => c.key !== keyToRemove));
+        setCriteria((prev) => {
+            const updated = prev.filter((c) => c.key !== keyToRemove);
+            onChange?.(tipo, updated);
+            return updated;
+        });
     };
+    
 
     const updateCriteria = (key, field, value) => {
-        setCriteria((prev) =>
-            prev.map((c) => (c.key === key ? { ...c, [field]: value } : c))
-        );
+        setCriteria((prev) => {
+            const updated = prev.map((c) =>
+                c.key === key ? { ...c, [field]: value } : c
+            );
+            onChange?.(tipo, updated); // chama só se onChange foi passado
+            return updated;
+        });
     };
+    
 
     return (
         <Container>
