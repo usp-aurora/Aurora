@@ -58,14 +58,20 @@ const Course = () => {
     
     const payload = {
       mandatory: {
+          title: "Mandatory",
+          description: "Mandatory subjects",
           criteria: mandatoryCriteria,
           subjects: mandatorySubjects
       },
       elective: {
+          title: "Elective",
+          description: "Elective subjects",
           criteria: electiveCriteria,
           subjects: electiveSubjects
       },
       free: {
+          title: "Free",
+          description: "Free subjects",
           criteria: freeCriteria,
           subjects: freeSubjects
       }
