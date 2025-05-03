@@ -114,7 +114,7 @@ const SubjectSearch = ({ onSelectSubject }) => {
       getOptionLabel={(option) => option.code + " - " + option.name}
 
       // What happens when an option is selected
-      onChange={(_, option) => { onSelectSubject(option.code + " - " + option.name); }}
+      onChange={(_, option) => { onSelectSubject(option); }}
 
       // Defines the input field
       renderInput={(params) => <SubjectBoxText {...params} label="Pesquisar" />}

@@ -51,13 +51,13 @@ const QuantityBoxText = styled(TextField)(({ theme }) => ({
   },
 }));
 
-const CriteriaQuantity = ({ quantity, onChangeQuantity }) => {
+const CriteriaQuantity = ({ value, onChange }) => {
   
   return (
     <QuantityBox component="form" noValidate autoComplete="off">
       <QuantityBoxText id="outlined-number" label="Quantidade..." type="number"
-        value={quantity}
-        onChange={onChangeQuantity}
+        value={value}
+        onChange={onChange}
       />
     </QuantityBox>
   );

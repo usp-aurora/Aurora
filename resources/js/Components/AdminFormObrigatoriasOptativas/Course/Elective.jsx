@@ -95,7 +95,7 @@ const Elective = ({ onChangeCriteria, onChangeSubjects }) => {
         </AccordionSummaryStyled>
         
         <AccordionDetails>
-          <Details tipo="optativas" onChangeCriteria={onChangeCriteria} onChangeSubjects={onChangeSubjects}/>
+          <Details onChangeCriteria={onChangeCriteria} onChangeSubjects={onChangeSubjects}/>
         </AccordionDetails>
 
       </AccordionStyled>

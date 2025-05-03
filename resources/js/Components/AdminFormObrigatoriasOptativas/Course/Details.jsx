@@ -6,11 +6,11 @@ import Subject from '../Subject/Subject';
 
 
 /* Details component */
-const Details = ({ tipo, onChangeCriteria, onChangeSubjects }) => {
+const Details = ({ onChangeCriteria, onChangeSubjects }) => {
     return (
         <div style={{ display: "flex", flexDirection: "column", gap: 0.75 }}>
-            <Criteria tipo={tipo} onChange={onChangeCriteria} />
-            <Subject tipo={tipo} onChange={onChangeSubjects} />
+            <Criteria onChange={onChangeCriteria} />
+            <Subject onChange={onChangeSubjects} />
         </div>
     );
 };

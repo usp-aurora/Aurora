@@ -44,5 +44,7 @@ Route::get('/form-trilhas', function () {
 Route::get('/form-obrigatorias', function () {
     return Inertia::render('Development/TestFormularioObrigatorias');
 });
+
 Route::get('/subjects', [SubjectController::class, 'index']);
+
 Route::post('/formCourse', [SubjectController::class, 'store']);

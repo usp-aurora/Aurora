@@ -95,7 +95,7 @@ const Mandatory = ({ onChangeCriteria, onChangeSubjects }) => {
         </AccordionSummaryStyled>
         
         <AccordionDetails>
-          <Details tipo="obrigatorias" onChangeCriteria={onChangeCriteria} onChangeSubjects={onChangeSubjects}/>
+          <Details onChangeCriteria={onChangeCriteria} onChangeSubjects={onChangeSubjects}/>
         </AccordionDetails>
 
       </AccordionStyled>

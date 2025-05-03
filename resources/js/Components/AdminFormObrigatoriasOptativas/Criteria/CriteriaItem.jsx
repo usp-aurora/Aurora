@@ -20,21 +20,21 @@ const Text = styled(Typography)({
 const CriteriaItem = ({ type, onChangeType, quantity, onChangeQuantity }) => {
     
     return (
-        <Box style={{ display: 'flex', alignItems: 'center' }}>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
             <Text>Critério de conclusão: </Text>
-            <Box style={{ marginRight: '16px' }}>
+            <div style={{ marginRight: '16px' }}>
                 <CriteriaQuantity 
                     value={quantity}
                     onChange={onChangeQuantity}
                 />
-            </Box>
-            <Box style={{ marginRight: '16px' }}>
+            </div>
+            <div style={{ marginRight: '16px' }}>
                 <CriteriaSelection 
                     value={type}
                     onChange={onChangeType}
                 />
-            </Box>
-        </Box>
+            </div>
+        </div>
     );
     
 };

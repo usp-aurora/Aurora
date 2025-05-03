@@ -95,7 +95,7 @@ const Free = ({ onChangeCriteria, onChangeSubjects }) => {
         </AccordionSummaryStyled>
         
         <AccordionDetails>
-          <Details tipo="livres" onChangeCriteria={onChangeCriteria} onChangeSubjects={onChangeSubjects}/>
+          <Details onChangeCriteria={onChangeCriteria} onChangeSubjects={onChangeSubjects}/>
         </AccordionDetails>
 
       </AccordionStyled>

@@ -56,32 +56,30 @@ const Course = () => {
 
   const handleSave = async () => {
     
-    try {
-      const payload = {
-        mandatory: {
+    const payload = {
+      mandatory: {
           criteria: mandatoryCriteria,
           subjects: mandatorySubjects
-        },
-        elective: {
+      },
+      elective: {
           criteria: electiveCriteria,
           subjects: electiveSubjects
-        },
-        free: {
+      },
+      free: {
           criteria: freeCriteria,
           subjects: freeSubjects
-        }
-      };
-      await axios.post("/formCourse", payload);
-      alert("Informações salvas com sucesso! ✨");
-    } 
-    
-    catch (error) {
-      console.error("Erro ao salvar:", error);
-      alert("Erro ao salvar. 😢");
-    }
+      }
+    };
+
+    axios.post("/formCourse", payload)
+      .then(() => {
+          console.log("Dados salvos com sucesso!");
+      })
+      .catch((error) => {
+          console.error("Erro ao salvar: ", error);
+      });
 
   };
-
 
   return (
     <RetanguloBox>

@@ -43,21 +43,21 @@ const AddButton = styled(Button)({
 
 
 /* Criteria component */
-const Criteria = ({ tipo, onChange }) => {
-
+const Criteria = ({ onChange }) => {
+    
     // State to manage the criteria ID
     const [idCounter, setIdCounter] = useState(0);
 
     // State to manage the selected criteria
     const [criteria, setCriteria] = useState([
-        { key: idCounter, quantity: "", type: "" }
+        { key: idCounter, quantity: "", type: null }
     ]);
 
     // Add a new criteria to the list
     const addCriteria = () => {
         setCriteria((prev) => {
             const updated = [...prev, { key: idCounter + 1, quantity: "", type: "" }];
-            onChange?.(tipo, updated);
+            onChange?.(updated);
             return updated;
         });
         setIdCounter((prev) => prev + 1);
@@ -67,7 +67,7 @@ const Criteria = ({ tipo, onChange }) => {
     const removeCriteria = (keyToRemove) => {
         setCriteria((prev) => {
             const updated = prev.filter((c) => c.key !== keyToRemove);
-            onChange?.(tipo, updated);
+            onChange?.(updated);
             return updated;
         });
     };
@@ -78,7 +78,7 @@ const Criteria = ({ tipo, onChange }) => {
             const updated = prev.map((c) =>
                 c.key === key ? { ...c, [field]: value } : c
             );
-            onChange?.(tipo, updated);
+            onChange?.(updated);
             return updated;
         });
     };
@@ -92,8 +92,8 @@ const Criteria = ({ tipo, onChange }) => {
                         quantity={criteria[0].quantity}
                         onChangeQuantity={(e) => updateCriteria(criteria[0].key, "quantity", e.target.value)}
                         type={criteria[0].type}
-                        onChangeType={(_, newValue) => updateCriteria(criteria[0].key, "type", newValue)}
-                    />
+                        onChangeType={(newValue) => updateCriteria(criteria[0].key, "type", newValue)}
+                        />
                     <AddButton onClick={addCriteria}> <AddIcon /> </AddButton>
                 </Box>
                 {criteria.slice(1).map((c) => (
@@ -102,7 +102,7 @@ const Criteria = ({ tipo, onChange }) => {
                             quantity={c.quantity}
                             onChangeQuantity={(e) => updateCriteria(c.key, "quantity", e.target.value)}
                             type={c.type}
-                            onChangeType={(_, newValue) => updateCriteria(c.key, "type", newValue)}
+                            onChangeType={(newValue) => updateCriteria(c.key, "type", newValue)}
                         />
                         <RemoveButton variant="outlined" color="error" onClick={() => removeCriteria(c.key)}> <CloseIcon /> </RemoveButton>
                     </Box>

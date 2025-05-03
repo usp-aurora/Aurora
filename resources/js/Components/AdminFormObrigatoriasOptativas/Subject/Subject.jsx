@@ -39,26 +39,31 @@ const Text = styled(Typography)({
 
 
 /* Subject component */
-const Subject = ({ tipo, onChange }) => {
+const Subject = ({ onChange }) => {
 
     // State to manage the selected subjects
     const [subjects, setSubjects] = useState([]);
 
     // Add a subject to the list of selected subjects
     const addSubject = (value) => {
-        if (value && !subjects.includes(value)) {
+        if (!value) return;
+    
+        const alreadyExists = subjects.some((s) => s.code === value.code);
+        if (!alreadyExists) {
             const updated = [...subjects, value];
             setSubjects(updated);
-            onChange?.(tipo, updated); // avisa o pai
+            onChange?.(updated);
         }
     };
+    
 
     // Remove a subject from the list of selected subjects
     const removeSubject = (value) => {
-        const updated = subjects.filter((s) => s !== value);
+        const updated = subjects.filter((s) => s.code !== value.code);
         setSubjects(updated);
-        onChange?.(tipo, updated); // avisa o pai
+        onChange?.(updated);
     };
+    
   
 
     return (

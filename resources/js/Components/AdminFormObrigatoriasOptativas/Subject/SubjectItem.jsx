@@ -42,7 +42,7 @@ const SubjectItem = ({ subject }) => {
         <Box display="flex" alignItems="center">
             <DragHandle />
             <SubjectAdded>
-                <SubjectName>{subject}</SubjectName>
+                <SubjectName>{subject.code + " - " + subject.name}</SubjectName>
             </SubjectAdded>
         </Box>
     );
