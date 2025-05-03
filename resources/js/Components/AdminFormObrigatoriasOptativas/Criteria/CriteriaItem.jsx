@@ -1,39 +1,42 @@
+/* CriteriaItem is the component for the selected criteria */
+
 import CriteriaQuantity from "./CriteriaQuantity";
 import CriteriaSelection from "./CriteriaSelection";
-import { styled } from '@mui/material/styles';
-import { Typography } from "@mui/material";
 
+import { Typography, Box } from "@mui/material";
+import { styled } from '@mui/material/styles';
+
+/* Styling the text "Critério de conclusão: " */
 const Text = styled(Typography)({
     fontFamily: 'Rubik',
-    fontWeight: 400,
+    fontWeight: "400",
     fontSize: '14px',
     lineHeight: '16px',
+    marginRight: '16px',
     letterSpacing: '0%',
     color: '#424242',
-    marginRight: '16px'
 });
 
-export default function CriteriaItem({
-    type,
-    onChangeType,
-    quantity,
-    onChangeQuantity
-}) {
+const CriteriaItem = ({ type, onChangeType, quantity, onChangeQuantity }) => {
+    
     return (
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <Box style={{ display: 'flex', alignItems: 'center' }}>
             <Text>Critério de conclusão: </Text>
-            <div style={{ marginRight: '16px' }}>
+            <Box style={{ marginRight: '16px' }}>
                 <CriteriaQuantity 
                     value={quantity}
                     onChange={onChangeQuantity}
                 />
-            </div>
-            <div style={{ marginRight: '16px' }}>
+            </Box>
+            <Box style={{ marginRight: '16px' }}>
                 <CriteriaSelection 
                     value={type}
                     onChange={onChangeType}
                 />
-            </div>
-        </div>
+            </Box>
+        </Box>
     );
-}
+    
+};
+
+export default CriteriaItem;

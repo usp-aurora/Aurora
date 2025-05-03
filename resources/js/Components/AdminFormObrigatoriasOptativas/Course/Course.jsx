@@ -1,100 +1,110 @@
-import Mandatory from "./Mandatory";
-import Elective from "./Elective";
-import Free from "./Free";
-import Stack from '@mui/material/Stack';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import { styled } from '@mui/material/styles';
-import Button from '@mui/material/Button';
+/* Course is the complete form, combining the mandatory, elective, and free sections */
+
 
 import React, { useState } from 'react';
 import axios from 'axios';
 
+import Mandatory from "./Mandatory";
+import Elective from "./Elective";
+import Free from "./Free";
 
+import { Stack, Box, Typography, Button } from "@mui/material";
+import { styled } from '@mui/material/styles';
+
+
+/* Styling the form structure */
 const RetanguloBox = styled(Box)({
     width: '100%',
     maxwidth: '880px',
-    minHeight: '280px', // começa com esse tamanho, mas pode crescer
+    minHeight: '280px', 
+    paddingBottom: '64px',
+    border: '1px solid white',
     borderRadius: '12px',
     background: 'var(--glass-diurno, #FFFFFF33)',
-    border: '1px solid white',
     backdropFilter: 'blur(20px)',
     position: 'relative',
-    paddingBottom: '64px'
 });
 
 
+/* Styling for the text: DISCIPLINAS */
 const Title = styled(Typography)({
     position: 'absolute',
     top: '16px',
     left: '16px',
     width: '154px',
     height: '32px',
+    lineHeight: '32px',
+    letterSpacing: '0%',
     fontFamily: 'Rubik',
     fontWeight: '700',
     fontSize: '24px',
-    lineHeight: '32px',
-    letterSpacing: '0%',
     textTransform: 'uppercase',
     color: '#424242',
 });
 
-export default function Course() {
 
-    const [mandatoryCriteria, setMandatoryCriteria] = useState({});
-    const [electiveCriteria, setElectiveCriteria] = useState({});
-    const [freeCriteria, setFreeCriteria] = useState({});
+/* Course component */
+const Course = () => {
 
-    const [mandatorySubjects, setMandatorySubjects] = useState([]);
-    const [electiveSubjects, setElectiveSubjects] = useState([]);
-    const [freeSubjects, setFreeSubjects] = useState([]);
+  const [mandatoryCriteria, setMandatoryCriteria] = useState({});
+  const [electiveCriteria, setElectiveCriteria] = useState({});
+  const [freeCriteria, setFreeCriteria] = useState({});
 
-    const handleSave = async () => {
-        try {
-        const payload = {
-            mandatory: {
-            criteria: mandatoryCriteria,
-            subjects: mandatorySubjects
-            },
-            elective: {
-            criteria: electiveCriteria,
-            subjects: electiveSubjects
-            },
-            free: {
-            criteria: freeCriteria,
-            subjects: freeSubjects
-            }
-        };
+  const [mandatorySubjects, setMandatorySubjects] = useState([]);
+  const [electiveSubjects, setElectiveSubjects] = useState([]);
+  const [freeSubjects, setFreeSubjects] = useState([]);
 
-        await axios.post("/api/criterios", payload);
-        alert("Critérios salvos com sucesso! ✨");
-        } catch (error) {
-        console.error("Erro ao salvar critérios:", error);
-        alert("Erro ao salvar critérios. 😢");
+  const handleSave = async () => {
+    
+    try {
+      const payload = {
+        mandatory: {
+          criteria: mandatoryCriteria,
+          subjects: mandatorySubjects
+        },
+        elective: {
+          criteria: electiveCriteria,
+          subjects: electiveSubjects
+        },
+        free: {
+          criteria: freeCriteria,
+          subjects: freeSubjects
         }
-    };
+      };
+      await axios.post("/formCourse", payload);
+      alert("Informações salvas com sucesso! ✨");
+    } 
+    
+    catch (error) {
+      console.error("Erro ao salvar:", error);
+      alert("Erro ao salvar. 😢");
+    }
+
+  };
 
 
-    return (
-        <RetanguloBox>
-          <Title>DISCIPLINAS</Title>
-          <Stack spacing={2} sx={{ marginTop: '64px' }}>
-            <Mandatory
-              onChangeCriteria={setMandatoryCriteria}
-              onChangeSubjects={setMandatorySubjects}
-            />
-            <Elective
-              onChangeCriteria={setElectiveCriteria}
-              onChangeSubjects={setElectiveSubjects}
-            />
-            <Free
-              onChangeCriteria={setFreeCriteria}
-              onChangeSubjects={setFreeSubjects}
-            />
-            <Button variant="contained" onClick={handleSave}>
-              Salvar critérios
-            </Button>
-          </Stack>
-        </RetanguloBox>
-      );
-}
+  return (
+    <RetanguloBox>
+      <Title>DISCIPLINAS</Title>
+      <Stack spacing={2} sx={{ marginTop: '64px' }}>
+        <Mandatory
+          onChangeCriteria={setMandatoryCriteria}
+          onChangeSubjects={setMandatorySubjects}
+        />
+        <Elective
+          onChangeCriteria={setElectiveCriteria}
+          onChangeSubjects={setElectiveSubjects}
+        />
+        <Free
+          onChangeCriteria={setFreeCriteria}
+          onChangeSubjects={setFreeSubjects}
+        />
+        <Button variant="contained" onClick={handleSave}>
+          Salvar critérios
+        </Button>
+      </Stack>
+    </RetanguloBox>
+    );
+};
+
+export default Course;

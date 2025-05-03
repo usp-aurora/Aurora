@@ -1,28 +1,36 @@
-import Accordion from '@mui/material/Accordion';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import MandatoryDetails from './Details';
-import { styled } from '@mui/material/styles';
-import PanoramaFishEyeIcon from '@mui/icons-material/PanoramaFishEye';
+/* Elective is the component for adding information about the elective course group */
 
-const MandatoryText = styled(Typography)({
+
+import Details from './Details';
+
+import { Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
+import { Typography, Box } from '@mui/material';
+import PanoramaFishEyeIcon from '@mui/icons-material/PanoramaFishEye';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import { styled } from '@mui/material/styles';
+
+
+/* Styling of the text: "Obrigatórias" */
+const ElectiveText = styled(Typography)({
   fontFamily: 'Rubik',
   fontWeight: 500,
   fontSize: '16px',
   color: 'var(--texto-primario-diurno, #424242)',
 });
 
+
+/* Styling of the icon: ArrowDropDownIcon */
 const FixedIcon = styled(ArrowDropDownIcon)({
   transform: "rotate(360deg)", 
   marginRight: "8px", 
   marginLeft: "8px",
-
 });
 
+
+/* Styling of the AccordionSummary */
 const AccordionSummaryStyled = styled(AccordionSummary)({
+
+  // Styles for the expand icon
   "& .MuiAccordionSummary-expandIconWrapper": {
     transition: "transform 0.3s ease",
     transform: "rotate(270deg)",
@@ -30,16 +38,22 @@ const AccordionSummaryStyled = styled(AccordionSummary)({
   "&.Mui-expanded .MuiAccordionSummary-expandIconWrapper": {
     transform: "rotate(360deg)", 
   },    
+
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
   width: "100%",
-  minHeight: "40px", 
+  maxWidth: "848px",
+  minHeight: "40px",
+  
+  // Styles for the AccordionSummary when expanded
   "&.Mui-expanded": {
     minHeight: "40px", 
   },
 });
 
+
+/* Styling for the Accordion text */
 const FixedContainer = styled(Box)({
   display: "flex",
   alignItems: "center",
@@ -49,43 +63,46 @@ const FixedContainer = styled(Box)({
   transform: "translateY(-50%)", 
 });
 
+/* Styling for the Accordion */
+const AccordionStyled = styled(Accordion)({
+  width: '848px', 
+  border: '1px solid white',
+  borderRadius: '12px', 
+  borderWidth: '1px',
+  background: 'var(--glass-diurno, #FFFFFF33)',
+  backdropFilter: 'blur(20px)', 
+  overflow: 'hidden'
+})
 
-export default function Elective({ onChangeCriteria, onChangeSubjects }) {
-  return (
-    <Box 
-      sx={{ 
-        width: '100%', 
-        display: 'flex', 
-        justifyContent: 'center' 
-      }}
-    >
-       <Accordion 
-        disableGutters
-        elevation={0}
-        square 
-        sx={{ width: '848px', borderRadius: '12px', borderWidth: '1px',
-          background: 'var(--glass-diurno, #FFFFFF33)',
-          border: '1px solid white',
-          backdropFilter: 'blur(20px)', overflow: 'hidden' }}>
-        <AccordionSummaryStyled
-          expandIcon={<ArrowDropDownIcon htmlColor="orange"/>}
-          aria-controls="panel1-content"
-          id="panel1-header"
-        >
-          <FixedContainer display="flex" alignItems="center">
+
+/* Elective component */
+const Elective = ({ onChangeCriteria, onChangeSubjects }) => {
+
+  return ( 
+    
+    <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', }} >
+      
+      <AccordionStyled disableGutters elevation={0} square>
+        
+        <AccordionSummaryStyled expandIcon={<ArrowDropDownIcon htmlColor="orange"/>} aria-controls="panel1-content" id="panel1-header">
+          
+          <FixedContainer>
             <PanoramaFishEyeIcon htmlColor="orange" />
             <FixedIcon htmlColor="orange"/>
-            <MandatoryText>Eletivas</MandatoryText>
+            <ElectiveText>Optativas</ElectiveText>
           </FixedContainer>
+        
         </AccordionSummaryStyled>
+        
         <AccordionDetails>
-          <MandatoryDetails 
-            tipo="optativas"
-            onChangeCriteria={onChangeCriteria} 
-            onChangeSubjects={onChangeSubjects}
-          />
+          <Details tipo="optativas" onChangeCriteria={onChangeCriteria} onChangeSubjects={onChangeSubjects}/>
         </AccordionDetails>
-      </Accordion>
+
+      </AccordionStyled>
     </Box>
+
   );
-}
+  
+};
+
+export default Elective;
