@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use \App\Models\Plan;
 
@@ -19,7 +18,7 @@ class PlansSeeder extends Seeder
             'user_id' => 1,
         ];
 
-        // Plan::create($plan);
-        Plan::factory(45)->create();
+        Plan::create($plan);
+        // Plan::factory(45)->create();
     }
 }

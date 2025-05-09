@@ -1,12 +1,11 @@
 import { createInertiaApp } from '@inertiajs/react'
+import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client'
-
-import GlobalStyles from './styles/GlobalStyles.jsx'
-
-import MUITheme from './styles/MUITheme.jsx'
+import { Global } from '@emotion/react'
 import { ThemeProvider } from '@mui/material/styles';
 
-import { AuthProvider } from './Hooks/useAuthContext.jsx';
+import globalStyles from './styles/globalStyles'
+import theme from './styles/theme'
 
 createInertiaApp({
   resolve: name => {
@@ -16,12 +15,12 @@ createInertiaApp({
   setup({ el, App, props }) {
     createRoot(el).render(
       <>
-        <AuthProvider>
-          <ThemeProvider theme={MUITheme}>
-            <GlobalStyles></GlobalStyles>
-            <App {...props} />
-          </ThemeProvider>
-        </AuthProvider>
+        <StrictMode>
+          <Global styles={globalStyles} />
+            <ThemeProvider theme={theme}>
+              <App {...props} />
+            </ThemeProvider>
+        </StrictMode>
       </>
     )
   },

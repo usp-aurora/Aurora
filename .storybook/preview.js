@@ -1,6 +1,6 @@
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { withThemeFromJSXProvider } from '@storybook/addon-themes';
-import theme from '../resources/js/styles/MUITheme';
+import theme from '../resources/js/styles/theme';
 
 /** @type { import('@storybook/react').Preview } */
 const preview = {
@@ -25,8 +25,6 @@ export const decorators = [
   }),
 ];
 
-export default preview;
-
 export const parameters = {
   backgrounds: {
     values: [
@@ -41,3 +39,5 @@ export const parameters = {
     ],
   },
 };
+
+export default preview;
