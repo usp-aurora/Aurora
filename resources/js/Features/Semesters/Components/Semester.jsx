@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Typography } from "@mui/material/";
+import { Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import Accordion from "../../../ui/Accordion/Accordion";

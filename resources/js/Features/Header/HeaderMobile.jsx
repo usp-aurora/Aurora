@@ -1,4 +1,4 @@
-import { Box, Typography } from '@mui/material/';
+import { Box, Typography } from '@mui/material';
 import { styled } from "@mui/material/styles";
 import Button from '../../ui/Buttons/Button';
 import Logo from '../../ui/Logo/Logo';

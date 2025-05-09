@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from '@mui/material/';
+import { Box, Stack, Typography } from '@mui/material';
 import { styled } from "@mui/material/styles";
 
 import Button from '../../ui/Buttons/Button';

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Plan;
 use App\Models\SuggestedPlan;
 use Illuminate\Support\Facades\Log;
+use function Spatie\LaravelPdf\Support\pdf;
 
 class PlanController extends Controller
 {
@@ -14,8 +15,7 @@ class PlanController extends Controller
     {
         if (auth()->user() == null) {
             $plans = SuggestedPlan::all();
-        }
-        else{
+        } else {
             $plans = Plan::where('user_id', auth()->user()->id)->get();
         }
 
@@ -36,6 +36,43 @@ class PlanController extends Controller
         }
 
         return $groupedPlans;
+    }
+
+    public function export()
+    {
+        $plans = Plan::where('user_id', 1)->get();
+
+        if ($plans->isEmpty()) {
+            return response()->json(['error' => 'No plans available to export.'], 400);
+        }
+
+
+        $plans_subjects_grouped_by_semester = $plans->groupBy('semester')->map(function ($semester) {
+            $formatted_semester = $semester->map(function ($plan) {
+                return [
+                    'name' => $plan->subject->name,
+                    'code' => $plan->subject->code,
+                    'lecture_credits' => $plan->subject->lecture_credits,
+                    'work_credits' => $plan->subject->work_credits,
+                ];
+            });
+            $formatted_semester['total_credits'] = $formatted_semester->sum('lecture_credits') + $formatted_semester->sum('work_credits');
+            return $formatted_semester;
+        });
+
+        $semesterCount = $plans_subjects_grouped_by_semester->count();
+        $half = max(1, intval($semesterCount / 2));
+        $chunks = $plans_subjects_grouped_by_semester->sortKeys()->chunk($half)->values();
+
+        $completed_semesters = $chunks->get(0, collect());
+        $planned_semesters   = $chunks->get(1, collect());
+        
+        return pdf()->view('exportTemplate', [
+            'user_name' => "Daiqui Teixeira Inacio",
+            'user_code' => 123213123,
+            'completed_semesters' => $completed_semesters,
+            'planned_semesters' => $planned_semesters
+        ])->name('export.pdf');
     }
 
     public function sync(Request $request)

@@ -1,4 +1,4 @@
-import { Box, Typography } from '@mui/material/';
+import { Box, Typography } from '@mui/material';
 import { styled } from "@mui/material/styles";
 
 const TextContainer = styled( Box )(() => ({
