@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\Subject;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Subject>
@@ -18,7 +19,7 @@ class SubjectFactory extends Factory
     {
         return [
             'name' => $this->generateName(),
-            'code' => $this->generateCustomCode(),
+            'code' => $this->generateUniqueCode(),
             'syllabus' => $this->faker->sentence(20),
             'lecture_credits' => $this->faker->numberBetween(2, 4),
             'work_credits' => $this->faker->numberBetween(0, 2)
@@ -39,15 +40,18 @@ class SubjectFactory extends Factory
     }
 
     /**
-     * Generate some subjects code.
+     * Generate a unique subject code.
      *
      * @return string
      */
-    private function generateCustomCode()
+    private function generateUniqueCode()
     {
-        $letters = "MAC";// strtoupper($this->faker->lexify('???'));
-        $numbers = $this->faker->numerify('####'); // Generates 4 random numbers
-        
-        return $letters . $numbers;
+        do {
+            $letters = "MAC";
+            $numbers = $this->faker->numerify('####'); // Generates 4 random numbers
+            $code = $letters . $numbers;
+        } while (Subject::where('code', $code)->exists()); // Check if the code already exists in the database
+
+        return $code;
     }
 }

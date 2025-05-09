@@ -1,84 +1,80 @@
-import styled from 'styled-components';
-import React, { useState } from 'react';
-import Header from '../Components/Header/Header.jsx';
-import Semester from '../Components/Semesters/Semesters.jsx';
-import CoursePicker from '../Components/CoursePicker/CoursePicker.jsx';
-import AddDisciplinePopUp from '../Components/PopUps/AddDisciplinePopUp.jsx';
-import CoursePopUp from '../Components/PopUps/CoursePopUp.jsx';
+import { Box, Stack, useMediaQuery } from "@mui/material";
+import { styled, useTheme } from "@mui/material/styles";
+import { useState } from "react";
 
-const AppContainer = styled.div`
-  /* display: flex;
-  height: 100vh;
-  flex-direction: column;
+import Background from "../Features/Background/HomeBackground";
+import CompletionBar from "../Features/CompletionBar/CompletionBar";
+import { HeaderDesktop, HeaderMobile } from "../Features/Header";
+import Semesters from "../Features/Semesters/Semesters";
+import SubjectInfo from "../Features/SubjectInfo/SubjectInfo";
+import { SubjectPickerDesktop, SubjectPickerMobile } from "../Features/SubjectPicker/";
+import ToolBar from '../Features/ToolBar/ToolBar';
 
-  align-items: center;
-  justify-content: center;
-  background-color: grey; */
-`;
+import { PlansProvider } from "../Contexts/PlansContext";
+import { SubjectMapProvider } from "../Contexts/SubjectMapContext";
+import { DragAndDropProvider } from '../Features/DragAndDrop/DragAndDropContext';
+import { SubjectInfoProvider } from "../Features/SubjectInfo/SubjectInfoContext";
+import { SubjectPickerProvider } from "../Features/SubjectPicker/SubjectPickerContext";
 
-const ContentContainer = styled.div`
-  display: flex;
-  flex-grow: 1;
-`;
+const AppContainer = styled(Box)(() => ({
+    position: "relative",
+}));
 
+const ContentContainer = styled(Box)(({ theme }) => ({
+    display: "flex",
+    justifyContent: "center",
+    width: "100%",
+    padding: "8px",
+    overflow: "hidden", // Prevent general page from being scrollable
 
-const Home = ({ plans }) => {
+    [theme.breakpoints.up("sm")]: {
+        padding: "16px",
+    },
+}));
 
-  const [addDisciplineActive, setAddDisciplineActive] = useState(false);
-  const [coursePopUpActive, setCoursePopUpActive] = useState(false);
+const Home = ({ groups, initialPlans, subjects, user }) => {
+    const [isRecommendedView, setRecommendedView] = useState(false);
+    const theme = useTheme();
+    const isAboveSmall = useMediaQuery(theme.breakpoints.up('sm'));
 
-  const toggleDiscipline = () => {
-    setAddDisciplineActive(!addDisciplineActive);
-  }
-
-  const toggleCoursePopUp = () => {
-    setCoursePopUpActive(!coursePopUpActive);
-  }
-
-  const [course, setCourse] = useState({
-    pokeball_color: '',
-    pokemonURL: '',
-    title: '',
-    code: '',
-    tags: [{
-      color: '',
-      name: ''
-    }],
-    credits: [0,0],
-    desc: ''
-  })
-
-  const toggleCourse = (p_color, p_url, title, code, tags, credits, desc) => {
-    setCourse({
-      pokeball_color: p_color,
-      pokemonURL: p_url,
-      title: title,
-      code: code,
-      tags: tags,
-      credits: credits,
-      desc: desc
-    })
-  }
-
-  return (
-    <AppContainer>
-      <AddDisciplinePopUp isOpen={addDisciplineActive} onClose={toggleDiscipline} />
-      <CoursePopUp isOpen={coursePopUpActive} onClose={toggleCoursePopUp} 
-                    pokeball_color={course.pokeball_color} 
-                    pokemonURL={course.pokemonURL}
-                    title={course.title}
-                    code={course.code}
-                    tags={course.tags}
-                    credits={course.credits}
-                    desc={course.desc}
-      />
-      <Header />
-      <ContentContainer>
-        <Semester plans={plans} openCourse={toggleCoursePopUp} changeCourseDisplay={toggleCourse} />
-        <CoursePicker openCourse={toggleCoursePopUp} changeCourseDisplay={toggleCourse} openDisciplinePopUp={toggleDiscipline} />
-      </ContentContainer>
-    </AppContainer>
-  );
+    return (
+        <SubjectMapProvider subjectDataMap={subjects}>
+        <PlansProvider initialPlans={initialPlans} user={user}>
+        <SubjectInfoProvider>
+        <SubjectPickerProvider>
+        <DragAndDropProvider disabled={isRecommendedView}>
+            <AppContainer>
+                <SubjectInfo />
+                {!isAboveSmall && <SubjectPickerMobile groupsData={groups} />}
+                <Background />
+                <ContentContainer>
+                    <Stack spacing={{ xs: 1, sm: 2 }}>
+                        {isAboveSmall ? <HeaderDesktop /> : <HeaderMobile />}
+                        <Stack spacing={{ xs: 0, sm: 2 }} direction="row" sx={{ width: "100%", height: "100%" }}>
+                            <Stack spacing={{ xs: 1, sm: 2 }} sx={{ width: { xs: "100%", sm: "64%" } }}>
+                                <CompletionBar />
+                                <ToolBar
+                                    isRecommendedView={isRecommendedView}
+                                    toggleRecommendedView={() => setRecommendedView(prev => !prev)}
+                                />
+                                <Semesters isRecommendedView={isRecommendedView} />
+                            </Stack>
+                            {isAboveSmall &&
+                                (<Stack sx={{ flex: 1}}>        
+                                    <SubjectPickerDesktop groupsData={groups} />
+                                </Stack>)
+                            }
+                        </Stack>
+                    </Stack>
+                </ContentContainer>
+            </AppContainer>
+            
+        </DragAndDropProvider>
+        </SubjectPickerProvider>
+        </SubjectInfoProvider>
+        </PlansProvider>
+        </SubjectMapProvider>
+    );
 };
 
 export default Home;
