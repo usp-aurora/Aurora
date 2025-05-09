@@ -1,2 +1,15 @@
-aiohttp
-bs4
+aiohttp         3.9.5
+aiosignal       1.2.0
+attrs           23.1.0
+beautifulsoup4  4.12.3
+html5lib        1.1
+idna            3.7
+multi_key_dict  2.0.3
+pip             24.2
+python-dateutil 2.9.0.post0
+setuptools      72.1.0
+six             1.16.0
+soupsieve       2.5
+webencodings    0.5.1
+wheel           0.43.0
+yarl            1.9.3
