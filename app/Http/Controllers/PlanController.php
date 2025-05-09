@@ -15,8 +15,7 @@ class PlanController extends Controller
     {
         if (auth()->user() == null) {
             $plans = SuggestedPlan::all();
-        }
-        else{
+        } else {
             $plans = Plan::where('user_id', auth()->user()->id)->get();
         }
 
@@ -43,6 +42,11 @@ class PlanController extends Controller
     {
         $plans = Plan::where('user_id', 1)->get();
 
+        if ($plans->isEmpty()) {
+            return response()->json(['error' => 'No plans available to export.'], 400);
+        }
+
+
         $plans_subjects_grouped_by_semester = $plans->groupBy('semester')->map(function ($semester) {
             $formatted_semester = $semester->map(function ($plan) {
                 return [
@@ -56,16 +60,18 @@ class PlanController extends Controller
             return $formatted_semester;
         });
 
-        [$completed_semesters, $planned_semesters] = $plans_subjects_grouped_by_semester->split(2);
+        $semesterCount = $plans_subjects_grouped_by_semester->count();
+        $half = max(1, intval($semesterCount / 2));
+        $chunks = $plans_subjects_grouped_by_semester->sortKeys()->chunk($half)->values();
 
-        $half = $plans_subjects_grouped_by_semester->count() / 2;
-        [$completed_semesters, $planned_semesters] = $plans_subjects_grouped_by_semester->sortKeys()->chunk($half);
-
-        return pdf()->view('exportTemplate', [ 
+        $completed_semesters = $chunks->get(0, collect());
+        $planned_semesters   = $chunks->get(1, collect());
+        
+        return pdf()->view('exportTemplate', [
             'user_name' => "Daiqui Teixeira Inacio",
             'user_code' => 123213123,
-            'completed_semesters' => $completed_semesters, 
-            'planned_semesters' => $planned_semesters 
+            'completed_semesters' => $completed_semesters,
+            'planned_semesters' => $planned_semesters
         ])->name('export.pdf');
     }
 

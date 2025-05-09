@@ -56,6 +56,7 @@ const Home = ({ groups, initialPlans, subjects, user }) => {
                                 <ToolBar
                                     isRecommendedView={isRecommendedView}
                                     toggleRecommendedView={() => setRecommendedView(prev => !prev)}
+                                    user={user}
                                 />
                                 <Semesters isRecommendedView={isRecommendedView} />
                             </Stack>

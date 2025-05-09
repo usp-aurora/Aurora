@@ -8,6 +8,7 @@ import UndoIcon from '@mui/icons-material/Undo';
 import RedoIcon from '@mui/icons-material/Redo';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
+import Tooltip from '@mui/material/Tooltip';
 
 import IconWrapper from '../../ui/Icons/IconWrapper';
 import { usePlansContext } from '../../Contexts/PlansContext';
@@ -34,7 +35,15 @@ const StyledText = styled(Typography)(({ theme }) => ({
     }
 }));
 
-function ToolBar({ showCurriculum, toggleRecommendedView }) {
+const ExportIconWrapper = styled(IconWrapper)(({ theme, disabled }) => ({
+    backgroundColor: disabled ? theme.palette.grey[400] : theme.palette.primary.main,
+    color: disabled ? theme.palette.grey[600] : theme.palette.primary.contrastText,
+    cursor: disabled ? 'not-allowed' : 'pointer',
+    pointerEvents: disabled ? 'none' : 'auto',
+    transition: 'background 0.2s',
+}));
+
+function ToolBar({ showCurriculum, toggleRecommendedView, user }) {
     const { undo, redo, isSaved } = usePlansContext();
 
     useEffect(() => {
@@ -53,6 +62,12 @@ function ToolBar({ showCurriculum, toggleRecommendedView }) {
         };
     }, [undo, redo]);
 
+    const handleExport = () => {
+        if (user) {
+            window.open('/export', '_blank');
+        }
+    };
+
     return (
         <Container>   
             <Stack spacing={1} direction="row">
@@ -63,7 +78,15 @@ function ToolBar({ showCurriculum, toggleRecommendedView }) {
             <Stack spacing={1} direction="row">
                 {!isSaved && <CircularProgress size={20} color="inherit" />}
                 {/* <IconWrapper Icon={VisibilityOutlinedIcon} onClick={toggleRecommendedView} /> */}
-                {/* <IconWrapper Icon={FileDownloadOutlinedIcon} />  */}
+                <Tooltip title={user ? "Exportar planejamento" : "Faça login para exportar o planejamento"} placement="top">
+                    <span>
+                        <ExportIconWrapper
+                            Icon={FileDownloadOutlinedIcon}
+                            onClick={handleExport}
+                            disabled={!user}
+                        />
+                    </span>
+                </Tooltip>
             </Stack>
         </Container>
     );

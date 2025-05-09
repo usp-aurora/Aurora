@@ -17,6 +17,8 @@ Route::middleware('auth')->prefix('api/plans')->group(function () {
     // Route::delete('/{id}', [PlanController::class, 'destroy']);
 });
 
+Route::get('/export', [PlanController::class, 'export']);
+
 Route::get('/api/user', function () {
     return response()->json(Auth::user());
 });
