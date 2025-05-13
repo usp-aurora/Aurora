@@ -15,6 +15,7 @@ import { SubjectMapProvider } from "../Contexts/SubjectMapContext";
 import { DragAndDropProvider } from '../Features/DragAndDrop/DragAndDropContext';
 import { SubjectInfoProvider } from "../Features/SubjectInfo/SubjectInfoContext";
 import { SubjectPickerProvider } from "../Features/SubjectPicker/SubjectPickerContext";
+import { AddSubjectProvider } from "../Features/AddSubject/AddSubjectContext";
 
 const AppContainer = styled(Box)(() => ({
     position: "relative",
@@ -38,6 +39,7 @@ const Home = ({ groups, initialPlans, subjects, user }) => {
     const isAboveSmall = useMediaQuery(theme.breakpoints.up('sm'));
 
     return (
+        <AddSubjectProvider>
         <SubjectMapProvider subjectDataMap={subjects}>
         <PlansProvider initialPlans={initialPlans} user={user}>
         <SubjectInfoProvider>
@@ -69,12 +71,12 @@ const Home = ({ groups, initialPlans, subjects, user }) => {
                     </Stack>
                 </ContentContainer>
             </AppContainer>
-            
         </DragAndDropProvider>
         </SubjectPickerProvider>
         </SubjectInfoProvider>
         </PlansProvider>
         </SubjectMapProvider>
+        </AddSubjectProvider>
     );
 };
 
