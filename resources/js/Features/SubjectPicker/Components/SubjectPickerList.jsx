@@ -6,9 +6,8 @@ import Group from "./Group";
 const GroupContainer = styled(Box)(({ theme }) => ({
     display: "flex",
     flexDirection: "column",
-    height: "100vh",
+    height: "100%",
     width: "100%",
-    paddingBottom: "100vh",
     overflowY: "auto",
     gap: theme.spacing(2),
     borderRadius: "12px",
