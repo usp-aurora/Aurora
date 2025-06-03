@@ -13,7 +13,7 @@ const Container = styled( Box )(({ theme }) => ({
     alignItems: "center",
 
     ...glassmorphismStyle(theme, "level2"),
-
+    
     padding: theme.spacing(2),
     gap: theme.spacing(2),
     borderRadius: "12px",

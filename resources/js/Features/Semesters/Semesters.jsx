@@ -8,10 +8,9 @@ import AuxiliaryCard from "../../ui/Card/AuxiliaryCard";
 import Semester from "./Components/Semester";
 
 const SemestersContainer = styled(Stack)(({ }) => ({
-	height: "100vh",
+	height: "100%",
 	overflowY: "auto",
 	borderRadius: "12px",
-	paddingBottom: "100vh",
 }));
 
 const MemoizedSemester = memo(Semester);
