@@ -31,6 +31,7 @@ function calculateOpacity(index) {
 function drawStar(ctx, x, y, size, opacity) {
 	if (size < 20) {
 		drawSimpleStar(ctx, x, y, size, opacity);
+		return;
 	}
 	const scale = size / 25;
 
@@ -72,7 +73,7 @@ function Starfield({ themeMode = "dark", twinkling = true, starCount = 250, ...p
 	const stars = useMemo(() => {
 		return Array.from({ length: starCount }).map((_, index) => ({
 			x: Math.random(),
-			y: Math.random() * 2,
+			y: Math.random(),
 			size: (Math.random() + 0.1) * 25,
 			baseOpacity: calculateOpacity(index),
 			twinklePhase: Math.random() * Math.PI * 2,
@@ -94,6 +95,7 @@ function Starfield({ themeMode = "dark", twinkling = true, starCount = 250, ...p
 			const rect = canvas.getBoundingClientRect();
 			canvas.width = rect.width * window.devicePixelRatio;
 			canvas.height = rect.height * window.devicePixelRatio;
+			ctx.resetTransform();
 			ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
 		};
 
