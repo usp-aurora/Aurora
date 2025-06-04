@@ -6,9 +6,6 @@ const globalStyles = css`
     margin: 0;
     padding: 0;
   }
-  body {
-    overflow: hidden;
-  }
   ::-webkit-scrollbar {
     width: 3px;
   }
