@@ -5,7 +5,7 @@ O banco de dados do sistema utiliza MySQL, já o banco do Jupiter utiliza MS SQL
 # Instalação 
 ## Pré-requisitos
 Para instalar o sistema na sua máquina local, você precisa as seguintes ferramentas instaladas:
-- PHP >8.0 & <=8.3
+- PHP >8.1 & <8.3
 - [Composer](https://getcomposer.org/download/)
 - MySQL, instale e configure o um banco de dados vazio para o sistema. (No Linux, utilize o [MariaDB](https://mariadb.org/))
 

@@ -3,18 +3,44 @@
     "type": "module",
     "scripts": {
         "dev": "vite",
-        "build": "vite build"
+        "build": "vite build",
+        "storybook": "storybook dev -p 6006",
+        "build-storybook": "storybook build"
     },
     "devDependencies": {
+        "@chromatic-com/storybook": "^3.2.4",
+        "@storybook/addon-backgrounds": "^8.5.3",
+        "@storybook/addon-essentials": "^8.5.3",
+        "@storybook/addon-interactions": "^8.5.3",
+        "@storybook/addon-onboarding": "^8.5.3",
+        "@storybook/addon-themes": "^8.5.3",
+        "@storybook/blocks": "^8.5.3",
+        "@storybook/react": "^8.5.3",
+        "@storybook/react-vite": "^8.5.3",
+        "@storybook/test": "^8.5.3",
         "@vitejs/plugin-react": "^4.3.1",
         "axios": "^1.6.4",
         "laravel-vite-plugin": "^1.0",
+        "prop-types": "^15.8.1",
+        "storybook": "^8.5.3",
         "vite": "^5.0"
     },
     "dependencies": {
+        "@dnd-kit/core": "^6.1.0",
+        "@dnd-kit/modifiers": "^7.0.0",
+        "@dnd-kit/sortable": "^8.0.0",
+        "@dnd-kit/utilities": "^3.2.2",
+        "@emotion/react": "^11.14.0",
+        "@emotion/styled": "^11.14.0",
+        "@fontsource/material-icons": "^5.1.1",
+        "@fontsource/roboto": "^5.1.1",
+        "@inertiajs/inertia": "^0.11.1",
         "@inertiajs/react": "^1.2.0",
+        "@mui/icons-material": "^7.1.0",
+        "@mui/material": "^7.1.0",
+        "puppeteer": "^24.8.2",
         "react": "^18.3.1",
         "react-dom": "^18.3.1",
-        "styled-components": "^6.1.13"
+        "react-spinners": "^0.15.0"
     }
 }
