@@ -39,13 +39,17 @@ class PlanController extends Controller
     }
 
     public function export()
-    {
-        $plans = Plan::where('user_id', 1)->get();
+    {   
+        $user = auth()->user();
+        if ($user == null) {
+            return response()->json(['error' => 'User not authenticated.'], 401);
+        }
+
+        $plans = Plan::where('user_id', $user->id)->get();
 
         if ($plans->isEmpty()) {
             return response()->json(['error' => 'No plans available to export.'], 400);
         }
-
 
         $plans_subjects_grouped_by_semester = $plans->groupBy('semester')->map(function ($semester) {
             $formatted_semester = $semester->map(function ($plan) {
