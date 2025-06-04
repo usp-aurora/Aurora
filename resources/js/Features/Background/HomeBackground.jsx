@@ -13,7 +13,7 @@ const BackgroundComponent = styled(Starfield)(() => ({
 
 const Background = () => {
 	return (
-		<BackgroundComponent themeMode="dark" />
+		<BackgroundComponent themeMode="dark" twinkling={true} />
   	);
 };
 
