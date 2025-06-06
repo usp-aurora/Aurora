@@ -3,6 +3,7 @@ import Dialog from '../../ui/Dialog/Dialog'
 import Button from '../../ui/Buttons/Button';
 import { TextField, MenuItem, Box } from '@mui/material';
 import axios from 'axios';
+import { useSubjectMapContext } from '../../Contexts/SubjectMapContext';
 
 const AddSubjectContext = createContext();
 
@@ -59,6 +60,7 @@ function useAddSubjectContext() { return useContext(AddSubjectContext) }
 
 function AddSubjectForm() {
     const { addSubjectToGroup } = useAddSubjectContext();
+    const { addUserSubject } = useSubjectMapContext();
     const [formData, setFormData] = useState({
         code: '',
         name: '',
@@ -95,18 +97,26 @@ function AddSubjectForm() {
 
     const handleAddClick = async () => {
         console.log('Adding subject:', formData);
-        // addSubjectToGroup(formData.code, formData.type);
         const subjectData = {
             code: formData.code,
             name: formData.name,
-            syllabus: formData.name, // Add a field for syllabus if you want user input
-            lecture_credits: formData.creditsClass,
-            work_credits: formData.creditsWork,
+            syllabus: formData.name,
+            credits: [formData.creditsClass, formData.creditsWork],
+            groups: ["Livres"]
         };
         const result = await saveSubjectWithServer(subjectData);
         if (result == 200) {
             console.log('Subject added successfully');
+
+            addUserSubject(subjectData);
             addSubjectToGroup(formData.code, "Livres");
+            setFormData({
+                code: '',
+                name: '',
+                creditsClass: '',
+                creditsWork: '',
+                type: '',
+            });
         }
     };
 
