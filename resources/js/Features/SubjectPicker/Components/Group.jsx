@@ -8,9 +8,9 @@ import CompletionMetrics from "./Completion/CompletionMetrics";
 import SubGroup from "./SubGroup";
 import SubjectsContainer from "./SubjectsContainer";
 
-import { usePlansContext } from "../../../Contexts/PlansContext";
-import { useSubjectMapContext } from "../../../Contexts/SubjectMapContext";
-import { isComplete, memoizedCalculateRequirements, requirementTypes } from '../utils/completionUtils';
+import { usePlansContext } from "@/Contexts/PlansContext";
+import { useSubjectMapContext } from "@/Contexts/SubjectMapContext";
+import { isComplete, calculateRequirements, requirementTypes } from '../utils/completionUtils';
 
 const GroupContainer = styled("div")(({ theme }) => ({
     display: "flex",
@@ -40,7 +40,7 @@ const Group = ({ groupData, expanded, onClick }) => {
     const { subjectDataMap } = useSubjectMapContext();
     
     const metrics = useMemo(() => 
-        memoizedCalculateRequirements(groupData, plansSet, subjectDataMap),
+        calculateRequirements(groupData, plansSet, subjectDataMap),
         [groupData, plansSet, subjectDataMap]
     );
 

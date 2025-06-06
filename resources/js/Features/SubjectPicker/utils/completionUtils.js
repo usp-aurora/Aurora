@@ -10,118 +10,110 @@ const requirementTypes = {
 };
 
 /**
- * Calculates completion metrics for a group and its subgroups
- * @param {Object} groupData - The group structure containing subjects and subgroups
- * @param {Set} plansSet - Set of selected subject IDs
- * @param {Object} subjectDataMap - Map of subject data containing credits info
- * @returns {Object} Metrics object with credits, subjects, blocks and mandatory status
+ * Initialize a new metrics object
  */
-function calculateRequirements(groupData, plansSet, subjectDataMap) {
-    // Initialize metrics object
-    const metrics = {
-        "créditos": 0,
-        "disciplinas": 0,
-        "blocos": 0,
-        "mandatoryMet": true  // Tracks if all mandatory requirements are met
-    };
+const createMetrics = () => ({
+    créditos: 0,
+    disciplinas: 0,
+    blocos: 0,
+    mandatoryMet: true
+});
 
-    // Early return if no subject data is available
-    if (!subjectDataMap) return metrics;
+/**
+ * Safely get credits from subject data
+ */
+const getSubjectCredits = (subject) => {
+    if (!subject?.credits?.length) return 0;
+    return (subject.credits[0] || 0) + (subject.credits[1] || 0);
+};
 
-    // Process subjects in the current group
-    if (groupData.subjects) {
-        // Find and verify mandatory subjects completion
-        // const mandatorySubjects = groupData.subjects.filter(subject => subject.mandatory);
-        // const allMandatoryCompleted = mandatorySubjects.every(subject => 
-        //    plansSet.has(subject)
-        // );
-        // metrics.mandatoryMet = allMandatoryCompleted;
+/**
+ * Pure version of the metrics calculator (receives recursive call fn)
+ */
+const _calculateGroupMetrics = (
+    group,
+    plansSet,
+    subjectDataMap,
+    recurse // <- the memoized function is passed here
+) => {
+    console.log("Calculating metrics for group:", group.id);
+    const metrics = createMetrics();
+    const processedSubjects = new Set();
 
-        // Calculate metrics for each subject
-        groupData.subjects.forEach(subject => {
-            if (plansSet.has(subject)) {
-                const subjectData = subjectDataMap[subject];
-                
-                // Only count credits/subjects if not mandatory
-                // if (!subject.mandatory) {
-                    // Sum lecture and work credits
-                    metrics[requirementTypes["Créditos"]] += 
-                        Number(subjectData.credits[0]) + Number(subjectData.credits[1]);
-                    metrics[requirementTypes["Matérias"]] += 1;
-                // }
+    if (group.subjects) {
+        const mandatoryMet = group.subjects
+            .filter(subject => subject.mandatory)
+            .every(subject => plansSet.has(subject.code));
+        
+        metrics.mandatoryMet = mandatoryMet;
+
+        group.subjects.forEach(subject => {
+            if (!plansSet.has(subject.code) || processedSubjects.has(subject.code)) return;
+
+            processedSubjects.add(subject.code);
+            if (!subject.mandatory) {
+                metrics.créditos += getSubjectCredits(subjectDataMap[subject.code]);
+                metrics.disciplinas += 1;
             }
         });
     }
 
-    // Process subgroups recursively
-    if (groupData.subgroups) {
-        groupData.subgroups.forEach(subgroup => {
-            // Calculate metrics for subgroup
-            const subMetrics = calculateRequirements(subgroup, plansSet, subjectDataMap);
-            const subCompleted = isComplete(subgroup, subMetrics);
+    if (group.subgroups) {
+        group.subgroups.forEach(subgroup => {
+            const subMetrics = recurse(subgroup, plansSet, subjectDataMap);
 
-            // Update mandatory status based on subgroup completion
-            // if (subgroup.mandatory) {
-            //    metrics.mandatoryMet = metrics.mandatoryMet && subCompleted;
-            // }
-            
-            // Only count non-mandatory completed subgroups as blocks
-            if (subCompleted) {
-                metrics[requirementTypes["Blocos"]] += 1;
+            if (subgroup.mandatory) {
+                metrics.mandatoryMet &&= subMetrics.mandatoryMet;
             }
 
-            // Add metrics from non-mandatory subgroups to total
-            // if (!subgroup.mandatory) {
-                metrics[requirementTypes["Créditos"]] += subMetrics[requirementTypes["Créditos"]];
-                metrics[requirementTypes["Matérias"]] += subMetrics[requirementTypes["Matérias"]];
-            //}
+            if (isComplete(subgroup, subMetrics)) {
+                metrics.blocos += 1;
+            }
+
+            subgroup.subjects?.forEach(subject => {
+                if (!plansSet.has(subject.code) || processedSubjects.has(subject.code)) return;
+
+                processedSubjects.add(subject.code);
+                metrics.créditos += getSubjectCredits(subjectDataMap[subject.code]);
+                metrics.disciplinas += 1;
+            });
         });
     }
 
     return metrics;
-}
+};
 
 /**
- * Checks if a group meets all its completion requirements
- * @param {Object} groupData - The group data containing completion requirements
- * @param {Object} metrics - The calculated metrics for the group
- * @returns {boolean} True if all requirements are met
+ * Check if a group meets all requirements
  */
-function isComplete(groupData, metrics) {
-    // Early return if no requirements defined
-    if (!groupData.completionRequirements) {
-        return false;
-    }
-    
-    // First check if all mandatory items are completed
-    if (!metrics.mandatoryMet) {
-        return false;
-    }
-    
-    // Then verify all numerical requirements are met
-    return groupData.completionRequirements.every(req => {
-        switch (req.type) {
-            case "Créditos": return metrics[requirementTypes[req.type]] >= req.value;
-            case "Matérias": return metrics[requirementTypes[req.type]] >= req.value;
-            case "Blocos": return metrics[requirementTypes[req.type]] >= req.value;
-            default: return false;
-        }
+const isComplete = (group, metrics) => {
+    if (!metrics.mandatoryMet) return false;
+    if (!group.completionRequirements?.length) return true;
+
+    return group.completionRequirements.every(requirement => {
+        const metricKey = requirementTypes[requirement.type];
+        return metrics[metricKey] >= requirement.value;
     });
-}
+};
 
-/**
- * Memoized version of calculateRequirements for performance
- * Uses group title and selected subjects as cache key
- */
-const memoizedCalculateRequirements = memoize(
-    (groupData, plansSet, subjectDataMap) => calculateRequirements(groupData, plansSet, subjectDataMap),
-    (groupData, plansSet, _) => {
-        const selectedSubjects = Array.from(plansSet)
-            .filter(subject => groupData.subjects.includes(subject))
-            .map(subject => subject.id)
-            .join(',');
-        return `${groupData.title}-${selectedSubjects}`;
-    }
+// ⚡️ Build the memoized version here with self-reference via closure
+const memoizedCalculateGroupMetrics = memoize(
+    (group, plansSet, subjectDataMap) =>
+        _calculateGroupMetrics(group, plansSet, subjectDataMap, memoizedCalculateGroupMetrics),
+    (group, _plansSet, _subjectDataMap) => group.id
 );
 
-export { isComplete, memoizedCalculateRequirements, requirementTypes };
+/**
+ * Clear memoization cache
+ */
+const clearCalculationCache = () => {
+    memoizedCalculateGroupMetrics.cache.clear();
+};
+
+// 🧠 Exported as calculateRequirements
+export {
+    isComplete,
+    memoizedCalculateGroupMetrics as calculateRequirements,
+    requirementTypes,
+    clearCalculationCache
+};

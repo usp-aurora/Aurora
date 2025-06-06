@@ -16,8 +16,9 @@ class GroupSubjectsSeeder extends Seeder
         $groupSubjects = [
             [
                 'id' => 1,
-                'group_id' => 4,
+                'group_id' => 3,
                 'subject_code' => "MAC0425",
+                'mandatory' => true
             ],
             [
                 'id' => 2,
@@ -228,16 +229,18 @@ class GroupSubjectsSeeder extends Seeder
                 'group_id' => 12, 
                 'subject_code' => "MAC0385", 
             ],
-            // Obrigatórias de algoritmos - Grupo 13
+            // Obrigatórias de Algoritmos (Grupo 12)
             [
                 'id' => 43, 
-                'group_id' => 13, 
+                'group_id' => 12, 
                 'subject_code' => "MAC0328", 
+                'mandatory' => true
             ],
             [
                 'id' => 44, 
-                'group_id' => 13, 
+                'group_id' => 12, 
                 'subject_code' => "MAC0414", 
+                'mandatory' => true
             ],
             // Matemática Discreta - Grupo 14
             [
@@ -320,21 +323,24 @@ class GroupSubjectsSeeder extends Seeder
                 'group_id' => 14, 
                 'subject_code' => "MAT0311", 
             ],
-            // Obrigatórias Matemática Discreta - Grupo 15
+            // Obrigatórias Matemática Discreta (Grupo 14)
             [
                 'id' => 61, 
-                'group_id' => 15, 
-                'subject_code' => "MAC0320", 
+                'group_id' => 14, 
+                'subject_code' => "MAC0320",
+                'mandatory' => true
             ],
             [
                 'id' => 62, 
-                'group_id' => 15, 
-                'subject_code' => "MAT0206", 
+                'group_id' => 14, 
+                'subject_code' => "MAT0206",
+                'mandatory' => true
             ],
             [
                 'id' => 63, 
-                'group_id' => 15, 
-                'subject_code' => "MAT0264", 
+                'group_id' => 14, 
+                'subject_code' => "MAT0264",
+                'mandatory' => true
             ],
             // Otimização - Grupo 16
             [
@@ -387,22 +393,25 @@ class GroupSubjectsSeeder extends Seeder
                 'group_id' => 16, 
                 'subject_code' => "MAC0691", 
             ],
-            // Otimização - Grupo 17
+            // Obrigatórias de Otimização (Grupo 16)
             [
                 'id' => 74, 
-                'group_id' => 17, 
-                'subject_code' => "MAC0315", 
+                'group_id' => 16, 
+                'subject_code' => "MAC0315",
+                'mandatory' => true
             ],
             [
                 'id' => 75, 
-                'group_id' => 17, 
-                'subject_code' => "MAC0325", 
+                'group_id' => 16, 
+                'subject_code' => "MAC0325",
+                'mandatory' => true
             ],
             // Núcleo de disciplinas de Ciência de Dados - Grupo 20
             [
                 'id' => 76, 
                 'group_id' => 20, 
                 'subject_code' => "MAC0460", 
+                'mandatory' => true
             ],
 
             // Pelo menos uma disciplina de Processamento de sinais: - Grupo 21
@@ -542,7 +551,7 @@ class GroupSubjectsSeeder extends Seeder
                 'subject_code' => "MAE0515", 
             ],
 
-            // Disciplinas recomendadas para complementar a formação em outras unidades: - Grupo 27        
+            // Disciplinas recomendadas para complementar a formação em outras unidades: - Grupo 27
             [
                 'id' => 102, 
                 'group_id' => 27, 
@@ -618,115 +627,138 @@ class GroupSubjectsSeeder extends Seeder
                 'group_id' => 28,
                 'subject_code' => 'MAC0101',
             ],
+            // Disciplinas obrigatórias - Grupo 28
             [	
                 'id' => 117,
                 'group_id' => 28,
                 'subject_code' => 'MAC0105',
+                'mandatory' => true
             ],
             [	
                 'id' => 118,
                 'group_id' => 28,
                 'subject_code' => 'MAC0110',
+                'mandatory' => true
             ],
             [	
                 'id' => 119,
                 'group_id' => 28,
                 'subject_code' => 'MAC0329',
+                'mandatory' => true
             ],
             [	
                 'id' => 120,
                 'group_id' => 28,
                 'subject_code' => 'MAT2453',
+                'mandatory' => true
             ],
             [	
                 'id' => 121,
                 'group_id' => 28,
                 'subject_code' => 'MAT0112',
+                'mandatory' => true
             ],
             [	
                 'id' => 122,
                 'group_id' => 28,
                 'subject_code' => 'MAC0121',
+                'mandatory' => true
             ],
             [	
                 'id' => 123,
                 'group_id' => 28,
                 'subject_code' => 'MAC0216',
+                'mandatory' => true
             ],
             [	
                 'id' => 124,
                 'group_id' => 28,
                 'subject_code' => 'MAC0239',
+                'mandatory' => true
             ],
             [	
                 'id' => 125,
                 'group_id' => 28,
                 'subject_code' => 'MAE0119',
+                'mandatory' => true
             ],
             [	
                 'id' => 126,
                 'group_id' => 28,
                 'subject_code' => 'MAT2454',
+                'mandatory' => true
             ],
             [	
                 'id' => 127,
                 'group_id' => 28,
                 'subject_code' => 'MAT0122',
+                'mandatory' => true
             ],
             [	
                 'id' => 128,
                 'group_id' => 28,
                 'subject_code' => 'MAC0102',
+                'mandatory' => true
             ],
             [	
                 'id' => 129,
                 'group_id' => 28,
                 'subject_code' => 'MAC0209',
+                'mandatory' => true
             ],
             [	
                 'id' => 130,
                 'group_id' => 28,
                 'subject_code' => 'MAC0210',
+                'mandatory' => true
             ],
             [	
                 'id' => 131,
                 'group_id' => 28,
                 'subject_code' => 'MAC0323',
+                'mandatory' => true
             ],
             [	
                 'id' => 132,
                 'group_id' => 28,
                 'subject_code' => 'MAT0236',
+                'mandatory' => true
             ],
             [	
                 'id' => 133,
                 'group_id' => 28,
                 'subject_code' => 'MAC0316',
+                'mandatory' => true
             ],
             [	
                 'id' => 134,
                 'group_id' => 28,
                 'subject_code' => 'MAC0338',
+                'mandatory' => true
             ],
             [	
                 'id' => 135,
                 'group_id' => 28,
                 'subject_code' => 'MAC0350',
+                'mandatory' => true
             ],
             [	
                 'id' => 136,
                 'group_id' => 28,
                 'subject_code' => 'MAC0422',
+                'mandatory' => true
             ],
             [	
                 'id' => 137,
                 'group_id' => 28,
                 'subject_code' => 'FLC0474',
+                'mandatory' => true
             ],
             [	
                 'id' => 138,
                 'group_id' => 28,
                 'subject_code' => 'MAC0499',
+                'mandatory' => true
             ]
         ];
 

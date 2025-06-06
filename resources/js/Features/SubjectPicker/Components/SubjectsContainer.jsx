@@ -11,18 +11,19 @@ const SubjectsContainer = ({ containerName, subjects }) => {
 	return (
 		<CardsGrid>
 			{subjects.map((subject) => {
-				const isBlocked = plansSet.has(subject);
-				const subjectData = subjectDataMap[subject];
+				const isBlocked = plansSet.has(subject.code);
+				const subjectData = subjectDataMap[subject.code];
 				if(!subjectData) return null;
 
 				return (
 					<SortableCard
-						key={subject}
-						id={`${subject}@${containerName}`}
-						subjectCode={subject}
+						key={subject.code}
+						id={`${subject.code}@${containerName}`}
+						subjectCode={subject.code}
 						container="subjectPicker"
 						isBlocked={isBlocked}
-						requiredScheduled={false}/>
+						requiredScheduled={false}
+					/>
 				);
 			})}
 		</CardsGrid>

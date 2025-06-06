@@ -25,24 +25,29 @@ class GroupController extends Controller {
     {
         $group = DB::table('groups')
             ->where('groups.id', '=', $groupId)
-            ->select(["title", "description", "id"])
+            ->select(["title", "description", "mandatory", "id"])
             ->first();
 
         $groupJSON = [
+            'id' => $group->id,
             'title' => $group->title,
             'description' => $group->description,
+            'mandatory' => $group->mandatory,
             'completionRequirements' => [],
             'subjects' => [],
             'subgroups' => []
         ];
-
         $subjects = DB::table('group_subjects')
             ->where('group_subjects.group_id', '=', $group->id)
-            ->select(["group_subjects.subject_code"])->get();
+            ->orderBy('group_subjects.mandatory', 'desc')
+            ->select(["group_subjects.subject_code", "group_subjects.mandatory"])
+            ->get();
 
         foreach ($subjects as $subject) {
-            $groupJSON['subjects'][] = $subject->subject_code;
-        }
+            $groupJSON['subjects'][] = [
+                'code' => $subject->subject_code,
+                'mandatory' => $subject->mandatory
+            ];}
 
         $completionRequirements = DB::table('completion_requirements')
             ->where('completion_requirements.group_id', '=', $group->id)
