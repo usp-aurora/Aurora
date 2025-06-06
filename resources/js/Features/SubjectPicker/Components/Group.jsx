@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { styled } from "@mui/material/styles";
 import { Typography } from "@mui/material";
 
@@ -6,6 +7,10 @@ import CompletionHeader from "./Completion/CompletionHeader";
 import CompletionMetrics from "./Completion/CompletionMetrics";
 import SubGroup from "./SubGroup";
 import SubjectsContainer from "./SubjectsContainer";
+
+import { usePlansContext } from "../../../Contexts/PlansContext";
+import { useSubjectMapContext } from "../../../Contexts/SubjectMapContext";
+import { isComplete, memoizedCalculateRequirements, requirementTypes } from '../utils/completionUtils';
 
 const GroupContainer = styled("div")(({ theme }) => ({
     display: "flex",
@@ -31,13 +36,35 @@ const SubGroupContainer = styled("div")(({ theme }) => ({
 }));
 
 const Group = ({ groupData, expanded, onClick }) => {
+    const { plansSet } = usePlansContext();
+    const { subjectDataMap } = useSubjectMapContext();
+    
+    const metrics = useMemo(() => 
+        memoizedCalculateRequirements(groupData, plansSet, subjectDataMap),
+        [groupData, plansSet, subjectDataMap]
+    );
+
+    const completed = useMemo(() => 
+        isComplete(groupData, metrics),
+        [groupData, metrics]
+    );
+
+    const completionMetrics = useMemo(() => 
+        groupData.completionRequirements.map((requirement) => ({
+            name: requirementTypes[requirement.type],
+            value: metrics[requirementTypes[requirement.type]],
+            total: requirement.value,
+        })),
+        [groupData.completionRequirements, metrics]
+    );
+
     return (
         <Accordion
             summary={
                 <CompletionHeader
                     title={groupData.title}
                     color={"red"}
-                    completed={false}
+                    completed={completed}
                 />
             }
             expanded={expanded}
@@ -45,20 +72,7 @@ const Group = ({ groupData, expanded, onClick }) => {
             TransitionProps={{ unmountOnExit: true }}
         >
             <GroupContainer>
-                {/* <CompletionMetrics
-                    metrics={[
-                        {
-                            name: "disciplinas",
-                            value: "10",
-                            total: "50",
-                        },
-                        {
-                            name: "blocos",
-                            value: "9",
-                            total: "10",
-                        },
-                    ]}
-                /> */}
+                <CompletionMetrics metrics={completionMetrics}/>
                 <GroupText>{groupData.description}</GroupText>
                 <SubjectsContainer
                     containerName={groupData.title}

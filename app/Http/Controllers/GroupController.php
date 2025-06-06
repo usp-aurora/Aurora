@@ -31,6 +31,7 @@ class GroupController extends Controller {
         $groupJSON = [
             'title' => $group->title,
             'description' => $group->description,
+            'completionRequirements' => [],
             'subjects' => [],
             'subgroups' => []
         ];
@@ -41,6 +42,17 @@ class GroupController extends Controller {
 
         foreach ($subjects as $subject) {
             $groupJSON['subjects'][] = $subject->subject_code;
+        }
+
+        $completionRequirements = DB::table('completion_requirements')
+            ->where('completion_requirements.group_id', '=', $group->id)
+            ->select(["type", "completion_value"])->get();
+
+        foreach ($completionRequirements as $requirement) {
+            $groupJSON['completionRequirements'][] = [
+                'type' => $requirement->type,
+                'value' => $requirement->completion_value
+            ];
         }
 
         $subgroups = DB::table('groups')

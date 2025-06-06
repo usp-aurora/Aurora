@@ -1,7 +1,12 @@
+import { useMemo } from "react";
 import { styled } from "@mui/material/styles";
 import { Typography } from "@mui/material";
 
 import SubjectsContainer from "./SubjectsContainer";
+
+import { usePlansContext } from "../../../Contexts/PlansContext";
+import { useSubjectMapContext } from "../../../Contexts/SubjectMapContext";
+import { memoizedCalculateRequirements, requirementTypes } from '../utils/completionUtils';
 
 const SubGroupContainer = styled("div")(({ theme, depth }) => ({
     display: "flex",
@@ -39,12 +44,30 @@ const SubGroupText = styled(Typography)(({ theme }) => ({
     },
 }));
 
-const SubGroup = ({ depth, subgroupData }) => {    
+const SubGroup = ({ depth, subgroupData }) => {
+    const { plansSet } = usePlansContext();
+    const { subjectDataMap } = useSubjectMapContext();
+    
+    const metrics = useMemo(() => 
+        memoizedCalculateRequirements(subgroupData, plansSet, subjectDataMap),
+        [subgroupData, plansSet, subjectDataMap]
+    );
+    
+    const completionMetrics = subgroupData.completionRequirements.map((requirement) => ({
+        name: requirementTypes[requirement.type],
+        value: metrics[requirementTypes[requirement.type]],
+        total: requirement.value,
+    }));
+
     return (
         <SubGroupContainer depth={depth}>
             <SubGroupHeader>
                 <SubGroupTitle>{subgroupData.title}</SubGroupTitle>
-                {/* <SubGroupText>99/99 créditos</SubGroupText> */}
+                {completionMetrics.map(metric => (
+                    <SubGroupText key={metric.name}>
+                        {metric.value}/{metric.total} {metric.name}
+                    </SubGroupText>
+                ))}
             </SubGroupHeader>
             <SubGroupText>{subgroupData.description}</SubGroupText>
             {subgroupData.subgroups.map((subgroup) => (
