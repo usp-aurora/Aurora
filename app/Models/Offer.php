@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Faker\Factory as Faker;
 
-# Fechou
 class Offer extends Model
 {
     protected $connection = "jupiter";

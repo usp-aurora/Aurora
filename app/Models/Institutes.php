@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 use Faker\Factory as Faker;
 use Illuminate\Support\Facades\DB;
 
-# Fechou.
 class Institutes extends Model
 {
     protected $connection = "jupiter";

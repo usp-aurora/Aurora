@@ -4,8 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Faker\Factory as Faker;
+use Illuminate\Support\Facades\DB;
 
-# Fechou.
 class CurriculumTable extends Model
 {
     protected $connection = "jupiter";

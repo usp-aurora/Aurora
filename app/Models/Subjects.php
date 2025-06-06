@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Faker\Factory as Faker;
 
-# Fechou
 class Subjects extends Model
 {
     protected $connection = "jupiter";
@@ -30,7 +29,7 @@ class Subjects extends Model
                     'd.dtacad AS created_at',
                     'd.dtaultalt AS updated_at'
                 )
-                ->from('DISCIPLINAGR d');
+                ->from('DISCIPLINAGR as d');
             }, 'subtable');
         }
 
