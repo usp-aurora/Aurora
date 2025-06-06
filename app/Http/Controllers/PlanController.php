@@ -84,27 +84,36 @@ class PlanController extends Controller
 
         try {
             foreach ($changes as $change) {
-                $existingPlan = $userPlans->where('subject_code', $change['subject_code'])->first();
+                $subjectCode = $change['subject_code'];
+                $existingPlan = $userPlans->where('subject_code', $subjectCode)->first();
+
+                // Check if subject_code exists in subjects or user_own_subjects
+                $subjectExists = \DB::table('subjects')->where('code', $subjectCode)->exists();
+                $userOwnSubjectExists = \DB::table('user_own_subjects')->where('code', $subjectCode)->where('user_id', $userId)->exists();
+                if (!$subjectExists && !$userOwnSubjectExists) {
+                    continue; // skip this change if code is not found in either table
+                }
+
                 if ($existingPlan && isset($change['semester'])) {
-                    $this->update($change['subject_code'], $change['semester'], $existingPlan['id']);
+                    $this->update($subjectCode, $change['semester'], $existingPlan['id'], $subjectExists, $userOwnSubjectExists);
 
                     $changedPlans[] = [
                         'id' => $existingPlan['id'],
-                        'subject_code' => $change['subject_code'],
+                        'subject_code' => $subjectCode,
                         'action' => 'updated',
                     ];
                 } elseif (!$existingPlan && isset($change['semester'])) {
-                    $this->store($change['subject_code'], $change['semester']);
+                    $this->store($subjectCode, $change['semester'], $subjectExists, $userOwnSubjectExists);
 
                     $newPlan = Plan::where('user_id', $userId)
-                        ->where('subject_code', $change['subject_code'])
+                        ->where('subject_code', $subjectCode)
                         ->where('semester', $change['semester'])
                         ->latest()
                         ->first();
 
                     $changedPlans[] = [
                         'id' => $newPlan->id,
-                        'subject_code' => $newPlan->subject_id,
+                        'subject_code' => $newPlan->subject_code,
                         'action' => 'created',
                     ];
                 } elseif ($existingPlan && !isset($change['semester'])) {
@@ -112,7 +121,7 @@ class PlanController extends Controller
 
                     $changedPlans[] = [
                         'id' => $existingPlan['id'],
-                        'subject_code' => $change['subject_code'],
+                        'subject_code' => $subjectCode,
                         'action' => 'deleted',
                     ];
                 }
@@ -128,10 +137,25 @@ class PlanController extends Controller
         }
     }
 
-    private function store($subject_code, $semester)
+    // Update store and update to accept subject from either table
+    private function store($subject_code, $semester, $subjectExists = null, $userOwnSubjectExists = null)
     {
+        if ($subjectExists === null) {
+            $subjectExists = \DB::table('subjects')->where('code', $subject_code)->exists();
+        }
+        if ($userOwnSubjectExists === null) {
+            $userOwnSubjectExists = \DB::table('user_own_subjects')->where('code', $subject_code)->where('user_id', auth()->user()->id)->exists();
+        }
+        if (!$subjectExists && !$userOwnSubjectExists) {
+            Log::error('Subject code not found in subjects or user_own_subjects', ['subject_code' => $subject_code]);
+            return null;
+        }
         $validated = validator(compact('subject_code', 'semester'), [
-            'subject_code' => 'required|exists:subjects,code',
+            'subject_code' => ['required', function ($attribute, $value, $fail) use ($subjectExists, $userOwnSubjectExists) {
+                if (!$subjectExists && !$userOwnSubjectExists) {
+                    $fail('The subject code does not exist in subjects or user_own_subjects.');
+                }
+            }],
             'semester' => 'required|integer',
         ])->validate();
 
@@ -140,36 +164,48 @@ class PlanController extends Controller
                 'user_id' => auth()->user()->id,
                 'subject_code' => $validated['subject_code'],
                 'semester' => $validated['semester'],
+                'subject_type' => $subjectExists ? 'subject' : 'user_own_subject',
             ]);
 
             return $plan;
         } catch (\Exception $e) {
             Log::error('Error creating plan:', ['error' => $e->getMessage()]);
-
             return null;
         }
     }
 
-    private function update($subject_code, $semester, $plan_id)
+    private function update($subject_code, $semester, $plan_id, $subjectExists = null, $userOwnSubjectExists = null)
     {
+        if ($subjectExists === null) {
+            $subjectExists = \DB::table('subjects')->where('code', $subject_code)->exists();
+        }
+        if ($userOwnSubjectExists === null) {
+            $userOwnSubjectExists = \DB::table('user_own_subjects')->where('code', $subject_code)->where('user_id', auth()->user()->id)->exists();
+        }
+        if (!$subjectExists && !$userOwnSubjectExists) {
+            Log::error('Subject code not found in subjects or user_own_subjects', ['subject_code' => $subject_code]);
+            return null;
+        }
         $validated = validator(compact('subject_code', 'semester', 'plan_id'), [
-            'subject_code' => 'required|exists:subjects,code',
+            'subject_code' => ['required', function ($attribute, $value, $fail) use ($subjectExists, $userOwnSubjectExists) {
+                if (!$subjectExists && !$userOwnSubjectExists) {
+                    $fail('The subject code does not exist in subjects or user_own_subjects.');
+                }
+            }],
             'semester' => 'required|integer',
             'plan_id' => 'required|exists:plans,id',
         ])->validate();
 
         try {
             $plan = Plan::findOrFail($validated['plan_id']);
-
             $plan->update([
                 'subject_code' => $validated['subject_code'],
                 'semester' => $validated['semester'],
+                'subject_type' => $subjectExists ? 'subject' : 'user_own_subject',
             ]);
-
             return $plan;
         } catch (\Exception $e) {
             Log::error('Error updating plan:', ['plan_id' => $plan_id, 'error' => $e->getMessage()]);
-
             return null;
         }
     }

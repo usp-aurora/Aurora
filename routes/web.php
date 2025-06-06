@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\UserOwnSubjectController;
 
 Route::get('/', [HomeController::class, 'index']);
 
@@ -16,6 +17,12 @@ Route::middleware('auth')->prefix('api/plans')->group(function () {
     // Route::put('/{id}', [PlanController::class, 'update']);
     // Route::delete('/{id}', [PlanController::class, 'destroy']);
 });
+
+Route::middleware('auth')->prefix('api/user-own-subjects')->group(function () {
+    Route::post('/', [UserOwnSubjectController::class, 'store']);
+});
+
+// TODO: Fazer rota que retorna as infos da matéria dado o código
 
 Route::get('/export', [PlanController::class, 'export']);
 

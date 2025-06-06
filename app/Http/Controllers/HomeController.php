@@ -20,14 +20,15 @@ class HomeController extends Controller
         $userController = new UserController();
 
         $plans = $planController->index();
-        $groups = $groupController->index(1);
-        $subjects = $subjectController->index()->toArray();;
-
+        $groups = $groupController->indexWithUserSubjects(1);
+        $subjects = $subjectController->index()->toArray();        
         foreach ($subjects as $code => $subject) {
             $subjects[$code]["groups"] = $groupController->getSubjectRootGroups($code);
         }
 
         $user = $userController->index();
+
+        error_log("HomeController: Initial plans: " . json_encode($plans));
 
         return Inertia::render('Home', [
             'initialPlans' => $plans,

@@ -60,4 +60,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function userOwnSubjects()
+    {
+        return $this->hasMany(UserOwnSubject::class);
+    }
 }

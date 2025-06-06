@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useEffect } from 'react';
 import Dialog from '../../ui/Dialog/Dialog'
 import Button from '../../ui/Buttons/Button';
 import { TextField, MenuItem, Box } from '@mui/material';
+import axios from 'axios';
 
 const AddSubjectContext = createContext();
 
@@ -19,6 +20,7 @@ function AddSubjectProvider({ children }) {
 
     const addSubjectToGroup = (subjectCode, subjectType) => {
         setgroupAddSubjectCodeType((prevSubjects) => [...prevSubjects, [subjectCode, subjectType]]);
+        console.log("prevSubjects", groupAddSubjectCodeType);
         closeAddSubjectModal();
     };
 
@@ -73,9 +75,39 @@ function AddSubjectForm() {
         }));
     };
 
-    const handleAddClick = () => {
+    const saveSubjectWithServer = async (subjectData) => {
+        try {
+            const response = await axios.post('/api/user-own-subjects', subjectData, {
+                headers: {
+                    'Accept': 'application/json',
+                },
+            });
+            if (response.status === 200) {
+                return response.status;
+            } else {
+                console.error('Server synchronization failed:', response.data);
+            }
+        } catch (error) {
+            console.error('Error communicating with the server:', error);
+        }
+        return null;
+    };
+
+    const handleAddClick = async () => {
         console.log('Adding subject:', formData);
-        addSubjectToGroup(formData.code, formData.type);
+        // addSubjectToGroup(formData.code, formData.type);
+        const subjectData = {
+            code: formData.code,
+            name: formData.name,
+            syllabus: formData.name, // Add a field for syllabus if you want user input
+            lecture_credits: formData.creditsClass,
+            work_credits: formData.creditsWork,
+        };
+        const result = await saveSubjectWithServer(subjectData);
+        if (result == 200) {
+            console.log('Subject added successfully');
+            addSubjectToGroup(formData.code, "Livres");
+        }
     };
 
     return (
@@ -118,33 +150,9 @@ function AddSubjectForm() {
                     onChange={handleInputChange}
                 />
             </Box>
-            <Box display="flex" alignItems="center" gap={2}>
-                <TextField
-                    fullWidth
-                    select
-                    label="Tipo de disciplina"
-                    name="type"
-                    placeholder="Digite aqui..."
-                    variant="outlined"
-                    value={formData.type}
-                    onChange={handleInputChange}
-                    sx={{
-                        height: "56px",
-                        '& .MuiInputBase-root': {
-                            padding: "0 14px",
-                        },
-                    }}
-                >
-                    <MenuItem value="Trilha de Inteligência Artificial">Trilha de Inteligência Artificial</MenuItem>
-                    <MenuItem value="Trilha de Sistemas de Software">Trilha de Sistemas de Software</MenuItem>
-                    <MenuItem value="Trilha de Teoria da Computação">Trilha de Teoria da Computação</MenuItem>
-                    <MenuItem value="Ciência de Dados">Ciência de Dados</MenuItem>
-                    <MenuItem value="Obrigatórias">Obrigatórias</MenuItem>
-                </TextField>
-                <Button variant="contained" color="primary" onClick={handleAddClick}>
-                    Adicionar
-                </Button>
-            </Box>
+            <Button variant="contained" color="primary" onClick={handleAddClick}>
+                Adicionar
+            </Button>
         </Box>
     );
 }
@@ -154,7 +162,7 @@ function AddSubjectDialog() {
     // TODO: return a diferent dialog to mobile
     return (
         <Dialog
-            title="ADICIONAR DISCIPLINA"
+            title="ADICIONAR DISCIPLINA AO GRUPO DE OPTATIVAS LIVRES"
             content={<AddSubjectForm />}
             open={isAddSubjectModalOpen}
             onClose={closeAddSubjectModal}

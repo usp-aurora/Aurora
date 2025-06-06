@@ -211,6 +211,13 @@ class GroupsSeeder extends Seeder
                 'Description' => "Matérias obrigatórias da ciência da computação", 
                 'parent_group_id' => 1,
                 'is_course_root' => false
+            ],
+            [
+                'id' => 29,
+                'title' => "Livres",
+                'Description' => "Disciplinas de outros institutos não listados nos outros blocos.",
+                'parent_group_id' => 1,
+                'is_course_root' => false
             ]
         ];
 

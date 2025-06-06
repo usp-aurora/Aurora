@@ -90,6 +90,33 @@ class GroupController extends Controller {
             return $this->getGroupRootRecursive($parentGroup);
         }
     }
+
+    public function indexWithUserSubjects($curriculum_id)
+    {
+        $groups = $this->loadCourse($curriculum_id);
+
+        // If user is authenticated, add their own subjects to group id 29 ("Livres")
+        $user = auth()->user();
+        if ($user) {
+            $userSubjects = $user->userOwnSubjects()->get(['code', 'name', 'syllabus', 'lecture_credits', 'work_credits']);
+            $this->addUserSubjectsToLivres($groups, $userSubjects);
+        }
+        return $groups;
+    }
+
+    private function addUserSubjectsToLivres(&$group, $userSubjects)
+    {
+        if (isset($group['title']) && $group['title'] == 'Livres') {
+            foreach ($userSubjects as $subject) {
+                $group['subjects'][] = $subject->code;
+            }
+        }
+        if (isset($group['subgroups'])) {
+            foreach ($group['subgroups'] as &$subgroup) {
+                $this->addUserSubjectsToLivres($subgroup, $userSubjects);
+            }
+        }
+    }
 }
 
 
