@@ -30,10 +30,24 @@ function getHandleResize(setSize, outerDiv) {
 	}
 }
 
-function getHandleMouseDown(mouseDown, dragStart, origin) {
+function getHandleMouseDown(mouseDown, dragStart, origin, zoomRef, sizeRef, outerDiv) {
 	return function(e) {
 		mouseDown.current = true;
-		dragStart.current = { x: origin.x+e.clientX, y: origin.y+e.clientY };
+		
+		// Get mouse position relative to the container
+		const rect = outerDiv?.current?.getBoundingClientRect();
+		if (!rect) return;
+		
+		const mouseX = e.clientX - rect.left;
+		const mouseY = e.clientY - rect.top;
+		
+		// Store the initial drag position in screen coordinates relative to center
+		dragStart.current = { 
+			x: mouseX - sizeRef.current.width / 2, 
+			y: mouseY - sizeRef.current.height / 2,
+			originX: origin.x,
+			originY: origin.y
+		};
 		addDragOverlay();
 	}
 }
@@ -46,19 +60,56 @@ function getHandleMouseMove(
 	alphaNode,
 	dragStart,
 	alphaStart,
+	zoomRef,
+	sizeRef,
+	originRef,
+	outerDiv,
 ) {
 	return function(e) {
 		e.preventDefault();
 		if(mouseDown.current) {
-			const alpha = alphaNode.current; // alphaNode.current can become undefined
+			const alpha = alphaNode.current;
 			if(alpha == undefined) {
-				setOrigin({ x: dragStart.current.x-e.clientX, y: dragStart.current.y-e.clientY });
+				// Screen panning - get current mouse position relative to container
+				const rect = outerDiv?.current?.getBoundingClientRect();
+				if (!rect) return;
+				
+				const mouseX = e.clientX - rect.left;
+				const mouseY = e.clientY - rect.top;
+				
+				// Calculate screen coordinates relative to center
+				const currentScreenX = mouseX - sizeRef.current.width / 2;
+				const currentScreenY = mouseY - sizeRef.current.height / 2;
+				
+				// Calculate the delta in world coordinates
+				const deltaWorldX = (currentScreenX - dragStart.current.x) / zoomRef.current;
+				const deltaWorldY = (currentScreenY - dragStart.current.y) / zoomRef.current;
+				
+				// Update origin by the world delta
+				setOrigin({ 
+					x: dragStart.current.originX - deltaWorldX, 
+					y: dragStart.current.originY - deltaWorldY 
+				});
 			}
 			else {
+				if (!outerDiv?.current) return;
+				
+				const rect = outerDiv.current.getBoundingClientRect();
+				if (!rect) return;
+				
+				const mouseX = e.clientX - rect.left;
+				const mouseY = e.clientY - rect.top;
+				
+				const currentSize = sizeRef.current;
+				const currentOrigin = originRef.current;
+				
+				const worldMouseX = (mouseX - currentSize.width / 2) / zoomRef.current + currentOrigin.x;
+				const worldMouseY = (mouseY - currentSize.height / 2) / zoomRef.current + currentOrigin.y;
+				
 				setPositions(positions => {
 					const newPositions = new Map(positions);
-					const alphaX = alphaStart.current.x+e.clientX;
-					const alphaY = alphaStart.current.y+e.clientY;
+					const alphaX = worldMouseX + alphaStart.current.x;
+					const alphaY = worldMouseY + alphaStart.current.y;
 					newPositions.set(alpha,{x:alphaX,y:alphaY});
 					return newPositions;
 				});
@@ -84,11 +135,29 @@ function getHandleMouseUp(mouseDown, alphaNode) {
 	};
 }
 
-function getHandleMouseDownNode(alphaNode, alphaStart, key, pos) {
+function getHandleMouseDownNode(alphaNode, alphaStart, key, pos, zoomRef, sizeRef, originRef, outerDiv) {
 	return function(e) {
 		e.preventDefault();
 		alphaNode.current = key;
-		alphaStart.current = { x: pos.x-e.clientX, y: pos.y-e.clientY };
+		
+		if (!outerDiv?.current) return;
+		
+		const rect = outerDiv.current.getBoundingClientRect();
+		if (!rect) return;
+		
+		const mouseX = e.clientX - rect.left;
+		const mouseY = e.clientY - rect.top;
+		
+		const currentSize = sizeRef.current;
+		const currentOrigin = originRef.current;
+		
+		const worldMouseX = (mouseX - currentSize.width / 2) / zoomRef.current + currentOrigin.x;
+		const worldMouseY = (mouseY - currentSize.height / 2) / zoomRef.current + currentOrigin.y;
+		
+		alphaStart.current = { 
+			x: pos.x - worldMouseX, 
+			y: pos.y - worldMouseY 
+		};
 	};
 }
 
