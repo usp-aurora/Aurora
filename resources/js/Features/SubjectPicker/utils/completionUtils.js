@@ -1,26 +1,37 @@
-import memoize from 'lodash/memoize';
-
 /**
- * Maps requirement types to their metric keys
+ * Maps requirement types to their corresponding metric keys in the metrics object.
+ * Used for translating completion requirements to their metric counters.
+ * @readonly
+ * @enum {string}
  */
 const requirementTypes = {
-    "Créditos": "créditos",
-    "Matérias": "disciplinas",
-    "Blocos": "blocos",
+    "Créditos": "credits",     // Total credits needed
+    "Matérias": "subjects",   // Number of subjects needed
+    "Blocos": "subgroups",         // Number of completed subgroups needed
 };
 
 /**
- * Initialize a new metrics object
+ * Creates a new metrics object with default values.
+ * Used to track completion progress of groups and subgroups.
+ * @returns {Object} Metrics object with initial values
+ * @property {number} credits - Total credits accumulated
+ * @property {number} subjects - Number of subjects completed
+ * @property {number} subgroups - Number of subgroups completed
+ * @property {boolean} mandatoryMet - Whether all mandatory requirements are met
  */
 const createMetrics = () => ({
-    créditos: 0,
-    disciplinas: 0,
-    blocos: 0,
+    credits: 0,
+    subjects: 0,
+    subgroups: 0,
     mandatoryMet: true
 });
 
 /**
- * Safely get credits from subject data
+ * Calculates total credits for a subject by summing theoretical and practical credits.
+ * Handles null/undefined values safely.
+ * @param {Object} subject - Subject data object
+ * @param {Array<number>} subject.credits - Array containing [theoretical, practical] credits
+ * @returns {number} Total credits for the subject
  */
 const getSubjectCredits = (subject) => {
     if (!subject?.credits?.length) return 0;
@@ -28,63 +39,100 @@ const getSubjectCredits = (subject) => {
 };
 
 /**
- * Pure version of the metrics calculator (receives recursive call fn)
+ * Creates a memoized calculator function for computing group metrics.
+ * Uses a Map for caching results to avoid recalculating unchanged groups.
+ * @returns {Function} Memoized calculation function with cache clearing capability
  */
-const _calculateGroupMetrics = (
-    group,
-    plansSet,
-    subjectDataMap,
-    recurse // <- the memoized function is passed here
-) => {
-    console.log("Calculating metrics for group:", group.id);
-    const metrics = createMetrics();
-    const processedSubjects = new Set();
+function createMemoizedCalculator() {
+    const cache = new Map();
 
-    if (group.subjects) {
-        const mandatoryMet = group.subjects
-            .filter(subject => subject.mandatory)
-            .every(subject => plansSet.has(subject.code));
-        
-        metrics.mandatoryMet = mandatoryMet;
-
-        group.subjects.forEach(subject => {
-            if (!plansSet.has(subject.code) || processedSubjects.has(subject.code)) return;
-
-            processedSubjects.add(subject.code);
-            if (!subject.mandatory) {
-                metrics.créditos += getSubjectCredits(subjectDataMap[subject.code]);
-                metrics.disciplinas += 1;
+    /**
+     * Calculates metrics for a group and its subgroups with memoization.
+     * @param {Object} group - Group to calculate metrics for
+     * @param {Set<string>} plansSet - Set of selected subject codes
+     * @param {Object} subjectDataMap - Map of subject data by code
+     * @returns {Object} Calculated metrics for the group
+     */
+    function memoizedCalculate(group, plansSet, subjectDataMap) {
+        /**
+         * Inner recursive function that handles the actual calculation
+         * and caches results for each subgroup.
+         * @private
+         */
+        function _calculateGroupMetrics(group) {
+            if (cache.has(group.id)) {
+                return cache.get(group.id);
             }
-        });
+
+            console.debug("Calculating metrics for group:", group.id);
+            const metrics = createMetrics();
+            const processedSubjects = new Set();
+
+            if (group.subjects) {
+                metrics.mandatoryMet = group.subjects
+                    .filter(subject => subject.mandatory)
+                    .every(subject => plansSet.has(subject.code));
+
+                for (const subject of group.subjects) {
+                    const code = subject.code;
+                    if (!plansSet.has(code) || processedSubjects.has(code)) continue;
+
+                    processedSubjects.add(code);
+                    metrics.credits += getSubjectCredits(subjectDataMap[code]);
+                    metrics.subjects += 1;
+                }
+            }
+
+            if (group.subgroups) {
+                for (const subgroup of group.subgroups) {
+                    const subMetrics = _calculateGroupMetrics(subgroup);
+                    const subCompleted = isComplete(subgroup, subMetrics);
+
+                    if (subgroup.mandatory) {
+                        metrics.mandatoryMet &&= subCompleted;
+                    }
+
+                    if (subCompleted) {
+                        metrics.subgroups += 1;
+                    }
+
+                    for (const subject of subgroup.subjects ?? []) {
+                        const code = subject.code;
+                        if (!plansSet.has(code) || processedSubjects.has(code)) continue;
+
+                        processedSubjects.add(code);
+                        metrics.credits += getSubjectCredits(subjectDataMap[code]);
+                        metrics.subjects += 1;
+                    }
+                }
+            }
+
+            cache.set(group.id, metrics);
+            return metrics;
+        }
+
+        return _calculateGroupMetrics(group);
     }
 
-    if (group.subgroups) {
-        group.subgroups.forEach(subgroup => {
-            const subMetrics = recurse(subgroup, plansSet, subjectDataMap);
+    /**
+     * Clears the memoization cache.
+     * Should be called when plans change or group structure is modified.
+     */
+    memoizedCalculate.clearCache = () => cache.clear();
 
-            if (subgroup.mandatory) {
-                metrics.mandatoryMet &&= subMetrics.mandatoryMet;
-            }
-
-            if (isComplete(subgroup, subMetrics)) {
-                metrics.blocos += 1;
-            }
-
-            subgroup.subjects?.forEach(subject => {
-                if (!plansSet.has(subject.code) || processedSubjects.has(subject.code)) return;
-
-                processedSubjects.add(subject.code);
-                metrics.créditos += getSubjectCredits(subjectDataMap[subject.code]);
-                metrics.disciplinas += 1;
-            });
-        });
-    }
-
-    return metrics;
-};
+    return memoizedCalculate;
+}
 
 /**
- * Check if a group meets all requirements
+ * Determines if a group meets all its completion requirements.
+ * A group is complete when:
+ * 1. All mandatory subjects/subgroups are completed
+ * 2. All numerical requirements (credits, subjects, blocks) are met
+ * 
+ * @param {Object} group - Group to check completion for
+ * @param {Array} group.completionRequirements - Array of requirements
+ * @param {Object} metrics - Current metrics for the group
+ * @returns {boolean} Whether all requirements are met
  */
 const isComplete = (group, metrics) => {
     if (!metrics.mandatoryMet) return false;
@@ -96,24 +144,23 @@ const isComplete = (group, metrics) => {
     });
 };
 
-// ⚡️ Build the memoized version here with self-reference via closure
-const memoizedCalculateGroupMetrics = memoize(
-    (group, plansSet, subjectDataMap) =>
-        _calculateGroupMetrics(group, plansSet, subjectDataMap, memoizedCalculateGroupMetrics),
-    (group, _plansSet, _subjectDataMap) => group.id
-);
+// Create singleton instance of the calculator
+const calculateMetrics = createMemoizedCalculator();
 
 /**
- * Clear memoization cache
+ * Clears the global metrics calculation cache.
+ * Should be called when:
+ * - Plans are modified
+ * - Group structure changes
+ * - Subject data is updated
  */
 const clearCalculationCache = () => {
-    memoizedCalculateGroupMetrics.cache.clear();
+    calculateMetrics.clearCache();
 };
 
-// 🧠 Exported as calculateRequirements
 export {
     isComplete,
-    memoizedCalculateGroupMetrics as calculateRequirements,
+    calculateMetrics,
     requirementTypes,
     clearCalculationCache
 };

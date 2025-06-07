@@ -22,7 +22,8 @@ const SubjectsContainer = ({ containerName, subjects }) => {
 						subjectCode={subject.code}
 						container="subjectPicker"
 						isBlocked={isBlocked}
-						requiredScheduled={false}
+						badgeColor="red.main"
+						showBadge={subject.mandatory && !isBlocked}
 					/>
 				);
 			})}

@@ -9,7 +9,8 @@ import Droppable from "../../DragAndDrop/Droppable";
 import SortableGrid from "../../DragAndDrop/SortableGrid";
 import SubjectPlaceholder from "./SubjectPlaceholder";
 
-import { useSubjectMapContext } from "../../../Contexts/SubjectMapContext";
+import { usePlansContext } from "@/Contexts/PlansContext";
+import { useSubjectMapContext } from "@/Contexts/SubjectMapContext";
 
 const SummaryContainer = styled("div")(({}) => ({
     width: "100%",
@@ -50,6 +51,7 @@ const Semester = ({
     semesterData,
     isRecommendedView,
 }) => {
+    const { plansSet } = usePlansContext();
     const { subjectDataMap } = useSubjectMapContext();
     const [isExpanded, setExpanded] = useState(true);
 
@@ -100,6 +102,8 @@ const Semester = ({
                 <SortableGrid items={semesterData.subjects}>
                     {semesterData.subjects.map((subject) => {
                         const subjectData = subjectDataMap[subject.code];
+	                    const requiredScheduled = isRecommendedView && plansSet.has(subjectCode);
+                        
                         if(!subjectData) return null;
 
                         return (
@@ -109,7 +113,9 @@ const Semester = ({
                                 subjectCode={subject.code}
                                 container={semesterData.semesterId}
                                 isBlocked={false}
-                                isRecommendedView={isRecommendedView}/>
+                                showBadge={requiredScheduled}
+                                badgeColor="green.main"
+                            />
                         );
                     })}
                     {isRecommendedView && semesterData.suggestions.map((suggestion, index) => (

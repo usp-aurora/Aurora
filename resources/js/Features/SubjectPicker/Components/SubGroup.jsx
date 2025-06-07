@@ -6,7 +6,7 @@ import SubjectsContainer from "./SubjectsContainer";
 
 import { usePlansContext } from "../../../Contexts/PlansContext";
 import { useSubjectMapContext } from "../../../Contexts/SubjectMapContext";
-import { calculateRequirements, requirementTypes } from '../utils/completionUtils';
+import { calculateMetrics, requirementTypes } from '../utils/completionUtils';
 
 const SubGroupContainer = styled("div")(({ theme, depth }) => ({
     display: "flex",
@@ -49,12 +49,12 @@ const SubGroup = ({ depth, subgroupData }) => {
     const { subjectDataMap } = useSubjectMapContext();
     
     const metrics = useMemo(() => 
-        calculateRequirements(subgroupData, plansSet, subjectDataMap),
+        calculateMetrics(subgroupData, plansSet, subjectDataMap),
         [subgroupData, plansSet, subjectDataMap]
     );
     
     const completionMetrics = subgroupData.completionRequirements.map((requirement) => ({
-        name: requirementTypes[requirement.type],
+        name: requirement.type.toLowerCase(),
         value: metrics[requirementTypes[requirement.type]],
         total: requirement.value,
     }));

@@ -10,7 +10,7 @@ import SubjectsContainer from "./SubjectsContainer";
 
 import { usePlansContext } from "@/Contexts/PlansContext";
 import { useSubjectMapContext } from "@/Contexts/SubjectMapContext";
-import { isComplete, calculateRequirements, requirementTypes } from '../utils/completionUtils';
+import { isComplete, calculateMetrics, requirementTypes } from '../utils/completionUtils';
 
 const GroupContainer = styled("div")(({ theme }) => ({
     display: "flex",
@@ -40,7 +40,7 @@ const Group = ({ groupData, expanded, onClick }) => {
     const { subjectDataMap } = useSubjectMapContext();
     
     const metrics = useMemo(() => 
-        calculateRequirements(groupData, plansSet, subjectDataMap),
+        calculateMetrics(groupData, plansSet, subjectDataMap),
         [groupData, plansSet, subjectDataMap]
     );
 
@@ -51,7 +51,7 @@ const Group = ({ groupData, expanded, onClick }) => {
 
     const completionMetrics = useMemo(() => 
         groupData.completionRequirements.map((requirement) => ({
-            name: requirementTypes[requirement.type],
+            name: requirement.type.toLowerCase(),
             value: metrics[requirementTypes[requirement.type]],
             total: requirement.value,
         })),
