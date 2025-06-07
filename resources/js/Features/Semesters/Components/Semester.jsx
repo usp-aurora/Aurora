@@ -102,7 +102,7 @@ const Semester = ({
                 <SortableGrid items={semesterData.subjects}>
                     {semesterData.subjects.map((subject) => {
                         const subjectData = subjectDataMap[subject.code];
-	                    const requiredScheduled = isRecommendedView && plansSet.has(subjectCode);
+	                    const requiredScheduled = isRecommendedView && plansSet.has(subject.code);
                         
                         if(!subjectData) return null;
 
