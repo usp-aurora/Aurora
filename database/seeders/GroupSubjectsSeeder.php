@@ -622,12 +622,13 @@ class GroupSubjectsSeeder extends Seeder
                 'group_id' => 27, 
                 'subject_code' => "PTC3569", 
             ],
+            // Disciplinas obrigatórias - Grupo 28
             [	
                 'id' => 116,
                 'group_id' => 28,
                 'subject_code' => 'MAC0101',
+                'mandatory' => true
             ],
-            // Disciplinas obrigatórias - Grupo 28
             [	
                 'id' => 117,
                 'group_id' => 28,

@@ -19,21 +19,23 @@ const requirementTypes = {
  * @property {number} subgroups - Number of subgroups completed
  * @property {boolean} mandatoryMet - Whether all mandatory requirements are met
  */
-const createMetrics = () => ({
-    credits: 0,
-    subjects: 0,
-    subgroups: 0,
-    mandatoryMet: true
-});
+function createMetrics() {
+    return ({
+        credits: 0,
+        subjects: 0,
+        subgroups: 0,
+        mandatoryMet: true
+    });
+}
 
 /**
- * Calculates total credits for a subject by summing theoretical and practical credits.
+ * Calculates total credits for a subject by summing lecture and work credits.
  * Handles null/undefined values safely.
  * @param {Object} subject - Subject data object
- * @param {Array<number>} subject.credits - Array containing [theoretical, practical] credits
+ * @param {Array<number>} subject.credits - Array containing [lecture, work] credits
  * @returns {number} Total credits for the subject
  */
-const getSubjectCredits = (subject) => {
+function getSubjectCredits(subject) {
     if (!subject?.credits?.length) return 0;
     return (subject.credits[0] || 0) + (subject.credits[1] || 0);
 };
@@ -64,7 +66,7 @@ function createMemoizedCalculator() {
                 return cache.get(group.id);
             }
 
-            console.debug("Calculating metrics for group:", group.id);
+            // console.debug("Calculating metrics for group:", group.id);
             const metrics = createMetrics();
             const processedSubjects = new Set();
 
@@ -118,7 +120,7 @@ function createMemoizedCalculator() {
      * Clears the memoization cache.
      * Should be called when plans change or group structure is modified.
      */
-    memoizedCalculate.clearCache = () => cache.clear();
+    memoizedCalculate.clearCache = function () { cache.clear() };
 
     return memoizedCalculate;
 }
@@ -134,7 +136,7 @@ function createMemoizedCalculator() {
  * @param {Object} metrics - Current metrics for the group
  * @returns {boolean} Whether all requirements are met
  */
-const isComplete = (group, metrics) => {
+function isComplete(group, metrics) {
     if (!metrics.mandatoryMet) return false;
     if (!group.completionRequirements?.length) return true;
 
@@ -154,7 +156,7 @@ const calculateMetrics = createMemoizedCalculator();
  * - Group structure changes
  * - Subject data is updated
  */
-const clearCalculationCache = () => {
+function clearCalculationCache() {
     calculateMetrics.clearCache();
 };
 
