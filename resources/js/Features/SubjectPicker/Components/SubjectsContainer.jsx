@@ -21,8 +21,7 @@ const SubjectsContainer = ({ containerName, subjects }) => {
 						id={`${subject}@${containerName}`}
 						subjectCode={subject}
 						container="subjectPicker"
-						isBlocked={isBlocked}
-						requiredScheduled={false}/>
+						isBlocked={isBlocked}/>
 				);
 			})}
 		</CardsGrid>

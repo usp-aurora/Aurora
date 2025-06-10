@@ -13,7 +13,17 @@ class PlanController extends Controller
 {
     public function index()
     {
-        if (auth()->user() == null) {
+        return $this->getPlans(auth()->user() == null);
+    }
+
+    public function getSuggestedPlans() 
+    {
+        return $this->getPlans(True);
+    }
+
+    private function getPlans($suggestedPlans)
+    {
+        if ($suggestedPlans) {
             $plans = SuggestedPlan::all();
         } else {
             $plans = Plan::where('user_id', auth()->user()->id)->get();
@@ -39,7 +49,7 @@ class PlanController extends Controller
     }
 
     public function export()
-    {   
+    {
         $user = auth()->user();
         if ($user == null) {
             return response()->json(['error' => 'User not authenticated.'], 401);
@@ -70,7 +80,7 @@ class PlanController extends Controller
 
         $completed_semesters = $chunks->get(0, collect());
         $planned_semesters   = $chunks->get(1, collect());
-        
+
         return pdf()->view('exportTemplate', [
             'user_name' => "Daiqui Teixeira Inacio",
             'user_code' => 123213123,

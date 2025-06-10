@@ -10,6 +10,7 @@ import SortableGrid from "../../DragAndDrop/SortableGrid";
 import SubjectPlaceholder from "./SubjectPlaceholder";
 
 import { useSubjectMapContext } from "../../../Contexts/SubjectMapContext";
+import { useViewMode } from "../../../Contexts/ViewModeContext";
 
 const SummaryContainer = styled("div")(({}) => ({
     width: "100%",
@@ -48,9 +49,9 @@ const DroppableCardContainer = styled(Droppable)(({ theme }) => ({
 
 const Semester = ({
     semesterData,
-    isRecommendedView,
 }) => {
     const { subjectDataMap } = useSubjectMapContext();
+    const { isSuggestedPlansView, suggestedPlans } = useViewMode();
     const [isExpanded, setExpanded] = useState(true);
 
     function toggleExpanded(){
@@ -95,7 +96,7 @@ const Semester = ({
                 key={semesterData.semesterId}
                 spacing={{ xs: 1, sm: 2 }}
                 disabled={!isExpanded}
-                placeholder={isRecommendedView ? null : <SubjectPlaceholder />}
+                placeholder={isSuggestedPlansView ? null : <SubjectPlaceholder />}
             >
                 <SortableGrid items={semesterData.subjects}>
                     {semesterData.subjects.map((subject) => {
@@ -108,20 +109,9 @@ const Semester = ({
                                 key={subject.code}
                                 subjectCode={subject.code}
                                 container={semesterData.semesterId}
-                                isBlocked={false}
-                                isRecommendedView={isRecommendedView}/>
+                                isBlocked={false}/>
                         );
                     })}
-                    {isRecommendedView && semesterData.suggestions.map((suggestion, index) => (
-                            <AuxiliaryCard 
-                                key={index}
-                                text={`Disciplina do grupo ${suggestion.group}`} 
-                                ghost={true}
-                                sx={{ pointerEvents: "none"}}
-                            />
-                        ))
-                    }
-                    
                 </SortableGrid>
             </DroppableCardContainer>
         </Accordion>

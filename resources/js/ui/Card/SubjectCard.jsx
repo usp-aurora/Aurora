@@ -116,7 +116,7 @@ const SubjectCard = ({
             >
                 <CardContent>
 					<PlanetWrapper>
-						{moon && <Moon/> }
+						{moon && !ghost && <Moon/> }
 						<PlanetContainer>
 							{(!ghost && planetUrl) && <Planet src={planetUrl} />}
 						</PlanetContainer>
