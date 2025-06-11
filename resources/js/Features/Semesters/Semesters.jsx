@@ -27,7 +27,7 @@ function Semesters() {
 
 		commitPlans((prevPlans) => [...prevPlans, { semesterId: prevPlans.length + 1, subjects: [] }], "Add empty semester");
 	}
-	
+
 	return (
 		<SemestersContainer spacing={{ xs: 1, sm: 2 }}>
 			{shownPlans.map((semester) => (

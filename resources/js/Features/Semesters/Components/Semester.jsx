@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import Stack from "@mui/material/Stack";
+import ClearIcon from "@mui/icons-material/Clear";
 
 import Accordion from "../../../ui/Accordion/Accordion";
 import AuxiliaryCard from "../../../ui/Card/AuxiliaryCard";
@@ -11,6 +13,7 @@ import SubjectPlaceholder from "./SubjectPlaceholder";
 
 import { useSubjectMapContext } from "../../../Contexts/SubjectMapContext";
 import { useViewMode } from "../../../Contexts/ViewModeContext";
+import { usePlansContext } from "../../../Contexts/PlansContext";
 
 const SummaryContainer = styled("div")(({}) => ({
     width: "100%",
@@ -19,6 +22,11 @@ const SummaryContainer = styled("div")(({}) => ({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+}));
+
+const StyledClearIcon = styled(ClearIcon)(({ theme }) => ({
+    cursor: "pointer",
+    color: theme.palette.white.main,
 }));
 
 const SemesterInfoText = styled(Typography)(({ theme }) => ({
@@ -52,11 +60,23 @@ const Semester = ({
 }) => {
     const { subjectDataMap } = useSubjectMapContext();
     const { isSuggestedPlansView, suggestedPlans } = useViewMode();
+    const { plans, commitPlans } = usePlansContext();
     const [isExpanded, setExpanded] = useState(true);
 
     function toggleExpanded(){
         setExpanded(!isExpanded);
     }
+
+    function deleteSemester(){
+		if(isSuggestedPlansView || !canDelete) return;
+
+		commitPlans((prevPlans) => prevPlans.filter(semester => semester.semesterId !== semesterData.semesterId), `Delete semester ${semesterData.semesterId}`);
+	}
+
+    const highestSemesterId = Math.max(...plans.map(semester => semester.semesterId));
+    const isHighestSemester = semesterData.semesterId === highestSemesterId;
+    const isEmpty = semesterData.subjects.length === 0;
+    const canDelete = !isSuggestedPlansView && isEmpty && isHighestSemester && semesterData.semesterId > 8;
 
     let workCredits = 0;
     let lectureCredits = 0;
@@ -73,9 +93,18 @@ const Semester = ({
 
     const Summary = (
         <SummaryContainer>
-            <SemesterInfoText>
-                {semesterData.semesterId}º Período
-            </SemesterInfoText>
+            <Stack direction="row" alignItems="center" spacing={1}>
+                {canDelete && (
+                    <StyledClearIcon
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            deleteSemester();
+                        }}/>
+                )}
+                <SemesterInfoText>
+                    {semesterData.semesterId}º Período
+                </SemesterInfoText>
+            </Stack>
             <SemesterCreditsText>
                 {(lectureCredits ? lectureCredits : "0") + " "}+
                 {" " + (workCredits ? workCredits : "0") + " "}

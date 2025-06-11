@@ -12,11 +12,15 @@ class GroupController extends Controller {
 
     private function loadCourse($curriculum_id)
     {
-        $rootGroupId = DB::table('curriculums')
+        $curriculum = DB::table('curriculums')
             ->where('id', '=', $curriculum_id)
             ->select(["group_id"])
-            ->first()
-            ->group_id;
+            ->first();
+
+        if(!$curriculum) {
+            return -1;
+        }
+        $rootGroupId = $curriculum->group_id;
 
         return ($this->recursiveLoadCourse($rootGroupId));
     }
