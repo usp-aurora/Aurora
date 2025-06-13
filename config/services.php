@@ -42,5 +42,7 @@ return [
     	'dev' => env('SENHAUNICA_DEV', 'no'),
     	'redirect' => '/',
     ],
-
+    
+    'replicado_is_active' => env('REPLICADO_HOST') !== null,
+    
 ];

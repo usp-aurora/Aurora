@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Subject;
+use App\Models\ReplicadoSubject;
 
 class SubjectController extends Controller
 {
 	public function index()
 	{
-		$subjects = Subject::all();
+		$subjects = ReplicadoSubject::all();
 
 		$transformedSubjects = $subjects->mapWithKeys(function ($subject) {
 			return [

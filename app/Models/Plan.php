@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use \App\Models\User;
-use \App\Models\Subject;
+use \App\Models\ReplicadoSubject;
 
 class Plan extends Model
 {
@@ -17,6 +17,6 @@ class Plan extends Model
     }
 
     public function subject() {
-        return $this->belongsTo(Subject::class, 'subject_code', 'code');
+        return $this->belongsTo(ReplicadoSubject::class, 'subject_code', 'code');
     }
 }

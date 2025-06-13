@@ -51,17 +51,17 @@ return [
             ]) : [],
         ],
 
-        'jupiter' => [
+        'replicado' => [
             'driver' => 'sqlsrv',
-            'host' => env('JUPITER_DB_HOST'),
-            'port' => env('JUPITER_DB_PORT'),
-            'database' => env('JUPITER_DB_DATABASE'),
-            'username' => env('JUPITER_DB_USERNAME'),
-            'password' => env('JUPITER_DB_PASSWORD'),
-            'charset' => env('JUPITER_DB_CHARSET', 'utf8'),
+            'host' => env('REPLICADO_HOST'),
+            'port' => env('REPLICADO_PORT'),
+            'database' => env('REPLICADO_DATABASE'),
+            'username' => env('REPLICADO_USERNAME'),
+            'password' => env('REPLICADO_PASSWORD'),
+            'charset' => env('REPLICADO_CHARSET', 'utf8'),
             'prefix' => '',
             'prefix_indexes' => true,
-            'trust_server_certificate' => env('JUPITER_DB_TRUST_SERVER_CERTIFICATE', 'false'),
+            'trust_server_certificate' => env('REPLICADO_TRUST_SERVER_CERTIFICATE', 'false'),
         ],
 
     ],

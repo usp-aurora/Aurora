@@ -3,43 +3,62 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Faker\Factory as Faker;
+use App\Models\ReplicadoSubject;
 
-class Requisits extends Model
+class ReplicadoSubjectRequirement extends Model
 {
-    protected $connection = "jupiter";
-    protected $table = "dummy"; // Nosso model é baseado em uma consulta, e não em uma tabela real
+    protected $connection = "replicado";
+    protected $table = "dummy";
     public $timestamps = false;
 
     public function newQuery()
     {
-        if(!env('JUPITER_DB_HOST')) {
+        if (!env('JUPITER_DB_HOST')) {
             $query = parent::newQuery()->fromSub($this->fakeRequisitionsQuery(), 'subtable');
-        }
-        else{
+        } else {
             $query = parent::newQuery()->fromSub(function ($query) {
-                $query->select(
-                    'coddis AS id_subject',
-                    'verdis AS ver_subject',
-                    'coddisreq AS id_subject_req',
-                    'verdisreq AS ver_subject_req'
-                )
-                ->from('REQUISITOGR')
-                ->where('codcur', '=', 45052) // Curso de Ciência da Computação
-                ->where('codhab', '=', 1);   // Habilitação
-            }, 'subtable');
+                $query->selectRaw("
+                    coddis AS subject_code,
+                    coddisreq AS required_subject_code
+                ")
+                    ->fromSub(function ($subQuery) {
+                        $subQuery->selectRaw("
+                            coddis,
+                            verdis,
+                            coddisreq,
+                            verdisreq,
+                            DENSE_RANK() OVER (
+                                PARTITION BY coddis
+                                ORDER BY verdis DESC
+                            ) AS subject_version_rank,
+                            DENSE_RANK() OVER (
+                                PARTITION BY coddis, verdis, coddisreq
+                                ORDER BY verdisreq DESC
+                            ) AS requisition_version_rank,
+                            RANK() OVER (
+                                PARTITION BY coddis, verdis
+                                ORDER BY numgrpreq DESC 
+                            ) AS group_rank
+                        ")
+                            ->from('REQUISITOGR')
+                            ->where('codcur', '=', 45052)
+                            ->where('codhab', '=', 1);
+                    }, 'subquery')
+                    ->where('subquery.subject_version_rank', '=', 1)
+                    ->where('subquery.requisition_version_rank', '=', 1)
+                    ->where('subquery.group_rank', '=', 1);
+            }, 'dummy');
         }
 
         return $query;
     }
 
-    
+
     private function fakeRequisitionsQuery()
     {
-        // força-bruta
-        $requisitos = [
-            'AAA0000' => null, 
-            'AAA0001' => null, 
+        $fakeRequirements = [
+            'AAA0000' => null,
+            'AAA0001' => null,
             'AAB0000' => ['AAA0000'],
             'AAB0001' => ['AAB0000'],
             'AAC0000' => ['AAA0001'],
@@ -65,14 +84,14 @@ class Requisits extends Model
             'ABB0001' => ['AAA0000'],
             'ABA0000' => ['AAB0000', 'ABC0000'],
             'ABA0001' => ['ABC0001', 'AAC0001'],
-            
+
             'ACC0000' => ['AAB0001'],
             'ACC0001' => null,
             'ACB0000' => ['AAB0001', 'AAC0000'],
             'ACB0001' => ['AAB0001', 'AAC0001'],
             'ACA0000' => ['AAB0001', 'ABC0000'],
             'ACA0001' => ['ABC0000', 'AAC0001'],
-            
+
             'BAC0000' => ['BBA0000', 'BBC0000'],
             'BAC0001' => ['BBA0000', 'BBC0001'],
             'BAB0000' => ['BBA0000', 'BAC0000'],
@@ -101,34 +120,38 @@ class Requisits extends Model
             'CBC0000' => ['CCA0001', 'CCB0000'],
             'CBC0001' => ['CCA0000', 'ABC0001'],
         ];
-    
-        $faker = Faker::create();
+
         $fakeData = [];
-        for ($i = 0; $i < 20; $i++) {
-            $subj = $faker->randomElement(array_keys($requisitos));
-            $requirements = $requisitos[$subj];
+        for ($i = 0; $i < count($fakeRequirements); $i++) {
+            $subject_code = array_keys($fakeRequirements)[$i];
+            $requirements = $fakeRequirements[$subject_code];
 
             if (is_array($requirements)) {
-                foreach ($requirements as $req) {
+                foreach ($requirements as $requirement) {
                     $fakeData[] = [
-                        'id_subject' => $subj,
-                        'ver_subject' => 1,
-                        'id_subject_req' => $req,
-                        'ver_subject_req' => 1,
+                        'subject_code' => $subject_code,
+                        'required_subject_code' => $requirement,
                     ];
                 }
-            } else {
-                $i--;
             }
         }
 
         $query = collect($fakeData)->map(function ($row) {
-            return "SELECT  '{$row['id_subject']}' as id_subject, 
-                            {$row['ver_subject']} as ver_subject, 
-                            '{$row['id_subject_req']}' as id_subject_req, 
-                            {$row['ver_subject_req']} as ver_subject_req";
+            return "SELECT  '{$row['subject_code']}' as subject_code, 
+                            '{$row['required_subject_code']}' as required_subject_code
+                            ";
         })->implode(' UNION ALL ');
 
         return $query;
+    }
+
+    public function subject()
+    {
+        return $this->belongsTo(ReplicadoSubject::class, 'subject_code', 'code');
+    }
+
+    public function requiredSubject()
+    {
+        return $this->belongsTo(ReplicadoSubject::class, 'required_subject_code', 'code');
     }
 }

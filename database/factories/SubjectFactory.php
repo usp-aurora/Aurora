@@ -3,10 +3,10 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\Subject;
+use App\Models\ReplicadoSubject;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Subject>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ReplicadoSubject>
  */
 class SubjectFactory extends Factory
 {
@@ -48,9 +48,9 @@ class SubjectFactory extends Factory
     {
         do {
             $letters = "MAC";
-            $numbers = $this->faker->numerify('####'); // Generates 4 random numbers
+            $numbers = $this->faker->numerify('####');
             $code = $letters . $numbers;
-        } while (Subject::where('code', $code)->exists()); // Check if the code already exists in the database
+        } while (ReplicadoSubject::where('code', $code)->exists());
 
         return $code;
     }
