@@ -1,4 +1,4 @@
-import { AuthProvider } from '../context/AuthContext';
+import { AuthProvider } from './AuthContext';
 import { SubjectMapProvider } from './SubjectMapContext';
 import { PlansProvider } from './PlansContext';
 import { SubjectInfoProvider } from '../Features/SubjectInfo/SubjectInfoContext';

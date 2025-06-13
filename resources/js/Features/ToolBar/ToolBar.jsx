@@ -14,7 +14,7 @@ import Tooltip from '@mui/material/Tooltip';
 import IconWrapper from '../../ui/Icons/IconWrapper';
 import { usePlansContext } from '../../Contexts/PlansContext';
 import { useViewMode } from '../../Contexts/ViewModeContext';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../Contexts/AuthContext';
 
 const Container = styled("div")({
     display: "flex",
