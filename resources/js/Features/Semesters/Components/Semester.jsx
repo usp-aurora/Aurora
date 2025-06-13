@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Stack from "@mui/material/Stack";
+import IconButton from "@mui/material/IconButton";
 import ClearIcon from "@mui/icons-material/Clear";
 
 import Accordion from "../../../ui/Accordion/Accordion";
@@ -56,7 +57,7 @@ const DroppableCardContainer = styled(Droppable)(({ theme }) => ({
 }));
 
 const Semester = ({
-    semesterData,
+    semesterData
 }) => {
     const { subjectDataMap } = useSubjectMapContext();
     const { isSuggestedPlansView, suggestedPlans } = useViewMode();
@@ -76,7 +77,9 @@ const Semester = ({
     const highestSemesterId = Math.max(...plans.map(semester => semester.semesterId));
     const isHighestSemester = semesterData.semesterId === highestSemesterId;
     const isEmpty = semesterData.subjects.length === 0;
-    const canDelete = !isSuggestedPlansView && isEmpty && isHighestSemester && semesterData.semesterId > 8;
+    const MIN_SEMESTERS_NUMBER = 8;
+    const canDelete = !isSuggestedPlansView && isEmpty && isHighestSemester && semesterData.semesterId > MIN_SEMESTERS_NUMBER;
+
 
     let workCredits = 0;
     let lectureCredits = 0;
@@ -95,11 +98,16 @@ const Semester = ({
         <SummaryContainer>
             <Stack direction="row" alignItems="center" spacing={1}>
                 {canDelete && (
-                    <StyledClearIcon
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            deleteSemester();
-                        }}/>
+                    <IconButton  
+                        aria-label="Delete semester"  
+                        onClick={(e) => {  
+                            e.stopPropagation();  
+                            deleteSemester();  
+                        }}  
+                        sx = {{ padding: 0 }}
+                    >  
+                        <StyledClearIcon />  
+                    </IconButton>  
                 )}
                 <SemesterInfoText>
                     {semesterData.semesterId}º Período
