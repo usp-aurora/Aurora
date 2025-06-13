@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Foundation\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 use App\Models\Plan;
+use App\Models\Students;
 use App\Models\SuggestedPlan;
 use Illuminate\Support\Facades\Log;
 use function Spatie\LaravelPdf\Support\pdf;
@@ -16,6 +19,7 @@ class PlanController extends Controller
         if (auth()->user() == null) {
             $plans = SuggestedPlan::all();
         } else {
+            $this->syncWithReplication(auth()->user()->codpes);
             $plans = Plan::where('user_id', auth()->user()->id)->get();
         }
 
@@ -30,6 +34,7 @@ class PlanController extends Controller
                     return [
                         'plan' => $plan->id,
                         'code' => $plan->subject_code,
+                        'completed' => $plan->completed,
                     ];
                 })->values()->all(),
             ];
@@ -132,7 +137,87 @@ class PlanController extends Controller
         }
     }
 
-    private function store($subject_code, $semester)
+    private function syncWithReplication($nusp) {
+		$completedSemesters = $this->completed($nusp);
+
+		DB::transaction(function () use ($completedSemesters) {
+			foreach ($completedSemesters as $semesterId => $semesterData) {
+				foreach ($semesterData as $subject) {
+					$savedPlan = Plan::where('subject_code', $subject['id'])->first();
+					if ($savedPlan == null) {
+						$validatedPlan = $this->store($subject['id'], $semesterId + 1, true);
+						$validatedPlan->save();
+					}
+					else {
+						$savedPlan->completed = true;
+						$savedPlan->save();
+					}
+				}
+
+				Plan::where('semester', $semesterId + 1)->where('completed', false)->delete();
+			}
+		});
+    }
+
+    public function completed($nusp)
+    {
+		// get the current semester
+		// get only the disciplines from previous semesters
+		$today = Carbon::today()->toDateString();
+		$year = substr($today, 0, 4);
+		$semester = substr($today, 5, 1) < "7" ? "1" : "2";
+		$currentClassPrefix = $year . $semester;
+
+		$records = Students::where("nusp", $nusp)
+            // Currently it gets only subjects from the Computer Science Major. 
+            // probably a technical debt :(
+			->where("id_major", "LIKE", "450%")
+			->where("id_class", ">", "0")
+			->where("id_class", "<", $currentClassPrefix)
+			->get();
+			
+		$completedSemesters = [];
+		
+		foreach ($records as $record) {
+			// id_class => year + semester + class number
+			$classId = $record->id_class;
+			$year = substr($classId, 0, 4);
+			$semester = substr($classId, 4, 1);
+			
+			$semesterKey = $year . "." . $semester;
+			
+			if (!isset($completedSemesters[$semesterKey])) {
+				$completedSemesters[$semesterKey] = [];
+			}
+			
+			$completedSemesters[$semesterKey][] = [
+				'id' => $record->id_subject,
+				'program' => $record->program,
+				'grade' => $record->grade,
+				'frequency' => $record->frequency,
+				'mandatory' => $record->mandatory,
+				'status' => $record->status_approved,
+				'class_id' => $record->id_class,
+				'created_at' => $record->created_at,
+				'updated_at' => $record->updated_at,
+			];
+		}
+		
+		ksort($completedSemesters);
+
+        // Remap array keys to sequential integers starting from 1
+        $remappedSemesters = [];
+        $counter = 0;
+        
+        foreach ($completedSemesters as $semesterKey => $subjects) {
+            $remappedSemesters[$counter] = $subjects;
+            $counter++;
+        }
+        
+        return $remappedSemesters;
+	}
+
+    private function store($subject_code, $semester, $completed = false)
     {
         $validated = validator(compact('subject_code', 'semester'), [
             'subject_code' => 'required|exists:subjects,code',
@@ -144,6 +229,7 @@ class PlanController extends Controller
                 'user_id' => auth()->user()->id,
                 'subject_code' => $validated['subject_code'],
                 'semester' => $validated['semester'],
+                'completed' => $completed
             ]);
 
             return $plan;

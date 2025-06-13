@@ -10,6 +10,7 @@ import SortableGrid from "../../DragAndDrop/SortableGrid";
 import SubjectPlaceholder from "./SubjectPlaceholder";
 
 import { useSubjectMapContext } from "../../../Contexts/SubjectMapContext";
+import { useDndContext } from "@dnd-kit/core";
 
 const SummaryContainer = styled("div")(({}) => ({
     width: "100%",
@@ -36,6 +37,13 @@ const SemesterCreditsText = styled(Typography)(({ theme }) => ({
     },
 }));
 
+const SemesterCompletedText = styled(Typography)(({ theme }) => ({
+    ...theme.typography.small,
+    [theme.breakpoints.up("sm")]: {
+        ...theme.typography.p,
+    },
+}));
+
 const DroppableCardContainer = styled(Droppable)(({ theme }) => ({
     display: "flex",
     justifyContent: "flex-start",
@@ -50,8 +58,12 @@ const Semester = ({
     semesterData,
     isRecommendedView,
 }) => {
+    const completed = semesterData.subjects.reduce((acc, subj) => acc || subj.completed, false);
+
+    const { active } = useDndContext();
+
     const { subjectDataMap } = useSubjectMapContext();
-    const [isExpanded, setExpanded] = useState(true);
+    const [isExpanded, setExpanded] = useState(!completed);
 
     function toggleExpanded(){
         setExpanded(!isExpanded);
@@ -75,6 +87,18 @@ const Semester = ({
             <SemesterInfoText>
                 {semesterData.semesterId}º Período
             </SemesterInfoText>
+            {completed &&
+                <SemesterCompletedText
+                    sx={{ 
+                        textTransform: 'none', 
+                        fontSize: '0.85rem',
+                        marginRight: 'auto',
+                        marginLeft: 2
+                    }}
+                >
+                    Semestre já cursado
+                </SemesterCompletedText>
+            }
             <SemesterCreditsText>
                 {(lectureCredits ? lectureCredits : "0") + " "}+
                 {" " + (workCredits ? workCredits : "0") + " "}
@@ -89,12 +113,15 @@ const Semester = ({
             onClick={toggleExpanded}
             expanded={isExpanded}
             TransitionProps={{ unmountOnExit: true }}
+            sx={completed && active && {
+                opacity: 0.5
+            }}
         >
             <DroppableCardContainer
                 id={semesterData.semesterId}
                 key={semesterData.semesterId}
                 spacing={{ xs: 1, sm: 2 }}
-                disabled={!isExpanded}
+                disabled={!isExpanded || completed}
                 placeholder={isRecommendedView ? null : <SubjectPlaceholder />}
             >
                 <SortableGrid items={semesterData.subjects}>
@@ -109,6 +136,7 @@ const Semester = ({
                                 subjectCode={subject.code}
                                 container={semesterData.semesterId}
                                 isBlocked={false}
+                                completed={subject.completed}
                                 isRecommendedView={isRecommendedView}/>
                         );
                     })}

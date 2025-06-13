@@ -14,6 +14,7 @@ const SortableCard = ({
 	subjectCode,
 	container,
 	isBlocked,
+	completed,
 	isRecommendedView
 }) => {
 	const { plansSet } = usePlansContext();
@@ -35,12 +36,12 @@ const SortableCard = ({
 			id={id}
 			key={subjectCode}
 			itemData={{ code: subjectCode, container: container }}
-			isStatic={isBlocked || isMobile}
+			isStatic={isBlocked || isMobile || completed}
 		>
 			<MemoizedSubjectCard
 				subjectCode={subjectCode}
 				onClick={handleClick}
-				ghost={isBlocked}
+				ghost={isBlocked && !completed}
 				moon={requiredScheduled}
 			/>
 		</SortableItem>
