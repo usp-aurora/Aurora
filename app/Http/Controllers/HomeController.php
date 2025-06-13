@@ -8,18 +8,19 @@ use App\Http\Controllers\GroupController;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\UserController;
+use App\Models\SuggestedPlan;
 
 class HomeController extends Controller
 {
     public function index()
     {
-
         $groupController = new GroupController();
         $planController = new PlanController();
         $subjectController = new SubjectController();
         $userController = new UserController();
 
-        $plans = $planController->index();
+        $plansData = $planController->index();
+        $suggestedPlans = $planController->getSuggestedPlans();
         $groups = $groupController->index(1);
         $subjects = $subjectController->index()->toArray();;
 
@@ -30,7 +31,8 @@ class HomeController extends Controller
         $user = $userController->index();
 
         return Inertia::render('Home', [
-            'initialPlans' => $plans,
+            'initialPlans' => $plansData,
+            'suggestedPlans' => $suggestedPlans,
             'groups' => $groups,
             'subjects' => $subjects,
             'user' => $user,

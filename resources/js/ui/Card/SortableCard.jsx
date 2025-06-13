@@ -3,6 +3,7 @@ import { useTheme } from "@mui/material/styles";
 import { memo, useCallback } from "react";
 
 import { usePlansContext } from "../../Contexts/PlansContext";
+import { useViewMode } from "../../Contexts/ViewModeContext";
 import SortableItem from "../../Features/DragAndDrop/SortableItem";
 import { useSubjectInfoContext } from "../../Features/SubjectInfo/SubjectInfoContext";
 import SubjectCard from "./SubjectCard";
@@ -14,12 +15,12 @@ const SortableCard = ({
 	subjectCode,
 	container,
 	isBlocked,
-	isRecommendedView
 }) => {
 	const { plansSet } = usePlansContext();
 	const { showSubjectInfo } = useSubjectInfoContext();
+	const { isSuggestedPlansView } = useViewMode();
 
-	const requiredScheduled = isRecommendedView && plansSet.has(subjectCode);
+	const requiredScheduled = isSuggestedPlansView && plansSet.has(subjectCode);
 
 	const theme = useTheme(); 
 	const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
