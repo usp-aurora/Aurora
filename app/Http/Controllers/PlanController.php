@@ -19,7 +19,7 @@ class PlanController extends Controller
         if (auth()->user() == null) {
             $plans = SuggestedPlan::all();
         } else {
-            $this->syncWithReplication(auth()->user()->codpes);
+            $this->syncWithReplication();
             $plans = Plan::where('user_id', auth()->user()->id)->get();
         }
 
@@ -137,13 +137,15 @@ class PlanController extends Controller
         }
     }
 
-    private function syncWithReplication($nusp) {
-		$completedSemesters = $this->completed($nusp);
+    private function syncWithReplication() {
+		$completedSemesters = $this->completed(auth()->user()->codpes);
 
 		DB::transaction(function () use ($completedSemesters) {
 			foreach ($completedSemesters as $semesterId => $semesterData) {
 				foreach ($semesterData as $subject) {
-					$savedPlan = Plan::where('subject_code', $subject['id'])->first();
+					$savedPlan = Plan::where('subject_code', $subject['id'])
+                        ->where('user_id', auth()->user()->id)
+                        ->first();
 					if ($savedPlan == null) {
 						$validatedPlan = $this->store($subject['id'], $semesterId + 1, true);
 						$validatedPlan->save();
