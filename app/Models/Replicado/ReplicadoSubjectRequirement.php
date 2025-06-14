@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Replicado;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\ReplicadoSubject;
+use App\Models\Replicado\ReplicadoSubject;
 
 class ReplicadoSubjectRequirement extends Model
 {
@@ -14,7 +14,7 @@ class ReplicadoSubjectRequirement extends Model
     public function newQuery()
     {
         if (!env('JUPITER_DB_HOST')) {
-            $query = parent::newQuery()->fromSub($this->fakeRequisitionsQuery(), 'subtable');
+            $query = parent::newQuery()->fromSub($this->fakeQuery(), 'subtable');
         } else {
             $query = parent::newQuery()->fromSub(function ($query) {
                 $query->selectRaw("
@@ -54,7 +54,7 @@ class ReplicadoSubjectRequirement extends Model
     }
 
 
-    private function fakeRequisitionsQuery()
+    private function fakeQuery()
     {
         $fakeRequirements = [
             'AAA0000' => null,

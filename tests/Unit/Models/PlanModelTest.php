@@ -6,7 +6,7 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\Plan;
 use App\Models\User;
-use App\Models\ReplicadoSubject;
+use App\Models\Replicado\ReplicadoSubject;
 
 class PlanModelTest extends TestCase
 {

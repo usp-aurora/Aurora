@@ -3,11 +3,11 @@
 namespace Tests\Unit;
 
 use Tests\TestCase;
-use App\Models\ReplicadoMajor;
+use App\Models\Replicado\ReplicadoMajor;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 
-class ReplicadoMajorTest extends TestCase
+class ReplicadoMajorModelTest extends TestCase
 {
     // use RefreshDatabase;
 
@@ -16,12 +16,7 @@ class ReplicadoMajorTest extends TestCase
 		$this->assertNotNull($major);
 		$this->assertIsNumeric($major->major_id);
 		$this->assertIsString($major->major_name);
-		$this->assertIsNumeric($major->curriculum_id);
-		$this->assertIsNumeric($major->institute_id);
-		$this->assertIsNumeric($major->habilitation_id);
-		$this->assertIsNumeric($major->ideal_duration);
-		$this->assertIsNumeric($major->max_duration);
-		$this->assertIsNumeric($major->min_duration);
+		$this->assertIsNumeric($major->collegiate_id);
 	}
 
     public function test_major_retrieves_fake_data_when_replicado_not_available(): void

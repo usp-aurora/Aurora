@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Replicado;
 
 use Illuminate\Database\Eloquent\Model;
 use Faker\Factory as Faker;
@@ -15,7 +15,7 @@ class ReplicadoInstitute extends Model
     public function newQuery()
     {
         if (!config('services.replicado_is_active')) {
-            $query = parent::newQuery()->fromSub($this->fakeInstitutoQuery(), 'subtable');
+            $query = parent::newQuery()->fromSub($this->fakeQuery(), 'subtable');
         } else {
             $query = parent::newQuery()->fromSub("SELECT 
                                                     t.id AS id,
@@ -73,7 +73,7 @@ class ReplicadoInstitute extends Model
     }
 
 
-    private function fakeInstitutoQuery()
+    private function fakeQuery()
     {
         $cidades = [
             10 => 'São Paulo',

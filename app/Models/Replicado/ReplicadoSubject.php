@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Replicado;
 
 use Illuminate\Database\Eloquent\Model;
 use Faker\Factory as Faker;
 use Illuminate\Support\Facades\DB;
-use App\Models\Requirement;
 
 class ReplicadoSubject extends Model
 {
@@ -16,7 +15,7 @@ class ReplicadoSubject extends Model
     public function newQuery()
     {   
         if(!config('services.replicado_is_active')){
-            $query = parent::newQuery()->fromSub($this->fakeMateriasQuery(), 'subtable');
+            $query = parent::newQuery()->fromSub($this->fakeQuery(), 'subtable');
         }
         else{
             $this->connection = "replicado"; 
@@ -35,7 +34,7 @@ class ReplicadoSubject extends Model
     }
 
     
-    private function fakeMateriasQuery()
+    private function fakeQuery()
     {
         $letras = ['A', 'B', 'C'];
         $numeros = ['0', '1'];
@@ -62,9 +61,4 @@ class ReplicadoSubject extends Model
 
         return $query;
     }
-
-    // public function requirements()
-    // {
-    //     return $this->hasMany(Requirement::class, 'subject_code', 'code');
-    // } 
 }

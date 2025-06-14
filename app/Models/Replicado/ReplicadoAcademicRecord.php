@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Replicado;
 
 use Illuminate\Database\Eloquent\Model;
 use Faker\Factory as Faker;
@@ -18,12 +18,12 @@ class ReplicadoAcademicRecord extends Model
         } else {
             $query = parent::newQuery()->fromSub(function ($query) {
                 $query->select(
-                    'h.codpes AS nusp',
-                    'h.coddis AS subject_code',
-					'h.codtur AS class_code',
+                    'codpes AS nusp',
+                    'coddis AS subject_code',
+					'codtur AS class_code',
                 )
-                ->from('HISTESCOLARGR AS h')
-				->where('h.rstfim', '=', 'A');
+                ->from('HISTESCOLARGR')
+				->where('rstfim', '=', 'A');
             }, 'subtable');
         }
 

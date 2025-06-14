@@ -5,7 +5,7 @@ namespace App\Models\Replicado;
 use Illuminate\Database\Eloquent\Model;
 use Faker\Factory as Faker;
 
-class ReplicadoMajor extends Model
+class ReplicadoHabilitation extends Model
 {
     protected $connection = "replicado";
     protected $table = "dummy";
@@ -19,11 +19,14 @@ class ReplicadoMajor extends Model
         else { 
             $query = parent::newQuery()->fromSub(function ($query) {
                 $query->select(
+                    'codhab AS id',
                     'codcur AS major_id',
-                    'nomcur AS major_name',
-                    'codclg AS collegiate_id',
+                    'nomhab AS name',
                 )
-                ->from('CURSOGR');
+                ->from('HABILITACAOGR')
+                ->whereNull('dtadtvhab')
+                ->whereNotNull('dtaatvhab')
+                ;
             }, 'subtable');
         }
 
@@ -37,16 +40,16 @@ class ReplicadoMajor extends Model
         $fakeData = [];
         for ($i = 0; $i < 20; $i++) {
             $fakeData[] = [
-                'major_id' => $faker->numerify('#####'),
-                'major_name' => $faker->words(3, true),
-                'collegiate_id' => $faker->numerify('###'),
+                'id' => $faker->numerify('#####'),
+                'major_id' => $faker->numerify('####'),
+                'name' => $faker->words(3, true),
             ];
         }
 
         $query = collect($fakeData)->map(function ($row) {
-            return "SELECT  '{$row['major_id']}' as major_id, 
-                            '{$row['major_name']}' as major_name,
-                            '{$row['collegiate_id']}' as collegiate_id";
+            return "SELECT  '{$row['id']}' as id, 
+                            '{$row['major_id']}' as major_id,
+                            '{$row['name']}' as name";
         })->implode(' UNION ALL ');
 
         return $query;

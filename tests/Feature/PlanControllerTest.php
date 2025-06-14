@@ -3,7 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Plan;
-use App\Models\ReplicadoSubject;
+use App\Models\Replicado\ReplicadoSubject;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;

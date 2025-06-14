@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Replicado;
 
 use Illuminate\Database\Eloquent\Model;
 use Faker\Factory as Faker;
@@ -14,13 +14,13 @@ class ReplicadoSubjectOffering extends Model
     public function newQuery()
     {
         if(!config('services.replicado_is_active')) {
-            $query = parent::newQuery()->fromSub($this->fakeSubjectOfferingQuery(), 'subtable');
+            $query = parent::newQuery()->fromSub($this->fakeQuery(), 'subtable');
         }
         else{
             $query = parent::newQuery()->fromSub(function ($query) {
                 $query->select(
                     't.codtur AS id',
-                    'd.nompes AS professor',
+                    'v.nompes AS professor',
                     'p.horent AS start_time',
                     'p.horsai AS end_time',
                     'mi.diasmnocp AS weekday_occ',
@@ -30,7 +30,7 @@ class ReplicadoSubjectOffering extends Model
                 )
                 ->from('TURMAGR AS t')
                 ->join('MINISTRANTE AS mi', 'mi.codtur', '=', 't.codtur')
-                ->join('VINCULOPESSOAUSP AS d', 'd.codpes', '=', 'mi.codpes')
+                ->join('VINCULOPESSOAUSP AS v', 'v.codpes', '=', 'mi.codpes')
                 ->join('PERIODOHORARIO AS p', 'mi.codperhor', '=', 'p.codperhor');
             }, 'subtable');
         }
@@ -39,7 +39,7 @@ class ReplicadoSubjectOffering extends Model
     }
 
     
-    private function fakeSubjectOfferingQuery()
+    private function fakeQuery()
     {
         $letras = ['A', 'B', 'C'];
         $numeros = ['0', '1'];

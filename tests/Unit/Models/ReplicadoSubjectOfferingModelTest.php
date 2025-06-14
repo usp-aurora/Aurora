@@ -3,11 +3,11 @@
 namespace Tests\Unit;
 
 use Tests\TestCase;
-use App\Models\ReplicadoSubjectOffering;
+use App\Models\Replicado\ReplicadoSubjectOffering;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 
-class ReplicadoSubjectOfferingTest extends TestCase
+class ReplicadoSubjectOfferingModelTest extends TestCase
 {
     // use RefreshDatabase;
 

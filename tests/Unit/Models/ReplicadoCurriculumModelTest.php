@@ -3,11 +3,11 @@
 namespace Tests\Unit;
 
 use Tests\TestCase;
-use App\Models\ReplicadoCurriculum;
+use App\Models\Replicado\ReplicadoCurriculum;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 
-class ReplicadoCurriculumTest extends TestCase
+class ReplicadoCurriculumModelTest extends TestCase
 {
 	// use RefreshDatabase;
 
@@ -15,9 +15,11 @@ class ReplicadoCurriculumTest extends TestCase
 	{
 		$this->assertNotNull($curriculum);
 		$this->assertIsNumeric($curriculum->id);
-		$this->assertIsString($curriculum->subject_id);
-		$this->assertIsNumeric($curriculum->ideal_period);
-		$this->assertContains($curriculum->mandatory, ['O', 'C', 'L']);
+		$this->assertIsNumeric($curriculum->major_id);
+		$this->assertIsNumeric($curriculum->habilitation_id);
+		$this->assertIsNumeric($curriculum->ideal_duration);
+		$this->assertIsNumeric($curriculum->min_duration);
+		$this->assertIsNumeric($curriculum->max_duration);
 	}
 
 	public function test_curriculum_retrieves_fake_data_when_replicado_not_available(): void

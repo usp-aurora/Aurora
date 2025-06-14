@@ -3,11 +3,11 @@
 namespace Tests\Unit;
 
 use Tests\TestCase;
-use App\Models\ReplicadoStudent;
+use App\Models\Replicado\ReplicadoStudent;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 
-class ReplicadoStudentTest extends TestCase
+class ReplicadoStudentModelTest extends TestCase
 {
     // use RefreshDatabase;
 
@@ -15,7 +15,7 @@ class ReplicadoStudentTest extends TestCase
 	{
 		$this->assertNotNull($student);
 		$this->assertIsNumeric($student->nusp);
-		$this->assertIsString($student->major_id);
+		$this->assertIsNumeric($student->major_id);
 		$this->assertIsNumeric($student->habilitation_id);
         $this->assertIsString($student->name);
 	}

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ReplicadoSubject;
+use App\Models\Replicado\ReplicadoSubject;
 
 class SubjectController extends Controller
 {

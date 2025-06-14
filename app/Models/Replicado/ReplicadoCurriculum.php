@@ -1,10 +1,9 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Replicado;
 
 use Illuminate\Database\Eloquent\Model;
 use Faker\Factory as Faker;
-use Illuminate\Support\Facades\DB;
 
 class ReplicadoCurriculum extends Model
 {
@@ -15,56 +14,50 @@ class ReplicadoCurriculum extends Model
     public function newQuery()
     {
         if(!config('services.replicado_is_active')) {
-            $query = parent::newQuery()->fromSub($this->fakeCurriculosQuery(), 'subtable');
+            $query = parent::newQuery()->fromSub($this->fakeQuery(), 'subtable');
         }
-        else {
+        else { 
             $query = parent::newQuery()->fromSub(function ($query) {
                 $query->select(
-                    'g.codcrl AS id',
-                    'g.coddis AS subject_id',
-                    'g.numsemidl AS ideal_period',
-                    'g.tipobg AS mandatory',
-                    'g.dtacad AS created_at',
-                    'g.dtaultalt AS updated_at',
-                    'g.verdis',
-                    DB::raw('FIRST_VALUE(g.verdis) OVER (PARTITION BY g.coddis, g.codcrl ORDER BY g.verdis DESC) AS most_recent_version')
+                    'codcrl AS id',
+                    'codcur AS major_id',
+                    'codhab AS habilitation_id',
+                    'duridlcur AS ideal_duration',
+                    'durmaxcurusp AS max_duration',
+                    'durmincurusp AS min_duration',
                 )
-                ->from('GRADECURRICULAR AS g');
+                ->from('CURRICULOGR')
+                ->whereNull('dtafimcrl')
+                ->whereNotNull('dtainicrl');
             }, 'subtable');
-
-            $query->whereRaw('subtable.verdis = subtable.most_recent_version');
         }
-        
+
         return $query;
     }
 
     
-    private function fakeCurriculosQuery()
+    private function fakeQuery()
     {
-        $letras = ['A', 'B', 'C'];
-        $numeros = ['0', '1'];
         $faker = Faker::create();
         $fakeData = [];
         for ($i = 0; $i < 20; $i++) {
-            $curri = $faker->numerify('#####');
-            $habi = $faker->numerify('####');
             $fakeData[] = [
-                'id' => $curri . $habi . $faker->numerify('###'),
-                'subject_id' => $faker->randomElement($letras) . $faker->randomElement($letras) . $faker->randomElement($letras) . '000' . $faker->randomElement($numeros),
-                'ideal_period' => $faker->numberBetween(1,9),
-                'mandatory' => $faker->randomElement(['O', 'C', 'L']),
-                'created_at' => $faker->date(),
-                'updated_at' => $faker->date(),
+                'id' => $faker->numerify('#####'),
+                'major_id' => $faker->numerify('####'),
+                'habilitation_id' => $faker->numerify('###'),
+                'ideal_duration' => $faker->numberBetween(5, 10),
+                'max_duration' => $faker->numberBetween(10, 20),
+                'min_duration' => $faker->numberBetween(1, 5),
             ];
         }
 
         $query = collect($fakeData)->map(function ($row) {
             return "SELECT  '{$row['id']}' as id, 
-                            '{$row['subject_id']}' as subject_id, 
-                            '{$row['ideal_period']}' as ideal_period, 
-                            '{$row['mandatory']}' as mandatory, 
-                            '{$row['created_at']}' as created_at, 
-                            '{$row['updated_at']}' as updated_at";
+                            '{$row['major_id']}' as major_id,
+                            '{$row['habilitation_id']}' as habilitation_id,
+                            '{$row['ideal_duration']}' as ideal_duration,
+                            '{$row['max_duration']}' as max_duration,
+                            '{$row['min_duration']}' as min_duration";
         })->implode(' UNION ALL ');
 
         return $query;

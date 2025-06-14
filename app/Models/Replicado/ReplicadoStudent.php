@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Replicado;
 
 use Illuminate\Database\Eloquent\Model;
 use Faker\Factory as Faker;
@@ -19,14 +19,15 @@ class ReplicadoStudent extends Model
         } else {
             $query = parent::newQuery()->fromSub(function ($query) {
                 $query->select(
-                    'v.codpes AS nusp',
-                    'v.codcurgrd AS major_id',
-                    'v.codhab AS habilitation_id',
-                    'v.nompes AS name',
+                    'codpes AS nusp',
+                    'codcurgrd AS major_id',
+                    'codhab AS habilitation_id',
+                    'nompes AS name',
                 )
-                ->from('VINCULOPESSOAUSP AS v')
-                ->where('v.tipvin', '=', 'ALUNOGR')
-                ->whereNotNull('v.codcurgrd');
+                ->from('VINCULOPESSOAUSP')
+                ->where('tipvin', '=', 'ALUNOGR')
+                ->whereNotNull('codcurgrd')
+                ->whereNotNull('codhab');
             }, 'subtable');
         }
 
