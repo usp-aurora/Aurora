@@ -7,7 +7,7 @@ use Faker\Factory as Faker;
 
 class ReplicadoAcademicRecord extends Model
 {
-    protected $connection = "replicado";
+    protected $connection = null;
     protected $table = "dummy";
     public $timestamps = false;
 
@@ -16,6 +16,7 @@ class ReplicadoAcademicRecord extends Model
         if (!config('services.replicado_is_active')) {
             $query = parent::newQuery()->fromSub($this->fakeQuery(), 'subtable');
         } else {
+            $this->connection = "replicado";
             $query = parent::newQuery()->fromSub(function ($query) {
                 $query->select(
                     'codpes AS nusp',

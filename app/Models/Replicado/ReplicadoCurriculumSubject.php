@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 class ReplicadoCurriculumSubject extends Model
 {
-    protected $connection = "replicado";
+    protected $connection = null;
     protected $table = "dummy";
     public $timestamps = false;
 
@@ -18,6 +18,7 @@ class ReplicadoCurriculumSubject extends Model
             $query = parent::newQuery()->fromSub($this->fakeQuery(), 'subtable');
         }
         else {
+            $this->connection = "replicado";
             $query = parent::newQuery()->fromSub(function ($query) {
                 $query->select(
                     'codcrl AS curriculum_id',

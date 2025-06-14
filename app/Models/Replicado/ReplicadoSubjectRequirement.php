@@ -7,7 +7,7 @@ use App\Models\Replicado\ReplicadoSubject;
 
 class ReplicadoSubjectRequirement extends Model
 {
-    protected $connection = "replicado";
+    protected $connection = null;
     protected $table = "dummy";
     public $timestamps = false;
 
@@ -16,6 +16,7 @@ class ReplicadoSubjectRequirement extends Model
         if (!env('JUPITER_DB_HOST')) {
             $query = parent::newQuery()->fromSub($this->fakeQuery(), 'subtable');
         } else {
+            $this->connection = "replicado";
             $query = parent::newQuery()->fromSub(function ($query) {
                 $query->selectRaw("
                     coddis AS subject_code,

@@ -7,7 +7,7 @@ use Faker\Factory as Faker;
 
 class ReplicadoMajor extends Model
 {
-    protected $connection = "replicado";
+    protected $connection = null;
     protected $table = "dummy";
     public $timestamps = false;
 
@@ -17,6 +17,7 @@ class ReplicadoMajor extends Model
             $query = parent::newQuery()->fromSub($this->fakeQuery(), 'subtable');
         }
         else { 
+            $this->connection = "replicado";
             $query = parent::newQuery()->fromSub(function ($query) {
                 $query->select(
                     'codcur AS major_id',

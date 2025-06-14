@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 class ReplicadoStudent extends Model
 {
-    protected $connection = "replicado";
+    protected $connection = null;
     protected $table = "dummy";
     public $timestamps = false;
 
@@ -17,6 +17,7 @@ class ReplicadoStudent extends Model
         if (!config('services.replicado_is_active')) {
             $query = parent::newQuery()->fromSub($this->fakeQuery(), 'subtable');
         } else {
+            $this->connection = "replicado";
             $query = parent::newQuery()->fromSub(function ($query) {
                 $query->select(
                     'codpes AS nusp',
