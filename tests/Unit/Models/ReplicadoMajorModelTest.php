@@ -4,13 +4,10 @@ namespace Tests\Unit;
 
 use Tests\TestCase;
 use App\Models\Replicado\ReplicadoMajor;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 
 class ReplicadoMajorModelTest extends TestCase
 {
-    // use RefreshDatabase;
-
 	private function assertValidMajor($major): void
 	{
 		$this->assertNotNull($major);

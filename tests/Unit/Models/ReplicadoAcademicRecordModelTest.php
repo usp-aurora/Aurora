@@ -4,13 +4,10 @@ namespace Tests\Unit;
 
 use Tests\TestCase;
 use App\Models\Replicado\ReplicadoAcademicRecord;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 
 class ReplicadoAcademicRecordModelTest extends TestCase
 {
-	// use RefreshDatabase;
-
 	private function assertValidAcamicRecord($academicRecord): void
 	{
 		$this->assertNotNull($academicRecord);

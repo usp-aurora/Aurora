@@ -4,13 +4,10 @@ namespace Tests\Unit;
 
 use Tests\TestCase;
 use App\Models\Replicado\ReplicadoSubject;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 
 class ReplicadoSubjectModelTest extends TestCase
 {
-    // use RefreshDatabase;
-
     public function test_subjects_retrieves_fake_data_when_jupiter_not_available(): void
     {
         Config::set('services.replicado_is_active', 0);

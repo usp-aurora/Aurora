@@ -4,13 +4,10 @@ namespace Tests\Unit;
 
 use Tests\TestCase;
 use App\Models\Replicado\ReplicadoCurriculumSubject;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 
 class ReplicadoCurriculumSubjectsModelTest extends TestCase
 {
-	// use RefreshDatabase;
-
 	private function assertValidCurriculumSubject($curriculumSubject): void
 	{
 		$this->assertNotNull($curriculumSubject);

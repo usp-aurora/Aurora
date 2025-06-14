@@ -4,13 +4,10 @@ namespace Tests\Unit;
 
 use Tests\TestCase;
 use App\Models\Replicado\ReplicadoSubjectRequirement;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 
 class ReplicadoSubjectRequirementModelTest extends TestCase
 {
-    // use RefreshDatabase;
-
     private function assertValidSubjectRequirement($requirement): void
     {
         $this->assertNotNull($requirement);

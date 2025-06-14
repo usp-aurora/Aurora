@@ -4,13 +4,10 @@ namespace Tests\Unit;
 
 use Tests\TestCase;
 use App\Models\Replicado\ReplicadoHabilitation;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 
 class ReplicadoHabilitationModelTest extends TestCase
 {
-	// use RefreshDatabase;
-
 	private function assertValidHabilitation($habilitation): void
 	{
 		$this->assertNotNull($habilitation);

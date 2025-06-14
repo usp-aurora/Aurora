@@ -4,13 +4,10 @@ namespace Tests\Unit;
 
 use Tests\TestCase;
 use App\Models\Replicado\ReplicadoSubjectOffering;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 
 class ReplicadoSubjectOfferingModelTest extends TestCase
 {
-    // use RefreshDatabase;
-
     private function assertValidSubjectOffering($offering): void
     {
         $this->assertNotNull($offering);
