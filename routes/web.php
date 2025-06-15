@@ -7,6 +7,10 @@ use App\Http\Controllers\PlanController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
 
+Route::get('/planets', function () {
+    return inertia('PlanetsTest');
+});
+
 Route::get('/', [HomeController::class, 'index']);
 
 Route::middleware('auth')->prefix('api/plans')->group(function () {
