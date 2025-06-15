@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('description')->nullable();
+            $table->string('color')->nullable();
             $table->unsignedBigInteger('parent_group_id')->nullable();
             $table->boolean('is_course_root');
             $table->timestamps();

@@ -8,19 +8,24 @@ theme = createTheme({
     palette: {
         primary: {
             main: colors.blue[500],
+            contrastText: "#FFFFFF",
         },
         error: {
             main: colors.red[600],
+            contrastText: "#FFFFFF",
         },
         neutral: {
             main: "#FFFFFF",
             secondary: "#FFFFFF",
+            contrastText: "#424242",
         },
         white: {
             main: "#FFFFFF",
+            contrastText: "#424242",
         },
         black: {
             main: "#000000",
+            contrastText: "#FFFFFF",
         },
         blue: {
             50: colors.blue[100],

@@ -1,7 +1,7 @@
 import { Box } from '@mui/material';
-import PlanetView from '../views/PlanetView.mjs';
 import { useTheme } from '@mui/material/styles';
-
+import PlanetView from '../views/PlanetView.mjs';
+import { useSubjectMapContext } from '../../Contexts/SubjectMapContext';
 
 const baseTemplate = {
   "seed": "mac0110",
@@ -61,7 +61,7 @@ const baseTemplate = {
   },
   "atmosphere": {
     "color": "rgb(255, 255, 255)",
-    "height": 25
+    "height": 0
   }
 }
 
@@ -104,18 +104,33 @@ function generatePlanet(seed, seaColor, landOuterColor, landInnerColor, cloudsCo
 	}
 }
 
-function Planet({ seed="default", color="blue" }) {
+function Planet({ subjectCode }) {
+  const { subjectDataMap } = useSubjectMapContext();
+  const subjectData = subjectDataMap[subjectCode];
+  const seed = subjectCode;
+  let hasClouds = false;
+  const colors = subjectData.groups.map(function(group){
+    if(["green", "blue", "cyan"].includes(group.color)){
+      hasClouds = true;
+    }
+    
+    return group.color
+  });
+
+  // Escolhendo cor para o planeta
+  const c1 = colors[0 % colors.length];
+  const c2 = colors[1 % colors.length];
+  const c3 = colors[2 % colors.length];
+
   const theme = useTheme();
-  let colorPalette = theme.palette[color];
-  let seaColor = colorPalette[900];
-  let landOuterColor = colorPalette[600];
-  let landInnerColor = colorPalette[300];
+  const seaColor = theme.palette[c1][900];
+  const landOuterColor = theme.palette[c2][600];
+  const landInnerColor = theme.palette[c3][300];
 
+  // Escolhendo cor para a nuvem
   const seedToValue = [200, 300, 400, 500];
-  let value = seedToValue[Math.abs(seed.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0)) % seedToValue.length];
-  let cloudsColor = theme.palette["grey"][value];
-
-  let hasClouds = ["green", "blue", "cyan"].includes(color);
+  const value = seedToValue[Math.abs(seed.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0)) % seedToValue.length];
+  const cloudsColor = theme.palette["grey"][value];
 
 	const planetSVG = generatePlanet(seed, seaColor, landOuterColor, landInnerColor, cloudsColor, hasClouds);
 

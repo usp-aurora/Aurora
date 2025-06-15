@@ -3,7 +3,7 @@ import { styled } from "@mui/material/styles";
 
 import { useSubjectMapContext } from "../../Contexts/SubjectMapContext";
 import glassmorphismStyle from "../../styles/glassmorphism";
-import Planet from "../Planet/Planet";
+import Planet from "../../Planets/Components/Planet";
 import CardContainer from "./Components/CardContainer";
 import CardBackgroundBase from "./Components/CardBackgroundBase";
 
@@ -118,7 +118,7 @@ const SubjectCard = ({
 					<PlanetWrapper>
 						{moon && !ghost && <Moon/> }
 						<PlanetContainer>
-							{(!ghost && planetUrl) && <Planet src={planetUrl} />}
+							{(!ghost && planetUrl) && <Planet subjectCode={subjectCode} />}
 						</PlanetContainer>
 					</PlanetWrapper>
                     <StyledTitle component="h3"> {subjectCode} </StyledTitle>

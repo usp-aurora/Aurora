@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 import { styled } from "@mui/material/styles";
 import { Box } from "@mui/material";
 import Group from "./Group";
+import { useGroupsContext } from "../../../Contexts/GroupsContext";
 
 const GroupContainer = styled(Box)(({ theme }) => ({
     display: "flex",
@@ -13,8 +14,10 @@ const GroupContainer = styled(Box)(({ theme }) => ({
     borderRadius: "12px",
 }));
 
-function SubjectPickerList({ groupsData }) {
-    const [expandedCategory, setExpandedCategory] = useState(groupsData.subgroups.length - 1);
+function SubjectPickerList() {
+    const { groups } = useGroupsContext();
+    
+    const [expandedCategory, setExpandedCategory] = useState(groups.subgroups.length - 1);
 
     const toggleCategory = useCallback(function(index){
         setExpandedCategory((prevCategory) => (prevCategory === index) ? null : index);
@@ -23,7 +26,7 @@ function SubjectPickerList({ groupsData }) {
     return (
         // Algum dia vai ter um search bar bem aqui
         <GroupContainer>
-            {groupsData.subgroups.map((groupData, index) => (
+            {groups.subgroups.map((groupData, index) => (
                 <Group
                     key={groupData.title}
                     groupData={groupData}

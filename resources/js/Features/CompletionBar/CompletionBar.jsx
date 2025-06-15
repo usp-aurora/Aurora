@@ -32,7 +32,7 @@ function CompletionBar() {
 			const subject = subjectDataMap[subjectCode];
 			if (!subject) return;
 
-			if (subject.groups.some(group => group === "Obrigatórias")) {
+			if (subject.groups.some(group => group.title === "Obrigatórias")) {
 				mandatoryCredits += parseInt(subject.credits[0], 10);
 				mandatoryCredits += parseInt(subject.credits[1], 10);
 			}
