@@ -22,7 +22,9 @@ class HomeController extends Controller
         $plansData = $planController->index();
         $suggestedPlans = $planController->getSuggestedPlans();
         $groups = $groupController->index(1);
-        $subjects = $subjectController->index()->toArray();;
+
+        $rootGroupSubjects = $groupController->getSubjectsOfGroupRecursive($groups);
+        $subjects = $subjectController->getSubjects($rootGroupSubjects)->toArray();
 
         foreach ($subjects as $code => $subject) {
             $subjects[$code]["groups"] = $groupController->getSubjectRootGroups($code);

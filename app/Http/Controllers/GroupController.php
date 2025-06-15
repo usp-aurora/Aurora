@@ -73,6 +73,18 @@ class GroupController extends Controller {
         return $groupRoots;
     }
 
+    public function getSubjectsOfGroupRecursive($groupArray) {
+        if (!$groupArray["subgroups"]) {
+            return $groupArray["subjects"];
+        }
+        $result = [];
+        foreach ($groupArray["subgroups"] as $subgroup) {
+            $subjects = $this->getSubjectsOfGroupRecursive($subgroup);
+            $result = array_merge($result, $subjects);
+        }
+        return $result;
+    }
+
     private function getGroupRoot($groupId){
         $group = DB::table('groups')
             ->where('groups.id', '=', $groupId)
