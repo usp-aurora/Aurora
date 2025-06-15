@@ -118,7 +118,7 @@ function instantiateLayer(
 function PlanetView(template = {}) {
 	this.el = document.createElementNS("http://www.w3.org/2000/svg", "svg")
 	this.el.setAttribute("viewBox", "-100 -100 200 200")
-	this.el.setAttribute("preserveAspectRatio", "")
+	this.el.setAttribute("preserveAspectRatio", "xMidYMid meet")
 
 	this.setTemplate = function(template = {}) {
 		const clouds = template.clouds
