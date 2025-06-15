@@ -23,6 +23,9 @@ class ReplicadoSubject extends Model
                 $query->select(
                     'coddis AS code',
                     'nomdis AS name',
+                    'objdis AS syllabus',
+                    'creaul AS lecture_credits',
+                    'cretrb AS work_credits',
                 )
                 ->whereNull('dtadtvdis')
                 ->whereNotNull('dtaatvdis')
