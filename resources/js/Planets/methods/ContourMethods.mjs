@@ -1,4 +1,4 @@
-function getIslandCountours(positions, faces, adjacency, noise, treshhold = 0.5) {
+function getIslandContours(positions, faces, adjacency, noise, treshhold = 0.5) {
 	// if you got to a face, its entrance edge has a high vertex and a low vertex
 	// just go to the other edge which has a low vertex and a high vertex
 	// this will be the exit edge of this face and the entrance edge of the next
@@ -42,4 +42,4 @@ function getIslandCountours(positions, faces, adjacency, noise, treshhold = 0.5)
 	return islands
 }
 
-export { getIslandCountours }
+export { getIslandContours }

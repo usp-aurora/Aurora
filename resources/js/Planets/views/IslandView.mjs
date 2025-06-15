@@ -1,10 +1,11 @@
-function IslandView(contour, fill = "green", radius = 100, doRound = false) {
+function IslandView(contour, fill = "green", radius = 100, doRound = false, noise, treshhold) {
 	this.el = document.createElementNS("http://www.w3.org/2000/svg", "path")
 	this.el.setAttribute("stroke", "none")
 	this.el.setAttribute("fill", fill)
+	const sradius = scale(1)
 
 	function scale(value) {
-		return value*radius
+		return doRound ? Math.round(value*radius*100)/100 : value*radius
 	}
 
 	function round(value) {
@@ -23,9 +24,9 @@ function IslandView(contour, fill = "green", radius = 100, doRound = false) {
 
 	function createInnerIslandPathString(island) {
 		const last = island[island.length-1]
-		return `M ${round(last[0])} ${round(last[1])} ` + island.map(
-			position => `L ${round(position[0])} ${round(position[1])}`
-		).join(" ")
+		return `M${round(last[0])} ${round(last[1])} ` + island.map(
+			position => `L${round(position[0])} ${round(position[1])}`
+		).join("")
 	}
 	
 	function createBorderIslandPathString(island, startPosition, endPosition, nextPosition) {
@@ -35,12 +36,12 @@ function IslandView(contour, fill = "green", radius = 100, doRound = false) {
 		if(deltaAngle < 0)
 			deltaAngle += 2*Math.PI
 		const large = Math.PI < deltaAngle ? 1 : 0
-		return island.map(position => `L ${round(position[0])} ${round(position[1])}`).join(" ")  +
-			` L ${scale(endPosition[0])} ${scale(endPosition[1])} ` +
-			`A ${radius} ${radius} 0 ${large} 1 ${scale(nextPosition[0])} ${scale(nextPosition[1])}`
+		return island.map(position => `L${round(position[0])} ${round(position[1])}`).join("")  +
+			`L${scale(endPosition[0])} ${scale(endPosition[1])}` +
+			`A${sradius} ${sradius} 0 ${large} 1 ${scale(nextPosition[0])} ${scale(nextPosition[1])}`
 	}
 
-	this.draw = function(rotation) {
+	this.draw = function(rotation, borderVertex) {
 		const islands = rotation
 			? contour.map(island => island.map(position => rotation.multiply(position)))
 			: contour
@@ -103,7 +104,7 @@ function IslandView(contour, fill = "green", radius = 100, doRound = false) {
 				let islandIdx = i
 				if(!visited[islandIdx]) {
 					const startPosition = extremes[islandIdx][0]
-					pathPieces.push(`M ${scale(startPosition[0])} ${scale(startPosition[1],)}`)
+					pathPieces.push(`M${scale(startPosition[0])} ${scale(startPosition[1],)}`)
 				}
 				while(!visited[islandIdx]) {
 					visited[islandIdx] = true
@@ -117,7 +118,14 @@ function IslandView(contour, fill = "green", radius = 100, doRound = false) {
 				}
 			}
 		}
-		this.el.setAttribute("d", pathPieces.join(" "))
+		else {
+			if(noise[borderVertex] > treshhold) {
+				pathPieces.push(`M${sradius} 0`)
+				pathPieces.push(`A${sradius} ${sradius} 0 1 1 ${-sradius} 0`)
+				pathPieces.push(`A${sradius} ${sradius} 0 1 1 ${sradius} 0`)
+			}
+		}
+		this.el.setAttribute("d", pathPieces.join(""))
 	}
 }
 

@@ -1,7 +1,6 @@
-import { RotationMatrix } from "../methods/LinearMethods.mjs"
-import { createIcosahedralSphere, getEdges } from "../methods/SphericalGraphMethods.mjs"
-import { getIslandCountours } from "../methods/ContourMethods.mjs"
-import { setSeed, randomHexColor, randomInt, randomFloat, randomFractalNoise } from "../methods/RandomMethods.mjs"
+import { getIslandContours } from "../methods/ContourMethods.mjs"
+import { randomFractalNoise, setSeed } from "../methods/RandomMethods.mjs"
+import { createIcosahedralSphere } from "../methods/SphericalGraphMethods.mjs"
 
 import IslandView from "./IslandView.mjs"
 
@@ -108,11 +107,28 @@ function instantiateLayer(
 	[positions, faces, adjacency],
 ) {
 	const divergence = layer.divergence
-	const span = layer.span
+	const span = 1-layer.span
 	const color = layer.color
 	const noise = blendNoises(noises, layer["noise-strengths"])
-	const contour = getIslandCountours(positions, faces, adjacency, noise, 1-span)
-	return new IslandView(contour, color, radius)
+	const contour = getIslandContours(positions, faces, adjacency, noise, span)
+	return new IslandView(contour, color, radius, false, noise, span)
+}
+
+function getBorderVertexBrute(positions, faces, adjacency, rotation) {
+	const rpos = rotation ? positions.map(position => rotation.multiply(position)) : positions
+	for(let i = 0; i < faces.length; ++i) {
+		for(let j = 0; j < 3; ++j) {
+			const vertices = []
+			vertices[0] = faces[i][j]
+			vertices[1] = faces[adjacency[i][j][0]][(adjacency[i][j][1]+2)%3]
+			vertices[2] = faces[i][(j+1)%3]
+			vertices[3] = faces[i][(j+2)%3]
+			const norms = vertices.map(k => Math.hypot(rpos[k][0], rpos[k][1]))
+			if(Math.max(norms[1],norms[3]) < Math.min(norms[0],norms[2]))
+				return vertices[0];
+		}
+	}
+	return 0
 }
 
 function PlanetView(template = {}) {
@@ -132,6 +148,7 @@ function PlanetView(template = {}) {
 
 		setSeed(template.seed)
 
+		// generate noises from octaves
 		const noises = {}
 		for(const noiseKey in template.noises) {
 			const noiseTemplate = template.noises[noiseKey]
@@ -143,6 +160,7 @@ function PlanetView(template = {}) {
 			)
 		}
 
+		// generate layer instances
 		const layerInstances = []
 		if(template.layers) {
 			for(const layer of layers) {
@@ -150,12 +168,13 @@ function PlanetView(template = {}) {
 			}
 		}
 
+		// create planet components
 		this.el.innerHTML = ""
 
 		const defsEl = document.createElementNS("http://www.w3.org/2000/svg", "defs")
 		defsEl.innerHTML = `
 			<radialGradient
-				id="planet_shaddow_gradient"
+				id="planet_shadow_gradient"
 				cx="0" cy="0" r="1"
 				gradientUnits="userSpaceOnUse"
 				gradientTransform="translate(-20 -20) rotate(60) scale(120)"
@@ -165,7 +184,7 @@ function PlanetView(template = {}) {
 				<stop offset="1" stop-color="#0A1627" stop-opacity="0.7"/>
 			</radialGradient>
 			<radialGradient
-				id="clouds_shaddow_gradient"
+				id="clouds_shadow_gradient"
 				cx="0" cy="0" r="1"
 				gradientUnits="userSpaceOnUse"
 				gradientTransform="translate(-30 -30) rotate(60) scale(130)"
@@ -204,11 +223,6 @@ function PlanetView(template = {}) {
 		circleEl.setAttribute("stroke", "none")
 		this.el.appendChild(circleEl)
 
-		for(const layerInstance of layerInstances) {
-			this.el.appendChild(layerInstance.el)
-			layerInstance.draw()
-		}
-
 		if(clouds) {
 			const cloudsMaskEl = document.createElementNS("http://www.w3.org/2000/svg", "mask")
 			cloudsMaskEl.setAttribute("id", "clouds_mask")
@@ -226,14 +240,19 @@ function PlanetView(template = {}) {
 			layerInstances.push(cloudsLayerInstance)
 		}
 
+		for(const layerInstance of layerInstances) {
+			this.el.appendChild(layerInstance.el)
+			layerInstance.draw()
+		}
+
 		const overlayEl = document.createElementNS("http://www.w3.org/2000/svg", "g")
 		overlayEl.innerHTML = `
-			<circle cx="0" cy="0" r="${innerRadius}" fill="url(#planet_shaddow_gradient)"/>
+			<circle cx="0" cy="0" r="${innerRadius}" fill="url(#planet_shadow_gradient)"/>
 
 			${clouds ? `
 				<g mask="url(#clouds_mask)">
 					<circle cx="0" cy="0" r="100" fill="${clouds.color}"/>
-					<circle cx="0" cy="0" r="100" fill="url(#clouds_shaddow_gradient)"/>
+					<circle cx="0" cy="0" r="100" fill="url(#clouds_shadow_gradient)"/>
 				</g>
 				`
 				: ''
@@ -263,8 +282,9 @@ function PlanetView(template = {}) {
 		this.el.appendChild(overlayEl)
 
 		this.setRotation = function(rotation) {
+			const borderVertex = getBorderVertexBrute(positions, faces, adjacency, rotation)
 			for(const layerInstance of layerInstances) {
-				layerInstance.draw(rotation)
+				layerInstance.draw(rotation, borderVertex)
 			}
 		}
 	}
