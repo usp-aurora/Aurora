@@ -9,7 +9,11 @@ class SubjectController extends Controller
 {
 	public function index()
 	{
-		$subjects = ReplicadoSubject::all();
+		$subjectCodes = ReplicadoSubjectRequirement::distinct()->pluck('subject_code');
+        $requiredSubjectCodes = ReplicadoSubjectRequirement::distinct()->pluck('required_subject_code');
+        $uniqueSubjectsCodes = $subjectCodes->merge($requiredSubjectCodes)->unique();
+        
+        $subjects = ReplicadoSubject::whereIn('code', $uniqueSubjectsCodes)->get();
 
 		$transformedSubjects = $subjects->mapWithKeys(function ($subject) {
 			return [
