@@ -39,7 +39,7 @@ const Group = ({ groupData, expanded, onClick }) => {
     const { plansSet } = usePlansContext();
     const { subjectDataMap } = useSubjectMapContext();
     
-    const metrics = useMemo(() => 
+    const [metrics] = useMemo(() => 
         calculateMetrics(groupData, plansSet, subjectDataMap),
         [groupData, plansSet, subjectDataMap]
     );

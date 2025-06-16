@@ -48,7 +48,7 @@ const SubGroup = ({ depth, subgroupData }) => {
     const { plansSet } = usePlansContext();
     const { subjectDataMap } = useSubjectMapContext();
     
-    const metrics = useMemo(() => 
+    const [metrics] = useMemo(() => 
         calculateMetrics(subgroupData, plansSet, subjectDataMap),
         [subgroupData, plansSet, subjectDataMap]
     );

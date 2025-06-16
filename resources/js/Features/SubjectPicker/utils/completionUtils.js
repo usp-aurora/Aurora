@@ -37,7 +37,7 @@ function createMetrics() {
  */
 function getSubjectCredits(subject) {
     if (!subject?.credits?.length) return 0;
-    return (subject.credits[0] || 0) + (subject.credits[1] || 0);
+    return (parseInt(subject.credits[0]) || 0) + (parseInt(subject.credits[1]) || 0);
 };
 
 /**
@@ -66,11 +66,10 @@ function createMemoizedCalculator() {
                 return cache.get(group.id);
             }
 
-            // console.debug("Calculating metrics for group:", group.id);
             const metrics = createMetrics();
             const processedSubjects = new Set();
 
-            if (group.subjects) {
+            if (group.subjects && group.subjects.length > 0) {
                 metrics.mandatoryMet = group.subjects
                     .filter(subject => subject.mandatory)
                     .every(subject => plansSet.has(subject.code));
@@ -85,9 +84,9 @@ function createMemoizedCalculator() {
                 }
             }
 
-            if (group.subgroups) {
+            if (group.subgroups && group.subgroups.length > 0) {
                 for (const subgroup of group.subgroups) {
-                    const subMetrics = _calculateGroupMetrics(subgroup);
+                    const [subMetrics, processedSubjectsInSubGroup] = _calculateGroupMetrics(subgroup);
                     const subCompleted = isComplete(subgroup, subMetrics);
 
                     if (subgroup.mandatory) {
@@ -98,19 +97,22 @@ function createMemoizedCalculator() {
                         metrics.subgroups += 1;
                     }
 
-                    for (const subject of subgroup.subjects ?? []) {
-                        const code = subject.code;
-                        if (!plansSet.has(code) || processedSubjects.has(code)) continue;
-
-                        processedSubjects.add(code);
-                        metrics.credits += getSubjectCredits(subjectDataMap[code]);
-                        metrics.subjects += 1;
+                    metrics.credits += subMetrics.credits;
+                    metrics.subjects += subMetrics.subjects;
+                    for (const subject of processedSubjectsInSubGroup) {
+                        if (!processedSubjects.has(subject)) {
+                            processedSubjects.add(subject);
+                        }
+                        else {
+                            metrics.credits -= getSubjectCredits(subjectDataMap[subject]);
+                            metrics.subjects -= 1;
+                        }
                     }
                 }
             }
 
-            cache.set(group.id, metrics);
-            return metrics;
+            cache.set(group.id, [metrics, processedSubjects]);
+            return [metrics, processedSubjects];
         }
 
         return _calculateGroupMetrics(group);
