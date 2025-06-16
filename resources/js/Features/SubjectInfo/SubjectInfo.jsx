@@ -1,6 +1,7 @@
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Modal, Stack, useMediaQuery } from '@mui/material';
 import { styled, useTheme } from '@mui/material/styles';
+import axios from 'axios';
 
 import glassmorphismStyle from "../../styles/glassmorphism";
 
@@ -13,6 +14,7 @@ import SubjectInfoTags from './components/SubjectInfoTags';
 import SubjectInfoText from './components/SubjectInfoText';
 
 import { useSubjectInfoContext } from './SubjectInfoContext';
+import { useEffect, useState } from 'react';
 
 const SubjectInfoBackground = styled(Modal)(({ theme }) => ({
 	padding: theme.spacing(1),
@@ -57,41 +59,54 @@ const CorseInfoGraphContainer = styled('div')(() => ({
 	overflow: "hidden"
 }));
 
-function SubjectInfoGraph() {
+const setGraphData = async (rootSubject, setData) => {
+	axios.get(`/api/requirement/${rootSubject.code}`).then(response => {
+		const formattedNodes = new Map(
+			Object.entries(response.data.nodes)
+				.map(([_, subjectCode]) => [
+					subjectCode, {
+						code: subjectCode,
+						content: (
+							<SubjectCard
+								subjectCode={subjectCode}
+							/>
+						)
+					}
+				])
+		);
+
+		const formattedLinks = new Map(
+			Object.entries(response.data.links)
+				.map(([index, links]) => [
+					`l${parseInt(index, 10) + 1}`, { a: links[0], b: links[1] }
+				])
+		);
+
+		setData({ nodes: formattedNodes, links: formattedLinks, root: rootSubject.code });
+	});
+};
+
+function SubjectInfoGraph({ nodes, links, root }) {
 	const theme = useTheme();
 	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-	
-	const nodes = new Map([
-		["n1", { code: "MAC0101", name: "Integração na Universidade e na Profissão" }],
-		["n2", { code: "MAC0121", name: "Integração na Universidade e na Profissão" }],
-		["n3", { code: "MAC0216", name: "Integração na Universidade e na Profissão" }],
-		["n4", { code: "MAC0239", name: "Integração na Universidade e na Profissão" }],
-		["n5", { code: "MAE0119", name: "Integração na Universidade e na Profissão" }],
-		["n6", { code: "MAT2454", name: "Integração na Universidade e na Profissão" }],
-	]);
-	const links = new Map([
-		["l1", { a: "n1", b: "n2" }],
-		["l2", { a: "n1", b: "n3" }],
-		["l3", { a: "n4", b: "n1" }],
-		["l4", { a: "n5", b: "n4" }],
-		["l5", { a: "n6", b: "n1" }],
-		["l6", { a: "n5", b: "n6" }],
-	]);
-	for (const [key, node] of nodes) {
-		node.content = (
-			<SubjectCard
-				subjectCode={node.code}
-				subjectName={node.name}
-				planetURL="./icons/planeta.png">
-			</SubjectCard>
-		);
-	}
-
-	return (<GraphView nodes={nodes} links={links} root={"n1"} vertical={isMobile} interactive={!isMobile} />);
+	return (<GraphView nodes={nodes} links={links} root={root} vertical={isMobile} interactive={!isMobile} />);
 }
 
 function SubjectInfo() {
-	const { subjectInfo, isSubjectInfoModalOpen, closeSubjectInfoModal, showSubjectInfo } = useSubjectInfoContext(); 
+	const { subjectInfo, isSubjectInfoModalOpen, closeSubjectInfoModal, showSubjectInfo } = useSubjectInfoContext();
+
+	const emptyData = { links: [], nodes: [], root: null };
+	const [data, setData] = useState(emptyData);
+
+	useEffect(() => {
+		setGraphData(subjectInfo, setData);
+	}, [subjectInfo]);
+
+	useEffect(() => {
+		if (!isSubjectInfoModalOpen) {
+			setData(emptyData);
+		}
+	}, [isSubjectInfoModalOpen]);
 
 	return (
 		<SubjectInfoBackground onClose={closeSubjectInfoModal} open={isSubjectInfoModalOpen}>
@@ -105,7 +120,9 @@ function SubjectInfo() {
 						credits={subjectInfo.credits} />
 					<SubjectInfoText desc={subjectInfo.desc} />
 					<CorseInfoGraphContainer>
-						<SubjectInfoGraph />
+						{data.nodes.size > 0 && data.root &&
+							<SubjectInfoGraph nodes={data.nodes} links={data.links} root={data.root} />
+						}
 					</CorseInfoGraphContainer>
 					<Stack direction="row" sx={{ display: { xs: 'flex', sm: 'none' } }}>
 						{subjectInfo.isPlanned
