@@ -211,7 +211,42 @@ class GroupsSeeder extends Seeder
                 'Description' => "Matérias obrigatórias da ciência da computação", 
                 'parent_group_id' => 1,
                 'is_course_root' => false
-            ]
+            ],
+            [
+                'id' => 29,
+                'title' => "Outras Optativas",
+                'Description' => "Disciplinas que não pertencem a nenhuma trilha específica, mas são válidas para o curso como eletivas.", 
+                'parent_group_id' => 1,
+                'is_course_root' => false
+            ],
+            [
+                'id' => 30,
+                'title' => "Optativas de Estatística",
+                'Description' => "Disciplinas optativas relacionadas à estatística e probabilidade. É necessário cursar pelo menos 4 créditos para conclusão do curso", 
+                'parent_group_id' => 1,
+                'is_course_root' => false
+            ],
+            [
+                'id' => 31,
+                'title' => "Optativas de Humanidades",
+                'Description' => "Disciplinas optativas relacionadas às humanidades. É necessário cursar pelo menos 3 créditos para conclusão do curso", 
+                'parent_group_id' => 1,
+                'is_course_root' => false
+            ],
+            [
+                'id' => 32,
+                'title' => "Optativas de Ciências",
+                'Description' => "Disciplinas optativas relacionadas às ciências. É necessário cursar pelo menos 4 créditos para conclusão do curso", 
+                'parent_group_id' => 1,
+                'is_course_root' => false
+            ],
+            [
+                'id' => 33,
+                'title' => "Optativas Livres",
+                'Description' => "Disciplinas cursadas em qualquer unidade da USP e que são contabilizadas como livres.", 
+                'parent_group_id' => 1,
+                'is_course_root' => false
+            ],
         ];
 
         foreach ($groups as $group) {

@@ -8,6 +8,7 @@ use App\Http\Controllers\GroupController;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserSubjectController;
 use App\Models\SuggestedPlan;
 
 class HomeController extends Controller
@@ -18,10 +19,12 @@ class HomeController extends Controller
         $planController = new PlanController();
         $subjectController = new SubjectController();
         $userController = new UserController();
+        $userSubjectController = new UserSubjectController();
 
         $plansData = $planController->index();
         $suggestedPlans = $planController->getSuggestedPlans();
         $groups = $groupController->index(1);
+        $groups = $userSubjectController->populateGroupsWithUserSubjects($groups);
         $subjects = $subjectController->index()->toArray();;
 
         foreach ($subjects as $code => $subject) {

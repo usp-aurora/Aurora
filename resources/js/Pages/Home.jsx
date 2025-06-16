@@ -36,7 +36,7 @@ const Home = ({ groups, initialPlans, suggestedPlans, subjects, user }) => {
             user={user}
         >
             <SubjectInfo />
-            {!isAboveSmall && <SubjectPickerMobile groupsData={groups} />}
+            {!isAboveSmall && <SubjectPickerMobile groupsData={groups} user={user} />}
             <Background />
             <ContentContainer>
                 <Stack spacing={{ xs: 1, sm: 2 }} sx={{ width: "100%"}}>
@@ -49,7 +49,7 @@ const Home = ({ groups, initialPlans, suggestedPlans, subjects, user }) => {
                         </Stack>
                         {isAboveSmall && (
                             <Stack sx={{ flex: 1, overflow: "auto" }}>
-                                <SubjectPickerDesktop groupsData={groups} />
+                                <SubjectPickerDesktop groupsData={groups} user={user}/>
                             </Stack>
                         )}
                     </Stack>

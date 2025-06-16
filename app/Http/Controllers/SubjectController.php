@@ -22,4 +22,10 @@ class SubjectController extends Controller
 
 		return $transformedSubjects;
 	}
+	
+	public function exists($code)
+	{
+		$exists = Subject::where('code', $code)->exists();
+	    return response()->json(['exists' => $exists]);
+	}
 }
