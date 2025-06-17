@@ -1,5 +1,5 @@
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Modal, Stack, useMediaQuery } from '@mui/material';
+import { Box, CircularProgress, Modal, Stack, useMediaQuery } from '@mui/material';
 import { styled, useTheme } from '@mui/material/styles';
 import axios from 'axios';
 
@@ -57,6 +57,13 @@ const CorseInfoGraphContainer = styled('div')(() => ({
 	borderRadius: '16px',
 	flexGrow: 1,
 	overflow: "hidden"
+}));
+
+const ProgressIndicatorContainer = styled('div')(() => ({
+	display: "flex",
+	justifyContent: "center",
+	alignItems: "center",
+	height: "100%"
 }));
 
 const setGraphData = async (rootSubject, setData) => {
@@ -120,8 +127,12 @@ function SubjectInfo() {
 						credits={subjectInfo.credits} />
 					<SubjectInfoText desc={subjectInfo.desc} />
 					<CorseInfoGraphContainer>
-						{data.nodes.size > 0 && data.root &&
+						{data.nodes.size > 0 && data.root ?
 							<SubjectInfoGraph nodes={data.nodes} links={data.links} root={data.root} />
+							:
+							<ProgressIndicatorContainer>
+								<CircularProgress color='primary' />
+							</ProgressIndicatorContainer>
 						}
 					</CorseInfoGraphContainer>
 					<Stack direction="row" sx={{ display: { xs: 'flex', sm: 'none' } }}>
