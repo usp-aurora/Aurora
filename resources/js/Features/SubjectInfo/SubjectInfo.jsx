@@ -14,6 +14,7 @@ import SubjectInfoTags from './components/SubjectInfoTags';
 import SubjectInfoText from './components/SubjectInfoText';
 
 import { useSubjectInfoContext } from './SubjectInfoContext';
+import { useSubjectMapContext } from '../../Contexts/SubjectMapContext';
 import { useEffect, useState } from 'react';
 
 const SubjectInfoBackground = styled(Modal)(({ theme }) => ({
@@ -66,31 +67,34 @@ const ProgressIndicatorContainer = styled('div')(() => ({
 	height: "100%"
 }));
 
-const setGraphData = async (rootSubject, setData) => {
-	axios.get(`/api/requirement/${rootSubject.code}`).then(response => {
-		const formattedNodes = new Map(
-			Object.entries(response.data.nodes)
-				.map(([_, subjectCode]) => [
-					subjectCode, {
-						code: subjectCode,
-						content: (
-							<SubjectCard
-								subjectCode={subjectCode}
-							/>
-						)
-					}
-				])
-		);
+const loadGraphData = async (rootSubject, setGraphData, addSubjectData) => {
+	axios.get(`/api/requirement/${rootSubject}`)
+		.then(response => {
+			addSubjectData(response.data.subjectData);
+			
+			const formattedNodes = new Map(
+				Object.entries(response.data.nodes)
+					.map(([_, subjectCode]) => [
+						subjectCode, {
+							code: subjectCode,
+							content: (
+								<SubjectCard
+									subjectCode={subjectCode}
+								/>
+							)
+						}
+					])
+			);
 
-		const formattedLinks = new Map(
-			Object.entries(response.data.links)
-				.map(([index, links]) => [
-					`l${parseInt(index, 10) + 1}`, { a: links[0], b: links[1] }
-				])
-		);
+			const formattedLinks = new Map(
+				Object.entries(response.data.links)
+					.map(([index, links]) => [
+						`l${parseInt(index, 10) + 1}`, { a: links[0], b: links[1] }
+					])
+			);
 
-		setData({ nodes: formattedNodes, links: formattedLinks, root: rootSubject.code });
-	});
+			setGraphData({ nodes: formattedNodes, links: formattedLinks, root: rootSubject });
+		})
 };
 
 function SubjectInfoGraph({ nodes, links, root }) {
@@ -101,17 +105,20 @@ function SubjectInfoGraph({ nodes, links, root }) {
 
 function SubjectInfo() {
 	const { subjectInfo, isSubjectInfoModalOpen, closeSubjectInfoModal, showSubjectInfo } = useSubjectInfoContext();
+	const { addSubjectData } = useSubjectMapContext();
 
 	const emptyData = { links: [], nodes: [], root: null };
-	const [data, setData] = useState(emptyData);
+	const [graphData, setGraphData] = useState(emptyData);
 
 	useEffect(() => {
-		setGraphData(subjectInfo, setData);
+		if (subjectInfo.code){
+			loadGraphData(subjectInfo.code, setGraphData, addSubjectData);
+		}
 	}, [subjectInfo]);
 
 	useEffect(() => {
 		if (!isSubjectInfoModalOpen) {
-			setData(emptyData);
+			setGraphData(emptyData);
 		}
 	}, [isSubjectInfoModalOpen]);
 
@@ -127,8 +134,8 @@ function SubjectInfo() {
 						credits={subjectInfo.credits} />
 					<SubjectInfoText desc={subjectInfo.desc} />
 					<CorseInfoGraphContainer>
-						{data.nodes.size > 0 && data.root ?
-							<SubjectInfoGraph nodes={data.nodes} links={data.links} root={data.root} />
+						{graphData.nodes.size > 0 && graphData.root ?
+							<SubjectInfoGraph nodes={graphData.nodes} links={graphData.links} root={graphData.root} />
 							:
 							<ProgressIndicatorContainer>
 								<CircularProgress color='primary' />

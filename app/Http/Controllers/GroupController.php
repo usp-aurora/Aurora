@@ -5,12 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 
 class GroupController extends Controller {
-    public function index($curriculum_id)
-    {
-        return $this->loadCourse($curriculum_id);
-    }
-
-    private function loadCourse($curriculum_id)
+    public function loadCourseGroups($curriculum_id)
     {
         $curriculum = DB::table('curriculums')
             ->where('id', '=', $curriculum_id)
@@ -22,10 +17,10 @@ class GroupController extends Controller {
         }
         $rootGroupId = $curriculum->group_id;
 
-        return ($this->recursiveLoadCourse($rootGroupId));
+        return ($this->recursiveLoadCourseGroups($rootGroupId));
     }
 
-    private function recursiveLoadCourse($groupId)
+    private function recursiveLoadCourseGroups($groupId)
     {
         $group = DB::table('groups')
             ->where('groups.id', '=', $groupId)
@@ -52,7 +47,7 @@ class GroupController extends Controller {
             ->select("id")->get();
 
         foreach ($subgroups as $subgroup) {
-            $groupJSON['subgroups'][] = $this->recursiveLoadCourse($subgroup->id);
+            $groupJSON['subgroups'][] = $this->recursiveLoadCourseGroups($subgroup->id);
         }
 
         return $groupJSON;
@@ -71,18 +66,6 @@ class GroupController extends Controller {
         }
 
         return $groupRoots;
-    }
-
-    public function getSubjectsOfGroupRecursive($groupArray) {
-        if (!$groupArray["subgroups"]) {
-            return $groupArray["subjects"];
-        }
-        $result = [];
-        foreach ($groupArray["subgroups"] as $subgroup) {
-            $subjects = $this->getSubjectsOfGroupRecursive($subgroup);
-            $result = array_merge($result, $subjects);
-        }
-        return $result;
     }
 
     private function getGroupRoot($groupId){
@@ -105,6 +88,18 @@ class GroupController extends Controller {
         } else {
             return $this->getGroupRootRecursive($parentGroup);
         }
+    }
+
+    public function getGroupSubjects($groupArray) {
+        if (!$groupArray["subgroups"]) {
+            return $groupArray["subjects"];
+        }
+        $result = [];
+        foreach ($groupArray["subgroups"] as $subgroup) {
+            $subjects = $this->getGroupSubjects($subgroup);
+            $result = array_merge($result, $subjects);
+        }
+        return $result;
     }
 }
 

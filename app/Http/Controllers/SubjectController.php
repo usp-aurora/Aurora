@@ -4,16 +4,24 @@ namespace App\Http\Controllers;
 
 use App\Models\Replicado\ReplicadoSubject;
 use App\Models\Replicado\ReplicadoSubjectRequirement;
+use App\Http\Controllers\GroupController;
 
 class SubjectController extends Controller
 {
-	public function index()
-	{
-		$subjectCodes = ReplicadoSubjectRequirement::distinct()->pluck('subject_code');
-        $requiredSubjectCodes = ReplicadoSubjectRequirement::distinct()->pluck('required_subject_code');
-        $uniqueSubjectsCodes = $subjectCodes->merge($requiredSubjectCodes)->unique();
+    public function getSubjectsWithGroups($subjectCodes) {
+        $subjects = $this->getSubjectsById($subjectCodes);
+
+		$groupController = new GroupController();
+		$subjects = $subjects->transform(function ($subject, $code) use ($groupController) {
+			$subject['groups'] = $groupController->getSubjectRootGroups($code);
+			return $subject;
+		});
         
-        $subjects = ReplicadoSubject::whereIn('code', $uniqueSubjectsCodes)->get();
+        return $subjects;
+    }
+
+	public function getSubjectsById($subjectCodes) {
+		$subjects = ReplicadoSubject::whereIn('code', $subjectCodes)->get();
 
 		$transformedSubjects = $subjects->mapWithKeys(function ($subject) {
 			return [
@@ -28,30 +36,13 @@ class SubjectController extends Controller
 		return $transformedSubjects;
 	}
 
-	public function getSubjects($subjectIds) {
-		$subjects = ReplicadoSubject::whereIn('code', $subjectIds)->get();
-
-		$transformedSubjects = $subjects->mapWithKeys(function ($subject) {
-			return [
-				$subject->code => [
-					'name'         => $subject->name,
-					'syllabus'     => $subject->syllabus,
-					'credits'      => [$subject->lecture_credits, $subject->work_credits],
-				],
-			];
-		});
-
-		return $transformedSubjects;
-	}
-
-    public function getSubject($subjectCode) {
-		return $this->getSubjects([$subjectCode]);
+    public function getSubjectById($subjectCode) {
+		return $this->getSubjectsById([$subjectCode]);
 	}
 
     public function getSubjectRequirements($subjectCode)
     {
         $allRequirements = ReplicadoSubjectRequirement::all();
-		// dd($allRequirements);
 
         $forwardLookup = $allRequirements->groupBy('subject_code');
         $backwardLookup = $allRequirements->groupBy('required_subject_code');
@@ -66,7 +57,10 @@ class SubjectController extends Controller
 
         $requirements = array_merge($backwardRequirements, $forwardRequirements);
 
+        $subjectData = $this->getSubjectsWithGroups($visited);
+
         return response()->json([
+            'subjectData' => $subjectData,
             'nodes' => $visited,
             'links' => $requirements,
         ]);

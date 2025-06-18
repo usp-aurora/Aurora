@@ -23,7 +23,6 @@ function applyRadialForce(positions, velocities, {
 }
 
 function applyLinkForce(positions, velocities, links, vertical = false, { linkStrength = 0.1 }) {
-	const length = links.length;
 	const axis = (vertical ? "x" : "y");
 	for(const [key,link] of links) {
 		const pos1 = positions.get(link.a), pos2 = positions.get(link.b);
