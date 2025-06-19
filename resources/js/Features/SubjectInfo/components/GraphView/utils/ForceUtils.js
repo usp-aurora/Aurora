@@ -22,7 +22,7 @@ function applyRadialForce(positions, velocities, {
 	}
 }
 
-function applyLinkForce(positions, velocities, links, vertical = false, { linkStrength = 0.1 }) {
+function applyLinkForce(positions, velocities, links, vertical = false, { linkStrength = 0.01 }) {
 	const axis = (vertical ? "x" : "y");
 	for(const [key,link] of links) {
 		const pos1 = positions.get(link.a), pos2 = positions.get(link.b);
@@ -37,7 +37,7 @@ function applyLinkForce(positions, velocities, links, vertical = false, { linkSt
 
 function applyLayerForce(positions, velocities, layers, vertical = false, {
 	layerStart = 0,
-	layerSeparation = 450,
+	layerSeparation = 550,
 	layerStrength = 5,
 }) {
 	const axis = (vertical ? "y" : "x");

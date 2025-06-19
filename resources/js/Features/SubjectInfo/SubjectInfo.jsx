@@ -80,6 +80,8 @@ const loadGraphData = async (rootSubject, setGraphData, addSubjectData) => {
 							content: (
 								<SubjectCard
 									subjectCode={subjectCode}
+									isClickable={false}
+									performanceMode={true}
 								/>
 							)
 						}
