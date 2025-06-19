@@ -30,7 +30,7 @@ function SubjectPickerList({ groupsData, user }) {
                     console.log("Local data found:", localData);
                     const updatedSubgroups = groupsData.subgroups.map(subgroup => {
                         const codesToAdd = localData
-                            .filter(item => item.type === subgroup.title)
+                            .filter(item => item.group_name === subgroup.title)
                             .map(item => item.code);
                         const newSubjects = [
                             ...subgroup.subjects,
