@@ -106,7 +106,7 @@ function SubjectInfoGraph({ nodes, links, root }) {
 }
 
 function SubjectInfo() {
-	const { subjectInfo, isSubjectInfoModalOpen, closeSubjectInfoModal, showSubjectInfo } = useSubjectInfoContext();
+	const { subjectInfo, isSubjectInfoModalOpen, closeSubjectInfoModal } = useSubjectInfoContext();
 	const { addSubjectData } = useSubjectMapContext();
 
 	const emptyData = { links: [], nodes: [], root: null };
