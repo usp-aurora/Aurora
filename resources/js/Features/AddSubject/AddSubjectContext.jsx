@@ -74,7 +74,7 @@ function AddSubjectForm({ isDesktopDialog = false }) {
     const { removeSubjectFromGroup, addSubjectToGroup, closeAddSubjectModal, user } = useAddSubjectContext();
     const { refreshSubjectMapSubject } = useSubjectMapContext();
     const [formData, setFormData] = useState({
-        code: 'FLO0140',
+        code: '',
         group_name: '',
     });
     const [error, setError] = useState(null);
@@ -89,6 +89,12 @@ function AddSubjectForm({ isDesktopDialog = false }) {
     };
 
     const handleAddClick = async () => {
+        if (!formData.code || !formData.group_name) {
+            setError('Por favor, preencha todos os campos.');
+            setShowError(true);
+            setTimeout(() => setShowError(false), 3000);
+            return;
+        }
         const result = await saveAddedUserSubject(user, formData);
         if (result.success) {
             addSubjectToGroup(formData.code, formData.group_name);
