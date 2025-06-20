@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\Group;
 
-class UserSubjectController extends Controller
+class UserSubjectAddedController extends Controller
 {
     public function index()
     {
@@ -107,7 +107,7 @@ class UserSubjectController extends Controller
         }
     }
 
-    public function populateGroupsWithUserSubjects($groups)
+    public function attachUserSubjectsAddedToGroups($groups)
     {
         // Check if user is authenticated
         $user = auth()->user();
@@ -148,6 +148,7 @@ class UserSubjectController extends Controller
         }
         return $groups;
     }
+
     public function getGroup($code)
     {
         // Check if user is authenticated

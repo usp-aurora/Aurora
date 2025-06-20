@@ -27,7 +27,6 @@ async function subjectBelongToPreDefinedGroup(code) {
 }
 
 async function saveWithServer(newAddedUserSubject) {
-    // Map frontend fields to backend expected fields
     const payload = {
         group_title: newAddedUserSubject.group_name,
         subject_code: newAddedUserSubject.code
@@ -48,7 +47,6 @@ async function saveWithServer(newAddedUserSubject) {
         }
     } catch (error) {
         if (error.response && (error.response.status === 409 || error.response.status === 404)) {
-            // Conflict: return the server's message
             return {
                 success: false,
                 message: error.response.data?.message || 'Conflict error'
@@ -69,7 +67,6 @@ async function saveWithLocalStorage(newAddedUserSubject) {
             subject => subject.code === newAddedUserSubject.code
         );
         if (existingIndex !== -1) {
-            // Update the group_name for the existing subject
             existing[existingIndex].group_name = newAddedUserSubject.group_name;
             localStorage.setItem('addedUserSubjects', JSON.stringify(existing));
             return {

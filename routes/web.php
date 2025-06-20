@@ -8,7 +8,7 @@ use App\Http\Controllers\GroupController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\SubjectController;
-use App\Http\Controllers\UserSubjectController;
+use App\Http\Controllers\UserSubjectAddedController;
 
 Route::get('/', [HomeController::class, 'index']);
 
@@ -30,7 +30,7 @@ Route::get('login', [LoginController::class, 'redirectToProvider']);
 Route::get('callback', [LoginController::class, 'handleProviderCallback']);
 Route::get('logout', [LoginController::class, 'logout']);
 
-Route::middleware('auth')->post('/api/user-subjects/add', [UserSubjectController::class, 'store']);
-Route::middleware('auth')->delete('/api/user-subjects/remove', [UserSubjectController::class, 'destroy']);
+Route::middleware('auth')->post('/api/user-subjects/add', [UserSubjectAddedController::class, 'store']);
+Route::middleware('auth')->delete('/api/user-subjects/remove', [UserSubjectAddedController::class, 'destroy']);
 Route::get('/api/subject/{code}', [SubjectController::class, 'exists']);
 Route::get('/api/groups/{code}', [GroupController::class, 'subjectBelongsToGroup']);

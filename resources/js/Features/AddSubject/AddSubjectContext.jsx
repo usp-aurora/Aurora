@@ -88,6 +88,8 @@ function AddSubjectForm({ isDesktopDialog = false }) {
         }));
     };
 
+    // TODO: Implement Remove Subject Functionality
+
     const handleAddClick = async () => {
         if (!formData.code || !formData.group_name) {
             setError('Por favor, preencha todos os campos.');
@@ -146,7 +148,7 @@ function AddSubjectForm({ isDesktopDialog = false }) {
                         },
                     }}
                 >
-                    <MenuItem value="Outras Optativas" style={{ color: 'black' }}>Outras Optativas</MenuItem>
+                    <MenuItem value="Outras Optativas Eletivas" style={{ color: 'black' }}>Outras Optativas Eletivas</MenuItem>
                     <MenuItem value="Optativas de Estatística" style={{ color: 'black' }}>Optativas de Estatística</MenuItem>
                     <MenuItem value="Optativas de Humanidades" style={{ color: 'black' }}>Optativas de Humanidades</MenuItem>
                     <MenuItem value="Optativas de Ciências" style={{ color: 'black' }}>Optativas de Ciências</MenuItem>

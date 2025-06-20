@@ -87,6 +87,7 @@ function CompletionBar() {
 				electiveCreditsList.push(parseInt(subject.credits[0], 10) + parseInt(subject.credits[1], 10));
 			}
 		});
+		
 		let excess = getExcessSum(scienceCreditsList, scienceCredits, SCIENCE_NECESSARY);
 		livreCredits += excess;
 		scienceCredits -= excess;
@@ -99,6 +100,7 @@ function CompletionBar() {
 		excess = getExcessSum(electiveCreditsList, electiveCredits, ELECTIVE_NECESSARY);
 		livreCredits += excess;
 		electiveCredits -= excess;
+
 		return { "mandatory": mandatoryCredits, "elective": electiveCredits , "livre": livreCredits };
 	}, [subjectDataMap, plansSet]);
 
