@@ -13,13 +13,20 @@ async function subjectExists(code) {
     }
 }
 
-async function saveWithServer(newAddedUserSubject) {
-    if (!(await subjectExists(newAddedUserSubject.code))) {
-        return {
-            success: false,
-            message: 'Disciplina não encontrada.'
-        };
+async function subjectBelongToPreDefinedGroup(code) {
+    try {
+        const response = await axios.get(`/api/groups/${code}`);
+        if (response.status === 200 && typeof response.data.exists !== 'undefined') {
+            return response.data.exists;
+        }
+        return false;
+    } catch (error) {
+        console.error('Error checking subject existence:', error);
+        return false;
     }
+}
+
+async function saveWithServer(newAddedUserSubject) {
     // Map frontend fields to backend expected fields
     const payload = {
         group_title: newAddedUserSubject.group_name,
@@ -56,23 +63,18 @@ async function saveWithServer(newAddedUserSubject) {
 }
 
 async function saveWithLocalStorage(newAddedUserSubject) {
-    if (!(await subjectExists(newAddedUserSubject.code))) {
-        return {
-            success: false,
-            message: 'Disciplina não encontrada.'
-        };
-    }
     try {
         const existing = JSON.parse(localStorage.getItem('addedUserSubjects')) || [];
-        const isDuplicate = existing.some(
-            subject =>
-                subject.code === newAddedUserSubject.code &&
-                subject.group_name === newAddedUserSubject.group_name
+        const existingIndex = existing.findIndex(
+            subject => subject.code === newAddedUserSubject.code
         );
-        if (isDuplicate) {
+        if (existingIndex !== -1) {
+            // Update the group_name for the existing subject
+            existing[existingIndex].group_name = newAddedUserSubject.group_name;
+            localStorage.setItem('addedUserSubjects', JSON.stringify(existing));
             return {
-                success: false,
-                message: 'Esta disciplina já pertence a algum grupo.'
+                success: true,
+                message: 'Grupo da disciplina atualizado.'
             };
         }
         existing.push(newAddedUserSubject);
@@ -91,6 +93,18 @@ async function saveWithLocalStorage(newAddedUserSubject) {
 }
 
 export async function saveAddedUserSubject(user, newAddedUserSubject) {
+    if (!(await subjectExists(newAddedUserSubject.code))) {
+        return {
+            success: false,
+            message: 'Disciplina não encontrada.'
+        };
+    }
+    if (await subjectBelongToPreDefinedGroup(newAddedUserSubject.code)) {
+        return {
+            success: false,
+            message: 'Disciplina já tem um grupo pré-definido.'
+        };
+    }
 	if(!user) {
 		return await saveWithLocalStorage(newAddedUserSubject);
 	}

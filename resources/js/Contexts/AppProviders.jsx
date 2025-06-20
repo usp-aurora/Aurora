@@ -10,7 +10,7 @@ import { AddSubjectProvider } from "../Features/AddSubject/AddSubjectContext";
 const AppProviders = ({ children, initialPlans, suggestedPlans, subjects, user }) => {
     return (
         <AuthProvider loggedUser={user}>
-            <SubjectMapProvider subjectDataMap={subjects}>
+            <SubjectMapProvider subjectDataMap={subjects} user={user}>
                 <PlansProvider initialPlans={initialPlans} user={user}>
                     <ViewModeProvider suggestedPlans={suggestedPlans}>
                         <SubjectInfoProvider>

@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, use } from "react";
 import { styled } from "@mui/material/styles";
 import { Box } from "@mui/material";
 import Group from "./Group";
@@ -15,19 +15,65 @@ const GroupContainer = styled(Box)(({ theme }) => ({
 }));
 
 function SubjectPickerList({ groupsData, user }) {
-    const { groupAddSubjectCodeType } = useAddSubjectContext();
+    const { subjectCodeGroupToAdd, subjectCodeGroupToRemove } = useAddSubjectContext();
     const [expandedCategory, setExpandedCategory] = useState(groupsData.subgroups.length - 1);
-    const [initialGroupsData, setInitialGroupsData] = useState(null);
+    const [updatedGroupsData, setUpdatedGroupsData] = useState(groupsData);
 
-    // Retrieve and merge localStorage data only once if !user
+    const addSubjectToGroupsData = useCallback((baseData, newSubjectTuple) => {
+        if (!baseData) return null;
+
+        const newGroupsData = JSON.parse(JSON.stringify(baseData));
+
+        if (newSubjectTuple && Array.isArray(newSubjectTuple) && newSubjectTuple.length === 2) {
+            const [subjectCode, subjectGroup] = newSubjectTuple;
+
+            // Remove subjectCode from any other group it may belong to
+            newGroupsData.subgroups.forEach(subgroup => {
+                if (subgroup.subjects.includes(subjectCode)) {
+                    subgroup.subjects = subgroup.subjects.filter(code => code !== subjectCode);
+                }
+            });
+
+            // Add subjectCode to the specified group if not already present
+            const subgroupIndex = newGroupsData.subgroups.findIndex(
+                subgroup => subgroup.title === subjectGroup
+            );
+
+            if (subgroupIndex !== -1) {
+                const currentSubjects = newGroupsData.subgroups[subgroupIndex].subjects;
+                if (!currentSubjects.includes(subjectCode)) {
+                    currentSubjects.push(subjectCode);
+                }
+            }
+        }
+        return newGroupsData;
+    }, []);
+
+    const removeSubjectFromGroupsData = useCallback((baseData, subjectCode) => {
+        if (!baseData) return null;
+
+        const newGroupsData = JSON.parse(JSON.stringify(baseData));
+
+        if (subjectCode) {
+            newGroupsData.subgroups.forEach(subgroup => {
+                const subjectIndex = subgroup.subjects.indexOf(subjectCode);
+                if (subjectIndex !== -1) {
+                    subgroup.subjects.splice(subjectIndex, 1);
+                }
+            });
+        }
+        return newGroupsData;
+    }, []);
+
+    // Retrieve and merge local storage data when initializing the component
     useEffect(() => {
+        let initialBaseData = groupsData;
+
         if (!user) {
-            console.log("No user, using localStorage data for subject codes");
             const localDataRaw = localStorage.getItem("addedUserSubjects");
             if (localDataRaw) {
                 try {
                     const localData = JSON.parse(localDataRaw);
-                    console.log("Local data found:", localData);
                     const updatedSubgroups = groupsData.subgroups.map(subgroup => {
                         const codesToAdd = localData
                             .filter(item => item.group_name === subgroup.title)
@@ -41,50 +87,41 @@ function SubjectPickerList({ groupsData, user }) {
                             subjects: newSubjects
                         };
                     });
-                    setInitialGroupsData({
+                    initialBaseData = {
                         ...groupsData,
                         subgroups: updatedSubgroups
-                    });
+                    };
                 } catch (e) {
-                    setInitialGroupsData(groupsData);
+                    initialBaseData = groupsData;
                 }
-            } else {
-                setInitialGroupsData(groupsData);
             }
         }
+
+        setUpdatedGroupsData(initialBaseData);
     }, [user, groupsData]);
+
+    useEffect(() => {
+        if (updatedGroupsData && subjectCodeGroupToAdd) {
+            const nextData = addSubjectToGroupsData(updatedGroupsData, subjectCodeGroupToAdd);
+            if (JSON.stringify(nextData) !== JSON.stringify(updatedGroupsData)) {
+                setUpdatedGroupsData(nextData);
+            }
+        }
+    }, [subjectCodeGroupToAdd, addSubjectToGroupsData, updatedGroupsData]);
+    
+    useEffect(() => {
+        if (updatedGroupsData && subjectCodeGroupToRemove) {
+            const next = removeSubjectFromGroupsData(updatedGroupsData, subjectCodeGroupToRemove);
+            if (JSON.stringify(next) !== JSON.stringify(updatedGroupsData)) {
+                setUpdatedGroupsData(next);
+            }
+        }
+    }, [subjectCodeGroupToRemove, updatedGroupsData, removeSubjectFromGroupsData]);
 
     const toggleCategory = useCallback(function(index){
         setExpandedCategory((prevCategory) => (prevCategory === index) ? null : index);
     }, []);
-
-    const getUpdatedGroupsData = (baseData) => {
-        // Create a new array of subgroups with updated subjects
-        const updatedSubgroups = baseData.subgroups.map(subgroup => {
-            // Find all subjectCodes to add for this subgroup
-            const codesToAdd = groupAddSubjectCodeType
-                ?.filter(([subjectCode, subjectType]) => subjectType === subgroup.title)
-                .map(([subjectCode]) => subjectCode) || [];
-            // Add only codes not already present
-            const newSubjects = [
-                ...subgroup.subjects,
-                ...codesToAdd.filter(code => !subgroup.subjects.includes(code))
-            ];
-            return {
-                ...subgroup,
-                subjects: newSubjects
-            };
-        });
-        return {
-            ...baseData,
-            subgroups: updatedSubgroups
-        };
-    };
     
-    // Use initialGroupsData if set (for !user), otherwise use groupsData
-    const baseGroupsData = initialGroupsData || groupsData;
-    const updatedGroupsData = getUpdatedGroupsData(baseGroupsData);
-
     return (
         // Algum dia vai ter um search bar bem aqui
         <GroupContainer>

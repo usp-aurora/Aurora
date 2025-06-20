@@ -25,10 +25,13 @@ class HomeController extends Controller
         $suggestedPlans = $planController->getSuggestedPlans();
         $groups = $groupController->index(1);
         $groups = $userSubjectController->populateGroupsWithUserSubjects($groups);
-        $subjects = $subjectController->index()->toArray();;
+        $subjects = $subjectController->index()->toArray();
 
         foreach ($subjects as $code => $subject) {
             $subjects[$code]["groups"] = $groupController->getSubjectRootGroups($code);
+            $added = $userSubjectController->getGroup($code);
+            if ($added)
+                $subjects[$code]["groups"][] = $added;
         }
 
         $user = $userController->index();

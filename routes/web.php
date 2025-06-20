@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
 use App\Http\Controllers\PlanController;
+use App\Http\Controllers\GroupController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\SubjectController;
@@ -32,3 +33,4 @@ Route::get('logout', [LoginController::class, 'logout']);
 Route::middleware('auth')->post('/api/user-subjects/add', [UserSubjectController::class, 'store']);
 Route::middleware('auth')->delete('/api/user-subjects/remove', [UserSubjectController::class, 'destroy']);
 Route::get('/api/subject/{code}', [SubjectController::class, 'exists']);
+Route::get('/api/groups/{code}', [GroupController::class, 'subjectBelongsToGroup']);

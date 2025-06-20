@@ -16,7 +16,7 @@ class UserSubjectController extends Controller
         if ($user == null) {
             return response()->json(['error' => 'User not authenticated.'], 401);
         }
-        $userSubjects = \DB::table('user_subjects')
+        $userSubjects = DB::table('user_subjects_added')
             ->where('user_id', $user->id)
             ->get();
         return response()->json($userSubjects);
@@ -40,19 +40,25 @@ class UserSubjectController extends Controller
             return response()->json(['status' => 'error', 'message' => 'Grupo de disciplinas não encontrado'], 404);
         }
 
-        // Check if the combination of user_id, group_id, and subject_code already exists
-        $existingUserSubject = \DB::table('user_subjects_added')
+        // If the user already has this subject in a group, update the group_id
+        $existingUserSubject = DB::table('user_subjects_added')
             ->where('user_id', $user->id)
-            ->where('group_id', $group->id)
             ->where('subject_code', $validated['subject_code'])
             ->first();
         if ($existingUserSubject) {
-            return response()->json(['status' => 'error', 'message' => 'Esta disciplina já pertence a algum grupo.'], 409);
+            DB::table('user_subjects_added')
+            ->where('user_id', $user->id)
+            ->where('subject_code', $validated['subject_code'])
+            ->update([
+                'group_id' => $group->id,
+                'updated_at' => now(),
+            ]);
+            return response()->json(['status' => 'success', 'message' => 'Grupo da disciplina atualizado.'], 201);
         }
 
         // Insert the new user subject relation
         try {
-            $userSubject = \DB::table('user_subjects_added')->insert([
+            $userSubject = DB::table('user_subjects_added')->insert([
                 'user_id' => $user->id,
                 'group_id' => $group->id,
                 'subject_code' => $validated['subject_code'],
@@ -85,7 +91,7 @@ class UserSubjectController extends Controller
 
         // Delete the user subject relation
         try {
-            $deleted = \DB::table('user_subjects_added')
+            $deleted = DB::table('user_subjects_added')
                 ->where('user_id', $user->id)
                 ->where('group_id', $group->id)
                 ->where('subject_code', $validated['subject_code'])
@@ -110,7 +116,7 @@ class UserSubjectController extends Controller
         }
 
         // Fetch all user-group-subject relations for this user
-        $userSubjects = \DB::table('user_subjects_added')
+        $userSubjects = DB::table('user_subjects_added')
             ->join('groups', 'user_subjects_added.group_id', '=', 'groups.id')
             ->where('user_subjects_added.user_id', $user->id)
             ->select(
@@ -141,5 +147,23 @@ class UserSubjectController extends Controller
             $addSubjectToGroup($groups, $groupName, $subjectCode);
         }
         return $groups;
+    }
+    public function getGroup($code)
+    {
+        // Check if user is authenticated
+        $user = auth()->user();
+        if (!$user) {
+            return null;
+        }
+
+        // Fetch the group for the given subject code
+        $group = DB::table('user_subjects_added')
+            ->join('groups', 'user_subjects_added.group_id', '=', 'groups.id')
+            ->where('user_subjects_added.user_id', $user->id)
+            ->where('user_subjects_added.subject_code', $code)
+            ->select('groups.title as group_name')
+            ->first();
+
+        return $group ? $group->group_name : null;
     }
 }

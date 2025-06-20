@@ -790,7 +790,21 @@ class SubjectsSeeder extends Seeder
                 'syllabus' => "O Naruto pode ser um pouco rude às vezes, talvez você não saiba disso, mas o Naruto também cresceu sem pai. Na verdade, ele nunca conheceu nenhum de seus pais, e nunca teve nenhum amigo em nossa aldeia. Mesmo assim, eu nunca vi ele chorar, ficar zangado ou se dar por vencido, ele está sempre disposto a melhorar, ele quer ser respeitado, é o sonho dele e o Naruto daria a vida por isso sem hesitar. Meu palpite é que ele se cansou de chorar e decidiu fazer alguma coisa a respeito! ",
                 'work_credits' => 0,
                 'lecture_credits' => 16,
-            ]
+            ],
+            [
+                'code' => "FLO0140",
+                'name' => "Cultura Armênia I",
+                'syllabus' => "O System of A Down pode ser um pouco duro às vezes, ... ",
+                'work_credits' => 2,
+                'lecture_credits' => 2,
+            ],
+            [
+                'code' => "FLO0149",
+                'name' => "Cultura Armênia II",
+                'syllabus' => "O Zoroatrismo pode ser um pouco duro às vezes, ... ",
+                'work_credits' => 2,
+                'lecture_credits' => 2,
+            ],
         ];
 
         foreach ($subjects as $Subject) {

@@ -4,6 +4,7 @@ import Button from '../../ui/Buttons/Button';
 import { TextField, MenuItem, Box } from '@mui/material';
 import { saveAddedUserSubject } from './utils/addedUserSubjectUtils';
 import Alert from '@mui/material/Alert';
+import { useSubjectMapContext } from '../../Contexts/SubjectMapContext';
 
 const AddSubjectContext = createContext();
 
@@ -13,20 +14,27 @@ function useAddSubjectContext() {
 
 function AddSubjectProvider({ children, user }) {
     const [isAddSubjectModalOpen, setAddSubjectModalOpen] = useState(false);
-    const [groupAddSubjectCodeType, setgroupAddSubjectCodeType] = useState([]);
+    const [subjectCodeGroupToAdd, setsubjectCodeGroupToAdd] = useState([]);
+    const [subjectCodeGroupToRemove, setsubjectCodeGroupToRemove] = useState();
 
     const showAddSubjectModal = () => {
         setAddSubjectModalOpen(true);
     };
-
     const closeAddSubjectModal = () => {
         setAddSubjectModalOpen(false);
     };
 
-    const addSubjectToGroup = (subjectCode, subjectType) => {
-        setgroupAddSubjectCodeType((prevSubjects) => [...prevSubjects, [subjectCode, subjectType]]);
-        closeAddSubjectModal();
+    const addSubjectToGroup = (code, group_name) => {
+        setsubjectCodeGroupToAdd(() => {
+            return [code, group_name];
+        });
     };
+    const removeSubjectFromGroup = (code) => {
+        setsubjectCodeGroupToRemove(() => {
+            return code;
+        });
+    };
+
 
     useEffect(() => {
         const handleKeyDown = (event) => {
@@ -50,8 +58,10 @@ function AddSubjectProvider({ children, user }) {
                 isAddSubjectModalOpen,
                 showAddSubjectModal,
                 closeAddSubjectModal,
-                groupAddSubjectCodeType,
+                subjectCodeGroupToAdd,
                 addSubjectToGroup,
+                subjectCodeGroupToRemove,
+                removeSubjectFromGroup,
                 user,
             }}
         >
@@ -61,9 +71,10 @@ function AddSubjectProvider({ children, user }) {
 }
 
 function AddSubjectForm({ isDesktopDialog = false }) {
-    const { addSubjectToGroup, user } = useAddSubjectContext();
+    const { removeSubjectFromGroup, addSubjectToGroup, closeAddSubjectModal, user } = useAddSubjectContext();
+    const { refreshSubjectMapSubject } = useSubjectMapContext();
     const [formData, setFormData] = useState({
-        code: '',
+        code: 'FLO0140',
         group_name: '',
     });
     const [error, setError] = useState(null);
@@ -78,10 +89,11 @@ function AddSubjectForm({ isDesktopDialog = false }) {
     };
 
     const handleAddClick = async () => {
-        console.log('Adding subject:', formData);
         const result = await saveAddedUserSubject(user, formData);
         if (result.success) {
             addSubjectToGroup(formData.code, formData.group_name);
+            refreshSubjectMapSubject(formData.code, formData.group_name);
+            closeAddSubjectModal();
         } else {
             console.error('Failed to add user subject:', result.message);
             setError(result.message || 'Erro desconhecido');

@@ -94,6 +94,13 @@ class GroupController extends Controller {
             return $this->getGroupRootRecursive($parentGroup);
         }
     }
+
+    public function subjectBelongsToGroup($code)
+	{
+		$exists = DB::table('group_subjects')
+            ->where('subject_code', $code)->exists();
+	    return response()->json(['exists' => $exists]);
+	}
 }
 
 
