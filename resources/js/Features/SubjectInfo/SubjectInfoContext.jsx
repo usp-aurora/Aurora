@@ -24,7 +24,6 @@ function SubjectInfoProvider({ children, subjectInfoStartsOpened = false, initia
 	const showSubjectInfo = (subjectCode) => {
 		const subjectData = subjectDataMap[subjectCode];
 		if (!subjectData) return;
-		console.log("subjectData.groups", subjectData.groups);
 
 		setSubjectInfoModalOpen(true);
 		setSubjectInfo({

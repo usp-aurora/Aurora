@@ -8,14 +8,22 @@ use Illuminate\Support\Facades\Config;
 
 class ReplicadoSubjectModelTest extends TestCase
 {
+    private function assertValidSubject($subject): void
+	{
+		$this->assertNotNull($subject);
+		$this->assertIsString($subject->name);
+		$this->assertIsString($subject->syllabus);
+		$this->assertIsNumeric($subject->lecture_credits);
+		$this->assertIsNumeric($subject->work_credits);
+	}
+
     public function test_subjects_retrieves_fake_data_when_jupiter_not_available(): void
     {
         Config::set('services.replicado_is_active', 0);
         
         $subject = ReplicadoSubject::first();
         
-        $this->assertNotNull($subject);
-        $this->assertIsString($subject->code);
+        $this->assertValidSubject($subject);
     }
 
     public function test_subjects_returns_multiple_fake_records(): void
@@ -28,7 +36,7 @@ class ReplicadoSubjectModelTest extends TestCase
         $this->assertLessThanOrEqual(10, $subjects->count());
         
         foreach ($subjects as $subject) {
-            $this->assertIsString($subject->code);
+            $this->assertValidSubject($subject);
         }
     }
 
@@ -47,7 +55,7 @@ class ReplicadoSubjectModelTest extends TestCase
 		
 		$this->assertGreaterThan(0, $subjectss->count());
 		foreach ($subjectss as $subjects) {
-			$this->assertIsString($subjects->code);
+			$this->assertValidSubject($subjects);
 		}
 	}
 

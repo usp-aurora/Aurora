@@ -13,7 +13,7 @@ const CardBackgroundBase = styled(({ isClickable, hasIcon, ghost, theme, ...prop
     textAlign: "center",
 
     userSelect: "none",
-    cursor: isClickable ? "pointer" : "default",
+    ...(isClickable && { cursor: "pointer" }),
 
     backgroundColor: ghost ? "transparent" : theme.palette.primary.main,
     outline: ghost ? `2px dashed ${theme.palette.neutral.main}` : "none",

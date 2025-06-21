@@ -23,6 +23,9 @@ class ReplicadoSubject extends Model
                 $query->select(
                     'coddis AS code',
                     'nomdis AS name',
+                    'objdis AS syllabus',
+                    'creaul AS lecture_credits',
+                    'cretrb AS work_credits',
                 )
                 ->whereNull('dtadtvdis')
                 ->whereNotNull('dtaatvdis')
@@ -47,6 +50,9 @@ class ReplicadoSubject extends Model
                         $fakeData[] = [
                             'code' => $letras[$i] . $letras[$j] . $letras[$k] . '000' . $numeros[$l],
                             'name' => $faker->word,
+                            'syllabus' => $faker->paragraph(5),
+                            'lecture_credits' => 4,
+                            'work_credits' => 2
                         ];
                     }
                 }
@@ -55,7 +61,10 @@ class ReplicadoSubject extends Model
 
         $query = collect($fakeData)->map(function ($row) {
             return "SELECT '{$row['code']}' as code,
-                            '{$row['name']}' as name
+                            '{$row['name']}' as name,
+                            '{$row['syllabus']}' as syllabus,
+                            '{$row['lecture_credits']}' as lecture_credits,
+                            '{$row['work_credits']}' as work_credits
                             ";
         })->implode(' UNION ALL ');
 

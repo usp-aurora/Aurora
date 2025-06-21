@@ -12,30 +12,27 @@ use App\Models\SuggestedPlan;
 
 class HomeController extends Controller
 {
-    public function index()
-    {
-        $groupController = new GroupController();
-        $planController = new PlanController();
-        $subjectController = new SubjectController();
-        $userController = new UserController();
+	public function index()
+	{
+		$groupController = new GroupController();
+		$planController = new PlanController();
+		$subjectController = new SubjectController();
+		$userController = new UserController();
 
-        $plansData = $planController->index();
-        $suggestedPlans = $planController->getSuggestedPlans();
-        $groups = $groupController->index(1);
-        $subjects = $subjectController->index()->toArray();;
+		$plansData = $planController->index();
+		$suggestedPlans = $planController->getSuggestedPlans();
+		$groups = $groupController->loadCourseGroups(1);
+		$groupsSubjects = $groupController->getGroupSubjects($groups);
+		$subjects = $subjectController->getSubjectsWithGroups($groupsSubjects);
 
-        foreach ($subjects as $code => $subject) {
-            $subjects[$code]["groups"] = $groupController->getSubjectRootGroups($code);
-        }
+		$user = $userController->index();
 
-        $user = $userController->index();
-
-        return Inertia::render('Home', [
-            'initialPlans' => $plansData,
-            'suggestedPlans' => $suggestedPlans,
-            'groups' => $groups,
-            'subjects' => $subjects,
-            'user' => $user,
-        ]);
-    }
+		return Inertia::render('Home', [
+			'initialPlans' => $plansData,
+			'suggestedPlans' => $suggestedPlans,
+			'groups' => $groups,
+			'subjects' => $subjects,
+			'user' => $user,
+		]);
+	}
 }

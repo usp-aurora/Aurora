@@ -11,7 +11,7 @@ const Container = styled("div")(({ theme }) => ({
 }));
 
 
-const CardContainer = ({ children }) => {
+const CardsGrid = ({ children }) => {
     return (
 		<Container>
 			{children}
@@ -19,4 +19,4 @@ const CardContainer = ({ children }) => {
     );
 };
 
-export default CardContainer;
+export default CardsGrid;

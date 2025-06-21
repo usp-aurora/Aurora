@@ -7,10 +7,10 @@ import Planet from "../Planet/Planet";
 import CardContainer from "./Components/CardContainer";
 import CardBackgroundBase from "./Components/CardBackgroundBase";
 
-const CardBackground = styled(({ isClickable, hasIcon, ghost, ...props }) => (
+const CardBackground = styled(({ isClickable, hasIcon, performanceMode, ghost, ...props }) => (
     <CardBackgroundBase isClickable={isClickable} hasIcon={hasIcon} ghost={ghost} {...props} />
-))(({ theme, ghost}) => ({
-    ...(!ghost && glassmorphismStyle(theme, "level2")),
+))(({ theme, ghost, performanceMode}) => ({
+    ...(!ghost && glassmorphismStyle(theme, "level2", performanceMode)),
 }));
 
 const CardContent = styled(Box)(({ theme }) => ({
@@ -100,19 +100,24 @@ const StyledSubjectText = styled(Typography)(({ theme }) => ({
 const SubjectCard = ({
     subjectCode,
     ghost,
+    isClickable = true,
     moon,
+    performanceMode = false,
     ...props
 }) => {
     const { subjectDataMap } = useSubjectMapContext();
     const planetUrl = "/icons/planeta.png";
     if(subjectDataMap[subjectCode] === undefined) return null;
 
+    isClickable = isClickable && !ghost;
+
     return (
-        <CardContainer isClickable={!ghost} {...props}>
+        <CardContainer isClickable={isClickable} {...props}>
             <CardBackground
-                isClickable={!ghost}
+                isClickable={isClickable}
                 hasIcon={!!planetUrl}
                 ghost={ghost}
+                performanceMode={performanceMode}
             >
                 <CardContent>
 					<PlanetWrapper>

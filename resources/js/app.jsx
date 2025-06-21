@@ -15,12 +15,10 @@ createInertiaApp({
   setup({ el, App, props }) {
     createRoot(el).render(
       <>
-        <StrictMode>
-          <Global styles={globalStyles} />
-            <ThemeProvider theme={theme}>
-              <App {...props} />
-            </ThemeProvider>
-        </StrictMode>
+        <Global styles={globalStyles} />
+          <ThemeProvider theme={theme}>
+            <App {...props} />
+          </ThemeProvider>
       </>
     )
   },

@@ -13,7 +13,7 @@ class ReplicadoSubjectRequirement extends Model
 
     public function newQuery()
     {
-        if (!env('JUPITER_DB_HOST')) {
+        if (!config('services.replicado_is_active')) {
             $query = parent::newQuery()->fromSub($this->fakeQuery(), 'subtable');
         } else {
             $this->connection = "replicado";

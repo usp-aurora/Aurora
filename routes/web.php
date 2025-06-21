@@ -5,10 +5,9 @@ use Illuminate\Support\Facades\Auth;
 
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\TestController;
-
-Route::get('/meu', [TestController::class, 'index']);
 
 Route::get('/', [HomeController::class, 'index']);
 
@@ -21,6 +20,8 @@ Route::middleware('auth')->prefix('api/plans')->group(function () {
 });
 
 Route::get('/export', [PlanController::class, 'export']);
+
+Route::get('/api/requirement/{subjectCode}', [SubjectController::class, 'getSubjectRequirements']);
 
 Route::get('/api/user', function () {
     return response()->json(Auth::user());
