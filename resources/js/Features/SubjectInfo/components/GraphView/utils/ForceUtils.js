@@ -1,6 +1,6 @@
 function applyRadialForce(positions, velocities, {
 	radialLength = 350,
-	radialStrength = 1,
+	radialStrength = 0.5,
 }) {
 	for(const [key1,pos1] of positions) {
 		for(const [key2,pos2] of positions) {
@@ -22,12 +22,14 @@ function applyRadialForce(positions, velocities, {
 	}
 }
 
-function applyLinkForce(positions, velocities, links, vertical = false, { linkStrength = 0.01 }) {
+function applyLinkForce(positions, velocities, links, vertical = false, { linkStrength = 1.5 }) {
 	const axis = (vertical ? "x" : "y");
 	for(const [key,link] of links) {
 		const pos1 = positions.get(link.a), pos2 = positions.get(link.b);
 		const dist = pos2[axis]-pos1[axis];
-		const speed = dist * linkStrength;
+		const absDist = Math.abs(dist);
+		const logFactor = absDist > 1 ? Math.log(absDist + 1) : absDist;
+		const speed = Math.sign(dist) * logFactor * linkStrength;
 		const velocity1 = velocities.get(link.a);
 		const velocity2 = velocities.get(link.b);
 		velocity1[axis] += speed;
@@ -37,7 +39,7 @@ function applyLinkForce(positions, velocities, links, vertical = false, { linkSt
 
 function applyLayerForce(positions, velocities, layers, vertical = false, {
 	layerStart = 0,
-	layerSeparation = 550,
+	layerSeparation = 350,
 	layerStrength = 5,
 }) {
 	const axis = (vertical ? "y" : "x");
