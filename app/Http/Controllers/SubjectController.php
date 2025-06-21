@@ -59,10 +59,16 @@ class SubjectController extends Controller
 
         $subjectData = $this->getSubjectsWithGroups($visited);
 
+        $validNodes = array_intersect($visited, array_keys($subjectData->toArray()));
+
+        $validLinks = array_filter($requirements, function($link) use ($subjectData) {
+            return $subjectData->has($link[0]) && $subjectData->has($link[1]);
+        });
+
         return response()->json([
             'subjectData' => $subjectData,
-            'nodes' => $visited,
-            'links' => $requirements,
+            'nodes' => array_values($validNodes),
+            'links' => array_values($validLinks),
         ]);
     }
 
