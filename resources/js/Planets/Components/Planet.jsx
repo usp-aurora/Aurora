@@ -109,13 +109,17 @@ function Planet({ subjectCode }) {
   const subjectData = subjectDataMap[subjectCode];
   const seed = subjectCode;
   let hasClouds = false;
-  const colors = subjectData.groups.map(function(group){
+  let colors = subjectData.groups.map(function(group){
     if(["green", "blue", "cyan"].includes(group.color)){
       hasClouds = true;
     }
     
     return group.color
   });
+
+  if(colors.length <= 0){
+    colors = ["grey"];
+  }
 
   // Escolhendo cor para o planeta
   const c1 = colors[0 % colors.length];
