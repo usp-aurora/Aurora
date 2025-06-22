@@ -11,7 +11,7 @@ const Container = styled("div")({
     width: "100%",
     padding: "10px",
     display: "flex",
-    zIndex: "1",    
+    zIndex: 3,    
     color: "white",
     justifyContent: "flex-end",
 });

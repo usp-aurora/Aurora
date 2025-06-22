@@ -63,7 +63,10 @@ function getInitialStablePositions(
 	deltaSeconds,
 	maxIterations,
 ) {
-	const positions = new Map(Array.from(layers.keys(), (key,idx) => [key,{x:idx, y:idx}]));
+	const positions = new Map(Array.from(layers.keys(), key => [key, {
+		x: Math.random() * window.innerWidth,
+		y: Math.random() * window.innerHeight,
+	}]));
 	return getStablePositions(positions,links,layers,vertical,forceStyle,deltaSeconds,maxIterations);
 }
 

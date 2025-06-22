@@ -194,23 +194,9 @@
     <script>
         let canvas = document.getElementById('canvas');
         let ctx = canvas.getContext('2d');
-        console.log(canvas);
 
         let [width, height] = [canvas.width, canvas.height];
         let [cx, cy] = [width / 2, height / 2];
-
-        // ctx.save();
-        // ctx.translate(75, 75);
-        // ctx.beginPath();
-        // ctx.arc(75, 75, 50, 0, Math.PI * 2, true); // Outer circle
-        // ctx.moveTo(110, 75);
-        // ctx.arc(75, 75, 35, 0, Math.PI, false); // Mouth (clockwise)
-        // ctx.moveTo(65, 65);
-        // ctx.arc(60, 65, 5, 0, Math.PI * 2, true); // Left eye
-        // ctx.moveTo(95, 65);
-        // ctx.arc(90, 65, 5, 0, Math.PI * 2, true); // Right eye
-        // ctx.stroke();
-        // ctx.restore();
 
         let required_credits = 195;
         let completed_credits = "{{ $completed_semesters->sum('total_credits') }}";
@@ -242,8 +228,7 @@
 
         startAng = endAng;
         endAng = startAng + pendingPercentage;
-        console.log(endAng);
-
+        
         ctx.beginPath();
         ctx.arc(cx, cy, radius, (startAng - 270) * Math.PI / 180, (endAng - 270) * Math.PI / 180, false);
         ctx.strokeStyle = "grey";
