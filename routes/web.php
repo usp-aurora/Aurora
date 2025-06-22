@@ -6,6 +6,9 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\TestController;
+
+Route::get('/meu', [TestController::class, 'index']);
 
 Route::get('/planets', function () {
     return inertia('PlanetsTest');
