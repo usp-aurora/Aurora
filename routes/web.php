@@ -7,7 +7,11 @@ use App\Http\Controllers\PlanController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
 
+use App\Http\Controllers\LandingPageController;
+
 Route::get('/', [HomeController::class, 'index']);
+
+Route::get('/landing', [LandingPageController::class, 'index']);
 
 Route::middleware('auth')->prefix('api/plans')->group(function () {
     Route::get('/index', [PlanController::class, 'index']);
