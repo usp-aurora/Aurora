@@ -5,6 +5,26 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 
 class GroupController extends Controller {
+
+    public function getSubjectRootGroups($subject_code){
+        $groups = DB::table('group_subjects')
+            ->where('group_subjects.subject_code', '=', $subject_code)
+            ->select(["group_id"])
+            ->get();
+
+        $groupRoots = [];
+        $seen = [];
+        foreach($groups as $group){
+            $rootGroup = $this->getGroupRoot($group->group_id);
+            if (!isset($seen[$rootGroup->id])) {
+                $groupRoots[] = ["title" => $rootGroup->title, "color" => $rootGroup->color];
+                $seen[$rootGroup->id] = true;
+            }
+        }
+
+        return $groupRoots;
+    }
+
     public function loadCourseGroups($curriculum_id)
     {
         $curriculum = DB::table('curriculums')
@@ -24,12 +44,13 @@ class GroupController extends Controller {
     {
         $group = DB::table('groups')
             ->where('groups.id', '=', $groupId)
-            ->select(["title", "description", "id"])
+            ->select(["title", "description", "color", "id"])
             ->first();
 
         $groupJSON = [
             'title' => $group->title,
             'description' => $group->description,
+            'color' => $group->color,
             'subjects' => [],
             'subgroups' => []
         ];
@@ -53,25 +74,10 @@ class GroupController extends Controller {
         return $groupJSON;
     }
 
-    public function getSubjectRootGroups($subject_code){
-        $groups = DB::table('group_subjects')
-            ->where('group_subjects.subject_code', '=', $subject_code)
-            ->select(["group_id"])
-            ->get();
-
-        $groupRoots = [];
-        foreach($groups as $group){
-            $rootGroup = $this->getGroupRoot($group->group_id);
-            $groupRoots[] = $rootGroup->title;
-        }
-
-        return $groupRoots;
-    }
-
     private function getGroupRoot($groupId){
         $group = DB::table('groups')
             ->where('groups.id', '=', $groupId)
-            ->select(["id", "title",  "parent_group_id", "is_course_root"])
+            ->select(["id", "title", "color", "parent_group_id", "is_course_root"])
             ->first();
 
         return $this->getGroupRootRecursive($group);
@@ -80,7 +86,7 @@ class GroupController extends Controller {
     private function getGroupRootRecursive($group){
         $parentGroup = DB::table('groups')
             ->where('groups.id', '=', $group->parent_group_id)
-            ->select(["id", "title",  "parent_group_id", "is_course_root"])
+            ->select(["id", "title", "color",  "parent_group_id", "is_course_root"])
             ->first();
             
         if($parentGroup->is_course_root){

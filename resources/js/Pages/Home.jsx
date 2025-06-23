@@ -27,16 +27,16 @@ const ContentContainer = styled(Box)(({ theme }) => ({
 const Home = ({ groups, initialPlans, suggestedPlans, subjects, user }) => {
     const theme = useTheme();
     const isAboveSmall = useMediaQuery(theme.breakpoints.up('sm'));
-
     return (
         <AppProviders 
             initialPlans={initialPlans}
+            groups={groups}
             suggestedPlans={suggestedPlans}
             subjects={subjects} 
             user={user}
         >
             <SubjectInfo />
-            {!isAboveSmall && <SubjectPickerMobile groupsData={groups} />}
+            {!isAboveSmall && <SubjectPickerMobile/>}
             <Background />
             <ContentContainer>
                 <Stack spacing={{ xs: 1, sm: 2 }} sx={{ width: "100%"}}>
@@ -49,7 +49,7 @@ const Home = ({ groups, initialPlans, suggestedPlans, subjects, user }) => {
                         </Stack>
                         {isAboveSmall && (
                             <Stack sx={{ flex: 1, overflow: "auto" }}>
-                                <SubjectPickerDesktop groupsData={groups} />
+                                <SubjectPickerDesktop/>
                             </Stack>
                         )}
                     </Stack>

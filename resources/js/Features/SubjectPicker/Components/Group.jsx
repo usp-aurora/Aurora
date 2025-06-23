@@ -15,6 +15,8 @@ const GroupContainer = styled("div")(({ theme }) => ({
     [theme.breakpoints.up("sm")]: {
         gap: theme.spacing(2),
     },
+
+
 }));
 
 const GroupText = styled(Typography)(({ theme }) => ({
@@ -36,7 +38,7 @@ const Group = ({ groupData, expanded, onClick }) => {
             summary={
                 <CompletionHeader
                     title={groupData.title}
-                    color={"red"}
+                    color={groupData.color}
                     completed={false}
                 />
             }

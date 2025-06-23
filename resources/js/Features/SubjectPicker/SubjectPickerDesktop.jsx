@@ -17,6 +17,7 @@ const Container = styled( Box )(({ theme }) => ({
     padding: theme.spacing(2),
     gap: theme.spacing(2),
     borderRadius: "12px",
+    height: "100%",
 }));
 
 const HeaderContainer = styled("div")(() => ({
@@ -34,7 +35,7 @@ const StyledTitle = styled(Typography)(({ theme }) => ({
 
 const MemoizedSubjectPickerList = memo(SubjectPickerList);
 
-function SubjectPickerDesktop({ groupsData }) {
+function SubjectPickerDesktop() {
     const { setNodeRef } = useDroppable({ id: "subjectPicker" });
 
     return (
@@ -42,7 +43,7 @@ function SubjectPickerDesktop({ groupsData }) {
             <HeaderContainer>
                 <StyledTitle>Adicionar disciplina</StyledTitle>
             </HeaderContainer>
-            <MemoizedSubjectPickerList groupsData={groupsData} />
+            <MemoizedSubjectPickerList/>
         </Container>
     );
 };
