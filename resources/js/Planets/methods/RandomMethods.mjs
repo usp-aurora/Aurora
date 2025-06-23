@@ -53,7 +53,7 @@ function randomHexColor() {
 	const r = randomInt(16)
 	const g = randomInt(16)
 	const b = randomInt(16)
-	return `#${hex(r)}${hex(g)}${hex(b)}`
+	return `#${hex[r]}${hex[g]}${hex[b]}`
 }
 
 function randomNoise(positions, seed) {

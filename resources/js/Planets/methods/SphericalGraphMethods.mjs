@@ -1,30 +1,5 @@
 import { Vector } from "./LinearMethods.mjs"
 
-function getFaceAdjacency(faces) {
-	return faces.map((face, a) => {
-		return face.map((vetex, i) => {
-			for(let b = 0; b < faces.length; ++b) if(b != a) {
-				const other = faces[b]
-				for(let j = 0; j < 3; ++j)
-					if(other[j] == face[(i+1)%3] && other[(j+1)%3] == face[i])
-						return [b,j]
-			}
-		})
-	})
-}
-
-function getVertexAdjacency(edges) {
-	const adjacency = []
-	adjacency.length = edges.reduce((current, [a,b]) => Math.max(current, a+1, b+1), 0)
-	for(let i=0; i<adjacency.length; ++i)
-		adjacency[i] = []
-	for(const [a,b] of edges) {
-		adjacency[a].push(b)
-		adjacency[b].push(a)
-	}
-	return adjacency
-}
-
 function getMidOctave(a, b) {
 	const midOctave = a.map((coordinateA,i) => {
 		const coordinateB = b[i]

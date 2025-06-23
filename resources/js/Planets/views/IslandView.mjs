@@ -1,4 +1,4 @@
-function IslandView(contour, fill = "green", radius = 100, doRound = false, noise, treshhold) {
+function IslandView(contour, fill = "green", radius = 100, doRound = false, noise, threshold) {
 	this.el = document.createElementNS("http://www.w3.org/2000/svg", "path")
 	this.el.setAttribute("stroke", "none")
 	this.el.setAttribute("fill", fill)
@@ -112,14 +112,13 @@ function IslandView(contour, fill = "green", radius = 100, doRound = false, nois
 						borderIslands[islandIdx],
 						...extremes[islandIdx],
 						extremes[next[islandIdx]][0],
-						radius,
 					))
 					islandIdx = next[islandIdx]
 				}
 			}
 		}
 		else {
-			if(noise[borderVertex] > treshhold) {
+			if(noise[borderVertex] > threshold) {
 				pathPieces.push(`M${sradius} 0`)
 				pathPieces.push(`A${sradius} ${sradius} 0 1 1 ${-sradius} 0`)
 				pathPieces.push(`A${sradius} ${sradius} 0 1 1 ${sradius} 0`)
