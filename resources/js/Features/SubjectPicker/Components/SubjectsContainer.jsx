@@ -22,8 +22,8 @@ const SubjectsContainer = ({ containerName, subjects }) => {
 						subjectCode={subject.code}
 						container="subjectPicker"
 						isBlocked={isBlocked}
-						badgeColor="red.main"
-						showBadge={subject.mandatory && !isBlocked}
+						badgeColor="red"
+						showBadge={subject.mandatory}
 					/>
 				);
 			})}

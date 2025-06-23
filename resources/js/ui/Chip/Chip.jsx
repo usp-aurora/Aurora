@@ -7,13 +7,13 @@ const StyledChip = styled(MUIChip)(({ theme, color, variant }) => ({
 	height: "22px",
 	fontSize: theme.typography.small.fontSize,
 	fontWeight: theme.typography.small.fontWeight,
-	color: variant === 'contained' ? theme.palette.neutral.main : theme.palette[color].main,
+	color: variant === 'contained' ? theme.palette[color].contrastText : theme.palette[color].main,
 	
 	[theme.breakpoints.up('sm')]: {
 		padding: "0px 19.5px",
 		height: "32px",
 		...theme.typography.h4,
-		color: variant === 'contained' ? theme.palette.neutral.main : theme.palette[color].main,
+		color: variant === 'contained' ? theme.palette[color].contrastText : theme.palette[color].main,
 	},
 }));
 

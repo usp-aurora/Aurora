@@ -38,7 +38,7 @@ const StyledCloseIcon = styled(CloseIcon)(({ theme }) => ({
     cursor: "pointer"
 }));
 
-function SubjectPicker({ groupsData }) {
+function SubjectPicker() {
     const { isSubjectPickerModalOpen, closeSubjectPickerModal } = useSubjectPickerContext();
     return (
         <ModalContainer
@@ -50,7 +50,7 @@ function SubjectPicker({ groupsData }) {
                     <StyledTitle>Adicionar disciplina</StyledTitle>
                     <StyledCloseIcon onClick={closeSubjectPickerModal} />
                 </HeaderContainer>
-                <SubjectPickerList groupsData={groupsData} />
+                <SubjectPickerList/>
             </>
         </ModalContainer>
     );

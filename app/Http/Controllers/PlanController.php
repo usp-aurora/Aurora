@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Foundation\Auth;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\Plan;
 use App\Models\SuggestedPlan;
@@ -13,34 +13,17 @@ class PlanController extends Controller
 {
     public function index()
     {
-        if (auth()->user() == null) {
-            $plans = SuggestedPlan::all();
-        } else {
-            $plans = Plan::where('user_id', auth()->user()->id)->get();
-        }
+        return $this->getPlans(Auth()->user() == null);
+    }
 
-        $groupedPlans = [];
-
-        for ($semester = 1; $semester <= max($plans->max('semester'), 8); $semester++) {
-            $semesterPlans = $plans->filter(fn($plan) => $plan->semester == $semester);
-
-            $groupedPlans[] = [
-                'semesterId' => $semester,
-                'subjects' => $semesterPlans->map(function ($plan) {
-                    return [
-                        'plan' => $plan->id,
-                        'code' => $plan->subject_code,
-                    ];
-                })->values()->all(),
-            ];
-        }
-
-        return $groupedPlans;
+    public function getSuggestedPlans() 
+    {
+        return $this->getPlans(True);
     }
 
     public function export()
-    {   
-        $user = auth()->user();
+    {
+        $user = Auth()->user();
         if ($user == null) {
             return response()->json(['error' => 'User not authenticated.'], 401);
         }
@@ -70,7 +53,7 @@ class PlanController extends Controller
 
         $completed_semesters = $chunks->get(0, collect());
         $planned_semesters   = $chunks->get(1, collect());
-        
+
         return pdf()->view('exportTemplate', [
             'user_name' => "Daiqui Teixeira Inacio",
             'user_code' => 123213123,
@@ -81,7 +64,7 @@ class PlanController extends Controller
 
     public function sync(Request $request)
     {
-        $userId = auth()->user()->id;
+        $userId = Auth()->user()->id;
         $changes = $request->json()->all();
         $userPlans = Plan::where('user_id', $userId)->get();
         $changedPlans = [];
@@ -108,7 +91,7 @@ class PlanController extends Controller
 
                     $changedPlans[] = [
                         'id' => $newPlan->id,
-                        'subject_code' => $newPlan->subject_id,
+                        'subject_code' => $newPlan->subject_code,
                         'action' => 'created',
                     ];
                 } elseif ($existingPlan && !isset($change['semester'])) {
@@ -132,48 +115,62 @@ class PlanController extends Controller
         }
     }
 
+    private function getPlans($suggestedPlans)
+    {
+        if ($suggestedPlans) {
+            $plans = SuggestedPlan::all();
+        } else {
+            $plans = Plan::where('user_id', Auth()->user()->id)->get();
+        }
+
+        $groupedPlans = [];
+
+        for ($semester = 1; $semester <= max($plans->max('semester'), 8); $semester++) {
+            $semesterPlans = $plans->filter(fn($plan) => $plan->semester == $semester);
+
+            $groupedPlans[] = [
+                'semesterId' => $semester,
+                'subjects' => $semesterPlans->map(function ($plan) {
+                    return [
+                        'plan' => $plan->id,
+                        'code' => $plan->subject_code,
+                    ];
+                })->values()->all(),
+            ];
+        }
+
+        return $groupedPlans;
+    }
+
     private function store($subject_code, $semester)
     {
-        $validated = validator(compact('subject_code', 'semester'), [
-            'subject_code' => 'required|exists:subjects,code',
-            'semester' => 'required|integer',
-        ])->validate();
-
         try {
             $plan = Plan::create([
-                'user_id' => auth()->user()->id,
-                'subject_code' => $validated['subject_code'],
-                'semester' => $validated['semester'],
+                'user_id' => auth::user()->id,
+                'subject_code' => $subject_code,
+                'semester' => $semester,
             ]);
 
             return $plan;
         } catch (\Exception $e) {
             Log::error('Error creating plan:', ['error' => $e->getMessage()]);
-
             return null;
         }
     }
 
     private function update($subject_code, $semester, $plan_id)
     {
-        $validated = validator(compact('subject_code', 'semester', 'plan_id'), [
-            'subject_code' => 'required|exists:subjects,code',
-            'semester' => 'required|integer',
-            'plan_id' => 'required|exists:plans,id',
-        ])->validate();
-
         try {
-            $plan = Plan::findOrFail($validated['plan_id']);
+            $plan = Plan::findOrFail($plan_id);
 
             $plan->update([
-                'subject_code' => $validated['subject_code'],
-                'semester' => $validated['semester'],
+                'subject_code' => $subject_code,
+                'semester' => $semester,
             ]);
 
             return $plan;
         } catch (\Exception $e) {
             Log::error('Error updating plan:', ['plan_id' => $plan_id, 'error' => $e->getMessage()]);
-
             return null;
         }
     }
@@ -185,13 +182,11 @@ class PlanController extends Controller
         ])->validate();
 
         try {
-            $plan = Plan::findOrFail($validated['id']);
+            $plan = Plan::findOrFail($id);
             $plan->delete();
-
             return true;
         } catch (\Exception $e) {
             Log::error('Error deleting plan:', ['error' => $e->getMessage()]);
-
             return false;
         }
     }

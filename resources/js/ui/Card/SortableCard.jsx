@@ -2,6 +2,8 @@ import { useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { memo, useCallback } from "react";
 
+import { usePlansContext } from "../../Contexts/PlansContext";
+import { useViewMode } from "../../Contexts/ViewModeContext";
 import SortableItem from "../../Features/DragAndDrop/SortableItem";
 import { useSubjectInfoContext } from "../../Features/SubjectInfo/SubjectInfoContext";
 import SubjectCard from "./SubjectCard";

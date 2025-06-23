@@ -3,6 +3,7 @@ import { createContext, useCallback, useContext, useState } from "react";
 
 import { getContainerName, handleDragEnd, handleDragOver, handleDragStart } from "./utils/dragUtils.js";
 import { usePlansContext } from "../../Contexts/PlansContext.jsx";
+import { useViewMode } from "../../Contexts/ViewModeContext.jsx";
 import SubjectOverlay from "./SubjectOverlay.jsx";
 import WarningDialog from "./DragOnRecommendedViewDialog.jsx";
 
@@ -39,6 +40,8 @@ function DragAndDropProvider({ children, disabled = false }) {
 	const [draggedItem, setDraggedItem] = useState(null);
 	const [showWarning, setShowWarning] = useState(false);
 	const { restoreCurrentPlans, updatePlans, commitPlans } = usePlansContext();
+	const { isSuggestedPlansView } = useViewMode();
+	disabled = disabled || isSuggestedPlansView;
 
 	/**
 	 * Defines sensors for drag detection.

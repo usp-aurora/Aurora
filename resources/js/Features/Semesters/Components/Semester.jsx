@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import Stack from "@mui/material/Stack";
+import IconButton from "@mui/material/IconButton";
+import ClearIcon from "@mui/icons-material/Clear";
 
 import Accordion from "../../../ui/Accordion/Accordion";
-import AuxiliaryCard from "../../../ui/Card/AuxiliaryCard";
 import SortableCard from "../../../ui/Card/SortableCard";
 import Droppable from "../../DragAndDrop/Droppable";
 import SortableGrid from "../../DragAndDrop/SortableGrid";
@@ -11,6 +13,7 @@ import SubjectPlaceholder from "./SubjectPlaceholder";
 
 import { usePlansContext } from "@/Contexts/PlansContext";
 import { useSubjectMapContext } from "@/Contexts/SubjectMapContext";
+import { useViewMode } from "@/Contexts/ViewModeContext";
 
 const SummaryContainer = styled("div")(({}) => ({
     width: "100%",
@@ -19,6 +22,11 @@ const SummaryContainer = styled("div")(({}) => ({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+}));
+
+const StyledClearIcon = styled(ClearIcon)(({ theme }) => ({
+    cursor: "pointer",
+    color: theme.palette.white.main,
 }));
 
 const SemesterInfoText = styled(Typography)(({ theme }) => ({
@@ -48,16 +56,30 @@ const DroppableCardContainer = styled(Droppable)(({ theme }) => ({
 }));
 
 const Semester = ({
-    semesterData,
-    isRecommendedView,
+    semesterData
 }) => {
     const { plansSet } = usePlansContext();
     const { subjectDataMap } = useSubjectMapContext();
+    const { isSuggestedPlansView } = useViewMode();
+    const { plans, commitPlans } = usePlansContext();
     const [isExpanded, setExpanded] = useState(true);
 
     function toggleExpanded(){
         setExpanded(!isExpanded);
     }
+
+    function deleteSemester(){
+		if(isSuggestedPlansView || !canDelete) return;
+
+		commitPlans((prevPlans) => prevPlans.filter(semester => semester.semesterId !== semesterData.semesterId), `Delete semester ${semesterData.semesterId}`);
+	}
+
+    const highestSemesterId = Math.max(...plans.map(semester => semester.semesterId));
+    const isHighestSemester = semesterData.semesterId === highestSemesterId;
+    const isEmpty = semesterData.subjects.length === 0;
+    const MIN_SEMESTERS_NUMBER = 8;
+    const canDelete = !isSuggestedPlansView && isEmpty && isHighestSemester && semesterData.semesterId > MIN_SEMESTERS_NUMBER;
+
 
     let workCredits = 0;
     let lectureCredits = 0;
@@ -74,9 +96,23 @@ const Semester = ({
 
     const Summary = (
         <SummaryContainer>
-            <SemesterInfoText>
-                {semesterData.semesterId}º Período
-            </SemesterInfoText>
+            <Stack direction="row" alignItems="center" spacing={1}>
+                {canDelete && (
+                    <IconButton  
+                        aria-label="Delete semester"  
+                        onClick={(e) => {  
+                            e.stopPropagation();  
+                            deleteSemester();  
+                        }}  
+                        sx = {{ padding: 0 }}
+                    >  
+                        <StyledClearIcon />  
+                    </IconButton>  
+                )}
+                <SemesterInfoText>
+                    {semesterData.semesterId}º Período
+                </SemesterInfoText>
+            </Stack>
             <SemesterCreditsText>
                 {(lectureCredits ? lectureCredits : "0") + " "}+
                 {" " + (workCredits ? workCredits : "0") + " "}
@@ -97,12 +133,12 @@ const Semester = ({
                 key={semesterData.semesterId}
                 spacing={{ xs: 1, sm: 2 }}
                 disabled={!isExpanded}
-                placeholder={isRecommendedView ? null : <SubjectPlaceholder />}
+                placeholder={isSuggestedPlansView ? null : <SubjectPlaceholder />}
             >
                 <SortableGrid items={semesterData.subjects}>
                     {semesterData.subjects.map((subject) => {
                         const subjectData = subjectDataMap[subject.code];
-	                    const requiredScheduled = isRecommendedView && plansSet.has(subject.code);
+	                    const requiredScheduled = isSuggestedPlansView && plansSet.has(subject.code);
                         
                         if(!subjectData) return null;
 
@@ -114,20 +150,10 @@ const Semester = ({
                                 container={semesterData.semesterId}
                                 isBlocked={false}
                                 showBadge={requiredScheduled}
-                                badgeColor="green.main"
+                                badgeColor="green"
                             />
                         );
                     })}
-                    {isRecommendedView && semesterData.suggestions.map((suggestion, index) => (
-                            <AuxiliaryCard 
-                                key={index}
-                                text={`Disciplina do grupo ${suggestion.group}`} 
-                                ghost={true}
-                                sx={{ pointerEvents: "none"}}
-                            />
-                        ))
-                    }
-                    
                 </SortableGrid>
             </DroppableCardContainer>
         </Accordion>

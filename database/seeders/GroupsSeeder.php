@@ -17,14 +17,16 @@ class GroupsSeeder extends Seeder
                 'id' => 1,
                 'title' => "Bacharelado em Ciência da Computação [2025]",
                 'description' => "Curso do BCC do IME-USP :)",
+                'color' => 'blue',
                 'parent_group_id' => null,
                 'is_course_root' => true
             ],
             [
                 'id' => 2,
-                'title' => "Trilha de Inteligência Artificial",
+                'title' => "Inteligência Artificial",
                 'description' => "A inteligência artificial visa desenvolver tecnologias como carros autônomos, robôs domésticos e tradutores automáticos, estudando a representação e aquisição do conhecimento humano e a construção de sistemas autônomos confiáveis. A trilha de IA forma profissionais para criar ferramentas que automatizam tarefas cognitivas complexas, exigindo disciplinas em IA, teoria de sistemas de computação e matemática. Recomenda-se fazer o TCC no tema, mas não é obrigatório para o certificado.",
                 'parent_group_id' => 1,
+                'color' => 'red',
                 'is_course_root' => false
             ],
             [
@@ -58,6 +60,7 @@ class GroupsSeeder extends Seeder
                 'description' => "A trilha Sistemas de Software é voltada para alunos que desejem se especializar na área de desenvolvimento de software, expondo-os a teorias, técnicas, métodos e ferramentas modernas de desenvolvimento de software.
                 Para se concluir essa trilha, o aluno precisa cursar no mínimo 7 disciplinas dentre as descritas abaixo.",
                 'parent_group_id' => 1,
+                'color' => 'green',
                 'is_course_root' => false
             ],
             [
@@ -90,6 +93,7 @@ class GroupsSeeder extends Seeder
                 'title' => "Trilha de Teoria da Computação",
                 'description' => "A trilha é formada por disciplinas optativas eletivas em Algoritmos, Matemática Discreta e Otimização do Bacharelado em Ciência da Computação. O objetivo da trilha é orientar uma formação mais específica de estudantes com interesse em Teoria da Computação. Para receber um certificado de conclusão da trilha o estudante deve cursar pelo menos sete disciplinas da trilha sendo que dentre essas estão todas as disciplinas obrigatórias de pelo menos dois módulos.",
                 'parent_group_id' => 1,
+                'color' => 'purple',
                 'is_course_root' => false
             ],
             [
@@ -118,6 +122,7 @@ class GroupsSeeder extends Seeder
                 'title' => "Ciência de Dados",
                 'description' => "O Brasil está na era digital, com 400 horas de vídeos por minuto no YouTube e 87 mil horas no Netflix. Há 300 milhões de dispositivos online, 41% das transações bancárias são digitais, levando a um investimento de R$ 20 bilhões em TI. A trilha de Ciência de Dados forma líderes em dados, requerendo aprovação em 7 disciplinas para certificação.",
                 'parent_group_id' => 1,
+                'color' => 'yellow',
                 'is_course_root' => false
             ],
             [
@@ -195,6 +200,7 @@ class GroupsSeeder extends Seeder
                 'title' => "Obrigatórias",
                 'Description' => "Matérias obrigatórias da ciência da computação", 
                 'parent_group_id' => 1,
+                'color' => 'blue',
                 'is_course_root' => false
             ]
         ];
