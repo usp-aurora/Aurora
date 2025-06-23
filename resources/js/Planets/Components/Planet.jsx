@@ -122,9 +122,10 @@ function Planet({ subjectCode }) {
   }
 
   // Escolhendo cor para o planeta
-  const c1 = colors[0 % colors.length];
-  const c2 = colors[1 % colors.length];
-  const c3 = colors[2 % colors.length];
+  // Quando há apenas duas cores, c1 e c2 são iguais
+  const c1 = colors[1 % colors.length];
+  const c2 = colors[2 % colors.length];
+  const c3 = colors[0 % colors.length];
 
   const theme = useTheme();
   const seaColor = theme.palette[c1][900];
@@ -132,7 +133,7 @@ function Planet({ subjectCode }) {
   const landInnerColor = theme.palette[c3][300];
 
   // Escolhendo cor para a nuvem
-  const seedToValue = [200, 300, 400, 500];
+  const seedToValue = [200, 300, 400];
   const value = seedToValue[Math.abs(seed.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0)) % seedToValue.length];
   const cloudsColor = theme.palette["grey"][value];
 
