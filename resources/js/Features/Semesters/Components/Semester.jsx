@@ -12,7 +12,7 @@ import SubjectPlaceholder from "./SubjectPlaceholder";
 import { useSubjectMapContext } from "../../../Contexts/SubjectMapContext";
 import { useDndContext } from "@dnd-kit/core";
 
-const SummaryContainer = styled("div")(({}) => ({
+const SummaryContainer = styled("div")(({ }) => ({
     width: "100%",
 
     display: "flex",
@@ -39,6 +39,11 @@ const SemesterCreditsText = styled(Typography)(({ theme }) => ({
 
 const SemesterCompletedText = styled(Typography)(({ theme }) => ({
     ...theme.typography.small,
+    textTransform: 'none',
+    fontSize: '0.85rem',
+    marginRight: 'auto',
+    marginLeft: 2,
+    
     [theme.breakpoints.up("sm")]: {
         ...theme.typography.p,
     },
@@ -58,14 +63,14 @@ const Semester = ({
     semesterData,
     isRecommendedView,
 }) => {
-    const completed = semesterData.subjects.reduce((acc, subj) => acc || subj.completed, false);
+    const completed = semesterData.subjects.every((subj) => subj.completed);
 
     const { active } = useDndContext();
 
     const { subjectDataMap } = useSubjectMapContext();
     const [isExpanded, setExpanded] = useState(!completed);
 
-    function toggleExpanded(){
+    function toggleExpanded() {
         setExpanded(!isExpanded);
     }
 
@@ -88,14 +93,7 @@ const Semester = ({
                 {semesterData.semesterId}º Período
             </SemesterInfoText>
             {completed &&
-                <SemesterCompletedText
-                    sx={{ 
-                        textTransform: 'none', 
-                        fontSize: '0.85rem',
-                        marginRight: 'auto',
-                        marginLeft: 2
-                    }}
-                >
+                <SemesterCompletedText>
                     Semestre já cursado
                 </SemesterCompletedText>
             }
@@ -127,7 +125,7 @@ const Semester = ({
                 <SortableGrid items={semesterData.subjects}>
                     {semesterData.subjects.map((subject) => {
                         const subjectData = subjectDataMap[subject.code];
-                        if(!subjectData) return null;
+                        if (!subjectData) return null;
 
                         return (
                             <SortableCard
@@ -137,19 +135,19 @@ const Semester = ({
                                 container={semesterData.semesterId}
                                 isBlocked={false}
                                 completed={subject.completed}
-                                isRecommendedView={isRecommendedView}/>
+                                isRecommendedView={isRecommendedView} />
                         );
                     })}
                     {isRecommendedView && semesterData.suggestions.map((suggestion, index) => (
-                            <AuxiliaryCard 
-                                key={index}
-                                text={`Disciplina do grupo ${suggestion.group}`} 
-                                ghost={true}
-                                sx={{ pointerEvents: "none"}}
-                            />
-                        ))
+                        <AuxiliaryCard
+                            key={index}
+                            text={`Disciplina do grupo ${suggestion.group}`}
+                            ghost={true}
+                            sx={{ pointerEvents: "none" }}
+                        />
+                    ))
                     }
-                    
+
                 </SortableGrid>
             </DroppableCardContainer>
         </Accordion>
