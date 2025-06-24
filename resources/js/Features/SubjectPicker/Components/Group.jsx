@@ -10,7 +10,7 @@ import SubjectsContainer from "./SubjectsContainer";
 
 import { usePlansContext } from "@/Contexts/PlansContext";
 import { useSubjectMapContext } from "@/Contexts/SubjectMapContext";
-import { isComplete, calculateMetrics, requirementTypes } from '../utils/completionUtils';
+import { isComplete, calculateMetrics } from '../utils/completionUtils';
 
 const GroupContainer = styled("div")(({ theme }) => ({
     display: "flex",
@@ -19,9 +19,7 @@ const GroupContainer = styled("div")(({ theme }) => ({
 
     [theme.breakpoints.up("sm")]: {
         gap: theme.spacing(2),
-    },
-
-
+    }
 }));
 
 const GroupText = styled(Typography)(({ theme }) => ({
@@ -54,7 +52,7 @@ const Group = ({ groupData, expanded, onClick }) => {
     const completionMetrics = useMemo(() => 
         groupData.completionRequirements.map((requirement) => ({
             name: requirement.type.toLowerCase(),
-            value: metrics[requirementTypes[requirement.type]],
+            value: metrics[requirement.type],
             total: requirement.value,
         })),
         [groupData.completionRequirements, metrics]

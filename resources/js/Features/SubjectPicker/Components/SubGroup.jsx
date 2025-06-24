@@ -6,7 +6,8 @@ import SubjectsContainer from "./SubjectsContainer";
 
 import { usePlansContext } from "../../../Contexts/PlansContext";
 import { useSubjectMapContext } from "../../../Contexts/SubjectMapContext";
-import { calculateMetrics, requirementTypes } from '../utils/completionUtils';
+import { calculateMetrics } from '../utils/completionUtils';
+import { COMPLETION_TYPE_LABELS } from '@/constants/completionTypes';
 
 const SubGroupContainer = styled("div")(({ theme, depth }) => ({
     display: "flex",
@@ -55,7 +56,7 @@ const SubGroup = ({ depth, subgroupData }) => {
     
     const completionMetrics = subgroupData.completionRequirements.map((requirement) => ({
         name: requirement.type.toLowerCase(),
-        value: metrics[requirementTypes[requirement.type]],
+        value: metrics[requirement.type],
         total: requirement.value,
     }));
 
@@ -63,11 +64,14 @@ const SubGroup = ({ depth, subgroupData }) => {
         <SubGroupContainer depth={depth}>
             <SubGroupHeader>
                 <SubGroupTitle>{subgroupData.title}</SubGroupTitle>
-                {completionMetrics.map(metric => (
-                    <SubGroupText key={metric.name}>
-                        {metric.value}/{metric.total} {metric.name}
-                    </SubGroupText>
-                ))}
+                {completionMetrics.map(metric => {
+                    const name = COMPLETION_TYPE_LABELS[metric.name];
+                    return (
+                        <SubGroupText key={name}>
+                            {metric.value}/{metric.total} {name}
+                        </SubGroupText>
+                    )
+                })}
             </SubGroupHeader>
             <SubGroupText>{subgroupData.description}</SubGroupText>
             {subgroupData.subgroups.map((subgroup) => (

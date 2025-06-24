@@ -1,14 +1,6 @@
-/**
- * Maps requirement types to their corresponding metric keys in the metrics object.
- * Used for translating completion requirements to their metric counters.
- * @readonly
- * @enum {string}
- */
-const requirementTypes = {
-    "Créditos": "credits",     // Total credits needed
-    "Matérias": "subjects",   // Number of subjects needed
-    "Blocos": "subgroups",         // Number of completed subgroups needed
-};
+import { 
+    COMPLETION_TYPES
+} from '../../../constants/completionTypes.js';
 
 /**
  * Creates a new metrics object with default values.
@@ -21,9 +13,9 @@ const requirementTypes = {
  */
 function createMetrics() {
     return ({
-        credits: 0,
-        subjects: 0,
-        subgroups: 0,
+        [COMPLETION_TYPES.CREDITS]: 0,
+        [COMPLETION_TYPES.SUBJECTS]: 0,
+        [COMPLETION_TYPES.SUBGROUPS]: 0,
         mandatoryMet: true
     });
 }
@@ -143,7 +135,7 @@ function isComplete(group, metrics) {
     if (!group.completionRequirements?.length) return true;
 
     return group.completionRequirements.every(requirement => {
-        const metricKey = requirementTypes[requirement.type];
+        const metricKey = requirement.type;
         return metrics[metricKey] >= requirement.value;
     });
 };
@@ -165,6 +157,5 @@ function clearCalculationCache() {
 export {
     isComplete,
     calculateMetrics,
-    requirementTypes,
     clearCalculationCache
 };

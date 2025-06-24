@@ -53,10 +53,9 @@ class GroupsSeeder extends Seeder
                 'parent_group_id' => 2,
                 'is_course_root' => false
             ],
-
             [
                 'id' => 7,
-                'title' => "Trilha de Sistemas de Software",
+                'title' => "Sistemas de Software",
                 'description' => "A trilha Sistemas de Software é voltada para alunos que desejem se especializar na área de desenvolvimento de software, expondo-os a teorias, técnicas, métodos e ferramentas modernas de desenvolvimento de software.
                 Para se concluir essa trilha, o aluno precisa cursar no mínimo 7 disciplinas dentre as descritas abaixo.",
                 'parent_group_id' => 1,
@@ -90,7 +89,7 @@ class GroupsSeeder extends Seeder
 
             [
                 'id' => 11,
-                'title' => "Trilha de Teoria da Computação",
+                'title' => "Teoria da Computação",
                 'description' => "A trilha é formada por disciplinas optativas eletivas em Algoritmos, Matemática Discreta e Otimização do Bacharelado em Ciência da Computação. O objetivo da trilha é orientar uma formação mais específica de estudantes com interesse em Teoria da Computação. Para receber um certificado de conclusão da trilha o estudante deve cursar pelo menos sete disciplinas da trilha sendo que dentre essas estão todas as disciplinas obrigatórias de pelo menos dois módulos.",
                 'parent_group_id' => 1,
                 'color' => 'purple',
@@ -202,7 +201,40 @@ class GroupsSeeder extends Seeder
                 'parent_group_id' => 1,
                 'color' => 'blue',
                 'is_course_root' => false
-            ]
+            ],
+            [
+                'id' => 29,
+                'title' => "Optativas Eletivas",
+                'Description' => "Para se formar, o aluno tem que obter pelo menos 52 créditos de optativas eletivas.", 
+                'parent_group_id' => 1,
+                'color' => 'orange',
+                'is_course_root' => false
+            ],
+            [
+                'id' => 30,
+                'title' => "Optativas de Estatística",
+                'Description' => "Para se formar, o aluno tem que obter pelo menos 4 créditos em uma optativa dessa categoria.", 
+                'parent_group_id' => 1,
+                'color' => 'gray',
+                'is_course_root' => false
+            ],
+            [
+                'id' => 31,
+                'title' => "Optativas de Humanidades",
+                'Description' => "Para se formar, o aluno tem que obter pelo menos 3 créditos em uma optativa dessa categoria.", 
+                'parent_group_id' => 1,
+                'color' => 'pink',
+                'is_course_root' => false
+            ],
+            [
+                'id' => 32,
+                'title' => "Optativas de Ciências",
+                'Description' => "Para se formar, o aluno tem que obter pelo menos 4 créditos em uma optativa dessa categoria.", 
+                'parent_group_id' => 1,
+                'color' => 'brown',
+                'is_course_root' => false
+            ],
+            
         ];
 
         foreach ($groups as $group) {

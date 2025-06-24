@@ -8,9 +8,11 @@ const SubjectsContainer = ({ containerName, subjects }) => {
 	const { subjectDataMap } = useSubjectMapContext();
 	const { plansSet } = usePlansContext();
 
+	const sortedSubjects = [...subjects].sort((a, b) => a.code.localeCompare(b.code));
+
 	return (
 		<CardsGrid>
-			{subjects.map((subject) => {
+			{sortedSubjects.map((subject) => {
 				const isBlocked = plansSet.has(subject.code);
 				const subjectData = subjectDataMap[subject.code];
 				if(!subjectData) return null;
