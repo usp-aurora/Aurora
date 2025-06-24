@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Config;
 
 class ReplicadoAcademicRecordModelTest extends TestCase
 {
-	private function assertValidAcamicRecord($academicRecord): void
+	private function assertValidAcademicRecord($academicRecord): void
 	{
 		$this->assertNotNull($academicRecord);
 		$this->assertIsNumeric($academicRecord->nusp);
@@ -16,16 +16,16 @@ class ReplicadoAcademicRecordModelTest extends TestCase
 		$this->assertIsNumeric($academicRecord->class_code);
 	}
 
-	public function test_curriculum_retrieves_fake_data_when_replicado_not_available(): void
+	public function test_academic_record_retrieves_fake_data_when_replicado_not_available(): void
 	{
 		Config::set('services.replicado_is_active', 0);
 		
 		$academicRecord = ReplicadoAcademicRecord::first();
 		
-		$this->assertValidAcamicRecord($academicRecord);
+		$this->assertValidAcademicRecord($academicRecord);
 	}
 
-	public function test_curriculum_returns_multiple_fake_records_when_replicado_not_available(): void
+	public function test_academic_record_returns_multiple_fake_records_when_replicado_not_available(): void
 	{
 		Config::set('services.replicado_is_active', 0);
 	 
@@ -35,11 +35,11 @@ class ReplicadoAcademicRecordModelTest extends TestCase
 		$this->assertLessThanOrEqual(10, $academicRecords->count());
 		
 		foreach ($academicRecords as $academicRecord) {
-			$this->assertValidAcamicRecord($academicRecord);
+			$this->assertValidAcademicRecord($academicRecord);
 		}
 	}
 
-	public function test_curriculum_uses_real_query_when_replicado_available(): void
+	public function test_academic_record_uses_real_query_when_replicado_available(): void
 	{
 		$academicRecord = new ReplicadoAcademicRecord();
 		$query = $academicRecord->newQuery();
@@ -48,13 +48,13 @@ class ReplicadoAcademicRecordModelTest extends TestCase
 		$this->assertTrue(method_exists($academicRecord, 'newQuery'));
 	}
 
-	public function test_curriculum_query_works_when_replicado_available(): void	
+	public function test_academic_record_query_works_when_replicado_available(): void	
 	{
 		$academicRecord = ReplicadoAcademicRecord::first();
-		$this->assertValidAcamicRecord($academicRecord); 
+		$this->assertValidAcademicRecord($academicRecord); 
 	}
 
-	public function test_curriculum_returns_multiple_records_when_replicado_available(): void
+	public function test_academic_record_returns_multiple_records_when_replicado_available(): void
 	{   
 		$academicRecords = ReplicadoAcademicRecord::take(5)->get();
 		
@@ -62,7 +62,7 @@ class ReplicadoAcademicRecordModelTest extends TestCase
 		$this->assertLessThanOrEqual(5, $academicRecords->count());
 		
 		foreach ($academicRecords as $academicRecord) {
-			$this->assertValidAcamicRecord($academicRecord);
+			$this->assertValidAcademicRecord($academicRecord);
 		}
 	}
 }

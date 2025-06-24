@@ -27,7 +27,6 @@ class PlanController extends Controller
                 }
             }
         }
-
         return [$plans, $plannedSubjects];
     }
 
