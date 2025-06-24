@@ -43,6 +43,6 @@ return [
     	'redirect' => '/',
     ],
     
-    'replicado_is_active' => env('REPLICADO_HOST') !== null,
+    'replicado_is_active' => !empty(env('REPLICADO_HOST')),
     
 ];

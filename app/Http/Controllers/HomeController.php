@@ -19,14 +19,15 @@ class HomeController extends Controller
 		$subjectController = new SubjectController();
 		$userController = new UserController();
 
-		$plansData = $planController->index();
+		list($plansData, $plannedSubjects) = $planController->index();
+
 		$suggestedPlans = $planController->getSuggestedPlans();
 		$groups = $groupController->loadCourseGroups(1);
 		$groupsSubjects = $groupController->getGroupSubjects($groups);
-		$subjects = $subjectController->getSubjectsWithGroups($groupsSubjects);
 
+		$mergedSubjects = array_unique(array_merge($plannedSubjects, $groupsSubjects), SORT_REGULAR);
+		$subjects = $subjectController->getSubjectsWithGroups($mergedSubjects);
 		$user = $userController->index();
-
 		return Inertia::render('Home', [
 			'initialPlans' => $plansData,
 			'suggestedPlans' => $suggestedPlans,

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('subject_code');
             $table->foreignId('user_id')->references('id')->on('users')->constrained();
             $table->integer('semester');
+            $table->boolean('completed')->default(false);
         });
     }
 

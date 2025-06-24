@@ -21,20 +21,41 @@ class PlanControllerTest extends TestCase
      */
     public function test_index_returns_grouped_plans_by_semester()
     {
-        $user = User::where('id', 1)->first();
+        $user = User::factory()->create();
         $this->actingAs($user);
 
-        $response = $this->getJson('/api/plans/index');
+        // Create a plan for testing
+        Plan::factory()->create([
+            'user_id' => $user->id,
+            'subject_code' => 'MAC0110',
+            'semester' => 1,
+        ]);
 
+        $response = $this->getJson('/api/plans/index');
         $response->assertStatus(200)
+            ->assertJsonCount(2)
             ->assertJsonStructure([
-                '*' => [
-                    'semesterId',
-                    'subjects' => [
-                        '*' => [ 'plan', 'code' ],
+                0 => [
+                    '*' => [
+                        'semesterId',
+                        'subjects' => [
+                            '*' => [
+                                'plan',
+                                'code',
+                                'completed',
+                            ],
+                        ],
                     ],
                 ],
+                1 => [],
             ]);
+
+        $responseData = $response->json();
+        
+        $this->assertEquals(1, $responseData[0][0]['semesterId']);
+        $this->assertCount(1, $responseData[0][0]['subjects']);
+        $this->assertEquals('MAC0110', $responseData[0][0]['subjects'][0]['code']);
+        $this->assertEquals(0, $responseData[0][0]['subjects'][0]['completed']);
     }
 
     /**

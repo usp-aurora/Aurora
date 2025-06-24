@@ -15,7 +15,9 @@ const SortableCard = ({
 	subjectCode,
 	container,
 	isBlocked,
-	...props
+	completed,
+	badgeColor,
+	showBadge,
 }) => {
 	const { showSubjectInfo } = useSubjectInfoContext();
 
@@ -33,13 +35,14 @@ const SortableCard = ({
 			id={id}
 			key={subjectCode}
 			itemData={{ code: subjectCode, container: container }}
-			isStatic={isBlocked || isMobile}
+			isStatic={isBlocked || isMobile || completed}
 		>
 			<MemoizedSubjectCard
 				subjectCode={subjectCode}
 				onClick={handleClick}
-				ghost={isBlocked}
-				{...props}
+				ghost={isBlocked && !completed}
+				badgeColor={badgeColor}
+				showBadge={showBadge}
 			/>
 		</SortableItem>
 	);
