@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { styled } from "@mui/material/styles";
 import { Typography } from "@mui/material";
 
@@ -7,6 +8,10 @@ import CompletionMetrics from "./Completion/CompletionMetrics";
 import SubGroup from "./SubGroup";
 import SubjectsContainer from "./SubjectsContainer";
 
+import { usePlansContext } from "@/Contexts/PlansContext";
+import { useSubjectMapContext } from "@/Contexts/SubjectMapContext";
+import { isComplete, calculateMetrics } from '../utils/completionUtils';
+
 const GroupContainer = styled("div")(({ theme }) => ({
     display: "flex",
     flexDirection: "column",
@@ -14,9 +19,7 @@ const GroupContainer = styled("div")(({ theme }) => ({
 
     [theme.breakpoints.up("sm")]: {
         gap: theme.spacing(2),
-    },
-
-
+    }
 }));
 
 const GroupText = styled(Typography)(({ theme }) => ({
@@ -33,13 +36,35 @@ const SubGroupContainer = styled("div")(({ theme }) => ({
 }));
 
 const Group = ({ groupData, expanded, onClick }) => {
+    const { plansSet } = usePlansContext();
+    const { subjectDataMap } = useSubjectMapContext();
+    
+    const [metrics] = useMemo(() => 
+        calculateMetrics(groupData, plansSet, subjectDataMap),
+        [groupData, plansSet, subjectDataMap]
+    );
+
+    const completed = useMemo(() => 
+        isComplete(groupData, metrics),
+        [groupData, metrics]
+    );
+
+    const completionMetrics = useMemo(() => 
+        groupData.completionRequirements.map((requirement) => ({
+            name: requirement.type.toLowerCase(),
+            value: metrics[requirement.type],
+            total: requirement.value,
+        })),
+        [groupData.completionRequirements, metrics]
+    );
+
     return (
         <Accordion
             summary={
                 <CompletionHeader
                     title={groupData.title}
                     color={groupData.color}
-                    completed={false}
+                    completed={completed}
                 />
             }
             expanded={expanded}
@@ -47,20 +72,7 @@ const Group = ({ groupData, expanded, onClick }) => {
             TransitionProps={{ unmountOnExit: true }}
         >
             <GroupContainer>
-                {/* <CompletionMetrics
-                    metrics={[
-                        {
-                            name: "disciplinas",
-                            value: "10",
-                            total: "50",
-                        },
-                        {
-                            name: "blocos",
-                            value: "9",
-                            total: "10",
-                        },
-                    ]}
-                /> */}
+                <CompletionMetrics metrics={completionMetrics}/>
                 <GroupText>{groupData.description}</GroupText>
                 <SubjectsContainer
                     containerName={groupData.title}

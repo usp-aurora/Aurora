@@ -15,12 +15,9 @@ const SortableCard = ({
 	subjectCode,
 	container,
 	isBlocked,
+	...props
 }) => {
-	const { plansSet } = usePlansContext();
 	const { showSubjectInfo } = useSubjectInfoContext();
-	const { isSuggestedPlansView } = useViewMode();
-
-	const requiredScheduled = isSuggestedPlansView && plansSet.has(subjectCode);
 
 	const theme = useTheme(); 
 	const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -42,7 +39,7 @@ const SortableCard = ({
 				subjectCode={subjectCode}
 				onClick={handleClick}
 				ghost={isBlocked}
-				moon={requiredScheduled}
+				{...props}
 			/>
 		</SortableItem>
 	);

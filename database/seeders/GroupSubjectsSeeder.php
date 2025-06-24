@@ -15,719 +15,1410 @@ class GroupSubjectsSeeder extends Seeder
     {
         $groupSubjects = [
             [
-                'id' => 1,
-                'group_id' => 4,
+                'group_id' => 3,
                 'subject_code' => "MAC0425",
+                'mandatory' => true
             ],
             [
-                'id' => 2,
                 'group_id' => 3,
                 'subject_code' => "MAC0318",
             ],
             [
-                'id' => 3,
                 'group_id' => 3,
                 'subject_code' => "MAC0444",
             ],
             [
-                'id' => 4,
                 'group_id' => 3,
                 'subject_code' => "MAC0459",
             ],
             [
-                'id' => 5,
                 'group_id' => 3,
                 'subject_code' => "MAC0460",
             ],
             [
-                'id' => 6,
                 'group_id' => 5,
                 'subject_code' => "MAC0218",
             ],
             [
-                'id' => 7,
                 'group_id' => 5,
                 'subject_code' => "MAC0332",
             ],
             [
-                'id' => 8,
                 'group_id' => 5,
                 'subject_code' => "MAC0413",
             ],
             [
-                'id' => 9,
                 'group_id' => 5,
                 'subject_code' => "MAC0472",
             ],
             [
-                'id' => 10,
                 'group_id' => 6,
                 'subject_code' => "MAC0414",
             ],
             [
-                'id' => 11,
                 'group_id' => 6,
                 'subject_code' => "MAE0221",
             ],
             [
-                'id' => 12,
                 'group_id' => 6,
                 'subject_code' => "MAE0228",
             ],
             [
-                'id' => 13,
                 'group_id' => 6,
                 'subject_code' => "MAT0349",
             ],
             [
-                'id' => 14,
                 'group_id' => 6,
                 'subject_code' => "MAE0515",
             ],
-            [
-                'id' => 15,
-                'group_id' => 6,
-                'subject_code' => "MAT0111",
-            ],
             // Desenvolvimento de Software - Grupo 8
             [
-                'id' => 16,
                 'group_id' => 8,
                 'subject_code' => "MAC0218",
             ],
             [
-                'id' => 17,
                 'group_id' => 8,
                 'subject_code' => "MAC0332",
             ],
             [
-                'id' => 18,
                 'group_id' => 8,
                 'subject_code' => "MAC0346",
             ],
             [
-                'id' => 19,
                 'group_id' => 8,
                 'subject_code' => "MAC0413",
             ],
             [
-                'id' => 20,
                 'group_id' => 8,
                 'subject_code' => "MAC0467",
             ],
             [
-                'id' => 21,
                 'group_id' => 8,
                 'subject_code' => "MAC0470",
             ],
             [
-                'id' => 22,
                 'group_id' => 8,
                 'subject_code' => "MAC0472",
             ],
             [
-                'id' => 23,
                 'group_id' => 8,
                 'subject_code' => "MAC0475",
             ],
             [
-                'id' => 24,
                 'group_id' => 8,
                 'subject_code' => "MAC0446",
             ],
             [
-                'id' => 25,
                 'group_id' => 8,
                 'subject_code' => "PCS3863",
             ],
             // Banco de Dados - Grupo 9
             [
-                'id' => 26,
                 'group_id' => 9,
                 'subject_code' => "MAC0426",
             ],
             [
-                'id' => 27,
                 'group_id' => 9,
                 'subject_code' => "MAC0439",
             ],
             [
-                'id' => 28,
                 'group_id' => 9,
                 'subject_code' => "MAC0459",
             ],
             // Sistemas Paralelos e Distribuídos - Grupo 10
             [
-                'id' => 29,
                 'group_id' => 10,
                 'subject_code' => "MAC0219",
             ],
             [
-                'id' => 30,
                 'group_id' => 10,
                 'subject_code' => "MAC0344",
             ],
             [
-                'id' => 31,
                 'group_id' => 10,
                 'subject_code' => "MAC0352",
             ],
             [
-                'id' => 32,
                 'group_id' => 10,
                 'subject_code' => "MAC0463",
             ],
             [
-                'id' => 33,
                 'group_id' => 10,
                 'subject_code' => "PCS3848",
             ],
             [
-                'id' => 34,
                 'group_id' => 10,
                 'subject_code' => "PCS3858",
             ],
             // Algoritmos - Grupo 12
             [
-                'id' => 35, 
-                'group_id' => 12, 
-                'subject_code' => "MAC0325", 
+                'group_id' => 12,
+                'subject_code' => "MAC0328",
+                'mandatory' => true
             ],
             [
-                'id' => 36, 
-                'group_id' => 12, 
-                'subject_code' => "MAC0327", 
+                'group_id' => 12,
+                'subject_code' => "MAC0414",
+                'mandatory' => true
             ],
             [
-                'id' => 37, 
-                'group_id' => 12, 
-                'subject_code' => "MAC0331", 
+                'group_id' => 12,
+                'subject_code' => "MAC0325",
             ],
             [
-                'id' => 38, 
-                'group_id' => 12, 
-                'subject_code' => "MAC0336", 
+                'group_id' => 12,
+                'subject_code' => "MAC0327",
             ],
             [
-                'id' => 39, 
-                'group_id' => 12, 
-                'subject_code' => "MAC0450", 
+                'group_id' => 12,
+                'subject_code' => "MAC0331",
             ],
             [
-                'id' => 40, 
-                'group_id' => 12, 
-                'subject_code' => "MAC0465", 
+                'group_id' => 12,
+                'subject_code' => "MAC0336",
             ],
             [
-                'id' => 41, 
-                'group_id' => 12, 
-                'subject_code' => "MAC0466", 
+                'group_id' => 12,
+                'subject_code' => "MAC0450",
             ],
             [
-                'id' => 42, 
-                'group_id' => 12, 
-                'subject_code' => "MAC0385", 
-            ],
-            // Obrigatórias de algoritmos - Grupo 13
-            [
-                'id' => 43, 
-                'group_id' => 13, 
-                'subject_code' => "MAC0328", 
+                'group_id' => 12,
+                'subject_code' => "MAC0465",
             ],
             [
-                'id' => 44, 
-                'group_id' => 13, 
-                'subject_code' => "MAC0414", 
+                'group_id' => 12,
+                'subject_code' => "MAC0466",
+            ],
+            [
+                'group_id' => 12,
+                'subject_code' => "MAC0385",
             ],
             // Matemática Discreta - Grupo 14
             [
-                'id' => 45, 
-                'group_id' => 14, 
-                'subject_code' => "MAC0414", 
+                'group_id' => 14,
+                'subject_code' => "MAC0320",
+                'mandatory' => true
             ],
             [
-                'id' => 46, 
-                'group_id' => 14, 
-                'subject_code' => "MAC0436", 
+                'group_id' => 14,
+                'subject_code' => "MAT0206",
+                'mandatory' => true
             ],
             [
-                'id' => 47, 
-                'group_id' => 14, 
-                'subject_code' => "MAC0690", 
+                'group_id' => 14,
+                'subject_code' => "MAT0264",
+                'mandatory' => true
             ],
             [
-                'id' => 48, 
-                'group_id' => 14, 
-                'subject_code' => "MAC0691", 
+                'group_id' => 14,
+                'subject_code' => "MAC0414",
             ],
             [
-                'id' => 49, 
-                'group_id' => 14, 
-                'subject_code' => "MAC0692", 
+                'group_id' => 14,
+                'subject_code' => "MAC0436",
             ],
             [
-                'id' => 50, 
-                'group_id' => 14, 
-                'subject_code' => "MAC0693", 
+                'group_id' => 14,
+                'subject_code' => "MAC0690",
             ],
             [
-                'id' => 51, 
-                'group_id' => 14, 
-                'subject_code' => "MAC0775", 
+                'group_id' => 14,
+                'subject_code' => "MAC0691",
             ],
             [
-                'id' => 52, 
-                'group_id' => 14, 
-                'subject_code' => "MAC0776", 
+                'group_id' => 14,
+                'subject_code' => "MAC0692",
             ],
             [
-                'id' => 53, 
-                'group_id' => 14, 
-                'subject_code' => "MAE0221", 
+                'group_id' => 14,
+                'subject_code' => "MAC0693",
             ],
             [
-                'id' => 54, 
-                'group_id' => 14, 
-                'subject_code' => "MAE0224", 
+                'group_id' => 14,
+                'subject_code' => "MAC0775",
             ],
             [
-                'id' => 55, 
-                'group_id' => 14, 
-                'subject_code' => "MAE0228", 
+                'group_id' => 14,
+                'subject_code' => "MAC0776",
             ],
             [
-                'id' => 56, 
-                'group_id' => 14, 
-                'subject_code' => "MAE0326", 
+                'group_id' => 14,
+                'subject_code' => "MAE0221",
             ],
             [
-                'id' => 57, 
-                'group_id' => 14, 
-                'subject_code' => "MAT0225", 
+                'group_id' => 14,
+                'subject_code' => "MAE0224",
             ],
             [
-                'id' => 58, 
-                'group_id' => 14, 
-                'subject_code' => "MAT0234", 
+                'group_id' => 14,
+                'subject_code' => "MAE0228",
             ],
             [
-                'id' => 59, 
-                'group_id' => 14, 
-                'subject_code' => "MAT0265", 
+                'group_id' => 14,
+                'subject_code' => "MAE0326",
             ],
             [
-                'id' => 60, 
-                'group_id' => 14, 
-                'subject_code' => "MAT0311", 
-            ],
-            // Obrigatórias Matemática Discreta - Grupo 15
-            [
-                'id' => 61, 
-                'group_id' => 15, 
-                'subject_code' => "MAC0320", 
+                'group_id' => 14,
+                'subject_code' => "MAT0225",
             ],
             [
-                'id' => 62, 
-                'group_id' => 15, 
-                'subject_code' => "MAT0206", 
+                'group_id' => 14,
+                'subject_code' => "MAT0234",
             ],
             [
-                'id' => 63, 
-                'group_id' => 15, 
-                'subject_code' => "MAT0264", 
+                'group_id' => 14,
+                'subject_code' => "MAT0265",
+            ],
+            [
+                'group_id' => 14,
+                'subject_code' => "MAT0311",
             ],
             // Otimização - Grupo 16
             [
-                'id' => 64, 
-                'group_id' => 16, 
-                'subject_code' => "MAC0300", 
+                'group_id' => 16,
+                'subject_code' => "MAC0315",
+                'mandatory' => true
             ],
             [
-                'id' => 65, 
-                'group_id' => 16, 
-                'subject_code' => "MAC0343", 
+                'group_id' => 16,
+                'subject_code' => "MAC0325",
+                'mandatory' => true
             ],
             [
-                'id' => 66, 
-                'group_id' => 16, 
-                'subject_code' => "MAC0418", 
+                'group_id' => 16,
+                'subject_code' => "MAC0300",
             ],
             [
-                'id' => 67, 
-                'group_id' => 16, 
-                'subject_code' => "MAC0419", 
+                'group_id' => 16,
+                'subject_code' => "MAC0343",
             ],
             [
-                'id' => 68, 
-                'group_id' => 16, 
-                'subject_code' => "MAC0427", 
+                'group_id' => 16,
+                'subject_code' => "MAC0418",
             ],
             [
-                'id' => 69, 
-                'group_id' => 16, 
-                'subject_code' => "MAC0450", 
+                'group_id' => 16,
+                'subject_code' => "MAC0419",
             ],
             [
-                'id' => 70, 
-                'group_id' => 16, 
-                'subject_code' => "MAC0452", 
+                'group_id' => 16,
+                'subject_code' => "MAC0427",
             ],
             [
-                'id' => 71, 
-                'group_id' => 16, 
-                'subject_code' => "MAC0461", 
+                'group_id' => 16,
+                'subject_code' => "MAC0450",
             ],
             [
-                'id' => 72, 
-                'group_id' => 16, 
-                'subject_code' => "MAC0473", 
+                'group_id' => 16,
+                'subject_code' => "MAC0452",
             ],
             [
-                'id' => 73, 
-                'group_id' => 16, 
-                'subject_code' => "MAC0691", 
-            ],
-            // Otimização - Grupo 17
-            [
-                'id' => 74, 
-                'group_id' => 17, 
-                'subject_code' => "MAC0315", 
+                'group_id' => 16,
+                'subject_code' => "MAC0461",
             ],
             [
-                'id' => 75, 
-                'group_id' => 17, 
-                'subject_code' => "MAC0325", 
+                'group_id' => 16,
+                'subject_code' => "MAC0473",
+            ],
+            [
+                'group_id' => 16,
+                'subject_code' => "MAC0691",
             ],
             // Núcleo de disciplinas de Ciência de Dados - Grupo 20
             [
-                'id' => 76, 
-                'group_id' => 20, 
-                'subject_code' => "MAC0460", 
+                'group_id' => 20,
+                'subject_code' => "MAC0460",
+                'mandatory' => true
             ],
 
             // Pelo menos uma disciplina de Processamento de sinais: - Grupo 21
             [
-                'id' => 77, 
-                'group_id' => 21, 
-                'subject_code' => "MAC0317", 
+                'group_id' => 21,
+                'subject_code' => "MAC0317",
             ],
             [
-                'id' => 78, 
-                'group_id' => 21, 
-                'subject_code' => "MAC0417", 
+                'group_id' => 21,
+                'subject_code' => "MAC0417",
             ],
 
             // Pelo menos uma disciplina de Sistemas: - Grupo 22
             [
-                'id' => 79, 
-                'group_id' => 22, 
-                'subject_code' => "MAC0219", 
+                'group_id' => 22,
+                'subject_code' => "MAC0219",
             ],
             [
-                'id' => 80, 
-                'group_id' => 22, 
-                'subject_code' => "MAC0431", 
+                'group_id' => 22,
+                'subject_code' => "MAC0431",
             ],
 
             // Pelo menos uma disciplina de Banco de Dados: - Grupo 23
             [
-                'id' => 81, 
-                'group_id' => 23, 
-                'subject_code' => "MAC0459", 
+                'group_id' => 23,
+                'subject_code' => "MAC0459",
             ],
             [
-                'id' => 82, 
-                'group_id' => 23, 
-                'subject_code' => "MAC0426", 
+                'group_id' => 23,
+                'subject_code' => "MAC0426",
             ],
             [
-                'id' => 83, 
-                'group_id' => 23, 
-                'subject_code' => "MAC0439", 
+                'group_id' => 23,
+                'subject_code' => "MAC0439",
             ],
 
             // Pelo menos uma disciplina de Otimização: - Grupo 24
             [
-                'id' => 84, 
-                'group_id' => 24, 
-                'subject_code' => "MAC0315", 
+                'group_id' => 24,
+                'subject_code' => "MAC0315",
             ],
             [
-                'id' => 85, 
-                'group_id' => 24, 
-                'subject_code' => "MAC0325", 
+                'group_id' => 24,
+                'subject_code' => "MAC0325",
             ],
             [
-                'id' => 86, 
-                'group_id' => 24, 
-                'subject_code' => "MAC0427", 
+                'group_id' => 24,
+                'subject_code' => "MAC0427",
             ],
 
             // Pelo menos uma disciplina de Probabilidade e Estatística dentre estas: - Grupo 25
             [
-                'id' => 87, 
-                'group_id' => 25, 
-                'subject_code' => "MAE0312", 
+                'group_id' => 25,
+                'subject_code' => "MAE0312",
             ],
             [
-                'id' => 88, 
-                'group_id' => 25, 
-                'subject_code' => "MAE0228", 
+                'group_id' => 25,
+                'subject_code' => "MAE0228",
             ],
             [
-                'id' => 89, 
-                'group_id' => 25, 
-                'subject_code' => "MAE0580", 
+                'group_id' => 25,
+                'subject_code' => "MAE0580",
             ],
             [
-                'id' => 90, 
-                'group_id' => 25, 
-                'subject_code' => "MAE0221", 
+                'group_id' => 25,
+                'subject_code' => "MAE0221",
             ],
 
             // Pelo menos duas disciplinas de áreas de aplicação: - Grupo 26
             [
-                'id' => 91, 
-                'group_id' => 26, 
-                'subject_code' => "MAC0337", 
+                'group_id' => 26,
+                'subject_code' => "MAC0337",
             ],
             [
-                'id' => 92, 
-                'group_id' => 26, 
-                'subject_code' => "MAC0341", 
+                'group_id' => 26,
+                'subject_code' => "MAC0341",
             ],
             [
-                'id' => 93, 
-                'group_id' => 26, 
-                'subject_code' => "MAC0351", 
+                'group_id' => 26,
+                'subject_code' => "MAC0351",
             ],
             [
-                'id' => 94, 
-                'group_id' => 26, 
-                'subject_code' => "MAC0331", 
+                'group_id' => 26,
+                'subject_code' => "MAC0331",
             ],
             [
-                'id' => 95, 
-                'group_id' => 26, 
-                'subject_code' => "MAC0375", 
+                'group_id' => 26,
+                'subject_code' => "MAC0375",
             ],
             [
-                'id' => 96, 
-                'group_id' => 26, 
-                'subject_code' => "MAC0420", 
+                'group_id' => 26,
+                'subject_code' => "MAC0420",
             ],
             [
-                'id' => 97, 
-                'group_id' => 26, 
-                'subject_code' => "MAC0425", 
+                'group_id' => 26,
+                'subject_code' => "MAC0425",
             ],
             [
-                'id' => 98, 
-                'group_id' => 26, 
-                'subject_code' => "MAC0446", 
+                'group_id' => 26,
+                'subject_code' => "MAC0446",
             ],
             [
-                'id' => 99, 
-                'group_id' => 26, 
-                'subject_code' => "MAC0459", 
+                'group_id' => 26,
+                'subject_code' => "MAC0459",
             ],
             [
-                'id' => 100, 
-                'group_id' => 26, 
-                'subject_code' => "MAC0468", 
+                'group_id' => 26,
+                'subject_code' => "MAC0468",
             ],
             [
-                'id' => 101, 
-                'group_id' => 26, 
-                'subject_code' => "MAE0515", 
+                'group_id' => 26,
+                'subject_code' => "MAE0515",
             ],
 
-            // Disciplinas recomendadas para complementar a formação em outras unidades: - Grupo 27        
+            // Disciplinas recomendadas para complementar a formação em outras unidades: - Grupo 27
             [
-                'id' => 102, 
-                'group_id' => 27, 
-                'subject_code' => "CMU0449", 
+                'group_id' => 27,
+                'subject_code' => "CMU0449",
             ],
             [
-                'id' => 103, 
-                'group_id' => 27, 
-                'subject_code' => "CMU0529", 
+                'group_id' => 27,
+                'subject_code' => "CMU0529",
             ],
             [
-                'id' => 104, 
-                'group_id' => 27, 
-                'subject_code' => "CMU0530", 
+                'group_id' => 27,
+                'subject_code' => "CMU0530",
             ],
             [
-                'id' => 105, 
-                'group_id' => 27, 
-                'subject_code' => "IPN0007", 
+                'group_id' => 27,
+                'subject_code' => "IPN0007",
             ],
             [
-                'id' => 106, 
-                'group_id' => 27, 
-                'subject_code' => "PCS2057", 
+                'group_id' => 27,
+                'subject_code' => "PCS2057",
             ],
             [
-                'id' => 107, 
-                'group_id' => 27, 
-                'subject_code' => "PCS3438", 
+                'group_id' => 27,
+                'subject_code' => "PCS3438",
             ],
             [
-                'id' => 108, 
-                'group_id' => 27, 
-                'subject_code' => "PMR3508", 
+                'group_id' => 27,
+                'subject_code' => "PMR3508",
             ],
             [
-                'id' => 109, 
-                'group_id' => 27, 
-                'subject_code' => "PSI2432", 
+                'group_id' => 27,
+                'subject_code' => "PSI2432",
             ],
             [
-                'id' => 110, 
-                'group_id' => 27, 
-                'subject_code' => "PSI2672", 
+                'group_id' => 27,
+                'subject_code' => "PSI2672",
             ],
             [
-                'id' => 111, 
-                'group_id' => 27, 
-                'subject_code' => "PSI3461", 
+                'group_id' => 27,
+                'subject_code' => "PSI3461",
             ],
             [
-                'id' => 112, 
-                'group_id' => 27, 
-                'subject_code' => "PSI3501", 
+                'group_id' => 27,
+                'subject_code' => "PSI3501",
             ],
             [
-                'id' => 113, 
-                'group_id' => 27, 
-                'subject_code' => "PSI3560", 
+                'group_id' => 27,
+                'subject_code' => "PSI3560",
             ],
             [
-                'id' => 114, 
-                'group_id' => 27, 
-                'subject_code' => "PSI3571", 
+                'group_id' => 27,
+                'subject_code' => "PSI3571",
             ],
             [
-                'id' => 115, 
-                'group_id' => 27, 
-                'subject_code' => "PTC3569", 
+                'group_id' => 27,
+                'subject_code' => "PTC3569",
             ],
-            [	
-                'id' => 116,
+            // Disciplinas obrigatórias - Grupo 28
+            [
                 'group_id' => 28,
                 'subject_code' => 'MAC0101',
+                'mandatory' => true
             ],
-            [	
-                'id' => 117,
+            [
                 'group_id' => 28,
                 'subject_code' => 'MAC0105',
+                'mandatory' => true
             ],
-            [	
-                'id' => 118,
+            [
                 'group_id' => 28,
                 'subject_code' => 'MAC0110',
+                'mandatory' => true
             ],
-            [	
-                'id' => 119,
+            [
                 'group_id' => 28,
                 'subject_code' => 'MAC0329',
+                'mandatory' => true
             ],
-            [	
-                'id' => 120,
+            [
                 'group_id' => 28,
                 'subject_code' => 'MAT2453',
+                'mandatory' => true
             ],
-            [	
-                'id' => 121,
+            [
                 'group_id' => 28,
                 'subject_code' => 'MAT0112',
+                'mandatory' => true
             ],
-            [	
-                'id' => 122,
+            [
                 'group_id' => 28,
                 'subject_code' => 'MAC0121',
+                'mandatory' => true
             ],
-            [	
-                'id' => 123,
+            [
                 'group_id' => 28,
                 'subject_code' => 'MAC0216',
+                'mandatory' => true
             ],
-            [	
-                'id' => 124,
+            [
                 'group_id' => 28,
                 'subject_code' => 'MAC0239',
+                'mandatory' => true
             ],
-            [	
-                'id' => 125,
+            [
                 'group_id' => 28,
                 'subject_code' => 'MAE0119',
+                'mandatory' => true
             ],
-            [	
-                'id' => 126,
+            [
                 'group_id' => 28,
                 'subject_code' => 'MAT2454',
+                'mandatory' => true
             ],
-            [	
-                'id' => 127,
+            [
                 'group_id' => 28,
                 'subject_code' => 'MAT0122',
+                'mandatory' => true
             ],
-            [	
-                'id' => 128,
+            [
                 'group_id' => 28,
                 'subject_code' => 'MAC0102',
+                'mandatory' => true
             ],
-            [	
-                'id' => 129,
+            [
                 'group_id' => 28,
                 'subject_code' => 'MAC0209',
+                'mandatory' => true
             ],
-            [	
-                'id' => 130,
+            [
                 'group_id' => 28,
                 'subject_code' => 'MAC0210',
+                'mandatory' => true
             ],
-            [	
-                'id' => 131,
+            [
                 'group_id' => 28,
                 'subject_code' => 'MAC0323',
+                'mandatory' => true
             ],
-            [	
-                'id' => 132,
+            [
                 'group_id' => 28,
                 'subject_code' => 'MAT0236',
+                'mandatory' => true
             ],
-            [	
-                'id' => 133,
+            [
                 'group_id' => 28,
                 'subject_code' => 'MAC0316',
+                'mandatory' => true
             ],
-            [	
-                'id' => 134,
+            [
                 'group_id' => 28,
                 'subject_code' => 'MAC0338',
+                'mandatory' => true
             ],
-            [	
-                'id' => 135,
+            [
                 'group_id' => 28,
                 'subject_code' => 'MAC0350',
+                'mandatory' => true
             ],
-            [	
-                'id' => 136,
+            [
                 'group_id' => 28,
                 'subject_code' => 'MAC0422',
+                'mandatory' => true
             ],
-            [	
-                'id' => 137,
-                'group_id' => 28,
-                'subject_code' => 'FLC0474',
-            ],
-            [	
-                'id' => 138,
+            [
                 'group_id' => 28,
                 'subject_code' => 'MAC0499',
-            ]
+                'mandatory' => true
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'ACH2007',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'ACH2023',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'ACH2028',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'ACH2033',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'ACH2037',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'ACH2038',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'ACH2048',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'ACH2066',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'ACH2067',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'ACH2068',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'ACH2076',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'ACH2077',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'ACH2078',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'ACH2086',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'ACH2087',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'ACH2096',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'ACH2098',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'ACH2106',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'ACH2107',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'ACH2108',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'ACH2117',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'ACH2118',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'ACH2127',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'ACH2137',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'AUH2803',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'AUP1301',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'AUP2409',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => '4302112',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => '4302401',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'IOF0115',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'IOF0255',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'IOF0265',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'GMG0630',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => '0440620',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'CJE0642',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0213',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0214',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0215',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0218',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0219',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0242',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0300',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0315',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0317',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0318',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0319',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0320',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0322',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0325',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0326',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0327',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0328',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0331',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0332',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0333',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0336',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0337',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0340',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0341',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0343',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0344',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0345',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0346',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0351',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0352',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0375',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0385',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0412',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0413',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0414',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0416',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0417',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0419',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0420',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0424',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0425',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0426',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0427',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0430',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0431',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0432',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0434',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0435',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0436',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0438',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0439',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0441',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0444',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0446',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0447',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0448',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0450',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0451',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0452',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0453',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0456',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0458',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0459',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0460',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0463',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0464',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0465',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0466',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0467',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0468',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0470',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0471',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0472',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0473',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0474',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0475',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0485',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0536',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0546',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0552',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0690',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0691',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0692',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0693',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0775',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAC0776',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAE0217',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAE0221',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAE0224',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAE0228',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAE0311',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAE0312',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAE0314',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAE0315',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAE0325',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAE0326',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAE0328',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAE0330',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAE0399',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAE0515',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAE0532',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAP0313',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAP2001',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAP2210',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAP2220',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAP2310',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAP2321',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAP2411',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAT0206',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAT0222',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAT0223',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAT0225',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAT0234',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAT0264',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAT0265',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAT0311',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAT0330',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAT0350',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAT0359',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'MAT0364',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => '0323100',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'PCS0210',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'PCS0216',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'PCS2305',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'PCS3345',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'PCS3529',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'PCS3549',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'QBQ0102',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'QBQ0104',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'QBQ0106',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'QBQ0116',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'QBQ0126',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'QBQ0204',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'QBQ0230',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'QBQ0250',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'QBQ0317',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'QBQ1252',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'QBQ1354',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'QBQ2457',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'QBQ2502',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'QBQ2503',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'QBQ2505',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'QBQ2507',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'QBQ2508',
+            ],
+            [
+                'group_id' => 29,
+                'subject_code' => 'QBQ2509',
+            ],
+            [
+                'group_id' => 30,
+                'subject_code' => 'MAE0217'
+            ],
+            [
+                'group_id' => 30,
+                'subject_code' => 'MAE0221'
+            ],
+            [
+                'group_id' => 30,
+                'subject_code' => 'MAE0224'
+            ],
+            [
+                'group_id' => 30,
+                'subject_code' => 'MAE0228'
+            ],
+            [
+                'group_id' => 30,
+                'subject_code' => 'MAE0312'
+            ],
+            [
+                'group_id' => 30,
+                'subject_code' => 'MAE0399'
+            ],
+            [
+                'group_id' => 30,
+                'subject_code' => 'MAE0499'
+            ],
+            [
+                'group_id' => 30,
+                'subject_code' => 'MAE0515'
+            ],
+            [
+                'group_id' => 31,
+                'subject_code' => 'FLC0474'
+            ],
+            [
+                'group_id' => 31,
+                'subject_code' => 'FLC1476'
+            ],
+            [
+                'group_id' => 31,
+                'subject_code' => 'AUH2803'
+            ],
+            [
+                'group_id' => 31,
+                'subject_code' => 'AUP1301'
+            ],
+            [
+                'group_id' => 31,
+                'subject_code' => 'AUP2409'
+            ],
+            [
+                'group_id' => 31,
+                'subject_code' => '1610041'
+            ],
+            [
+                'group_id' => 32,
+                'subject_code' => '4302112'
+            ],
+            [
+                'group_id' => 32,
+                'subject_code' => '4302401'
+            ],
+            [
+                'group_id' => 32,
+                'subject_code' => 'GMG0630'
+            ],
+            [
+                'group_id' => 32,
+                'subject_code' => '0440620'
+            ],
+            [
+                'group_id' => 32,
+                'subject_code' => 'QBQ0104'
+            ],
+            [
+                'group_id' => 32,
+                'subject_code' => 'QBQ1252'
+            ],
+            [
+                'group_id' => 32,
+                'subject_code' => 'QBQ1354'
+            ],
+            [
+                'group_id' => 32,
+                'subject_code' => 'AGA0215'
+            ],
         ];
 
         foreach ($groupSubjects as $groupSubject) {

@@ -41,13 +41,14 @@ const PlanetWrapper = styled("div")({
     alignItems: "center",
 });
 
-const Moon = styled("div")(({ theme }) => ({
+const Moon = styled("div")(({ theme, color }) => ({
     width: theme.card.mobile.moonSize,
     height: theme.card.mobile.moonSize,
     position: "absolute",
     left: "-45%",
-    
-    backgroundColor: theme.palette.green.main,
+    top: "45%",
+    backgroundColor: theme.palette[color].main,
+
     borderRadius: "50%",
 
     [theme.breakpoints.up("sm")]: {
@@ -100,14 +101,15 @@ const StyledSubjectText = styled(Typography)(({ theme }) => ({
 const SubjectCard = ({
     subjectCode,
     ghost,
+    showBadge,
+    badgeColor,
     isClickable = true,
-    moon,
     performanceMode = false,
     ...props
 }) => {
     const { subjectDataMap } = useSubjectMapContext();
     const planetUrl = "/icons/planeta.png";
-    if(subjectDataMap[subjectCode] === undefined) return null;
+    if (subjectDataMap[subjectCode] === undefined) return null;
 
     isClickable = isClickable && !ghost;
 
@@ -121,7 +123,7 @@ const SubjectCard = ({
             >
                 <CardContent>
 					<PlanetWrapper>
-						{moon && !ghost && <Moon/> }
+						{showBadge ? <Moon color={badgeColor}/> : null}
 						<PlanetContainer>
 							{(!ghost && planetUrl) && <Planet subjectCode={subjectCode} />}
 						</PlanetContainer>

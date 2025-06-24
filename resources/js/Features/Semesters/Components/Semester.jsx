@@ -6,15 +6,14 @@ import IconButton from "@mui/material/IconButton";
 import ClearIcon from "@mui/icons-material/Clear";
 
 import Accordion from "../../../ui/Accordion/Accordion";
-import AuxiliaryCard from "../../../ui/Card/AuxiliaryCard";
 import SortableCard from "../../../ui/Card/SortableCard";
 import Droppable from "../../DragAndDrop/Droppable";
 import SortableGrid from "../../DragAndDrop/SortableGrid";
 import SubjectPlaceholder from "./SubjectPlaceholder";
 
-import { useSubjectMapContext } from "../../../Contexts/SubjectMapContext";
-import { useViewMode } from "../../../Contexts/ViewModeContext";
-import { usePlansContext } from "../../../Contexts/PlansContext";
+import { usePlansContext } from "@/Contexts/PlansContext";
+import { useSubjectMapContext } from "@/Contexts/SubjectMapContext";
+import { useViewMode } from "@/Contexts/ViewModeContext";
 
 const SummaryContainer = styled("div")(({}) => ({
     width: "100%",
@@ -59,8 +58,9 @@ const DroppableCardContainer = styled(Droppable)(({ theme }) => ({
 const Semester = ({
     semesterData
 }) => {
+    const { plansSet } = usePlansContext();
     const { subjectDataMap } = useSubjectMapContext();
-    const { isSuggestedPlansView, suggestedPlans } = useViewMode();
+    const { isSuggestedPlansView } = useViewMode();
     const { plans, commitPlans } = usePlansContext();
     const [isExpanded, setExpanded] = useState(true);
 
@@ -138,6 +138,8 @@ const Semester = ({
                 <SortableGrid items={semesterData.subjects}>
                     {semesterData.subjects.map((subject) => {
                         const subjectData = subjectDataMap[subject.code];
+	                    const requiredScheduled = isSuggestedPlansView && plansSet.has(subject.code);
+                        
                         if(!subjectData) return null;
 
                         return (
@@ -146,7 +148,10 @@ const Semester = ({
                                 key={subject.code}
                                 subjectCode={subject.code}
                                 container={semesterData.semesterId}
-                                isBlocked={false}/>
+                                isBlocked={false}
+                                showBadge={requiredScheduled}
+                                badgeColor="green"
+                            />
                         );
                     })}
                 </SortableGrid>

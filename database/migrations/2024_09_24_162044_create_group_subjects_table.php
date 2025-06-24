@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('group_id')->references('id')->on('groups')->onUpdate('cascade');
             $table->string('subject_code');
+            $table->boolean('mandatory')->default(false);
             $table->timestamps();
         });
     }

@@ -44,25 +44,41 @@ class GroupController extends Controller {
     {
         $group = DB::table('groups')
             ->where('groups.id', '=', $groupId)
-            ->select(["title", "description", "color", "id"])
+            ->select(["title", "description", "mandatory", "color", "id"])
             ->first();
 
         $groupJSON = [
+            'id' => $group->id,
             'title' => $group->title,
             'description' => $group->description,
+            'mandatory' => $group->mandatory,
+            'completionRequirements' => [],
             'color' => $group->color,
             'subjects' => [],
             'subgroups' => []
         ];
-
         $subjects = DB::table('group_subjects')
             ->where('group_subjects.group_id', '=', $group->id)
-            ->select(["group_subjects.subject_code"])->get();
+            ->orderBy('group_subjects.mandatory', 'desc')
+            ->select(["group_subjects.subject_code", "group_subjects.mandatory"])
+            ->get();
 
         foreach ($subjects as $subject) {
-            $groupJSON['subjects'][] = $subject->subject_code;
-        }
+            $groupJSON['subjects'][] = [
+                'code' => $subject->subject_code,
+                'mandatory' => $subject->mandatory
+            ];}
 
+        $completionRequirements = DB::table('completion_requirements')
+            ->where('completion_requirements.group_id', '=', $group->id)
+            ->select(["type", "completion_value"])->get();
+
+        foreach ($completionRequirements as $requirement) {
+            $groupJSON['completionRequirements'][] = [
+                'type' => $requirement->type,
+                'value' => $requirement->completion_value
+            ];
+        }
         $subgroups = DB::table('groups')
             ->where('groups.parent_group_id', '=', $group->id)
             ->select("id")->get();
@@ -98,7 +114,7 @@ class GroupController extends Controller {
 
     public function getGroupSubjects($groupArray) {
         if (!$groupArray["subgroups"]) {
-            return $groupArray["subjects"];
+            return array_column($groupArray["subjects"], 'code');
         }
         $result = [];
         foreach ($groupArray["subgroups"] as $subgroup) {

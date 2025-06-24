@@ -1,8 +1,11 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { styled } from "@mui/material/styles";
 import { Box } from "@mui/material";
 import Group from "./Group";
 import { useGroupsContext } from "../../../Contexts/GroupsContext";
+
+import { usePlansContext } from "@/Contexts/PlansContext";
+import { clearCalculationCache } from "../utils/completionUtils";
 
 const GroupContainer = styled(Box)(({ theme }) => ({
     display: "flex",
@@ -16,8 +19,13 @@ const GroupContainer = styled(Box)(({ theme }) => ({
 
 function SubjectPickerList() {
     const { groups } = useGroupsContext();
+    const { plansSet } = usePlansContext();
     
     const [expandedCategory, setExpandedCategory] = useState(groups.subgroups.length - 1);
+
+    useEffect(() => {
+        clearCalculationCache();
+    }, [plansSet]);
 
     const toggleCategory = useCallback(function(index){
         setExpandedCategory((prevCategory) => (prevCategory === index) ? null : index);

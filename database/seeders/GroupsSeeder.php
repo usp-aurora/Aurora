@@ -33,20 +33,15 @@ class GroupsSeeder extends Seeder
                 'id' => 3,
                 'title' => "Introdução à IA",
                 'description' => "É necessário cursar 3 disciplinas deste bloco para conclusão da trilha.",
+                'mandatory' => true,
                 'parent_group_id' => 2,
-                'is_course_root' => false
-            ],
-            [
-                'id' => 4,
-                'title' => "Obrigatória da trilha",
-                'description' => "",
-                'parent_group_id' => 3,
                 'is_course_root' => false
             ],
             [
                 'id' => 5,
                 'title' => "Sistemas",
                 'description' => "É necessário cursar 2 disciplinas deste bloco para conclusão da trilha.",
+                'mandatory' => true,
                 'parent_group_id' => 2,
                 'is_course_root' => false
             ],
@@ -54,13 +49,13 @@ class GroupsSeeder extends Seeder
                 'id' => 6,
                 'title' => "Teoria associada à IA",
                 'description' => "É necessário cursar 1 disciplina deste bloco para conclusão da trilha.",
+                'mandatory' => true,
                 'parent_group_id' => 2,
                 'is_course_root' => false
             ],
-
             [
                 'id' => 7,
-                'title' => "Trilha de Sistemas de Software",
+                'title' => "Sistemas de Software",
                 'description' => "A trilha Sistemas de Software é voltada para alunos que desejem se especializar na área de desenvolvimento de software, expondo-os a teorias, técnicas, métodos e ferramentas modernas de desenvolvimento de software.
                 Para se concluir essa trilha, o aluno precisa cursar no mínimo 7 disciplinas dentre as descritas abaixo.",
                 'parent_group_id' => 1,
@@ -71,6 +66,7 @@ class GroupsSeeder extends Seeder
                 'id' => 8,
                 'title' => "Desenvolvimento de Software",
                 'description' => "Cursar pelo menos 2 disciplinas deste módulo para conclusão da trilha.",
+                'mandatory' => true,
                 'parent_group_id' => 7,
                 'is_course_root' => false
             ],
@@ -78,6 +74,7 @@ class GroupsSeeder extends Seeder
                 'id' => 9,
                 'title' => "Banco de Dados",
                 'description' => "Cursar pelo menos 1 disciplina deste módulo para conclusão da trilha.",
+                'mandatory' => true,
                 'parent_group_id' => 7,
                 'is_course_root' => false
             ],
@@ -85,13 +82,14 @@ class GroupsSeeder extends Seeder
                 'id' => 10,
                 'title' => "Sistemas Paralelos e Distribuídos",
                 'description' => "Cursar pelo menos 2 disciplinas deste módulo para conclusão da trilha.",
+                'mandatory' => true,
                 'parent_group_id' => 7,
                 'is_course_root' => false
             ],
 
             [
                 'id' => 11,
-                'title' => "Trilha de Teoria da Computação",
+                'title' => "Teoria da Computação",
                 'description' => "A trilha é formada por disciplinas optativas eletivas em Algoritmos, Matemática Discreta e Otimização do Bacharelado em Ciência da Computação. O objetivo da trilha é orientar uma formação mais específica de estudantes com interesse em Teoria da Computação. Para receber um certificado de conclusão da trilha o estudante deve cursar pelo menos sete disciplinas da trilha sendo que dentre essas estão todas as disciplinas obrigatórias de pelo menos dois módulos.",
                 'parent_group_id' => 1,
                 'color' => 'purple',
@@ -105,13 +103,6 @@ class GroupsSeeder extends Seeder
                 'is_course_root' => false
             ],
             [
-                'id' => 13,
-                'title' => "Obrigatórias de Algoritmos",
-                'description' => "",
-                'parent_group_id' => 12,
-                'is_course_root' => false
-            ],
-            [
                 'id' => 14,
                 'title' => "Matemática Discreta",
                 'description' => "Módulo de Matemática Discreta com disciplinas obrigatórias e optativas.",
@@ -119,24 +110,10 @@ class GroupsSeeder extends Seeder
                 'is_course_root' => false
             ],
             [
-                'id' => 15,
-                'title' => "Obrigatórias de Matemática Discreta",
-                'description' => "",
-                'parent_group_id' => 14,
-                'is_course_root' => false
-            ],
-            [
                 'id' => 16,
                 'title' => "Otimização",
                 'description' => "Módulo de Otimização com disciplinas obrigatórias e optativas.",
                 'parent_group_id' => 11,
-                'is_course_root' => false
-            ],
-            [
-                'id' => 17,
-                'title' => "Obrigatórias de Otimização",
-                'description' => "",
-                'parent_group_id' => 16,
                 'is_course_root' => false
             ],
             [
@@ -151,6 +128,7 @@ class GroupsSeeder extends Seeder
                 'id' => 19,
                 'title' => "Disciplinas Obrigatórias",
                 'description' => "",
+                'mandatory' => true,
                 'parent_group_id' => 18,
                 'is_course_root' => false
             ],
@@ -158,6 +136,7 @@ class GroupsSeeder extends Seeder
                 'id' => 20,
                 'title' => "Núcleo",
                 'description' => "É necessário cursar a disciplina deste bloco para conclusão da trilha.",
+                'mandatory' => true,
                 'parent_group_id' => 19,
                 'is_course_root' => false
             ],
@@ -165,6 +144,7 @@ class GroupsSeeder extends Seeder
                 'id' => 21,
                 'title' => "Processamento de Sinais",
                 'description' => "É necessário cursar pelo menos 1 disciplina deste bloco para conclusão da trilha.",
+                'mandatory' => true,
                 'parent_group_id' => 19,
                 'is_course_root' => false
             ],
@@ -172,6 +152,7 @@ class GroupsSeeder extends Seeder
                 'id' => 22,
                 'title' => "Sistemas",
                 'description' => "É necessário cursar pelo menos 1 disciplina deste bloco para conclusão da trilha.",
+                'mandatory' => true,
                 'parent_group_id' => 19,
                 'is_course_root' => false
             ],
@@ -179,6 +160,7 @@ class GroupsSeeder extends Seeder
                 'id' => 23,
                 'title' => "Banco de Dados",
                 'description' => "É necessário cursar pelo menos 1 disciplina deste bloco para conclusão da trilha.",
+                'mandatory' => true,
                 'parent_group_id' => 19,
                 'is_course_root' => false
             ],
@@ -186,6 +168,7 @@ class GroupsSeeder extends Seeder
                 'id' => 24,
                 'title' => "Otimização",
                 'description' => "É necessário cursar pelo menos 1 disciplina deste bloco para conclusão da trilha.",
+                'mandatory' => true,
                 'parent_group_id' => 19,
                 'is_course_root' => false
             ],
@@ -193,6 +176,7 @@ class GroupsSeeder extends Seeder
                 'id' => 25,
                 'title' => "Probabilidade e Estatística",
                 'description' => "É necessário cursar pelo menos 1 disciplina deste bloco para conclusão da trilha.",
+                'mandatory' => true,
                 'parent_group_id' => 19,
                 'is_course_root' => false
             ],
@@ -217,7 +201,40 @@ class GroupsSeeder extends Seeder
                 'parent_group_id' => 1,
                 'color' => 'blue',
                 'is_course_root' => false
-            ]
+            ],
+            [
+                'id' => 29,
+                'title' => "Optativas Eletivas",
+                'Description' => "Para se formar, o aluno tem que obter pelo menos 52 créditos de optativas eletivas.", 
+                'parent_group_id' => 1,
+                'color' => 'orange',
+                'is_course_root' => false
+            ],
+            [
+                'id' => 30,
+                'title' => "Optativas de Estatística",
+                'Description' => "Para se formar, o aluno tem que obter pelo menos 4 créditos em uma optativa dessa categoria.", 
+                'parent_group_id' => 1,
+                'color' => 'gray',
+                'is_course_root' => false
+            ],
+            [
+                'id' => 31,
+                'title' => "Optativas de Humanidades",
+                'Description' => "Para se formar, o aluno tem que obter pelo menos 3 créditos em uma optativa dessa categoria.", 
+                'parent_group_id' => 1,
+                'color' => 'pink',
+                'is_course_root' => false
+            ],
+            [
+                'id' => 32,
+                'title' => "Optativas de Ciências",
+                'Description' => "Para se formar, o aluno tem que obter pelo menos 4 créditos em uma optativa dessa categoria.", 
+                'parent_group_id' => 1,
+                'color' => 'brown',
+                'is_course_root' => false
+            ],
+            
         ];
 
         foreach ($groups as $group) {
