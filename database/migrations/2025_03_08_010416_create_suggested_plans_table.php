@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->integer('semester');
             $table->string('subject_code');
-            $table->foreign('subject_code')->references('code')->on('subjects')->onUpdate('cascade');
             $table->timestamps();
         });
     }

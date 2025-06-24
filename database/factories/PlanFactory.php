@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use \App\Models\Subject;
+use \App\Models\Replicado\ReplicadoSubject;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Plan>
@@ -19,7 +19,7 @@ class PlanFactory extends Factory
     {
         return [
             'user_id' => 1,
-            'subject_code' => Subject::inRandomOrder()->first()->code,
+            'subject_code' => ReplicadoSubject::inRandomOrder()->first()->code,
             'semester' => $this->faker->numberBetween(1, 8)
         ];
     }

@@ -3,7 +3,7 @@ import { styled, useTheme } from "@mui/material/styles";
 
 import Button from '../../ui/Buttons/Button';
 import Logo from '../../ui/Logo/Logo';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../Contexts/AuthContext';
 
 const HeaderContainer = styled(Box)({
     width: "100%",

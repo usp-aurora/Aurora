@@ -8,32 +8,32 @@ use App\Http\Controllers\GroupController;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\UserController;
+use App\Models\SuggestedPlan;
 
 class HomeController extends Controller
 {
-    public function index()
-    {
+	public function index()
+	{
+		$groupController = new GroupController();
+		$planController = new PlanController();
+		$subjectController = new SubjectController();
+		$userController = new UserController();
 
-        $groupController = new GroupController();
-        $planController = new PlanController();
-        $subjectController = new SubjectController();
-        $userController = new UserController();
+		list($plansData, $plannedSubjects) = $planController->index();
 
-        $plans = $planController->index();
-        $groups = $groupController->index(1);
-        $subjects = $subjectController->index()->toArray();
+		$suggestedPlans = $planController->getSuggestedPlans();
+		$groups = $groupController->loadCourseGroups(1);
+		$groupsSubjects = $groupController->getGroupSubjects($groups);
 
-        foreach ($subjects as $code => $subject) {
-            $subjects[$code]["groups"] = $groupController->getSubjectRootGroups($code);
-        }
-
-        $user = $userController->index();
-
-        return Inertia::render('Home', [
-            'initialPlans' => $plans,
-            'groups' => $groups,
-            'subjects' => $subjects,
-            'user' => $user,
-        ]);
-    }
+		$mergedSubjects = array_unique(array_merge($plannedSubjects, $groupsSubjects), SORT_REGULAR);
+		$subjects = $subjectController->getSubjectsWithGroups($mergedSubjects);
+		$user = $userController->index();
+		return Inertia::render('Home', [
+			'initialPlans' => $plansData,
+			'suggestedPlans' => $suggestedPlans,
+			'groups' => $groups,
+			'subjects' => $subjects,
+			'user' => $user,
+		]);
+	}
 }

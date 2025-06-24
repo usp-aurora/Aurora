@@ -3,6 +3,7 @@ import { useTheme } from "@mui/material/styles";
 import { memo, useCallback } from "react";
 
 import { usePlansContext } from "../../Contexts/PlansContext";
+import { useViewMode } from "../../Contexts/ViewModeContext";
 import SortableItem from "../../Features/DragAndDrop/SortableItem";
 import { useSubjectInfoContext } from "../../Features/SubjectInfo/SubjectInfoContext";
 import SubjectCard from "./SubjectCard";
@@ -15,12 +16,10 @@ const SortableCard = ({
 	container,
 	isBlocked,
 	completed,
-	isRecommendedView
+	badgeColor,
+	showBadge,
 }) => {
-	const { plansSet } = usePlansContext();
 	const { showSubjectInfo } = useSubjectInfoContext();
-
-	const requiredScheduled = isRecommendedView && plansSet.has(subjectCode);
 
 	const theme = useTheme(); 
 	const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -42,7 +41,8 @@ const SortableCard = ({
 				subjectCode={subjectCode}
 				onClick={handleClick}
 				ghost={isBlocked && !completed}
-				moon={requiredScheduled}
+				badgeColor={badgeColor}
+				showBadge={showBadge}
 			/>
 		</SortableItem>
 	);

@@ -1,45 +1,42 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Replicado;
 
 use Illuminate\Database\Eloquent\Model;
 use Faker\Factory as Faker;
 use Illuminate\Support\Facades\DB;
 
-class CurriculumTable extends Model
+class ReplicadoCurriculumSubject extends Model
 {
-    protected $connection = "jupiter";
+    protected $connection = null;
     protected $table = "dummy";
     public $timestamps = false;
 
     public function newQuery()
     {
-        if(!env('JUPITER_DB_HOST')) {
-            $query = parent::newQuery()->fromSub($this->fakeCurriculosQuery(), 'subtable');
+        if(!config('services.replicado_is_active')) {
+            $query = parent::newQuery()->fromSub($this->fakeQuery(), 'subtable');
         }
         else {
+            $this->connection = "replicado";
             $query = parent::newQuery()->fromSub(function ($query) {
                 $query->select(
-                    'g.codcrl AS id_curriculum',
-                    'g.coddis AS id_subject',
-                    'g.numsemidl AS ideal_period',
-                    'g.tipobg AS mandatory',
-                    'g.dtacad AS created_at',
-                    'g.dtaultalt AS updated_at',
-                    'g.verdis',
-                    DB::raw('FIRST_VALUE(g.verdis) OVER (PARTITION BY g.coddis, g.codcrl ORDER BY g.verdis DESC) AS vercao_mais_recente')
+                    'codcrl AS curriculum_id',
+                    'coddis AS subject_id',
+                    'numsemidl AS ideal_period',
+                    'tipobg AS mandatory',
+                    'dtacad AS created_at',
+                    'dtaultalt AS updated_at',
                 )
-                ->from('GRADECURRICULAR AS g');
+                ->from('GRADECURRICULAR');
             }, 'subtable');
-
-            $query->whereRaw('subtable.verdis = subtable.vercao_mais_recente');
-
-            return $query;
+        }
+        
+        return $query;
     }
-}
 
     
-    private function fakeCurriculosQuery()
+    private function fakeQuery()
     {
         $letras = ['A', 'B', 'C'];
         $numeros = ['0', '1'];
@@ -49,8 +46,8 @@ class CurriculumTable extends Model
             $curri = $faker->numerify('#####');
             $habi = $faker->numerify('####');
             $fakeData[] = [
-                'id_curriculum' => $curri . $habi . $faker->numerify('###'),
-                'id_subject' => $faker->randomElement($letras) . $faker->randomElement($letras) . $faker->randomElement($letras) . '000' . $faker->randomElement($numeros),
+                'curriculum_id' => $curri . $habi . $faker->numerify('###'),
+                'subject_id' => $faker->randomElement($letras) . $faker->randomElement($letras) . $faker->randomElement($letras) . '000' . $faker->randomElement($numeros),
                 'ideal_period' => $faker->numberBetween(1,9),
                 'mandatory' => $faker->randomElement(['O', 'C', 'L']),
                 'created_at' => $faker->date(),
@@ -59,8 +56,8 @@ class CurriculumTable extends Model
         }
 
         $query = collect($fakeData)->map(function ($row) {
-            return "SELECT  '{$row['id_curriculum']}' as id_curriculum, 
-                            '{$row['id_subject']}' as id_subject, 
+            return "SELECT  '{$row['curriculum_id']}' as curriculum_id, 
+                            '{$row['subject_id']}' as subject_id, 
                             '{$row['ideal_period']}' as ideal_period, 
                             '{$row['mandatory']}' as mandatory, 
                             '{$row['created_at']}' as created_at, 
