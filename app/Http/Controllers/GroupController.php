@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\DB;
+use App\Models\Curriculum;
+use App\Models\Group;
+use App\Models\GroupSubject;
 
 class GroupController extends Controller {
     public function index($curriculum_id)
@@ -10,10 +12,15 @@ class GroupController extends Controller {
         return $this->loadCourse($curriculum_id);
     }
 
+    public function subjectBelongsToGroup($code)
+	{
+		$exists = GroupSubject::where('subject_code', $code)->exists();
+	    return response()->json(['exists' => $exists]);
+	}
+
     private function loadCourse($curriculum_id)
     {
-        $curriculum = DB::table('curriculums')
-            ->where('id', '=', $curriculum_id)
+        $curriculum = Curriculum::where('id', '=', $curriculum_id)
             ->select(["group_id"])
             ->first();
 
@@ -27,8 +34,7 @@ class GroupController extends Controller {
 
     private function recursiveLoadCourse($groupId)
     {
-        $group = DB::table('groups')
-            ->where('groups.id', '=', $groupId)
+        $group = Group::where('groups.id', '=', $groupId)
             ->select(["title", "description", "id"])
             ->first();
 
@@ -39,16 +45,14 @@ class GroupController extends Controller {
             'subgroups' => []
         ];
 
-        $subjects = DB::table('group_subjects')
-            ->where('group_subjects.group_id', '=', $group->id)
+        $subjects = GroupSubject::where('group_subjects.group_id', '=', $group->id)
             ->select(["group_subjects.subject_code"])->get();
 
         foreach ($subjects as $subject) {
             $groupJSON['subjects'][] = $subject->subject_code;
         }
 
-        $subgroups = DB::table('groups')
-            ->where('groups.parent_group_id', '=', $group->id)
+        $subgroups = Group::where('groups.parent_group_id', '=', $group->id)
             ->select("id")->get();
 
         foreach ($subgroups as $subgroup) {
@@ -59,8 +63,7 @@ class GroupController extends Controller {
     }
 
     public function getSubjectRootGroups($subject_code){
-        $groups = DB::table('group_subjects')
-            ->where('group_subjects.subject_code', '=', $subject_code)
+        $groups = GroupSubject::where('group_subjects.subject_code', '=', $subject_code)
             ->select(["group_id"])
             ->get();
 
@@ -74,8 +77,7 @@ class GroupController extends Controller {
     }
 
     private function getGroupRoot($groupId){
-        $group = DB::table('groups')
-            ->where('groups.id', '=', $groupId)
+        $group = Group::where('groups.id', '=', $groupId)
             ->select(["id", "title",  "parent_group_id", "is_course_root"])
             ->first();
 
@@ -83,8 +85,7 @@ class GroupController extends Controller {
     }  
 
     private function getGroupRootRecursive($group){
-        $parentGroup = DB::table('groups')
-            ->where('groups.id', '=', $group->parent_group_id)
+        $parentGroup = Group::where('groups.id', '=', $group->parent_group_id)
             ->select(["id", "title",  "parent_group_id", "is_course_root"])
             ->first();
             
@@ -94,13 +95,6 @@ class GroupController extends Controller {
             return $this->getGroupRootRecursive($parentGroup);
         }
     }
-
-    public function subjectBelongsToGroup($code)
-	{
-		$exists = DB::table('group_subjects')
-            ->where('subject_code', $code)->exists();
-	    return response()->json(['exists' => $exists]);
-	}
 }
 
 

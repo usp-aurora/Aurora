@@ -13,7 +13,7 @@ class PlanController extends Controller
 {
     public function index()
     {
-        return $this->getPlans(auth()->user() == null);
+        return $this->getPlans(Auth::user() == null);
     }
 
     public function getSuggestedPlans() 
@@ -26,7 +26,7 @@ class PlanController extends Controller
         if ($suggestedPlans) {
             $plans = SuggestedPlan::all();
         } else {
-            $plans = Plan::where('user_id', auth()->user()->id)->get();
+            $plans = Plan::where('user_id', Auth::user()->id)->get();
         }
 
         $groupedPlans = [];
@@ -50,7 +50,7 @@ class PlanController extends Controller
 
     public function export()
     {
-        $user = auth()->user();
+        $user = Auth::user();
         if ($user == null) {
             return response()->json(['error' => 'User not authenticated.'], 401);
         }
@@ -91,7 +91,7 @@ class PlanController extends Controller
 
     public function sync(Request $request)
     {
-        $userId = auth()->user()->id;
+        $userId = Auth::user()->id;
         $changes = $request->json()->all();
         $userPlans = Plan::where('user_id', $userId)->get();
         $changedPlans = [];
@@ -151,7 +151,7 @@ class PlanController extends Controller
 
         try {
             $plan = Plan::create([
-                'user_id' => auth()->user()->id,
+                'user_id' => Auth::user()->id,
                 'subject_code' => $validated['subject_code'],
                 'semester' => $validated['semester'],
             ]);

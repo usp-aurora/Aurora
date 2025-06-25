@@ -6,19 +6,28 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class GroupSubject extends Model
-{   
+class UserSubjectAdded extends Model
+{
     use HasFactory;
-    
-    protected $table = 'group_subjects';
-    
+
+    protected $table = 'user_subjects_added';
+
     protected $fillable = [
+        'user_id',
         'group_id',
         'subject_code',
     ];
 
     /**
-     * Get the group that owns the GroupSubject
+     * Get the user that owns the UserSubjectAdded
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get the group that owns the UserSubjectAdded
      */
     public function group(): BelongsTo
     {
@@ -26,7 +35,7 @@ class GroupSubject extends Model
     }
 
     /**
-     * Get the subject that owns the GroupSubject
+     * Get the subject that owns the UserSubjectAdded
      */
     public function subject(): BelongsTo
     {

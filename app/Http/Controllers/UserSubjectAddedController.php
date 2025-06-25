@@ -4,28 +4,25 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use App\Models\User;
 use App\Models\Group;
+use App\Models\UserSubjectAdded;
 
 class UserSubjectAddedController extends Controller
 {
     public function index()
     {
-        $user = auth()->user();
+        $user = Auth::user();
         if ($user == null) {
             return response()->json(['error' => 'User not authenticated.'], 401);
         }
-        $userSubjects = DB::table('user_subjects_added')
-            ->where('user_id', $user->id)
-            ->get();
+        $userSubjects = UserSubjectAdded::where('user_id', $user->id)->get();
         return response()->json($userSubjects);
     }
 
     public function store(Request $request)
     {
         // Check if user is authenticated
-        $user = auth()->user();
+        $user = Auth::user();
         if ($user == null) {
             return response()->json(['error' => 'Usuário não autenticado.'], 401);
         }
@@ -41,29 +38,23 @@ class UserSubjectAddedController extends Controller
         }
 
         // If the user already has this subject in a group, update the group_id
-        $existingUserSubject = DB::table('user_subjects_added')
-            ->where('user_id', $user->id)
+        $existingUserSubject = UserSubjectAdded::where('user_id', $user->id)
             ->where('subject_code', $validated['subject_code'])
             ->first();
+
         if ($existingUserSubject) {
-            DB::table('user_subjects_added')
-            ->where('user_id', $user->id)
-            ->where('subject_code', $validated['subject_code'])
-            ->update([
+            $existingUserSubject->update([
                 'group_id' => $group->id,
-                'updated_at' => now(),
             ]);
             return response()->json(['status' => 'success', 'message' => 'Grupo da disciplina atualizado.'], 201);
         }
 
         // Insert the new user subject relation
         try {
-            $userSubject = DB::table('user_subjects_added')->insert([
+            UserSubjectAdded::create([
                 'user_id' => $user->id,
                 'group_id' => $group->id,
                 'subject_code' => $validated['subject_code'],
-                'created_at' => now(),
-                'updated_at' => now(),
             ]);
             return response()->json(['status' => 'success', 'message' => 'Disciplina adicionada com sucesso ao grupo.'], 201);
         } catch (\Exception $e) {
@@ -74,7 +65,7 @@ class UserSubjectAddedController extends Controller
     public function destroy(Request $request)
     {
         // Check if user is authenticated
-        $user = auth()->user();
+        $user = Auth::user();
         if ($user == null) {
             return response()->json(['error' => 'Usuário não autenticado.'], 401);
         }
@@ -82,7 +73,7 @@ class UserSubjectAddedController extends Controller
         // Find group id by title
         $validated = $request->validate([
             'group_title' => 'required|string',
-            'subject_code' => 'required|string|exists:subjects,code',
+            'subject_code' => 'required|string',
         ]);
         $group = Group::where('title', $validated['group_title'])->first();
         if (!$group) {
@@ -91,8 +82,7 @@ class UserSubjectAddedController extends Controller
 
         // Delete the user subject relation
         try {
-            $deleted = DB::table('user_subjects_added')
-                ->where('user_id', $user->id)
+            $deleted = UserSubjectAdded::where('user_id', $user->id)
                 ->where('group_id', $group->id)
                 ->where('subject_code', $validated['subject_code'])
                 ->delete();
@@ -110,20 +100,14 @@ class UserSubjectAddedController extends Controller
     public function attachUserSubjectsAddedToGroups($groups)
     {
         // Check if user is authenticated
-        $user = auth()->user();
+        $user = Auth::user();
         if (!$user) {
             return $groups;
         }
 
         // Fetch all user-group-subject relations for this user
-        $userSubjects = DB::table('user_subjects_added')
-            ->join('groups', 'user_subjects_added.group_id', '=', 'groups.id')
-            ->where('user_subjects_added.user_id', $user->id)
-            ->select(
-                'groups.title as group_name',
-                'user_subjects_added.subject_code',
-                'user_subjects_added.user_id'
-            )
+        $userSubjects = UserSubjectAdded::with('group')
+            ->where('user_id', $user->id)
             ->get();
 
         // Recursively add subject to the correct group
@@ -142,7 +126,7 @@ class UserSubjectAddedController extends Controller
 
         // Add each user subject to the correct group
         foreach ($userSubjects as $userSubject) {
-            $groupName = $userSubject->group_name;
+            $groupName = $userSubject->group->title;
             $subjectCode = $userSubject->subject_code;
             $addSubjectToGroup($groups, $groupName, $subjectCode);
         }
@@ -151,20 +135,16 @@ class UserSubjectAddedController extends Controller
 
     public function getGroup($code)
     {
-        // Check if user is authenticated
-        $user = auth()->user();
+        $user = Auth::user();
         if (!$user) {
             return null;
         }
 
-        // Fetch the group for the given subject code
-        $group = DB::table('user_subjects_added')
-            ->join('groups', 'user_subjects_added.group_id', '=', 'groups.id')
-            ->where('user_subjects_added.user_id', $user->id)
-            ->where('user_subjects_added.subject_code', $code)
-            ->select('groups.title as group_name')
+        $userSubject = UserSubjectAdded::with('group')
+            ->where('user_id', $user->id)
+            ->where('subject_code', $code)
             ->first();
 
-        return $group ? $group->group_name : null;
+        return $userSubject ? $userSubject->group->title : null;
     }
 }
