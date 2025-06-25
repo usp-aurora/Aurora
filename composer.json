@@ -12,10 +12,12 @@
         "laravel/tinker": "^2.9",
         "nesbot/carbon": "^2.72.2",
         "socialiteproviders/manager": "^4.0",
+        "spatie/laravel-pdf": "^1.5",
         "symfony/http-foundation": "^7.0",
         "uspdev/senhaunica-socialite": "^4.3"
     },
     "require-dev": {
+        "brianium/paratest": "^7.7",
         "fakerphp/faker": "^1.23",
         "laravel/pint": "^1.13",
         "laravel/sail": "^1.26",

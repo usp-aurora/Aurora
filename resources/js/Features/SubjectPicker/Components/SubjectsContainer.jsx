@@ -8,20 +8,25 @@ const SubjectsContainer = ({ containerName, subjects }) => {
 	const { subjectDataMap } = useSubjectMapContext();
 	const { plansSet } = usePlansContext();
 
+	const sortedSubjects = [...subjects].sort((a, b) => a.code.localeCompare(b.code));
+
 	return (
 		<CardsGrid>
-			{subjects.map((subject) => {
-				const isBlocked = plansSet.has(subject);
-				const subjectData = subjectDataMap[subject];
+			{sortedSubjects.map((subject) => {
+				const isBlocked = plansSet.has(subject.code);
+				const subjectData = subjectDataMap[subject.code];
 				if(!subjectData) return null;
 
 				return (
 					<SortableCard
-						key={subject}
-						id={`${subject}@${containerName}`}
-						subjectCode={subject}
+						key={subject.code}
+						id={`${subject.code}@${containerName}`}
+						subjectCode={subject.code}
 						container="subjectPicker"
-						isBlocked={isBlocked}/>
+						isBlocked={isBlocked}
+						badgeColor="red"
+						showBadge={subject.mandatory}
+					/>
 				);
 			})}
 		</CardsGrid>

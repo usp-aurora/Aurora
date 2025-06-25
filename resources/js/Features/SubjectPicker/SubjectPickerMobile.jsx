@@ -7,7 +7,7 @@ import IconWrapper from "../../ui/Icons/IconWrapper"
 import Background from "../Background/HomeBackground";
 import SubjectPickerList from "./Components/SubjectPickerList";
 import { useSubjectPickerContext } from './SubjectPickerContext';
-import { useAddSubjectContext, AddSubjectDialogMobile } from "../AddSubject/AddSubjectContext";
+import { useAddSubjectContext } from "../AddSubject/AddSubjectContext";
 
 
 const ModalContainer = styled(Modal)(({ theme }) => ({
@@ -63,7 +63,7 @@ const AddButton = ({ onClick }) => {
     );
 };
 
-function SubjectPicker({ groupsData, user }) {
+function SubjectPicker() {
     const { isSubjectPickerModalOpen, closeSubjectPickerModal } = useSubjectPickerContext();
     const { showAddSubjectModal } = useAddSubjectContext();
 
@@ -80,8 +80,7 @@ function SubjectPicker({ groupsData, user }) {
                         <StyledCloseIcon onClick={closeSubjectPickerModal} />
                     </IconContainer>
                 </HeaderContainer>
-                <SubjectPickerList groupsData={groupsData} user={user} />
-                <AddSubjectDialogMobile />
+                <SubjectPickerList/>
             </>
         </ModalContainer>
     );

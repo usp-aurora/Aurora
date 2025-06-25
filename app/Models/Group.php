@@ -49,7 +49,7 @@ class Group extends Model
      */
     public function userSubjectsAdded(): HasMany
     {
-        return $this->hasMany(UserSubjectAdded::class);
+        return $this->hasMany(UserAddedSubjects::class);
     }
 
     /**

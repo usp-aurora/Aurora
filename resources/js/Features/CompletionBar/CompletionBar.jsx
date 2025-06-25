@@ -25,7 +25,7 @@ function CompletionBar() {
 	const { subjectDataMap } = useSubjectMapContext();
 	const { plansSet } = usePlansContext();
 	const MANDATORY_NECESSARY = 111;
-	const ELECTIVE_NECESSARY = 87;
+	const ELECTIVE_NECESSARY = 52;
 	const OPEN_ELECTIVE_NECESSARY = 24;
 	const SCIENCE_NECESSARY = 4;
 	const HUMANITIES_NECESSARY = 3;
@@ -44,49 +44,49 @@ function CompletionBar() {
 			const subject = subjectDataMap[subjectCode];
 			if (subject) {
 				const totalCredits = parseInt(subject.credits[0], 10) + parseInt(subject.credits[1], 10);
-				const groups = subject.groups.filter(group => group !== "Optativas Livres");
-				subjectGroupsStack.push({ subjectCode, groups: groups, totalCredits: totalCredits });
+				const groups = subject.groups.filter(group => group.title !== "Optativas Livres");
+
+				subjectGroupsStack.push({ subjectCode: subjectCode, groups: groups, totalCredits: totalCredits });
 			}
 		});
 
 
-		while (subjectGroupsStack.length() > 0) {
+		while (subjectGroupsStack.length > 0) {
 			let { subjectCode, groups, totalCredits } = subjectGroupsStack.shift();
-			console.log(subjectCode, groups, totalCredits);
 
-			if (groups.some(group => group === "Obrigatórias")) {
+			if (groups.some(group => group.title === "Obrigatórias")) {
 				mandatoryCredits += totalCredits;
 			}
-			else if (groups.some(group => group === "Optativas de Estatística")) {
-				if (statisticsCredits + totalCredits <= STATISTICS_NECESSARY) {
+			else if (groups.some(group => group.title === "Optativas de Estatística")) {
+				if (statisticsCredits >= STATISTICS_NECESSARY) {
+					subjectGroupsStack.push({ subjectCode, groups: groups.filter(group => group.title !== "Optativas de Estatística"), totalCredits });
+				}
+				else {
 					statisticsCredits += totalCredits;
 				}
-				else {
-					subjectGroupsStack.push({ subjectCode, groups: groups.filter(group => group !== "Optativas de Estatística"), totalCredits });
-				}
 			}
-			else if (groups.some(group => group === "Optativas de Humanidades")) {
-				if (humanitiesCredits + totalCredits <= HUMANITIES_NECESSARY) {
+			else if (groups.some(group => group.title === "Optativas de Humanidades")) {
+				if (humanitiesCredits >= HUMANITIES_NECESSARY) {
+					subjectGroupsStack.push({ subjectCode, groups: groups.filter(group => group.title !== "Optativas de Humanidades"), totalCredits });
+				}
+				else {
 					humanitiesCredits += totalCredits;
 				}
-				else {
-					subjectGroupsStack.push({ subjectCode, groups: groups.filter(group => group !== "Optativas de Humanidades"), totalCredits });
-				}
 			}
-			else if (groups.some(group => group === "Optativas de Ciências")) {
-				if (scienceCredits + totalCredits <= SCIENCE_NECESSARY) {
-					scienceCredits += totalCredits;
+			else if (groups.some(group => group.title === "Optativas de Ciências")) {
+				if (scienceCredits >= SCIENCE_NECESSARY) {
+					subjectGroupsStack.push({ subjectCode, groups: groups.filter(group => group.title !== "Optativas de Ciências"), totalCredits });
 				}
 				else {
-					subjectGroupsStack.push({ subjectCode, groups: groups.filter(group => group !== "Optativas de Ciências"), totalCredits });
+					scienceCredits += totalCredits;
 				}
 			}
 			else if (groups.length > 0) {
-				if (electiveCredits + totalCredits <= ELECTIVE_NECESSARY) {
-					electiveCredits += totalCredits;
+				if (electiveCredits >= ELECTIVE_NECESSARY) {
+					subjectGroupsStack.push({ subjectCode, groups: [], totalCredits });
 				}
 				else {
-					subjectGroupsStack.push({ subjectCode, groups: [], totalCredits });
+					electiveCredits += totalCredits;
 				}
 			}
 			else {
@@ -102,9 +102,9 @@ function CompletionBar() {
 
 	return (
 		<CompletionBarContainer>
-			<ProgressBar label={mandatory.label} coursed={mandatory.coursed} planned={mandatory.planned} needed={mandatory.needed} color="primary" />
+			<ProgressBar label={mandatory.label} coursed={mandatory.coursed} planned={mandatory.planned} needed={mandatory.needed} color="blue" />
 			<ProgressBar label={elective.label} coursed={elective.coursed} planned={elective.planned} needed={elective.needed} color="orange" />
-			<ProgressBar label={livres.label} coursed={livres.coursed} planned={livres.planned} needed={livres.needed} color="green" />
+			<ProgressBar label={livres.label} coursed={livres.coursed} planned={livres.planned} needed={livres.needed} color="cyan" />
 		</CompletionBarContainer>
 	);
 };

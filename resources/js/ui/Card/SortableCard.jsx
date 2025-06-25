@@ -15,12 +15,11 @@ const SortableCard = ({
 	subjectCode,
 	container,
 	isBlocked,
+	completed,
+	badgeColor,
+	showBadge,
 }) => {
-	const { plansSet } = usePlansContext();
 	const { showSubjectInfo } = useSubjectInfoContext();
-	const { isSuggestedPlansView } = useViewMode();
-
-	const requiredScheduled = isSuggestedPlansView && plansSet.has(subjectCode);
 
 	const theme = useTheme(); 
 	const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -36,13 +35,14 @@ const SortableCard = ({
 			id={id}
 			key={subjectCode}
 			itemData={{ code: subjectCode, container: container }}
-			isStatic={isBlocked || isMobile}
+			isStatic={isBlocked || isMobile || completed}
 		>
 			<MemoizedSubjectCard
 				subjectCode={subjectCode}
 				onClick={handleClick}
-				ghost={isBlocked}
-				moon={requiredScheduled}
+				ghost={isBlocked && !completed}
+				badgeColor={badgeColor}
+				showBadge={showBadge}
 			/>
 		</SortableItem>
 	);

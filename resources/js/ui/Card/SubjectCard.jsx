@@ -3,14 +3,14 @@ import { styled } from "@mui/material/styles";
 
 import { useSubjectMapContext } from "../../Contexts/SubjectMapContext";
 import glassmorphismStyle from "../../styles/glassmorphism";
-import Planet from "../Planet/Planet";
+import Planet from "../../Planets/Components/Planet";
 import CardContainer from "./Components/CardContainer";
 import CardBackgroundBase from "./Components/CardBackgroundBase";
 
-const CardBackground = styled(({ isClickable, hasIcon, ghost, ...props }) => (
+const CardBackground = styled(({ isClickable, hasIcon, performanceMode, ghost, ...props }) => (
     <CardBackgroundBase isClickable={isClickable} hasIcon={hasIcon} ghost={ghost} {...props} />
-))(({ theme, ghost}) => ({
-    ...(!ghost && glassmorphismStyle(theme, "level2")),
+))(({ theme, ghost, performanceMode}) => ({
+    ...(!ghost && glassmorphismStyle(theme, "level2", performanceMode)),
 }));
 
 const CardContent = styled(Box)(({ theme }) => ({
@@ -41,13 +41,14 @@ const PlanetWrapper = styled("div")({
     alignItems: "center",
 });
 
-const Moon = styled("div")(({ theme }) => ({
+const Moon = styled("div")(({ theme, color }) => ({
     width: theme.card.mobile.moonSize,
     height: theme.card.mobile.moonSize,
     position: "absolute",
     left: "-45%",
-    
-    backgroundColor: theme.palette.green.main,
+    top: "45%",
+    backgroundColor: theme.palette[color].main,
+
     borderRadius: "50%",
 
     [theme.breakpoints.up("sm")]: {
@@ -100,25 +101,31 @@ const StyledSubjectText = styled(Typography)(({ theme }) => ({
 const SubjectCard = ({
     subjectCode,
     ghost,
-    moon,
+    showBadge,
+    badgeColor,
+    isClickable = true,
+    performanceMode = false,
     ...props
 }) => {
     const { subjectDataMap } = useSubjectMapContext();
     const planetUrl = "/icons/planeta.png";
-    if(subjectDataMap[subjectCode] === undefined) return null;
+    if (subjectDataMap[subjectCode] === undefined) return null;
+
+    isClickable = isClickable && !ghost;
 
     return (
-        <CardContainer isClickable={!ghost} {...props}>
+        <CardContainer isClickable={isClickable} {...props}>
             <CardBackground
-                isClickable={!ghost}
+                isClickable={isClickable}
                 hasIcon={!!planetUrl}
                 ghost={ghost}
+                performanceMode={performanceMode}
             >
                 <CardContent>
 					<PlanetWrapper>
-						{moon && !ghost && <Moon/> }
+						{showBadge ? <Moon color={badgeColor}/> : null}
 						<PlanetContainer>
-							{(!ghost && planetUrl) && <Planet src={planetUrl} />}
+							{(!ghost && planetUrl) && <Planet subjectCode={subjectCode} />}
 						</PlanetContainer>
 					</PlanetWrapper>
                     <StyledTitle component="h3"> {subjectCode} </StyledTitle>

@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use App\Models\Plan;
-use App\Models\Subject;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -12,7 +11,7 @@ class PlanControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-     /**
+    /**
      * Test that the index function returns grouped plans by semester.
      *
      * This test ensures that the `index` function:
@@ -22,20 +21,41 @@ class PlanControllerTest extends TestCase
      */
     public function test_index_returns_grouped_plans_by_semester()
     {
-        $user = User::where('id', 1)->first();
+        $user = User::factory()->create();
         $this->actingAs($user);
 
-        $response = $this->getJson('/api/plans/index');
+        // Create a plan for testing
+        Plan::factory()->create([
+            'user_id' => $user->id,
+            'subject_code' => 'MAC0110',
+            'semester' => 1,
+        ]);
 
+        $response = $this->getJson('/api/plans/index');
         $response->assertStatus(200)
+            ->assertJsonCount(2)
             ->assertJsonStructure([
-                '*' => [
-                    'semesterId',
-                    'subjects' => [
-                        '*' => [ 'plan', 'code' ],
+                0 => [
+                    '*' => [
+                        'semesterId',
+                        'subjects' => [
+                            '*' => [
+                                'plan',
+                                'code',
+                                'completed',
+                            ],
+                        ],
                     ],
                 ],
+                1 => [],
             ]);
+
+        $responseData = $response->json();
+        
+        $this->assertEquals(1, $responseData[0][0]['semesterId']);
+        $this->assertCount(1, $responseData[0][0]['subjects']);
+        $this->assertEquals('MAC0110', $responseData[0][0]['subjects'][0]['code']);
+        $this->assertEquals(0, $responseData[0][0]['subjects'][0]['completed']);
     }
 
     /**
@@ -52,18 +72,18 @@ class PlanControllerTest extends TestCase
         $user = User::factory()->create();
         $this->actingAs($user);
 
-        $subject1 = Subject::factory()->create();
-        $subject2 = Subject::factory()->create();
-        $subject3 = Subject::factory()->create();
-        
+        $subject1 = "MAC0110";
+        $subject2 = "MAC0111";
+        $subject3 = "MAC0112";
 
-        $plan1 = Plan::factory()->create(['user_id' => $user->id, 'subject_code' => $subject1->code, 'semester' => 1]);
-        $plan2 = Plan::factory()->create(['user_id' => $user->id, 'subject_code' => $subject2->code, 'semester' => 1]);
+
+        $plan1 = Plan::factory()->create(['user_id' => $user->id, 'subject_code' => $subject1, 'semester' => 1]);
+        $plan2 = Plan::factory()->create(['user_id' => $user->id, 'subject_code' => $subject2, 'semester' => 1]);
 
         $payload = [
-            ['subject_code' => $subject1->code, 'semester' => 2], // Update
-            ['subject_code' => $subject3->code, 'semester' => 3], // Create
-            ['subject_code' => $subject2->code, 'semester' => null], // Delete
+            ['subject_code' => $subject1, 'semester' => 2], // Update
+            ['subject_code' => $subject3, 'semester' => 3], // Create
+            ['subject_code' => $subject2, 'semester' => null], // Delete
         ];
 
         $response = $this->postJson('/api/plans/sync', $payload);
@@ -75,88 +95,10 @@ class PlanControllerTest extends TestCase
                     '*' => ['subject_code', 'action'],
                 ],
             ]);
-        
+
 
         $this->assertDatabaseHas('plans', ['id' => $plan1->id, 'semester' => 2]);
-        $this->assertDatabaseHas('plans', ['user_id' => $user->id, 'subject_code' => $subject3->code, 'semester' => 3]);
+        $this->assertDatabaseHas('plans', ['user_id' => $user->id, 'subject_code' => $subject3, 'semester' => 3]);
         $this->assertDatabaseMissing('plans', ['id' => $plan2->id]);
     }
-
-
-    /**
-     * Test that the store function creates a plan correctly.
-     *
-     * public function test_can_create_plan()
-     * {
-     *   $user = User::factory()->create();
-     *   $subject = Subject::factory()->create();
-     *   $this->actingAs($user);
-     *
-     *   $payload = [
-     *       'subject_code' => $subject->code,
-     *       'semester' => 1,
-     *   ];
-     *
-     *   $response = $this->postJson('/api/plans', $payload);
-     *
-     *   $response->assertStatus(201)
-     *            ->assertJson([
-     *                'status' => 'success',
-     *                'data' => [
-     *                    'subject_code' => $subject->code,
-     *                    'semester' => 1,
-     *                ]
-     *            ]);
-     * }
-    */
-
-    /**
-     * Test that the update function updates a plan correctly.
-     *
-     * public function test_can_update_plan()
-     * {
-     *   $user = User::factory()->create();
-     *   $plan = Plan::factory()->for($user)->create();
-     *   $subject = Subject::factory()->create();
-     *   $this->actingAs($user);
-     *
-     *   $payload = [
-     *       'subject_code' => $subject->code,
-     *       'semester' => 2,
-     *   ];
-     *
-     *   $response = $this->putJson("/api/plans/{$plan->id}", $payload);
-     *
-     *  $response->assertStatus(200)
-     *             ->assertJson([
-     *                'status' => 'success',
-     *                'data' => [
-     *                    'id' => $plan->id,
-     *                    'subject_code' => $subject->code,
-     *                    'semester' => 2,
-     *                ]
-     *            ]);
-     * }
-    */
-
-    /**
-     * Test that the destroy function deletes a plan correctly.
-     *
-     * public function test_can_delete_plan()
-     * {
-     *  $user = User::factory()->create();
-     *   $plan = Plan::factory()->for($user)->create();
-     *   $this->actingAs($user);
-     *
-     *   $response = $this->deleteJson("/api/plans/{$plan->id}");
-     *
-     *   $response->assertStatus(200)
-     *            ->assertJson([
-     *                'status' => 'success',
-     *                'message' => 'Plan deleted successfully',
-     *            ]);
-     *
-     *   $this->assertDatabaseMissing('plans', ['id' => $plan->id]);
-     * }
-    */
 }

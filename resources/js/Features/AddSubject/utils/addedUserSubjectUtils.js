@@ -1,8 +1,33 @@
 import axios from 'axios';
 
+async function saveUserAddedSubject(user, newAddedUserSubject) {
+    if (!(await subjectExists(newAddedUserSubject.code))) {
+        return {
+            success: false,
+            message: 'Disciplina não encontrada.'
+        };
+    }
+    if (await subjectBelongToPreDefinedGroup(newAddedUserSubject.code)) {
+        return {
+            success: false,
+            message: 'Disciplina já tem um grupo pré-definido.'
+        };
+    }
+    if (user) {
+        return await saveWithServer(newAddedUserSubject);
+    }
+    else {
+        return {
+            success: false,
+            message: 'É necessário estar logado para adicionar matérias'
+        }
+    }
+}
+
+
 async function subjectExists(code) {
     try {
-        const response = await axios.get(`/api/subject/${code}`);
+        const response = await axios.get(`/api/subject/exists/${code}`);
         if (response.status === 200 && typeof response.data.exists !== 'undefined') {
             return response.data.exists;
         }
@@ -60,50 +85,4 @@ async function saveWithServer(newAddedUserSubject) {
     }
 }
 
-async function saveWithLocalStorage(newAddedUserSubject) {
-    try {
-        const existing = JSON.parse(localStorage.getItem('addedUserSubjects')) || [];
-        const existingIndex = existing.findIndex(
-            subject => subject.code === newAddedUserSubject.code
-        );
-        if (existingIndex !== -1) {
-            existing[existingIndex].group_name = newAddedUserSubject.group_name;
-            localStorage.setItem('addedUserSubjects', JSON.stringify(existing));
-            return {
-                success: true,
-                message: 'Grupo da disciplina atualizado.'
-            };
-        }
-        existing.push(newAddedUserSubject);
-        localStorage.setItem('addedUserSubjects', JSON.stringify(existing));
-        return {
-            success: true,
-            message: 'Disciplina adicionada com sucesso ao grupo.'
-        };
-    } catch (error) {
-        console.error('Failed to save subject to localStorage:', error);
-        return {
-            success: false,
-            message: error.message || 'localStorage error'
-        };
-    }
-}
-
-export async function saveAddedUserSubject(user, newAddedUserSubject) {
-    if (!(await subjectExists(newAddedUserSubject.code))) {
-        return {
-            success: false,
-            message: 'Disciplina não encontrada.'
-        };
-    }
-    if (await subjectBelongToPreDefinedGroup(newAddedUserSubject.code)) {
-        return {
-            success: false,
-            message: 'Disciplina já tem um grupo pré-definido.'
-        };
-    }
-	if(!user) {
-		return await saveWithLocalStorage(newAddedUserSubject);
-	}
-	return await saveWithServer(newAddedUserSubject);
-}
+export {saveUserAddedSubject}

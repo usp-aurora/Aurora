@@ -3,7 +3,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import CloseIcon from '@mui/icons-material/Close';
 
-import Planet from '../../../ui/Planet/Planet';
+import Planet from '../../../Planets/Components/Planet';
 
 const HeaderContainer = styled('div')(() => ({
 	width: '100%',
@@ -66,7 +66,7 @@ const SubjectInfoHeader = ({ onClose, name, code }) => {
 			<HeaderContent>
 				<Stack alignItems="center">
 					<HeaderIconContainer>
-						<Planet src="./icons/planeta.png"></Planet>
+						<Planet subjectCode={code}></Planet>
 					</HeaderIconContainer>
 					<SubjectCodeMobile>{code.toUpperCase()}</SubjectCodeMobile>
 				</Stack>

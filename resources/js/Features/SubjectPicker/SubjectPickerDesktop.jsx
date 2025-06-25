@@ -8,7 +8,7 @@ import { useDroppable } from "@dnd-kit/core";
 import glassmorphismStyle from "../../styles/glassmorphism";
 import SubjectPickerList from "./Components/SubjectPickerList";
 
-import { useAddSubjectContext, AddSubjectDialogDesktop } from "../AddSubject/AddSubjectContext";
+import { useAddSubjectContext } from "../AddSubject/AddSubjectContext";
 
 const Container = styled( Box )(({ theme }) => ({
     display: "flex",
@@ -21,6 +21,7 @@ const Container = styled( Box )(({ theme }) => ({
     padding: theme.spacing(2),
     gap: theme.spacing(2),
     borderRadius: "12px",
+    height: "100%",
 }));
 
 const HeaderContainer = styled("div")(() => ({
@@ -53,7 +54,7 @@ const AddButton = ({ onClick }) => {
 
 const MemoizedSubjectPickerList = memo(SubjectPickerList);
 
-function SubjectPickerDesktop({ groupsData, user }) {
+function SubjectPickerDesktop() {
     const { setNodeRef } = useDroppable({ id: "subjectPicker" });
     const { showAddSubjectModal } = useAddSubjectContext();
 
@@ -63,8 +64,7 @@ function SubjectPickerDesktop({ groupsData, user }) {
                 <StyledTitle>Adicionar disciplina</StyledTitle>
                 <AddButton onClick={ showAddSubjectModal }></AddButton>
             </HeaderContainer>
-            <MemoizedSubjectPickerList groupsData={groupsData} user={user} />
-            <AddSubjectDialogDesktop />
+            <MemoizedSubjectPickerList/>
         </Container>
     );
 };

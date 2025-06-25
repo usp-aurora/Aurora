@@ -1,25 +1,34 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 
 const SubjectMapContext = createContext();
 
-function SubjectMapProvider({ children, subjectData }) {
-	const [subjectDataMap, setSubjectDataMap] = useState(subjectData);
+function SubjectMapProvider({ children, subjectDataMap: initialMap }) {
+	const [subjectDataMap, setSubjectDataMap] = useState(initialMap || {});
 	
+	const addNewSubjectData = (subjectData) => {
+		setSubjectDataMap(prev => {
+			const updated = { ...prev, ...subjectData };
+			return updated;
+		});
+	}
+
 	const changeSubjectGroup = (code, newGroups) => {
 		setSubjectDataMap((prevMap) => {
 			let updatedMap = { ...prevMap };
 			updatedMap[code].groups = newGroups;
 			return updatedMap;
 		});
-	};
+	}
 
 	return (
-		<SubjectMapContext.Provider value={{ subjectDataMap, changeSubjectGroup }}>
+		<SubjectMapContext.Provider value={{ subjectDataMap, changeSubjectGroup, addNewSubjectData }}>
 			{children}
 		</SubjectMapContext.Provider>
 	);
-};
+}
 
-function useSubjectMapContext() { return useContext(SubjectMapContext) }
+function useSubjectMapContext() {
+	return useContext(SubjectMapContext);
+}
 
 export { SubjectMapProvider, useSubjectMapContext };

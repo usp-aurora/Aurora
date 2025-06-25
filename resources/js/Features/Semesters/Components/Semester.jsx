@@ -6,17 +6,17 @@ import IconButton from "@mui/material/IconButton";
 import ClearIcon from "@mui/icons-material/Clear";
 
 import Accordion from "../../../ui/Accordion/Accordion";
-import AuxiliaryCard from "../../../ui/Card/AuxiliaryCard";
 import SortableCard from "../../../ui/Card/SortableCard";
 import Droppable from "../../DragAndDrop/Droppable";
 import SortableGrid from "../../DragAndDrop/SortableGrid";
 import SubjectPlaceholder from "./SubjectPlaceholder";
 
-import { useSubjectMapContext } from "../../../Contexts/SubjectMapContext";
-import { useViewMode } from "../../../Contexts/ViewModeContext";
-import { usePlansContext } from "../../../Contexts/PlansContext";
+import { useDndContext } from "@dnd-kit/core";
+import { usePlansContext } from "@/Contexts/PlansContext";
+import { useSubjectMapContext } from "@/Contexts/SubjectMapContext";
+import { useViewMode } from "@/Contexts/ViewModeContext";
 
-const SummaryContainer = styled("div")(({}) => ({
+const SummaryContainer = styled("div")(({ }) => ({
     width: "100%",
 
     display: "flex",
@@ -46,6 +46,18 @@ const SemesterCreditsText = styled(Typography)(({ theme }) => ({
     },
 }));
 
+const SemesterCompletedText = styled(Typography)(({ theme }) => ({
+    ...theme.typography.small,
+    textTransform: 'none',
+    fontSize: '0.85rem',
+    marginRight: 'auto',
+    marginLeft: 2,
+    
+    [theme.breakpoints.up("sm")]: {
+        ...theme.typography.p,
+    },
+}));
+
 const DroppableCardContainer = styled(Droppable)(({ theme }) => ({
     display: "flex",
     justifyContent: "flex-start",
@@ -59,12 +71,16 @@ const DroppableCardContainer = styled(Droppable)(({ theme }) => ({
 const Semester = ({
     semesterData
 }) => {
+    const { plansSet } = usePlansContext();
     const { subjectDataMap } = useSubjectMapContext();
-    const { isSuggestedPlansView, suggestedPlans } = useViewMode();
+    const { isSuggestedPlansView } = useViewMode();
     const { plans, commitPlans } = usePlansContext();
     const [isExpanded, setExpanded] = useState(true);
+    
+    const completed = semesterData.subjects.length > 0 && semesterData.subjects.every((subj) => subj.completed);
+    const { active } = useDndContext();
 
-    function toggleExpanded(){
+    function toggleExpanded() {
         setExpanded(!isExpanded);
     }
 
@@ -112,6 +128,11 @@ const Semester = ({
                 <SemesterInfoText>
                     {semesterData.semesterId}º Período
                 </SemesterInfoText>
+                {completed &&
+                    <SemesterCompletedText>
+                        Semestre já cursado
+                    </SemesterCompletedText>
+                }
             </Stack>
             <SemesterCreditsText>
                 {(lectureCredits ? lectureCredits : "0") + " "}+
@@ -127,17 +148,22 @@ const Semester = ({
             onClick={toggleExpanded}
             expanded={isExpanded}
             TransitionProps={{ unmountOnExit: true }}
+            sx={completed && active && {
+                opacity: 0.5
+            }}
         >
             <DroppableCardContainer
                 id={semesterData.semesterId}
                 key={semesterData.semesterId}
                 spacing={{ xs: 1, sm: 2 }}
-                disabled={!isExpanded}
+                disabled={!isExpanded || completed}
                 placeholder={isSuggestedPlansView ? null : <SubjectPlaceholder />}
             >
                 <SortableGrid items={semesterData.subjects}>
                     {semesterData.subjects.map((subject) => {
                         const subjectData = subjectDataMap[subject.code];
+	                    const requiredScheduled = isSuggestedPlansView && plansSet.has(subject.code);
+                        
                         if(!subjectData) return null;
 
                         return (
@@ -146,7 +172,11 @@ const Semester = ({
                                 key={subject.code}
                                 subjectCode={subject.code}
                                 container={semesterData.semesterId}
-                                isBlocked={false}/>
+                                isBlocked={false}
+                                completed={subject.completed}
+                                showBadge={requiredScheduled}
+                                badgeColor="green"
+                            />
                         );
                     })}
                 </SortableGrid>

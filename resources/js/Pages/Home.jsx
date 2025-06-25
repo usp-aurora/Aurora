@@ -6,6 +6,7 @@ import CompletionBar from "../Features/CompletionBar/CompletionBar";
 import Header from "../Features/Header/Header";
 import Semesters from "../Features/Semesters/Semesters";
 import SubjectInfo from "../Features/SubjectInfo/SubjectInfo";
+import AddSubjectDialog from "../Features/AddSubject/AddSubjectDialog"
 import { SubjectPickerDesktop, SubjectPickerMobile } from "../Features/SubjectPicker/";
 import ToolBar from '../Features/ToolBar/ToolBar';
 
@@ -27,16 +28,17 @@ const ContentContainer = styled(Box)(({ theme }) => ({
 const Home = ({ groups, initialPlans, suggestedPlans, subjects, user }) => {
     const theme = useTheme();
     const isAboveSmall = useMediaQuery(theme.breakpoints.up('sm'));
-
     return (
         <AppProviders 
             initialPlans={initialPlans}
+            groups={groups}
             suggestedPlans={suggestedPlans}
             subjects={subjects} 
             user={user}
-        >
+        >   
+            <AddSubjectDialog />
             <SubjectInfo />
-            {!isAboveSmall && <SubjectPickerMobile groupsData={groups} user={user} />}
+            {!isAboveSmall && <SubjectPickerMobile/>}
             <Background />
             <ContentContainer>
                 <Stack spacing={{ xs: 1, sm: 2 }} sx={{ width: "100%"}}>
@@ -49,7 +51,7 @@ const Home = ({ groups, initialPlans, suggestedPlans, subjects, user }) => {
                         </Stack>
                         {isAboveSmall && (
                             <Stack sx={{ flex: 1, overflow: "auto" }}>
-                                <SubjectPickerDesktop groupsData={groups} user={user}/>
+                                <SubjectPickerDesktop/>
                             </Stack>
                         )}
                     </Stack>
