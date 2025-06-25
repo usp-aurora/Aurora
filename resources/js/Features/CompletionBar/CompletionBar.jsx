@@ -21,29 +21,12 @@ const CompletionBarContainer = styled(Stack)(({ theme }) => ({
 	},
 }));
 
-function getExcessSum(valuesList, amount, needed) {
-	if (amount <= needed) return 0;
-	const capacity = amount - needed;
-	const dp = Array(capacity + 1).fill(false);
-	dp[0] = true;
-
-	for (const v of valuesList)
-		for (let j = capacity; j >= v; j--)
-			if (dp[j - v]) 
-				dp[j] = true;
-
-	for (let sum = capacity; sum >= 0; sum--)
-		if (dp[sum]) 
-			return sum;
-	return 0;
-}
-
 function CompletionBar() {
 	const { subjectDataMap } = useSubjectMapContext();
 	const { plansSet } = usePlansContext();
 	const MANDATORY_NECESSARY = 111;
 	const ELECTIVE_NECESSARY = 87;
-	const LIVRE_NECESSARY = 24;
+	const OPEN_ELECTIVE_NECESSARY = 24;
 	const SCIENCE_NECESSARY = 4;
 	const HUMANITIES_NECESSARY = 3;
 	const STATISTICS_NECESSARY = 4;
@@ -51,62 +34,71 @@ function CompletionBar() {
 	const completion = useMemo(() => {
 		let mandatoryCredits = 0;
 		let electiveCredits = 0;
-		let electiveCreditsList = [];
 		let statisticsCredits = 0;
-		let statisticsCreditsList = [];
 		let humanitiesCredits = 0;
-		let humanitiesCreditsList = [];
 		let scienceCredits = 0;
-		let scienceCreditsList = [];
-		let livreCredits = 0;
+		let openElectiveCredits = 0;
+
+		const subjectGroupsStack = [];
 		plansSet.forEach(subjectCode => {
 			const subject = subjectDataMap[subjectCode];
-			if (!subject) return;
-
-			if (subject.groups.some(group => group === "Obrigatórias")) {
-				mandatoryCredits += parseInt(subject.credits[0], 10);
-				mandatoryCredits += parseInt(subject.credits[1], 10);
-			} else if (subject.groups.some(group => group === "Optativas Livres")) {
-				livreCredits += parseInt(subject.credits[0], 10);
-				livreCredits += parseInt(subject.credits[1], 10);
-			} else if (subject.groups.some(group => group === "Optativas de Estatística")) {
-				statisticsCredits += parseInt(subject.credits[0], 10);
-				statisticsCredits += parseInt(subject.credits[1], 10);
-				statisticsCreditsList.push(parseInt(subject.credits[0], 10) + parseInt(subject.credits[1], 10));
-			} else if (subject.groups.some(group => group === "Optativas de Humanidades")) {
-				humanitiesCredits += parseInt(subject.credits[0], 10);
-				humanitiesCredits += parseInt(subject.credits[1], 10);
-				humanitiesCreditsList.push(parseInt(subject.credits[0], 10) + parseInt(subject.credits[1], 10));
-			} else if (subject.groups.some(group => group === "Optativas de Ciências")) {
-				scienceCredits += parseInt(subject.credits[0], 10);
-				scienceCredits += parseInt(subject.credits[1], 10);
-				scienceCreditsList.push(parseInt(subject.credits[0], 10) + parseInt(subject.credits[1], 10));
-			} else {
-				electiveCredits += parseInt(subject.credits[0], 10);
-				electiveCredits += parseInt(subject.credits[1], 10);
-				electiveCreditsList.push(parseInt(subject.credits[0], 10) + parseInt(subject.credits[1], 10));
+			if (subject) {
+				const totalCredits = parseInt(subject.credits[0], 10) + parseInt(subject.credits[1], 10);
+				const groups = subject.groups.filter(group => group !== "Optativas Livres");
+				subjectGroupsStack.push({ subjectCode, groups: groups, totalCredits: totalCredits });
 			}
 		});
-		
-		let excess = getExcessSum(scienceCreditsList, scienceCredits, SCIENCE_NECESSARY);
-		livreCredits += excess;
-		scienceCredits -= excess;
-		excess = getExcessSum(humanitiesCreditsList, humanitiesCredits, HUMANITIES_NECESSARY);
-		livreCredits += excess;
-		humanitiesCredits -= excess;
-		excess = getExcessSum(statisticsCreditsList, statisticsCredits, STATISTICS_NECESSARY);
-		livreCredits += excess;
-		statisticsCredits -= excess;
-		excess = getExcessSum(electiveCreditsList, electiveCredits, ELECTIVE_NECESSARY);
-		livreCredits += excess;
-		electiveCredits -= excess;
 
-		return { "mandatory": mandatoryCredits, "elective": electiveCredits , "livre": livreCredits };
+
+		while (subjectGroupsStack.length() > 0) {
+			let { subjectCode, groups, totalCredits } = subjectGroupsStack.shift();
+			console.log(subjectCode, groups, totalCredits);
+
+			if (groups.some(group => group === "Obrigatórias")) {
+				mandatoryCredits += totalCredits;
+			}
+			else if (groups.some(group => group === "Optativas de Estatística")) {
+				if (statisticsCredits + totalCredits <= STATISTICS_NECESSARY) {
+					statisticsCredits += totalCredits;
+				}
+				else {
+					subjectGroupsStack.push({ subjectCode, groups: groups.filter(group => group !== "Optativas de Estatística"), totalCredits });
+				}
+			}
+			else if (groups.some(group => group === "Optativas de Humanidades")) {
+				if (humanitiesCredits + totalCredits <= HUMANITIES_NECESSARY) {
+					humanitiesCredits += totalCredits;
+				}
+				else {
+					subjectGroupsStack.push({ subjectCode, groups: groups.filter(group => group !== "Optativas de Humanidades"), totalCredits });
+				}
+			}
+			else if (groups.some(group => group === "Optativas de Ciências")) {
+				if (scienceCredits + totalCredits <= SCIENCE_NECESSARY) {
+					scienceCredits += totalCredits;
+				}
+				else {
+					subjectGroupsStack.push({ subjectCode, groups: groups.filter(group => group !== "Optativas de Ciências"), totalCredits });
+				}
+			}
+			else if (groups.length > 0) {
+				if (electiveCredits + totalCredits <= ELECTIVE_NECESSARY) {
+					electiveCredits += totalCredits;
+				}
+				else {
+					subjectGroupsStack.push({ subjectCode, groups: [], totalCredits });
+				}
+			}
+			else {
+				openElectiveCredits += totalCredits;
+			}
+		}
+		return { "mandatory": mandatoryCredits, "elective": electiveCredits, "openElective": openElectiveCredits };
 	}, [subjectDataMap, plansSet]);
 
 	const mandatory = { label: "Obrigatórias", coursed: completion["mandatory"], planned: 0, needed: MANDATORY_NECESSARY };
 	const elective = { label: "Optativas", coursed: completion["elective"], planned: 0, needed: ELECTIVE_NECESSARY };
-	const livres = {label: "Livres", coursed: completion["livre"], planned: 0, needed: LIVRE_NECESSARY }
+	const livres = { label: "Livres", coursed: completion["openElective"], planned: 0, needed: OPEN_ELECTIVE_NECESSARY }
 
 	return (
 		<CompletionBarContainer>

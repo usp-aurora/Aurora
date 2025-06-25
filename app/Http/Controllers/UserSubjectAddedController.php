@@ -30,7 +30,7 @@ class UserSubjectAddedController extends Controller
         // Find group id by title
         $validated = $request->validate([
             'group_title' => 'required|string',
-            'subject_code' => 'required|string|exists:subjects,code',
+            'subject_code' => 'required|string',
         ]);
         $group = Group::where('title', $validated['group_title'])->first();
         if (!$group) {

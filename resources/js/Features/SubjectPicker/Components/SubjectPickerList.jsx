@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, use } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { styled } from "@mui/material/styles";
 import { Box } from "@mui/material";
 import Group from "./Group";
@@ -123,7 +123,6 @@ function SubjectPickerList({ groupsData, user }) {
     }, []);
     
     return (
-        // Algum dia vai ter um search bar bem aqui
         <GroupContainer>
             {updatedGroupsData.subgroups.map((groupData, index) => (
                 <Group
