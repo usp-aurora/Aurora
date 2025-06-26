@@ -7,11 +7,14 @@ import Stack from '@mui/material/Stack';
 import UndoIcon from '@mui/icons-material/Undo';
 import RedoIcon from '@mui/icons-material/Redo';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
+import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import Tooltip from '@mui/material/Tooltip';
 
 import IconWrapper from '../../ui/Icons/IconWrapper';
 import { usePlansContext } from '../../Contexts/PlansContext';
+import { useViewMode } from '../../Contexts/ViewModeContext';
+import { useAuthContext } from '../../Contexts/AuthContext';
 
 const Container = styled("div")({
     display: "flex",
@@ -43,8 +46,10 @@ const ExportIconWrapper = styled(IconWrapper)(({ theme, disabled }) => ({
     transition: 'background 0.2s',
 }));
 
-function ToolBar({ showCurriculum, toggleRecommendedView, user }) {
+function ToolBar() {
     const { undo, redo, isSaved } = usePlansContext();
+    const { isSuggestedPlansView, toggleSuggestedPlansView } = useViewMode();
+    const { user } = useAuthContext();
 
     useEffect(() => {
         function handleKeyDown(event) {
@@ -74,10 +79,13 @@ function ToolBar({ showCurriculum, toggleRecommendedView, user }) {
                 <IconWrapper Icon={UndoIcon} onClick={undo} />
                 <IconWrapper Icon={RedoIcon} onClick={redo} /> 
             </Stack>
-            <StyledText> {showCurriculum ? "Você está vendo a grade obrigatória recomendada" : "Arraste uma disciplina para adicioná-la ou removê-la do período desejado"} </StyledText>
+            <StyledText> {isSuggestedPlansView ? "Você está vendo a grade obrigatória recomendada" : "Arraste uma disciplina para adicioná-la ou removê-la do período desejado"} </StyledText>
             <Stack spacing={1} direction="row">
                 {!isSaved && <CircularProgress size={20} color="inherit" />}
-                {/* <IconWrapper Icon={VisibilityOutlinedIcon} onClick={toggleRecommendedView} /> */}
+                <IconWrapper 
+                    Icon={isSuggestedPlansView ? VisibilityOffOutlinedIcon : VisibilityOutlinedIcon} 
+                    onClick={toggleSuggestedPlansView} 
+                />
                 <Tooltip title={user ? "Exportar planejamento" : "Faça login para exportar o planejamento"} placement="top">
                     <span>
                         <ExportIconWrapper

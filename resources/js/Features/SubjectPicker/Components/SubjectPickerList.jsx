@@ -1,7 +1,12 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { styled } from "@mui/material/styles";
 import { Box } from "@mui/material";
 import Group from "./Group";
+import { useAddSubjectContext } from "../../AddSubject/AddSubjectContext";
+import { useGroupsContext } from "../../../Contexts/GroupsContext";
+
+import { usePlansContext } from "@/Contexts/PlansContext";
+import { clearCalculationCache } from "../utils/completionUtils";
 
 const GroupContainer = styled(Box)(({ theme }) => ({
     display: "flex",
@@ -13,17 +18,23 @@ const GroupContainer = styled(Box)(({ theme }) => ({
     borderRadius: "12px",
 }));
 
-function SubjectPickerList({ groupsData }) {
-    const [expandedCategory, setExpandedCategory] = useState(groupsData.subgroups.length - 1);
+function SubjectPickerList() {
+    const { groups } = useGroupsContext();
+    const { plansSet } = usePlansContext();
+    
+    const [expandedCategory, setExpandedCategory] = useState(groups.subgroups.length - 1);
+
+    useEffect(() => {
+        clearCalculationCache();
+    }, [plansSet]);
 
     const toggleCategory = useCallback(function(index){
         setExpandedCategory((prevCategory) => (prevCategory === index) ? null : index);
     }, []);
-
+    
     return (
-        // Algum dia vai ter um search bar bem aqui
         <GroupContainer>
-            {groupsData.subgroups.map((groupData, index) => (
+            {groups.subgroups.map((groupData, index) => (
                 <Group
                     key={groupData.title}
                     groupData={groupData}

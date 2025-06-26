@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Enums\CompletionType;
 
 return new class extends Migration
 {
@@ -11,13 +12,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('subjects', function (Blueprint $table) {
-            $table->string('code')->primary();
-            $table->string('name');
-            $table->text('syllabus');
-            $table->string('lecture_credits');
-            $table->string('work_credits');
-            $table->timestamps();
+        Schema::table('completion_requirements', function (Blueprint $table) {
+            $validTypes = CompletionType::values();
+            $table->enum('type', $validTypes)->change();
         });
     }
 
@@ -26,6 +23,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('subjects');
+        Schema::table('completion_requirements', function (Blueprint $table) {
+            $table->string('type')->change();
+        });
     }
 };

@@ -1,21 +1,16 @@
 import { Box, Stack, useMediaQuery } from "@mui/material";
 import { styled, useTheme } from "@mui/material/styles";
-import { useState } from "react";
 
 import Background from "../Features/Background/HomeBackground";
 import CompletionBar from "../Features/CompletionBar/CompletionBar";
 import Header from "../Features/Header/Header";
 import Semesters from "../Features/Semesters/Semesters";
 import SubjectInfo from "../Features/SubjectInfo/SubjectInfo";
+import AddSubjectDialog from "../Features/AddSubject/AddSubjectDialog"
 import { SubjectPickerDesktop, SubjectPickerMobile } from "../Features/SubjectPicker/";
 import ToolBar from '../Features/ToolBar/ToolBar';
 
-import { PlansProvider } from "../Contexts/PlansContext";
-import { SubjectMapProvider } from "../Contexts/SubjectMapContext";
-import { DragAndDropProvider } from '../Features/DragAndDrop/DragAndDropContext';
-import { SubjectInfoProvider } from "../Features/SubjectInfo/SubjectInfoContext";
-import { SubjectPickerProvider } from "../Features/SubjectPicker/SubjectPickerContext";
-import { AuthProvider } from '../context/AuthContext';
+import AppProviders from "../Contexts/AppProviders";
 
 const ContentContainer = styled(Box)(({ theme }) => ({
     height: "100vh",
@@ -30,48 +25,39 @@ const ContentContainer = styled(Box)(({ theme }) => ({
     },
 }));
 
-const Home = ({ groups, initialPlans, subjects, user }) => {
-    const [isRecommendedView, setRecommendedView] = useState(false);
+const Home = ({ groups, initialPlans, suggestedPlans, subjects, user }) => {
     const theme = useTheme();
     const isAboveSmall = useMediaQuery(theme.breakpoints.up('sm'));
-
     return (
-        <AuthProvider loggedUser={user}>
-            <SubjectMapProvider subjectDataMap={subjects}>
-            <PlansProvider initialPlans={initialPlans} user={user}>
-            <SubjectInfoProvider>
-            <SubjectPickerProvider>
-            <DragAndDropProvider disabled={isRecommendedView}>
-                <SubjectInfo />
-                {!isAboveSmall && <SubjectPickerMobile groupsData={groups} />}
-                <Background />
-                <ContentContainer>
-                    <Stack spacing={{ xs: 1, sm: 2 }} sx={{ width: "100%"}}>
-                        <Header/>
-                        <Stack spacing={{ xs: 0, sm: 2 }} direction="row" sx={{ width: "100%", flex: 1, overflow: "auto"}}>
-                            <Stack spacing={{ xs: 1, sm: 2 }} sx={{ flex: 2}}>
-                                <CompletionBar />
-                                <ToolBar
-                                    isRecommendedView={isRecommendedView}
-                                    toggleRecommendedView={() => setRecommendedView(prev => !prev)}
-                                    user={user}
-                                />
-                                <Semesters isRecommendedView={isRecommendedView} />
-                            </Stack>
-                                {isAboveSmall && (
-                                    <Stack sx={{ flex: 1, overflow: "auto" }}>
-                                        <SubjectPickerDesktop groupsData={groups} />
-                                    </Stack>
-                                )}
+        <AppProviders 
+            initialPlans={initialPlans}
+            groups={groups}
+            suggestedPlans={suggestedPlans}
+            subjects={subjects} 
+            user={user}
+        >   
+            <AddSubjectDialog />
+            <SubjectInfo />
+            {!isAboveSmall && <SubjectPickerMobile/>}
+            <Background />
+            <ContentContainer>
+                <Stack spacing={{ xs: 1, sm: 2 }} sx={{ width: "100%"}}>
+                    <Header/>
+                    <Stack spacing={{ xs: 0, sm: 2 }} direction="row" sx={{ width: "100%", flex: 1, overflow: "auto"}}>
+                        <Stack spacing={{ xs: 1, sm: 2 }} sx={{ flex: 2}}>
+                            <CompletionBar />
+                            <ToolBar />
+                            <Semesters />
                         </Stack>
+                        {isAboveSmall && (
+                            <Stack sx={{ flex: 1, overflow: "auto" }}>
+                                <SubjectPickerDesktop/>
+                            </Stack>
+                        )}
                     </Stack>
-                </ContentContainer>
-            </DragAndDropProvider>
-            </SubjectPickerProvider>
-            </SubjectInfoProvider>
-            </PlansProvider>
-            </SubjectMapProvider>
-        </AuthProvider>
+                </Stack>
+            </ContentContainer>
+        </AppProviders>
     );
 };
 

@@ -1,10 +1,13 @@
 import { styled } from "@mui/material/styles";
 import { Box, Modal, Typography } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import AddIcon from "@mui/icons-material/Add";
+import IconWrapper from "../../ui/Icons/IconWrapper"
 
 import Background from "../Background/HomeBackground";
 import SubjectPickerList from "./Components/SubjectPickerList";
 import { useSubjectPickerContext } from './SubjectPickerContext';
+import { useAddSubjectContext } from "../AddSubject/AddSubjectContext";
 
 
 const ModalContainer = styled(Modal)(({ theme }) => ({
@@ -23,23 +26,47 @@ const HeaderContainer = styled(Box)(() => ({
     flexDirection: "row",
     width: "100%",
     justifyContent: "space-between",
-    alignItems: "flex-start",
+    alignItems: "center",
+}));
+
+const IconContainer = styled(Box)(() => ({
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: "16px", // Space between AddIcon and CloseIcon
 }));
 
 const StyledTitle = styled(Typography)(({ theme }) => ({
     textTransform: "uppercase",
-
-    ...theme.typography.h4
+    ...theme.typography.h4,
+    alignSelf: "center",
 }));
 
 const StyledCloseIcon = styled(CloseIcon)(({ theme }) => ({
     display: "block",
     color: theme.palette.white.main,
-    cursor: "pointer"
+    cursor: "pointer",
+    alignSelf: "center",
 }));
 
-function SubjectPicker({ groupsData }) {
+const AddButton = ({ onClick }) => {
+    return (
+        <IconWrapper
+            Icon={AddIcon}
+            style={{
+                color: "white",
+                alignSelf: "center",
+                cursor: "pointer",
+            }}
+            onClick={onClick}
+        />
+    );
+};
+
+function SubjectPicker() {
     const { isSubjectPickerModalOpen, closeSubjectPickerModal } = useSubjectPickerContext();
+    const { showAddSubjectModal } = useAddSubjectContext();
+
     return (
         <ModalContainer
 			open={isSubjectPickerModalOpen}
@@ -48,9 +75,12 @@ function SubjectPicker({ groupsData }) {
                 <Background />
                 <HeaderContainer>
                     <StyledTitle>Adicionar disciplina</StyledTitle>
-                    <StyledCloseIcon onClick={closeSubjectPickerModal} />
+                    <IconContainer>
+                        <AddButton onClick={showAddSubjectModal} />
+                        <StyledCloseIcon onClick={closeSubjectPickerModal} />
+                    </IconContainer>
                 </HeaderContainer>
-                <SubjectPickerList groupsData={groupsData} />
+                <SubjectPickerList/>
             </>
         </ModalContainer>
     );

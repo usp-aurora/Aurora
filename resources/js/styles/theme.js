@@ -1,110 +1,234 @@
-import { createTheme } from '@mui/material/styles';
+import { createTheme } from "@mui/material/styles";
+import colors from "./colors.json";
 
 let theme = createTheme({});
 
 theme = createTheme({
     spacing: 8,
     palette: {
-        // special colors have the palette generate automatically
-        primary: {main: '#2A85CD'},
-        error: {main: '#E83030'},
-        neutral: {main: '#FFFFFF',
-            secondary: '#FFFFFF'
+        primary: {
+            main: colors.blue[500],
+            contrastText: "#FFFFFF",
         },
-        white: {main: '#FFFFFF'},
-        black: {main: '#000000'},   
-        red: theme.palette.augmentColor ({
-            color: {
-                main: '#E83030',
-            },
-            name: 'red'
-        }),
-        yellow: theme.palette.augmentColor ({
-            color: {
-                main: '#FFD12B',
-            },
-            name: 'yellow'
-        }),
-        orange: theme.palette.augmentColor ({
-            color: {
-                main: '#ff9800',
-            },
-            name: 'orange'
-        }),
-        brown: theme.palette.augmentColor ({
-            color: {
-                main: '#8E7143',
-            },
-            name: 'brown'
-        }),
-        green: theme.palette.augmentColor ({
-            color: {
-                main: '#09DE5A',
-            },
-            name: 'green'
-        }),
-        cyan: theme.palette.augmentColor ({
-            color: {
-                main: '#15B48F',
-            },
-            name: 'cyan'
-        }),
-        purple: theme.palette.augmentColor ({
-            color: {
-                main: '#6762CD',
-            },
-            name: 'purple'
-        }),
-        pink: theme.palette.augmentColor ({
-            color: {
-                main: '#F73EF6',
-            },
-            name: 'pink'
-        }),
-        
+        error: {
+            main: colors.red[600],
+            contrastText: "#FFFFFF",
+        },
+        neutral: {
+            main: "#FFFFFF",
+            secondary: "#FFFFFF",
+            contrastText: "#424242",
+        },
+        white: {
+            main: "#FFFFFF",
+            contrastText: "#424242",
+        },
+        black: {
+            main: "#000000",
+            contrastText: "#FFFFFF",
+        },
+        blue: {
+            50: colors.blue[100],
+            100: colors.blue[100],
+            200: colors.blue[200],
+            300: colors.blue[300],
+            400: colors.blue[400],
+            500: colors.blue[500],
+            600: colors.blue[600],
+            700: colors.blue[700],
+            800: colors.blue[700],
+            900: colors.blue[700],
+            main: colors.blue[400],
+            light: colors.blue[100],
+            dark: colors.blue[700],
+            contrastText: "#FFFFFF",
+        },
+        red: {
+            50: colors.red[300],
+            100: colors.red[300],
+            200: colors.red[300],
+            300: colors.red[300],
+            400: colors.red[400],
+            500: colors.red[500],
+            600: colors.red[600],
+            700: colors.red[700],
+            800: colors.red[800],
+            900: colors.red[900],
+            main: colors.red[600],
+            light: colors.red[400],
+            dark: colors.red[800],
+            contrastText: "#FFFFFF",
+        },
+        yellow: {
+            50: colors.yellow[50],
+            100: colors.yellow[100],
+            200: colors.yellow[200],
+            300: colors.yellow[300],
+            400: colors.yellow[400],
+            500: colors.yellow[500],
+            600: colors.yellow[600],
+            700: colors.yellow[600],
+            800: colors.yellow[600],
+            900: colors.yellow[600],
+            main: colors.yellow[300],
+            light: colors.yellow[200],
+            dark: colors.yellow[500],
+            contrastText: "#000000",
+        },
+        orange: {
+            50: colors.orange[200],
+            100: colors.orange[200],
+            200: colors.orange[200],
+            300: colors.orange[300],
+            400: colors.orange[400],
+            500: colors.orange[500],
+            600: colors.orange[600],
+            700: colors.orange[700],
+            800: colors.orange[800],
+            900: colors.orange[800],
+            main: colors.orange[500],
+            light: colors.orange[300],
+            dark: colors.orange[700],
+            contrastText: "#FFFFFF",
+        },
+        brown: {
+            50: colors.brown[300],
+            100: colors.brown[300],
+            200: colors.brown[300],
+            300: colors.brown[300],
+            400: colors.brown[400],
+            500: colors.brown[500],
+            600: colors.brown[600],
+            700: colors.brown[700],
+            800: colors.brown[800],
+            900: colors.brown[900],
+            main: colors.brown[600],
+            light: colors.brown[400],
+            dark: colors.brown[800],
+            contrastText: "#FFFFFF",
+        },
+        green: {
+            50: colors.green[200],
+            100: colors.green[200],
+            200: colors.green[200],
+            300: colors.green[300],
+            400: colors.green[400],
+            500: colors.green[500],
+            600: colors.green[600],
+            700: colors.green[700],
+            800: colors.green[800],
+            900: colors.green[800],
+            main: colors.green[500],
+            light: colors.green[300],
+            dark: colors.green[700],
+            contrastText: "#FFFFFF",
+        },
+        cyan: {
+            50: colors.cyan[200],
+            100: colors.cyan[200],
+            200: colors.cyan[200],
+            300: colors.cyan[300],
+            400: colors.cyan[400],
+            500: colors.cyan[500],
+            600: colors.cyan[600],
+            700: colors.cyan[700],
+            800: colors.cyan[800],
+            900: colors.cyan[800],
+            main: colors.cyan[500],
+            light: colors.cyan[300],
+            dark: colors.cyan[700],
+            contrastText: "#FFFFFF",
+        },
+        purple: {
+            50: colors.purple[300],
+            100: colors.purple[300],
+            200: colors.purple[300],
+            300: colors.purple[300],
+            400: colors.purple[400],
+            500: colors.purple[500],
+            600: colors.purple[600],
+            700: colors.purple[700],
+            800: colors.purple[800],
+            900: colors.purple[900],
+            main: colors.purple[600],
+            light: colors.purple[400],
+            dark: colors.purple[800],
+            contrastText: "#FFFFFF",
+        },
+        pink: {
+            50: colors.pink[200],
+            100: colors.pink[200],
+            200: colors.pink[200],
+            300: colors.pink[300],
+            400: colors.pink[400],
+            500: colors.pink[500],
+            600: colors.pink[600],
+            700: colors.pink[700],
+            800: colors.pink[800],
+            900: colors.pink[800],
+            main: colors.pink[500],
+            light: colors.pink[300],
+            dark: colors.pink[700],
+            contrastText: "#FFFFFF",
+        },
+        gray: {
+            50: colors.gray[100],
+            100: colors.gray[100],
+            200: colors.gray[200],
+            300: colors.gray[300],
+            400: colors.gray[400],
+            500: colors.gray[500],
+            600: colors.gray[600],
+            700: colors.gray[700],
+            800: colors.gray[800],
+            900: colors.gray[900],
+            main: colors.gray[500],
+            light: colors.gray[300],
+            dark: colors.gray[700],
+            contrastText: "#FFFFFF",
+        },
     },
 
     typography: {
-        fontFamily: 'Rubik, Arial, sans-serif',
+        fontFamily: "Rubik, Arial, sans-serif",
         allVariants: {
-            color: '#FFFFFF'
+            color: "#FFFFFF",
         },
         h1: {
-            fontSize: '1.75rem',
-            lineHeight: '2.5rem',
+            fontSize: "1.75rem",
+            lineHeight: "2.5rem",
             fontWeight: 900,
         },
         h2: {
-            fontSize: '1.5rem',
-            lineHeight: '2.0rem',
+            fontSize: "1.5rem",
+            lineHeight: "2.0rem",
             fontWeight: 700,
         },
         h3: {
-            fontSize: '1.25rem',
-            lineHeight: '2.0rem',
+            fontSize: "1.25rem",
+            lineHeight: "2.0rem",
             fontWeight: 500,
         },
         h4: {
-            fontSize: '1.0rem',
-            lineHeight: '1.25rem',
+            fontSize: "1.0rem",
+            lineHeight: "1.25rem",
             fontWeight: 500,
         },
         h5: {
-            fontSize: '0.88rem',
-            lineHeight: '1.0rem',
+            fontSize: "0.88rem",
+            lineHeight: "1.0rem",
             fontWeight: 400,
         },
         p: {
-            fontSize: '0.69rem',
-            lineHeight: '1rem',
+            fontSize: "0.69rem",
+            lineHeight: "1rem",
             fontWeight: 400,
         },
         small: {
-            fontSize: '0.62rem',
-            lineHeight: '0.88rem',
+            fontSize: "0.62rem",
+            lineHeight: "0.88rem",
             fontWeight: 400,
-        }
-
+        },
     },
 
     card: {
@@ -112,7 +236,7 @@ theme = createTheme({
             innerWidth: 104,
             innerHeight: 95,
             outerWidth: 104,
-            outerHeight: 104, 
+            outerHeight: 104,
             borderRadius: 8,
             planetSize: 45,
             moonSize: 12,
@@ -125,7 +249,7 @@ theme = createTheme({
             borderRadius: 12,
             planetSize: 55,
             moonSize: 15,
-        }
+        },
     },
 
     zIndex: {
@@ -137,7 +261,7 @@ theme = createTheme({
         level2: {
             backdropFilter: "blur(2px)",
             color: "rgb(194, 220, 245, 0.2)",
-            boxShadow: '3px 3px 3px rgba(0, 0, 0, 0.089)',
+            boxShadow: "3px 3px 3px rgba(0, 0, 0, 0.089)",
             // light: {
             //     color: "#FFFFFF",
             //     boxShadow: 'none',
@@ -149,17 +273,15 @@ theme = createTheme({
         level3: {
             backdropFilter: "blur(5px)",
             color: "rgb(194, 220, 245, 0.2)",
-            boxShadow: '3px 3px 3px rgba(0, 0, 0, 0.089)',
+            boxShadow: "3px 3px 3px rgba(0, 0, 0, 0.089)",
             // light: {
             //     color: "#FFFFFF",
             //     boxShadow: 'none',
             // },
             // dark: {
             // }
-        }
-    }
-
-
+        },
+    },
 });
 
 export default theme;

@@ -3,7 +3,7 @@ import { styled, useTheme } from "@mui/material/styles";
 
 import Button from '../../ui/Buttons/Button';
 import Logo from '../../ui/Logo/Logo';
-import { useAuth } from '../../context/AuthContext';
+import { useAuthContext } from '../../Contexts/AuthContext';
 
 const HeaderContainer = styled(Box)({
     width: "100%",
@@ -39,7 +39,7 @@ function LoginText({isAboveSmall}){
 }
 
 const Header = (props) => {
-    const { user } = useAuth();
+    const { user } = useAuthContext();
     const handleLoginRedirect = () => {
         window.location.href = '/login';
     };

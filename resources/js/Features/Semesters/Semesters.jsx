@@ -4,6 +4,7 @@ import { styled } from "@mui/material/styles";
 import { memo } from "react";
 
 import { usePlansContext } from "../../Contexts/PlansContext";
+import { useViewMode } from "../../Contexts/ViewModeContext";
 import AuxiliaryCard from "../../ui/Card/AuxiliaryCard";
 import Semester from "./Components/Semester";
 
@@ -15,23 +16,27 @@ const SemestersContainer = styled(Stack)(({ }) => ({
 
 const MemoizedSemester = memo(Semester);
 
-function Semesters({ isRecommendedView }) {
+function Semesters() {
 	const { plans, commitPlans } = usePlansContext();
+	const { isSuggestedPlansView, suggestedPlans } = useViewMode();
+
+	const shownPlans = isSuggestedPlansView ? suggestedPlans : plans;
 
 	function addSemester(){
+		if(isSuggestedPlansView) return;
+
 		commitPlans((prevPlans) => [...prevPlans, { semesterId: prevPlans.length + 1, subjects: [] }], "Add empty semester");
 	}
-	
+
 	return (
 		<SemestersContainer spacing={{ xs: 1, sm: 2 }}>
-			{plans.map((semester) => (
+			{shownPlans.map((semester) => (
 				<MemoizedSemester
 					key={semester.semesterId}
 					semesterData={semester}
-					isRecommendedView={isRecommendedView}
 				/>
 			))}
-			{!isRecommendedView && <AuxiliaryCard icon={AddIcon} text="Adicionar período" onClick={addSemester} />}
+			{!isSuggestedPlansView && <AuxiliaryCard icon={AddIcon} text="Adicionar período" onClick={addSemester} />}
 		</SemestersContainer>
 	);
 };

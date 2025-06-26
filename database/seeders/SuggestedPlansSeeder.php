@@ -100,10 +100,6 @@ class SuggestedPlansSeeder extends Seeder
             [
                 "semester" => 7,
                 "subject_code" => "MAC0499",
-            ],
-            [
-                "semester" => 8,
-                "subject_code" => "MAC0499",
             ]
         ];
 

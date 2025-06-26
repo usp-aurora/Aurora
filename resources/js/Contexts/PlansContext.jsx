@@ -55,8 +55,9 @@ function PlansProvider({ children, initialPlans, user }) {
 
 			if (isSaved) {
 				setIsSaved(false);
-				setLastSavedPlans(plansHistory[historyPointer].state);
+				setLastSavedPlans(evaluatedState);
 			}
+			
 			return evaluatedState;
 		});
 
@@ -144,7 +145,6 @@ function PlansProvider({ children, initialPlans, user }) {
 			window.removeEventListener('beforeunload', handleBeforeUnload);
 		};
 	}, [savePendingPlans, isSaved]);
-
 
 	return (
 		<PlansContext.Provider value={{ plans, plansSet, updatePlans, commitPlans, restoreCurrentPlans, undo, redo, isSaved }}>

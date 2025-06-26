@@ -14,7 +14,9 @@ return new class extends Migration
         Schema::create('groups', function ($table) {
             $table->id();
             $table->string('title');
+            $table->boolean('mandatory')->default(false);
             $table->text('description')->nullable();
+            $table->string('color')->nullable();
             $table->unsignedBigInteger('parent_group_id')->nullable();
             $table->boolean('is_course_root');
             $table->timestamps();

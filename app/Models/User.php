@@ -60,4 +60,12 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * Get the user subjects added
+     */
+    public function userSubjectsAdded(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(UserAddedSubjects::class);
+    }
 }
