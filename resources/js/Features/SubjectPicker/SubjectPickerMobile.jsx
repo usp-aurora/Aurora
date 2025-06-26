@@ -8,6 +8,7 @@ import Background from "../Background/HomeBackground";
 import SubjectPickerList from "./Components/SubjectPickerList";
 import { useSubjectPickerContext } from './SubjectPickerContext';
 import { useAddSubjectContext } from "../AddSubject/AddSubjectContext";
+import { useAuthContext } from "../../Contexts/AuthContext";
 
 
 const ModalContainer = styled(Modal)(({ theme }) => ({
@@ -49,38 +50,30 @@ const StyledCloseIcon = styled(CloseIcon)(({ theme }) => ({
     alignSelf: "center",
 }));
 
-const AddButton = ({ onClick }) => {
-    return (
-        <IconWrapper
-            Icon={AddIcon}
-            style={{
-                color: "white",
-                alignSelf: "center",
-                cursor: "pointer",
-            }}
-            onClick={onClick}
-        />
-    );
-};
-
 function SubjectPicker() {
     const { isSubjectPickerModalOpen, closeSubjectPickerModal } = useSubjectPickerContext();
     const { showAddSubjectModal } = useAddSubjectContext();
+    const { user } = useAuthContext();
 
     return (
         <ModalContainer
-			open={isSubjectPickerModalOpen}
-			onClose={closeSubjectPickerModal}>
+            open={isSubjectPickerModalOpen}
+            onClose={closeSubjectPickerModal}>
             <>
                 <Background />
                 <HeaderContainer>
                     <StyledTitle>Adicionar disciplina</StyledTitle>
                     <IconContainer>
-                        <AddButton onClick={showAddSubjectModal} />
+                        <IconWrapper
+                            Icon={AddIcon}
+                            onClick={showAddSubjectModal}
+                            toolTipText={user ? "Adicionar disciplina" : "Faça login para adicionar novas disciplinas"}
+                            disabled={!user}
+                        />
                         <StyledCloseIcon onClick={closeSubjectPickerModal} />
                     </IconContainer>
                 </HeaderContainer>
-                <SubjectPickerList/>
+                <SubjectPickerList />
             </>
         </ModalContainer>
     );

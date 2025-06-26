@@ -9,6 +9,7 @@ import glassmorphismStyle from "../../styles/glassmorphism";
 import SubjectPickerList from "./Components/SubjectPickerList";
 
 import { useAddSubjectContext } from "../AddSubject/AddSubjectContext";
+import { useAuthContext } from "../../Contexts/AuthContext";
 
 const Container = styled( Box )(({ theme }) => ({
     display: "flex",
@@ -38,31 +39,23 @@ const StyledTitle = styled(Typography)(({ theme }) => ({
     alignSelf: "center",
 }));
 
-const AddButton = ({ onClick }) => {
-    return (
-        <IconWrapper
-            Icon={AddIcon}
-            style={{
-                color: "white",
-                alignSelf: "center",
-                cursor: "pointer",
-            }}
-            onClick={onClick}
-        />
-    );
-};
-
 const MemoizedSubjectPickerList = memo(SubjectPickerList);
 
 function SubjectPickerDesktop() {
     const { setNodeRef } = useDroppable({ id: "subjectPicker" });
     const { showAddSubjectModal } = useAddSubjectContext();
+    const { user } = useAuthContext();
 
     return (
         <Container ref={setNodeRef}>
             <HeaderContainer>
                 <StyledTitle>Adicionar disciplina</StyledTitle>
-                <AddButton onClick={ showAddSubjectModal }></AddButton>
+                <IconWrapper
+                    Icon={AddIcon}
+                    onClick={showAddSubjectModal}
+                    toolTipText= {user ? "Adicionar disciplina" : "Faça login para adicionar novas disciplinas"}
+                    disabled={!user}
+                />
             </HeaderContainer>
             <MemoizedSubjectPickerList/>
         </Container>
