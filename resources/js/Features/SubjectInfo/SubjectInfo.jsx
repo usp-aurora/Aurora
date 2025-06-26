@@ -16,6 +16,8 @@ import SubjectInfoText from './components/SubjectInfoText';
 import { useSubjectInfoContext } from './SubjectInfoContext';
 import { useSubjectMapContext } from '../../Contexts/SubjectMapContext';
 import { useEffect, useState } from 'react';
+import { usePlansContext } from '../../Contexts/PlansContext';
+import { useSubjectPickerContext } from '../SubjectPicker/SubjectPickerContext';
 
 const SubjectInfoBackground = styled(Modal)(({ theme }) => ({
 	padding: theme.spacing(1),
@@ -34,10 +36,10 @@ const SubjectInfoContainer = styled('div')(({ theme }) => ({
 	borderRadius: '12px',
 	width: '100%',
 	height: '100%',
-	
+
 	padding: theme.spacing(1),
 	gap: theme.spacing(2),
-	[theme.breakpoints.up('sm')]:{
+	[theme.breakpoints.up('sm')]: {
 		padding: theme.spacing(3),
 		gap: theme.spacing(3),
 		maxWidth: "800px",
@@ -54,7 +56,7 @@ const SubjectInfoBody = styled('div')(({ theme }) => ({
 	height: "100%",
 
 	gap: theme.spacing(2),
-	[theme.breakpoints.up('sm')]:{
+	[theme.breakpoints.up('sm')]: {
 		gap: theme.spacing(3),
 	}
 }));
@@ -78,7 +80,7 @@ const loadGraphData = async (rootSubject, setGraphData, addNewSubjectData, setIs
 	axios.get(`/api/requirement/${rootSubject}`)
 		.then(response => {
 			addNewSubjectData(response.data.subjectData);
-			
+
 			const formattedNodes = new Map(
 				Object.entries(response.data.nodes)
 					.map(([_, subjectCode]) => [
@@ -119,14 +121,64 @@ function SubjectInfoGraph({ nodes, links, root }) {
 
 function SubjectInfo() {
 	const { subjectInfo, isSubjectInfoModalOpen, closeSubjectInfoModal } = useSubjectInfoContext();
+	const { closeSubjectPickerModal, selectedSemesterMobile } = useSubjectPickerContext();
 	const { addNewSubjectData } = useSubjectMapContext();
+	const { plans, commitPlans, checkSubjectConcluded } = usePlansContext();
 
 	const emptyData = { links: new Map(), nodes: new Map(), root: null };
 	const [graphData, setGraphData] = useState(emptyData);
 	const [isLoading, setIsLoading] = useState(false);
 
+	
+	const isConcluded = checkSubjectConcluded(subjectInfo.code);
+
+	function handleAddSubject() {
+		if(!selectedSemesterMobile){
+			console.error("Não foi possível encontrar o semestre de destino da matéria");
+			return;
+		}
+
+		const action = {
+			key: subjectInfo.code,
+			changes: {
+				"semesterTo": selectedSemesterMobile
+			} 
+		};
+
+		commitPlans((prevPlans) => {
+			return prevPlans.map((semester) => {
+				if(semester.semesterId === selectedSemesterMobile) {
+					return {...semester, subjects: [...semester.subjects, { code: subjectInfo.code, completed: false }] };
+				}
+				return semester;
+			})
+		}, action);
+		closeSubjectPickerModal();
+		closeSubjectInfoModal();
+	}
+
+	function handleDeleteSubject() {
+		const action = {
+			key: subjectInfo.code,
+			changes: {
+				"semesterTo": null
+			} 
+		};
+
+		commitPlans((prevPlans) => {
+			return prevPlans.map(semester => {
+				return {
+					...semester,
+					subjects: semester.subjects.filter(subject => subject.code !== subjectInfo.code)
+				};
+			})
+		}, action);
+		closeSubjectPickerModal();
+		closeSubjectInfoModal();
+	}
+
 	useEffect(() => {
-		if (subjectInfo.code){
+		if (subjectInfo.code) {
 			loadGraphData(subjectInfo.code, setGraphData, addNewSubjectData, setIsLoading);
 		}
 	}, [subjectInfo]);
@@ -141,12 +193,12 @@ function SubjectInfo() {
 	return (
 		<SubjectInfoBackground onClose={closeSubjectInfoModal} open={isSubjectInfoModalOpen}>
 			<SubjectInfoContainer>
-				<SubjectInfoHeader onClose={closeSubjectInfoModal} 
-								   name={subjectInfo.name} 
-								   code={subjectInfo.code} />
+				<SubjectInfoHeader onClose={closeSubjectInfoModal}
+					name={subjectInfo.name}
+					code={subjectInfo.code} />
 				<SubjectInfoBody>
-					<SubjectInfoTags 
-						tags={subjectInfo.tags} 
+					<SubjectInfoTags
+						tags={subjectInfo.tags}
 						credits={subjectInfo.credits} />
 					<SubjectInfoText desc={subjectInfo.desc} />
 					<CorseInfoGraphContainer>
@@ -159,10 +211,10 @@ function SubjectInfo() {
 						}
 					</CorseInfoGraphContainer>
 					<Stack direction="row" sx={{ display: { xs: 'flex', sm: 'none' } }}>
-						{subjectInfo.isPlanned
-							? <IconWrapper color="error" Icon={DeleteIcon} sx={{marginLeft: 'auto'}}/>
-							: <Button color="primary" size="small" sx={{marginLeft: 'auto'}}> Adicionar </Button> 
-						}
+						{!isConcluded && (subjectInfo.isPlanned
+							? <IconWrapper color="error" Icon={DeleteIcon} sx={{ marginLeft: 'auto' }} onClick={handleDeleteSubject} />
+							: <Button color="primary" size="small" sx={{ marginLeft: 'auto' }} onClick={handleAddSubject}> Adicionar </Button>
+						)}
 					</Stack>
 				</SubjectInfoBody>
 			</SubjectInfoContainer>

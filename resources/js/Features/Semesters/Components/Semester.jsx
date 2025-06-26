@@ -49,7 +49,6 @@ const SemesterCreditsText = styled(Typography)(({ theme }) => ({
 const SemesterCompletedText = styled(Typography)(({ theme }) => ({
     ...theme.typography.small,
     textTransform: 'none',
-    fontSize: '0.85rem',
     marginRight: 'auto',
     marginLeft: 2,
     
@@ -156,7 +155,7 @@ const Semester = ({
                 key={semesterData.semesterId}
                 spacing={{ xs: 1, sm: 2 }}
                 disabled={!isExpanded || completed}
-                placeholder={isSuggestedPlansView ? null : <SubjectPlaceholder />}
+                Placeholder={isSuggestedPlansView ? null : <SubjectPlaceholder semesterId={semesterData.semesterId} />}
             >
                 <SortableGrid items={semesterData.subjects}>
                     {semesterData.subjects.map((subject) => {

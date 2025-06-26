@@ -111,6 +111,10 @@ function PlansProvider({ children, initialPlans, user }) {
 		}
 	}, [user, plans, isSaved, lastSavedPlans]);
 
+	function checkSubjectConcluded(subject) {
+		return plans.some(semester => semester.subjects.some(s => s.code === subject && s.completed))
+	};
+
 	useEffect(() => {
 		let intervalId;
 		if (user) {
@@ -143,7 +147,7 @@ function PlansProvider({ children, initialPlans, user }) {
 	}, [savePendingPlans, isSaved, user]);
 
 	return (
-		<PlansContext.Provider value={{ plans, plansSet, updatePlans, commitPlans, restoreCurrentPlans, undo, redo, isSaved }}>
+		<PlansContext.Provider value={{ plans, plansSet, updatePlans, commitPlans, restoreCurrentPlans, undo, redo, isSaved, checkSubjectConcluded }}>
 			{children}
 		</PlansContext.Provider>
 	);
