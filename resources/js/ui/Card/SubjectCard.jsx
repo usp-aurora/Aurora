@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Tooltip, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import { useSubjectMapContext } from "../../Contexts/SubjectMapContext";
@@ -103,6 +103,7 @@ const SubjectCard = ({
     ghost,
     showBadge,
     badgeColor,
+    badgeTooltip = "",
     isClickable = true,
     performanceMode = false,
     ...props
@@ -123,10 +124,17 @@ const SubjectCard = ({
             >
                 <CardContent>
 					<PlanetWrapper>
-						{showBadge ? <Moon color={badgeColor}/> : null}
+						{!!showBadge && (
+                            <Tooltip title={badgeTooltip}>
+                                <span>
+                                    <Moon color={badgeColor}/>
+                                </span>
+                            </Tooltip>
+                        )}
 						<PlanetContainer>
 							{(!ghost && planetUrl) && <Planet subjectCode={subjectCode} />}
 						</PlanetContainer>
+                        
 					</PlanetWrapper>
                     <StyledTitle component="h3"> {subjectCode} </StyledTitle>
                     <TextContainer>

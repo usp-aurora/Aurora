@@ -18,6 +18,7 @@ const SortableCard = ({
 	completed,
 	badgeColor,
 	showBadge,
+ 	badgeTooltip
 }) => {
 	const { showSubjectInfo } = useSubjectInfoContext();
 
@@ -43,6 +44,7 @@ const SortableCard = ({
 				ghost={isBlocked && !completed}
 				badgeColor={badgeColor}
 				showBadge={showBadge}
+				badgeTooltip={badgeTooltip}
 			/>
 		</SortableItem>
 	);

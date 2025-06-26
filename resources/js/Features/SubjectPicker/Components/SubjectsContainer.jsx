@@ -31,6 +31,7 @@ const SubjectsContainer = ({ containerName, subjects }) => {
 						isBlocked={isBlocked}
 						badgeColor="red"
 						showBadge={subject.mandatory}
+						badgeTooltip="Matéria obrigatória"
 					/>
 				);
 			})}

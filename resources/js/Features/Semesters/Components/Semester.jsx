@@ -75,9 +75,8 @@ const Semester = ({
     const { subjectDataMap } = useSubjectMapContext();
     const { isSuggestedPlansView } = useViewMode();
     const { plans, commitPlans } = usePlansContext();
-    const [isExpanded, setExpanded] = useState(true);
-    
     const completed = semesterData.subjects.length > 0 && semesterData.subjects.every((subj) => subj.completed);
+    const [isExpanded, setExpanded] = useState(!completed);
     const { active } = useDndContext();
 
     function toggleExpanded() {
@@ -129,7 +128,7 @@ const Semester = ({
                     {semesterData.semesterId}º Período
                 </SemesterInfoText>
                 {completed &&
-                    <SemesterCompletedText>
+                    <SemesterCompletedText color="green">
                         Semestre já cursado
                     </SemesterCompletedText>
                 }
@@ -176,6 +175,7 @@ const Semester = ({
                                 completed={subject.completed}
                                 showBadge={requiredScheduled}
                                 badgeColor="green"
+                                badgeTooltip="Matéria planejada"
                             />
                         );
                     })}
