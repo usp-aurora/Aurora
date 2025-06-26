@@ -22,21 +22,11 @@ function getFirstName(fullName) {
     return fullName.split(' ')[0];
 }
 
-function UserDisplay({ user, isAboveSmall }){
+function UserDisplay({ user, isAboveSmall }) {
     if (!user) return null;
     const name = isAboveSmall ? user.name : getFirstName(user.name);
     return <Typography>{name}</Typography>;
 };
-
-function LoginText({isAboveSmall}){
-    if(!isAboveSmall) return null;
-    
-    return (
-        <LoginTextStyle>
-            Entre com seu e-mail USP para salvar o progresso
-        </LoginTextStyle>
-    );
-}
 
 const Header = (props) => {
     const { user } = useAuthContext();
@@ -47,20 +37,29 @@ const Header = (props) => {
     const isAboveSmall = useMediaQuery(theme.breakpoints.up('sm'));
 
     return (
-        <HeaderContainer {...props}>
-            <Logo />
-            <Stack spacing={4} direction="row" alignItems="center">
-                {!user && (
-                    <>
-                        <LoginText isAboveSmall={isAboveSmall}  />
-                        <Button size="large" onClick={handleLoginRedirect}>Entrar</Button>
-                    </>
-                )}
-                {user && (
-                    <UserDisplay user={user} isAboveSmall={isAboveSmall} />
-                )}
-            </Stack>
-        </HeaderContainer>
+        <Stack gap={2} sx={{ width: "100%", padding: isAboveSmall ? "0px" : "8px" }}>
+            <HeaderContainer {...props}>
+
+                <Logo />
+                <Stack spacing={4} direction="row" alignItems="center">
+                    {!user && (
+                        <>
+                            <LoginTextStyle sx={{ display: isAboveSmall ? 'block' : 'none', color: theme => theme.palette.red.main }}>
+                                Você está no modo anônimo. Entre com seu e-mail USP para salvar o progresso
+                            </LoginTextStyle>
+                            <Button size="large" onClick={handleLoginRedirect}>Entrar</Button>
+                        </>
+                    )}
+                    {user && (
+                        <UserDisplay user={user} isAboveSmall={isAboveSmall} />
+                    )}
+                </Stack>
+
+            </HeaderContainer>
+            <LoginTextStyle sx={{ display: isAboveSmall ? 'none' : 'block' }}>
+                Você está no modo anônimo. Entre com seu e-mail USP para salvar o progresso
+            </LoginTextStyle>
+        </Stack>
     );
 };
 

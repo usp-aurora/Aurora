@@ -9,8 +9,16 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UserAddedSubjectsController;
+use Inertia\Inertia;
 
-Route::get('/', [HomeController::class, 'index']);
+Route::get('/app', [HomeController::class, 'index']);
+Route::get('/anonymous', function () {
+    Auth::logout();
+    return redirect()->action([HomeController::class, 'index']);
+});
+Route::get('/', function () {
+    return Inertia::render('LandingPage');
+});
 Route::get('login', [LoginController::class, 'redirectToProvider']);
 Route::get('callback', [LoginController::class, 'handleProviderCallback']);
 Route::get('logout', [LoginController::class, 'logout']);

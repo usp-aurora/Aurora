@@ -7,15 +7,7 @@ const SYNC_INTERVAL = 1000;
 const PlansContext = createContext();
 
 function PlansProvider({ children, initialPlans, user }) {
-	const [plans, _setPlans] = useState(() => {
-		if (!user) {
-			const storedPlans = localStorage.getItem('plans');
-			if (storedPlans) {
-				return JSON.parse(storedPlans);
-			}
-		}
-		return initialPlans;
-	});
+	const [plans, _setPlans] = useState(initialPlans);
 
 	const [plansHistory, _setPlansHistory] = useState(initialPlans ? [{ state: initialPlans, action: null }] : []);
 	const [historyPointer, _setHistoryPointer] = useState(initialPlans ? 0 : -1);
@@ -43,6 +35,11 @@ function PlansProvider({ children, initialPlans, user }) {
    * @param {any} [newAction=null] - Action metadata related to the state change.
    */
 	const commitPlans = useCallback((newValue, newAction = null) => {
+		if (isSaved) {
+			setIsSaved(false);
+			setLastSavedPlans(plans);
+		}
+
 		_setPlans((prevState) => {
 			const evaluatedState = typeof newValue === 'function' ? newValue(prevState) : newValue;
 
@@ -53,10 +50,6 @@ function PlansProvider({ children, initialPlans, user }) {
 
 			_setHistoryPointer(prev => Math.min(prev + 1, STATES_LIMIT - 1));
 
-			if (isSaved) {
-				setIsSaved(false);
-				setLastSavedPlans(evaluatedState);
-			}
 			
 			return evaluatedState;
 		});
@@ -119,10 +112,13 @@ function PlansProvider({ children, initialPlans, user }) {
 	}, [user, plans, isSaved, lastSavedPlans]);
 
 	useEffect(() => {
-		const intervalId = setInterval(savePendingPlans, SYNC_INTERVAL);
+		let intervalId;
+		if (user) {
+			intervalId = setInterval(savePendingPlans, SYNC_INTERVAL);
+		}
 
 		function handleKeyDown(e) {
-			if (e.ctrlKey && e.key === 's') {
+			if (user && e.ctrlKey && e.key === 's') {
 				e.preventDefault();
 				savePendingPlans();
 			}
@@ -140,11 +136,11 @@ function PlansProvider({ children, initialPlans, user }) {
 		
 
 		return () => {
-			clearInterval(intervalId);
+			if (intervalId) clearInterval(intervalId);
 			window.removeEventListener('keydown', handleKeyDown);
 			window.removeEventListener('beforeunload', handleBeforeUnload);
 		};
-	}, [savePendingPlans, isSaved]);
+	}, [savePendingPlans, isSaved, user]);
 
 	return (
 		<PlansContext.Provider value={{ plans, plansSet, updatePlans, commitPlans, restoreCurrentPlans, undo, redo, isSaved }}>

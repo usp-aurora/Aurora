@@ -9,7 +9,6 @@ import RedoIcon from '@mui/icons-material/Redo';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
-import Tooltip from '@mui/material/Tooltip';
 
 import IconWrapper from '../../ui/Icons/IconWrapper';
 import { usePlansContext } from '../../Contexts/PlansContext';
@@ -74,29 +73,28 @@ function ToolBar() {
     };
 
     return (
-        <Container>   
-            <Stack spacing={1} direction="row">
-                <IconWrapper Icon={UndoIcon} onClick={undo} />
-                <IconWrapper Icon={RedoIcon} onClick={redo} /> 
-            </Stack>
-            <StyledText> {isSuggestedPlansView ? "Você está vendo a grade obrigatória recomendada" : "Arraste uma disciplina para adicioná-la ou removê-la do período desejado"} </StyledText>
-            <Stack spacing={1} direction="row">
-                {!isSaved && <CircularProgress size={20} color="inherit" />}
-                <IconWrapper 
-                    Icon={isSuggestedPlansView ? VisibilityOffOutlinedIcon : VisibilityOutlinedIcon} 
-                    onClick={toggleSuggestedPlansView} 
-                />
-                <Tooltip title={user ? "Exportar planejamento" : "Faça login para exportar o planejamento"} placement="top">
-                    <span>
-                        <ExportIconWrapper
-                            Icon={FileDownloadOutlinedIcon}
-                            onClick={handleExport}
-                            disabled={!user}
-                        />
-                    </span>
-                </Tooltip>
-            </Stack>
-        </Container>
+        <Stack>
+            <Container>
+                <Stack spacing={1} direction="row">
+                    <IconWrapper Icon={UndoIcon} onClick={undo} toolTipText="Desfazer ação"/>
+                    <IconWrapper Icon={RedoIcon} onClick={redo} toolTipText="Refazer ação"/>
+                </Stack>
+                <StyledText> {isSuggestedPlansView ? "Você está vendo a grade obrigatória recomendada" : "Arraste uma disciplina para adicioná-la ou removê-la do período desejado"} </StyledText>
+                <Stack spacing={1} direction="row">
+                    {!isSaved && user && <CircularProgress size={20} color="inherit" />}
+                    <IconWrapper
+                        Icon={isSuggestedPlansView ? VisibilityOffOutlinedIcon : VisibilityOutlinedIcon}
+                        onClick={toggleSuggestedPlansView}
+                        toolTipText='Visualizar grade obrigatória'
+                    />
+                    <IconWrapper Icon={FileDownloadOutlinedIcon}
+                                onClick={handleExport}
+                                disabled={!user}
+                                toolTipText={user ? "Exportar planejamento" : "Faça login para exportar o planejamento"}
+                                /> 
+                </Stack>
+            </Container>
+        </Stack>
     );
 }
 

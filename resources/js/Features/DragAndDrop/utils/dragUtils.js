@@ -99,7 +99,7 @@ function handleDragOver(event, draggedItem, setDraggedItem, updatePlans) {
 				// Add the subject to the new semester
 				return {
 					...semester,
-					subjects: [...semester.subjects.filter((subject) => subject.code !== draggedItem.code), draggedItem],
+					subjects: [...semester.subjects.filter((subject) => subject.code !== draggedItem.code), {"code": draggedItem.code, "container": targetContainer, "completed": 0}],
 				};
 			}
 			return semester;

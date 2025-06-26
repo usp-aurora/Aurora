@@ -24,7 +24,7 @@ const CompletionBarContainer = styled(Stack)(({ theme }) => ({
 function CompletionBar() {
 	const { subjectDataMap } = useSubjectMapContext();
 	const { plansSet } = usePlansContext();
-	const MANDATORY_NECESSARY = 111;
+	const MANDATORY_NECESSARY = 108;
 	const ELECTIVE_NECESSARY = 52;
 	const OPEN_ELECTIVE_NECESSARY = 24;
 	const SCIENCE_NECESSARY = 4;

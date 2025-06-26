@@ -72,7 +72,7 @@ class PlanController extends Controller
 
     public function export()
     {
-        $user = Auth()->user();
+        $user = Auth::user();
         if ($user == null) {
             return response()->json(['error' => 'User not authenticated.'], 401);
         }
@@ -196,7 +196,6 @@ class PlanController extends Controller
         $today = Carbon::today()->toDateString();
         $year = substr($today, 0, 4);
         $semester = substr($today, 5, 1) < "7" ? "1" : "2";
-        $currentClassPrefix = $year . $semester;
 
         $records = ReplicadoAcademicRecord::where("nusp", $nusp)
             ->get();
