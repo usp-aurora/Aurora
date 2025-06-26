@@ -20,7 +20,7 @@ function PlansProvider({ children, initialPlans, user }) {
 			new Set(
 				plans.flatMap(semester =>
 					semester.subjects
-						.filter(subject => subject.completed === 1)
+						.filter(subject => !!subject.completed)
 						.map(subject => subject.code)
 				)
 			),

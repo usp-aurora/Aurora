@@ -64,7 +64,7 @@ function CompletionBar() {
 				addCreditsToCategory(mandatoryCredits, subjectCode, totalCredits);
 			}
 			else if (groups.some(group => group.title === "Optativas de Estatística")) {
-				if (statisticsCredits >= STATISTICS_NECESSARY) {
+				if (statisticsCredits.planned >= STATISTICS_NECESSARY) {
 					subjectGroupsStack.push({ subjectCode, groups: groups.filter(group => group.title !== "Optativas de Estatística"), totalCredits });
 				}
 				else {
@@ -72,7 +72,7 @@ function CompletionBar() {
 				}
 			}
 			else if (groups.some(group => group.title === "Optativas de Humanidades")) {
-				if (humanitiesCredits >= HUMANITIES_NECESSARY) {
+				if (humanitiesCredits.planned >= HUMANITIES_NECESSARY) {
 					subjectGroupsStack.push({ subjectCode, groups: groups.filter(group => group.title !== "Optativas de Humanidades"), totalCredits });
 				}
 				else {
@@ -80,7 +80,7 @@ function CompletionBar() {
 				}
 			}
 			else if (groups.some(group => group.title === "Optativas de Ciências")) {
-				if (scienceCredits >= SCIENCE_NECESSARY) {
+				if (scienceCredits.planned >= SCIENCE_NECESSARY) {
 					subjectGroupsStack.push({ subjectCode, groups: groups.filter(group => group.title !== "Optativas de Ciências"), totalCredits });
 				}
 				else {
