@@ -3,11 +3,11 @@ import axios from 'axios';
 async function saveWithServer(unsavedPlans) {
 	try {
 		const response = await axios.post('/api/plans/sync', unsavedPlans);
-		
+
 		if (response.status === 200) {
 			return true
 		}
-		else{
+		else {
 			console.error('Server synchronization failed:', response.data);
 		}
 	} catch (error) {
@@ -17,10 +17,10 @@ async function saveWithServer(unsavedPlans) {
 }
 
 export async function savePlans(user, lastSavedPlans, currentPlans) {
-	if(!user) {
+	if (!user) {
 		return false;
 	}
-	
+
 	const unsavedPlans = [];
 	const lastSubjectsSet = new Set();
 

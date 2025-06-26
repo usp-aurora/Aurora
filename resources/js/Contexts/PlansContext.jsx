@@ -35,6 +35,11 @@ function PlansProvider({ children, initialPlans, user }) {
    * @param {any} [newAction=null] - Action metadata related to the state change.
    */
 	const commitPlans = useCallback((newValue, newAction = null) => {
+		if (isSaved) {
+			setIsSaved(false);
+			setLastSavedPlans(plans);
+		}
+
 		_setPlans((prevState) => {
 			const evaluatedState = typeof newValue === 'function' ? newValue(prevState) : newValue;
 
@@ -45,10 +50,6 @@ function PlansProvider({ children, initialPlans, user }) {
 
 			_setHistoryPointer(prev => Math.min(prev + 1, STATES_LIMIT - 1));
 
-			if (isSaved) {
-				setIsSaved(false);
-				setLastSavedPlans(evaluatedState);
-			}
 			
 			return evaluatedState;
 		});
