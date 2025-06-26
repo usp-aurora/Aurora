@@ -1,6 +1,6 @@
 import LinearProgress from '@mui/material/LinearProgress';
 import { styled } from "@mui/material/styles";
-import Typography from '@mui/material/Typography';
+import { Tooltip, Typography } from '@mui/material';
 
 const ProgressBarContainer = styled("div")(({}) => ({
 	display: "flex",
@@ -28,7 +28,7 @@ const ProgressValue = styled(Typography)(({ theme }) => ({
 	lineHeight: "8px",
 	whiteSpace: "nowrap",
 	marginLeft: "6px",
-	width: "40px",
+	width: "56px",
 	overflow: "hidden",
 	textOverflow: "ellipsis",
 
@@ -36,11 +36,11 @@ const ProgressValue = styled(Typography)(({ theme }) => ({
 		fontSize: "12px",
 		lineHeight: "12px",
 		marginLeft: "8px",
-		width: "60px"
+		width: "86px"
 	},
 }));
 
-const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
+const BorderLinearProgress = styled(LinearProgress)(({ theme, color }) => ({
 	flexGrow: 1,
 	borderRadius: 25,
 	position: 'relative',
@@ -57,6 +57,14 @@ const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
 
 	"& .MuiLinearProgress-bar":{
 		borderRadius: 25
+	},
+
+	"& .MuiLinearProgress-bar1":{
+		backgroundColor: theme.palette[color][500],
+	},
+
+	"& .MuiLinearProgress-bar2":{
+		backgroundColor: theme.palette[color][300],
 	}
 }));
 
@@ -68,7 +76,9 @@ const ProgressBar = ({ label, coursed, planned, needed, color}) => {
 		<ProgressBarContainer>
 			<ProgressLabel variant="body2">{label}</ProgressLabel>
 			<BorderLinearProgress variant="buffer" value={coursedPercentage} valueBuffer={plannedPercentage} color={color} />
-			<ProgressValue variant="caption">{`${coursed} / ${needed}`}</ProgressValue>
+			<Tooltip title="planejadas / concluídas / necessárias">
+				<ProgressValue variant="caption">{`${coursed} / ${planned} / ${needed}`}</ProgressValue>
+			</Tooltip>
 		</ProgressBarContainer>
 	);
 };

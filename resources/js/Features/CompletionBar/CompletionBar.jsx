@@ -23,7 +23,7 @@ const CompletionBarContainer = styled(Stack)(({ theme }) => ({
 
 function CompletionBar() {
 	const { subjectDataMap } = useSubjectMapContext();
-	const { plansSet } = usePlansContext();
+	const { plansSet, completedPlansSet } = usePlansContext();
 	const MANDATORY_NECESSARY = 108;
 	const ELECTIVE_NECESSARY = 52;
 	const OPEN_ELECTIVE_NECESSARY = 24;
@@ -32,12 +32,12 @@ function CompletionBar() {
 	const STATISTICS_NECESSARY = 4;
 
 	const completion = useMemo(() => {
-		let mandatoryCredits = 0;
-		let electiveCredits = 0;
-		let statisticsCredits = 0;
-		let humanitiesCredits = 0;
-		let scienceCredits = 0;
-		let openElectiveCredits = 0;
+		let mandatoryCredits = { "completed": 0, "planned": 0 };
+		let electiveCredits = { "completed": 0, "planned": 0 };
+		let statisticsCredits = { "completed": 0, "planned": 0 };
+		let humanitiesCredits = { "completed": 0, "planned": 0 };
+		let scienceCredits = { "completed": 0, "planned": 0 };
+		let openElectiveCredits = { "completed": 0, "planned": 0 };
 
 		const subjectGroupsStack = [];
 		plansSet.forEach(subjectCode => {
@@ -50,19 +50,25 @@ function CompletionBar() {
 			}
 		});
 
+		function addCreditsToCategory(category, subjectCode, totalCredits) {
+			category.planned += totalCredits;
+			if (completedPlansSet.has(subjectCode)) {
+				category.completed += totalCredits;
+			}
+		}
 
 		while (subjectGroupsStack.length > 0) {
 			let { subjectCode, groups, totalCredits } = subjectGroupsStack.shift();
 
 			if (groups.some(group => group.title === "Obrigatórias")) {
-				mandatoryCredits += totalCredits;
+				addCreditsToCategory(mandatoryCredits, subjectCode, totalCredits);
 			}
 			else if (groups.some(group => group.title === "Optativas de Estatística")) {
 				if (statisticsCredits >= STATISTICS_NECESSARY) {
 					subjectGroupsStack.push({ subjectCode, groups: groups.filter(group => group.title !== "Optativas de Estatística"), totalCredits });
 				}
 				else {
-					statisticsCredits += totalCredits;
+					addCreditsToCategory(statisticsCredits, subjectCode, totalCredits);
 				}
 			}
 			else if (groups.some(group => group.title === "Optativas de Humanidades")) {
@@ -70,7 +76,7 @@ function CompletionBar() {
 					subjectGroupsStack.push({ subjectCode, groups: groups.filter(group => group.title !== "Optativas de Humanidades"), totalCredits });
 				}
 				else {
-					humanitiesCredits += totalCredits;
+					addCreditsToCategory(humanitiesCredits, subjectCode, totalCredits);
 				}
 			}
 			else if (groups.some(group => group.title === "Optativas de Ciências")) {
@@ -78,7 +84,7 @@ function CompletionBar() {
 					subjectGroupsStack.push({ subjectCode, groups: groups.filter(group => group.title !== "Optativas de Ciências"), totalCredits });
 				}
 				else {
-					scienceCredits += totalCredits;
+					addCreditsToCategory(scienceCredits, subjectCode, totalCredits);
 				}
 			}
 			else if (groups.length > 0) {
@@ -86,19 +92,19 @@ function CompletionBar() {
 					subjectGroupsStack.push({ subjectCode, groups: [], totalCredits });
 				}
 				else {
-					electiveCredits += totalCredits;
+					addCreditsToCategory(electiveCredits, subjectCode, totalCredits);
 				}
 			}
 			else {
-				openElectiveCredits += totalCredits;
+				addCreditsToCategory(openElectiveCredits, subjectCode, totalCredits);
 			}
 		}
 		return { "mandatory": mandatoryCredits, "elective": electiveCredits, "openElective": openElectiveCredits };
 	}, [subjectDataMap, plansSet]);
 
-	const mandatory = { label: "Obrigatórias", coursed: completion["mandatory"], planned: 0, needed: MANDATORY_NECESSARY };
-	const elective = { label: "Optativas", coursed: completion["elective"], planned: 0, needed: ELECTIVE_NECESSARY };
-	const livres = { label: "Livres", coursed: completion["openElective"], planned: 0, needed: OPEN_ELECTIVE_NECESSARY }
+	const mandatory = { label: "Obrigatórias", coursed: completion["mandatory"].completed, planned: completion["mandatory"].planned, needed: MANDATORY_NECESSARY };
+	const elective = { label: "Optativas", coursed: completion["elective"].completed, planned: completion["elective"].planned, needed: ELECTIVE_NECESSARY };
+	const livres = { label: "Livres", coursed: completion["openElective"].completed, planned: completion["openElective"].planned, needed: OPEN_ELECTIVE_NECESSARY }
 
 	return (
 		<CompletionBarContainer>
