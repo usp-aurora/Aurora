@@ -23,7 +23,7 @@ import Background from '../Features/Background/HomeBackground';
 
 const LandingPage = () => {
   return (
-    <Box sx={{  }}>
+    <Box sx={{ overflow: 'hidden', position: 'relative' }}>
       <Background />
       <Box
         component="header"
@@ -51,8 +51,7 @@ const LandingPage = () => {
             flexDirection: { xs: 'column', md: 'row' },
             alignItems: 'center',
             justifyContent: 'space-between',
-            minHeight: '90vh',
-            py: 4,
+            mb: { xs: 8, md: 25 },
           }}
         >
           {/* Texto */}
@@ -60,12 +59,12 @@ const LandingPage = () => {
             sx={{
               flex: 1,
               pr: { md: 4 },
-              textAlign: { xs: 'center', md: 'left' },
-              mb: { xs: 4, md: 0 },
+              textAlign: 'left',
+              mb: { xs: 0, md: 0 },
             }}
           >
-            <Typography variant="h1" sx={{ fontWeight: 'bold', mb: 6, fontSize: '72px' }}>
-              SEU SEMESTRE <br /> <br />
+            <Typography variant="h1" sx={{ fontWeight: 'bold', mb: 6, fontSize: '72px', lineHeight: 1 }}>
+              SEU SEMESTRE <br /> 
               COMEÇA AQUI
             </Typography>
             <Typography variant="body1" sx={{ mb: 6, opacity: 0.8, fontSize: '18px', textAlign: 'justify' }}>
@@ -102,7 +101,7 @@ const LandingPage = () => {
                     backgroundColor: 'transparent',  
                   }
                 }} 
-                onClick={() => window.location.href = '/'}
+                onClick={() => window.location.href = '/anonymous'}
               >
 
                 <u>modo anônimo</u>
@@ -116,6 +115,7 @@ const LandingPage = () => {
               flex: 1,
               position: 'relative',
               height: { xs: 300, md: 450 },
+              display: { xs: 'none', md: 'flex'}
             }}
           >
             {/* Globo atrás */}
@@ -127,7 +127,6 @@ const LandingPage = () => {
                 position: 'absolute',
                 bottom: '17%',
                 left: '10%',
-                // transform: 'translate(-50%, -50%)',
                 width: { xs: '80%', md: '90%' },
                 maxWidth: 550,
                 zIndex: 1,
@@ -143,7 +142,6 @@ const LandingPage = () => {
                 position: 'absolute',
                 top: '-21%',
                 left: '-15%',
-                // transform: 'translate(-0%, -60%)',
                 width: '140%',
                 maxWidth: 1050,
                 zIndex: 2,
@@ -156,12 +154,11 @@ const LandingPage = () => {
         <Box
           component="section"
           sx={{
-            py: 8,
             textAlign: 'center',
           }}
         >
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 4 }}>
-            <Typography variant="h1" sx={{ fontWeight: 'bold', mr: 1 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 4, flexDirection: { xs: 'column', md: 'row' },}}>
+            <Typography variant="h3" sx={{ fontWeight: 'bold', mr: 1,  }}>
               Planeje seus semestres com 
             </Typography>
             <Logo />
@@ -259,11 +256,11 @@ const LandingPage = () => {
         <Box
           component="section"
           sx={{
-            py: 8,
             display: 'flex',
             flexDirection: { xs: 'column', md: 'row' },
             alignItems: 'center',
             gap: 4,
+            mt: 8,
           }}
         >
           <Box sx={{ flex: 1 }}>
@@ -290,6 +287,7 @@ const LandingPage = () => {
           >
             <Box
               sx ={{
+                display: { xs: 'none', md: 'block' },
                 maxWidth: '100%',
                 height: '60vh',                 // quanto de altura você quer exibir
                 backgroundImage: `url(${laptopFrente})`,
@@ -297,6 +295,7 @@ const LandingPage = () => {
                 backgroundPosition: `center center`,
                 backgroundSize: `140% auto`, // zoom de 200% na largura; ‘auto’ preserva proporção
                 borderRadius: 3,
+                mb: {xs : 0, md: 8}
               }}
             />
           </Box>
@@ -306,7 +305,6 @@ const LandingPage = () => {
         <Box
           component="footer"
           sx={{
-            py: 2,
             textAlign: 'center',
           }}
         >

@@ -45,7 +45,7 @@ class LoginController extends Controller
     		$user->save();
     	} 
     	Auth::login($user, true);
-    	return redirect('/');
+    	return redirect('/app');
     }
     
     
