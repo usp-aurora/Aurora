@@ -9,6 +9,8 @@ use Carbon\Carbon;
 use App\Models\Plan;
 use App\Models\Replicado\ReplicadoAcademicRecord;
 use App\Models\SuggestedPlan;
+use App\Models\Group;
+use App\Models\GroupSubject;
 use Illuminate\Support\Facades\Log;
 use function Spatie\LaravelPdf\Support\pdf;
 
@@ -16,7 +18,7 @@ class PlanController extends Controller
 {
     public function index()
     {
-        $plans = $this->getPlans(auth()->user() == null);
+        $plans = $this->getPlans(Auth::user() == null);
         $plannedSubjects = [];
         foreach ($plans as $plan) {
             if (isset($plan['subjects']) && is_array($plan['subjects'])) {
@@ -33,6 +35,39 @@ class PlanController extends Controller
     public function getSuggestedPlans()
     {
         return $this->getPlans(True);
+    }
+
+    public function getPlansWithDefaultGroup(){
+        $user = Auth::user();
+        if ($user == null) {
+            return [];
+        }
+        
+        $plans = Plan::where('user_id', $user->id)
+            ->select('subject_code')
+            ->get();
+
+        $defaultGroup = Group::where('title', 'Optativas Livres')->first();
+        if (!$defaultGroup) {
+            return [];
+        }
+        
+        $result = [];
+        
+        foreach ($plans as $plan) {
+            $subjectCode = $plan->subject_code;
+            
+            $belongsToGroup = GroupSubject::where('subject_code', $subjectCode)->exists();
+            
+            if (!$belongsToGroup) {
+                $result[] = [
+                    'subjectCode' => $subjectCode,
+                    'groupId' => $defaultGroup->id
+                ];
+            }
+        }
+
+        return $result;
     }
 
     public function export()
@@ -78,7 +113,7 @@ class PlanController extends Controller
 
     public function sync(Request $request)
     {
-        $userId = Auth()->user()->id;
+        $userId = Auth::user()->id;
         $changes = $request->json()->all();
         $userPlans = Plan::where('user_id', $userId)->get();
         $changedPlans = [];
@@ -232,7 +267,7 @@ class PlanController extends Controller
     {
         try {
             $plan = Plan::create([
-                'user_id' => auth()->user()->id,
+                'user_id' => Auth::user()->id,
                 'subject_code' => $subject_code,
                 'semester' => $semester,
                 'completed' => $completed

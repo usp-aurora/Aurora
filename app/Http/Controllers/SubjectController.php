@@ -5,15 +5,35 @@ namespace App\Http\Controllers;
 use App\Models\Replicado\ReplicadoSubject;
 use App\Models\Replicado\ReplicadoSubjectRequirement;
 use App\Http\Controllers\GroupController;
+use App\Http\Controllers\UserAddedSubjectsController;
 
 class SubjectController extends Controller
 {
+    public function getSubjectWithGroups($subjectCode) {
+        return $this->getSubjectsWithGroups([$subjectCode]);
+    }
+
     public function getSubjectsWithGroups($subjectCodes) {
         $subjects = $this->getSubjectsById($subjectCodes);
 
 		$groupController = new GroupController();
-		$subjects = $subjects->transform(function ($subject, $code) use ($groupController) {
+        $userAddedSubjectsController = new UserAddedSubjectsController();
+		$subjects = $subjects->transform(function ($subject, $code) use ($groupController, $userAddedSubjectsController) {
 			$subject['groups'] = $groupController->getSubjectRootGroups($code);
+            $userAddedGroup = $userAddedSubjectsController->getGroup($code);
+            if ($userAddedGroup !== null) {
+                $subject['groups'][] = $userAddedGroup;
+            }
+
+            if (empty($subject["groups"])) {
+                $subject["groups"] = [
+                    [
+                        'title' => 'Optativas Livres',
+                        'color' => 'cyan'
+                    ]
+                ];
+            }
+
 			return $subject;
 		});
         
@@ -36,8 +56,10 @@ class SubjectController extends Controller
 		return $transformedSubjects;
 	}
 
-    public function getSubjectById($subjectCode) {
-		return $this->getSubjectsById([$subjectCode]);
+    public function exists($code)
+	{
+		$exists = ReplicadoSubject::where('code', $code)->exists();
+	    return response()->json(['exists' => $exists]);
 	}
 
     public function getSubjectRequirements($subjectCode)

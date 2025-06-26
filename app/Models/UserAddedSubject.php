@@ -6,27 +6,28 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Curriculum extends Model
+class UserAddedSubject extends Model
 {
     use HasFactory;
-    
-    protected $table = 'curriculums';
-    
+
+    protected $table = 'user_added_subjects';
+
     protected $fillable = [
-        'course_id',
+        'user_id',
         'group_id',
+        'subject_code',
     ];
 
     /**
-     * Get the course that owns the Curriculum
+     * Get the user that owns the UserAddedSubjects
      */
-    public function course(): BelongsTo
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(Course::class);
+        return $this->belongsTo(User::class);
     }
 
     /**
-     * Get the group that owns the Curriculum
+     * Get the group that owns the UserAddedSubjects
      */
     public function group(): BelongsTo
     {

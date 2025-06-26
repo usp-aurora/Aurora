@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from "react";
 import { styled } from "@mui/material/styles";
 import { Box } from "@mui/material";
 import Group from "./Group";
+import { useAddSubjectContext } from "../../AddSubject/AddSubjectContext";
 import { useGroupsContext } from "../../../Contexts/GroupsContext";
 
 import { usePlansContext } from "@/Contexts/PlansContext";
@@ -30,9 +31,8 @@ function SubjectPickerList() {
     const toggleCategory = useCallback(function(index){
         setExpandedCategory((prevCategory) => (prevCategory === index) ? null : index);
     }, []);
-
+    
     return (
-        // Algum dia vai ter um search bar bem aqui
         <GroupContainer>
             {groups.subgroups.map((groupData, index) => (
                 <Group

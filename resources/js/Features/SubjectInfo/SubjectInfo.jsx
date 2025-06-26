@@ -67,10 +67,10 @@ const ProgressIndicatorContainer = styled('div')(() => ({
 	height: "100%"
 }));
 
-const loadGraphData = async (rootSubject, setGraphData, addSubjectData) => {
+const loadGraphData = async (rootSubject, setGraphData, addNewSubjectData) => {
 	axios.get(`/api/requirement/${rootSubject}`)
 		.then(response => {
-			addSubjectData(response.data.subjectData);
+			addNewSubjectData(response.data.subjectData);
 			
 			const formattedNodes = new Map(
 				Object.entries(response.data.nodes)
@@ -107,14 +107,14 @@ function SubjectInfoGraph({ nodes, links, root }) {
 
 function SubjectInfo() {
 	const { subjectInfo, isSubjectInfoModalOpen, closeSubjectInfoModal } = useSubjectInfoContext();
-	const { addSubjectData } = useSubjectMapContext();
+	const { addNewSubjectData } = useSubjectMapContext();
 
 	const emptyData = { links: [], nodes: [], root: null };
 	const [graphData, setGraphData] = useState(emptyData);
 
 	useEffect(() => {
 		if (subjectInfo.code){
-			loadGraphData(subjectInfo.code, setGraphData, addSubjectData);
+			loadGraphData(subjectInfo.code, setGraphData, addNewSubjectData);
 		}
 	}, [subjectInfo]);
 

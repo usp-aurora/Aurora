@@ -14,7 +14,7 @@ import Tooltip from '@mui/material/Tooltip';
 import IconWrapper from '../../ui/Icons/IconWrapper';
 import { usePlansContext } from '../../Contexts/PlansContext';
 import { useViewMode } from '../../Contexts/ViewModeContext';
-import { useAuth } from '../../Contexts/AuthContext';
+import { useAuthContext } from '../../Contexts/AuthContext';
 
 const Container = styled("div")({
     display: "flex",
@@ -49,7 +49,7 @@ const ExportIconWrapper = styled(IconWrapper)(({ theme, disabled }) => ({
 function ToolBar() {
     const { undo, redo, isSaved } = usePlansContext();
     const { isSuggestedPlansView, toggleSuggestedPlansView } = useViewMode();
-    const { user } = useAuth();
+    const { user } = useAuthContext();
 
     useEffect(() => {
         function handleKeyDown(event) {

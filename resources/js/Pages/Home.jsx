@@ -6,6 +6,7 @@ import CompletionBar from "../Features/CompletionBar/CompletionBar";
 import Header from "../Features/Header/Header";
 import Semesters from "../Features/Semesters/Semesters";
 import SubjectInfo from "../Features/SubjectInfo/SubjectInfo";
+import AddSubjectDialog from "../Features/AddSubject/AddSubjectDialog"
 import { SubjectPickerDesktop, SubjectPickerMobile } from "../Features/SubjectPicker/";
 import ToolBar from '../Features/ToolBar/ToolBar';
 
@@ -34,7 +35,8 @@ const Home = ({ groups, initialPlans, suggestedPlans, subjects, user }) => {
             suggestedPlans={suggestedPlans}
             subjects={subjects} 
             user={user}
-        >
+        >   
+            <AddSubjectDialog />
             <SubjectInfo />
             {!isAboveSmall && <SubjectPickerMobile/>}
             <Background />

@@ -204,8 +204,8 @@ class GroupsSeeder extends Seeder
             ],
             [
                 'id' => 29,
-                'title' => "Optativas Eletivas",
-                'Description' => "Para se formar, o aluno tem que obter pelo menos 52 créditos de optativas eletivas.", 
+                'title' => "Outras Optativas Eletivas",
+                'Description' => "Disciplinas que não pertencem a nenhuma trilha específica, mas são válidas para o curso como eletivas.", 
                 'parent_group_id' => 1,
                 'color' => 'orange',
                 'is_course_root' => false
@@ -213,7 +213,7 @@ class GroupsSeeder extends Seeder
             [
                 'id' => 30,
                 'title' => "Optativas de Estatística",
-                'Description' => "Para se formar, o aluno tem que obter pelo menos 4 créditos em uma optativa dessa categoria.", 
+                'Description' => "Disciplinas optativas relacionadas à estatística e probabilidade. É necessário cursar pelo menos 4 créditos para conclusão do curso", 
                 'parent_group_id' => 1,
                 'color' => 'gray',
                 'is_course_root' => false
@@ -221,7 +221,7 @@ class GroupsSeeder extends Seeder
             [
                 'id' => 31,
                 'title' => "Optativas de Humanidades",
-                'Description' => "Para se formar, o aluno tem que obter pelo menos 3 créditos em uma optativa dessa categoria.", 
+                'Description' => "Disciplinas optativas relacionadas às humanidades. É necessário cursar pelo menos 3 créditos para conclusão do curso", 
                 'parent_group_id' => 1,
                 'color' => 'pink',
                 'is_course_root' => false
@@ -229,12 +229,19 @@ class GroupsSeeder extends Seeder
             [
                 'id' => 32,
                 'title' => "Optativas de Ciências",
-                'Description' => "Para se formar, o aluno tem que obter pelo menos 4 créditos em uma optativa dessa categoria.", 
+                'Description' => "Disciplinas optativas relacionadas às ciências. É necessário cursar pelo menos 4 créditos para conclusão do curso", 
                 'parent_group_id' => 1,
                 'color' => 'brown',
                 'is_course_root' => false
             ],
-            
+            [
+                'id' => 33,
+                'title' => "Optativas Livres",
+                'Description' => "Disciplinas cursadas em qualquer unidade da USP e que são contabilizadas como livres.", 
+                'parent_group_id' => 1,
+                'color' => 'cyan',
+                'is_course_root' => false
+            ],
         ];
 
         foreach ($groups as $group) {

@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\DB;
+use App\Models\Curriculum;
+use App\Models\Group;
+use App\Models\GroupSubject;
+use App\Models\CompletionRequirement;
 
 class GroupController extends Controller {
 
     public function getSubjectRootGroups($subject_code){
-        $groups = DB::table('group_subjects')
-            ->where('group_subjects.subject_code', '=', $subject_code)
+        $groups = GroupSubject::where('group_subjects.subject_code', '=', $subject_code)
             ->select(["group_id"])
             ->get();
 
@@ -25,10 +27,15 @@ class GroupController extends Controller {
         return $groupRoots;
     }
 
+    public function subjectBelongsToGroup($code)
+	{
+		$exists = GroupSubject::where('subject_code', $code)->exists();
+	    return response()->json(['exists' => $exists]);
+	}
+
     public function loadCourseGroups($curriculum_id)
     {
-        $curriculum = DB::table('curriculums')
-            ->where('id', '=', $curriculum_id)
+        $curriculum = Curriculum::where('id', '=', $curriculum_id)
             ->select(["group_id"])
             ->first();
 
@@ -40,10 +47,67 @@ class GroupController extends Controller {
         return ($this->recursiveLoadCourseGroups($rootGroupId));
     }
 
+    public function getGroupSubjects($groupArray) {
+        if (!$groupArray["subgroups"]) {
+            return array_column($groupArray["subjects"], 'code');
+        }
+        $result = [];
+        foreach ($groupArray["subgroups"] as $subgroup) {
+            $subjects = $this->getGroupSubjects($subgroup);
+            $result = array_merge($result, $subjects);
+        }
+        return $result;
+    }
+
+    // Subjects must be a list like 
+    //  [["subjectCode" => <code>, "groupId" => <groupId>], ...]
+    public function attachSubjectsToGroupsMap($groups, $subjects) {
+        $addSubjectToGroup = function (&$group, $groupId, $subjectCode) use (&$addSubjectToGroup) {
+            if (isset($group['id']) && $group['id'] == $groupId) {
+                if (!in_array($subjectCode, $group['subjects'])) {
+                    $group['subjects'][] = ["code" => $subjectCode, "mandatory" => 0];
+                }
+            }
+            if (isset($group['subgroups'])) {
+                foreach ($group['subgroups'] as &$subgroup) {
+                    $addSubjectToGroup($subgroup, $groupId, $subjectCode);
+                }
+            }
+        };
+
+        foreach ($subjects as $subject) {
+            $groupId = $subject['groupId'];
+            $subjectCode = $subject['subjectCode'];
+            $addSubjectToGroup($groups, $groupId, $subjectCode);
+        }
+        
+        return $groups;
+    }
+
+    private function getGroupRoot($groupId){
+        $group = Group::where('groups.id', '=', $groupId)
+            ->where('groups.id', '=', $groupId)
+            ->select(["id", "title", "color", "parent_group_id", "is_course_root"])
+            ->first();
+
+        return $this->getGroupRootRecursive($group);
+    }  
+
+    private function getGroupRootRecursive($group){
+        $parentGroup = Group::where('groups.id', '=', $group->parent_group_id)
+            ->select(["id", "title", "color",  "parent_group_id", "is_course_root"])
+            ->first();
+            
+        if($parentGroup->is_course_root){
+            return $group;
+        } else {
+            return $this->getGroupRootRecursive($parentGroup);
+        }
+    }
+
     private function recursiveLoadCourseGroups($groupId)
     {
-        $group = DB::table('groups')
-            ->where('groups.id', '=', $groupId)
+        $group = Group::where('groups.id', '=', $groupId)
             ->select(["title", "description", "mandatory", "color", "id"])
             ->first();
 
@@ -57,8 +121,8 @@ class GroupController extends Controller {
             'subjects' => [],
             'subgroups' => []
         ];
-        $subjects = DB::table('group_subjects')
-            ->where('group_subjects.group_id', '=', $group->id)
+
+        $subjects = GroupSubject::where('group_subjects.group_id', '=', $group->id)
             ->orderBy('group_subjects.mandatory', 'desc')
             ->select(["group_subjects.subject_code", "group_subjects.mandatory"])
             ->get();
@@ -69,8 +133,7 @@ class GroupController extends Controller {
                 'mandatory' => $subject->mandatory
             ];}
 
-        $completionRequirements = DB::table('completion_requirements')
-            ->where('completion_requirements.group_id', '=', $group->id)
+        $completionRequirements = CompletionRequirement::where('completion_requirements.group_id', '=', $group->id)
             ->select(["type", "completion_value"])->get();
 
         foreach ($completionRequirements as $requirement) {
@@ -79,8 +142,8 @@ class GroupController extends Controller {
                 'value' => $requirement->completion_value
             ];
         }
-        $subgroups = DB::table('groups')
-            ->where('groups.parent_group_id', '=', $group->id)
+
+        $subgroups = Group::where('groups.parent_group_id', '=', $group->id)
             ->select("id")->get();
 
         foreach ($subgroups as $subgroup) {
@@ -88,40 +151,6 @@ class GroupController extends Controller {
         }
 
         return $groupJSON;
-    }
-
-    private function getGroupRoot($groupId){
-        $group = DB::table('groups')
-            ->where('groups.id', '=', $groupId)
-            ->select(["id", "title", "color", "parent_group_id", "is_course_root"])
-            ->first();
-
-        return $this->getGroupRootRecursive($group);
-    }  
-
-    private function getGroupRootRecursive($group){
-        $parentGroup = DB::table('groups')
-            ->where('groups.id', '=', $group->parent_group_id)
-            ->select(["id", "title", "color",  "parent_group_id", "is_course_root"])
-            ->first();
-            
-        if($parentGroup->is_course_root){
-            return $group;
-        } else {
-            return $this->getGroupRootRecursive($parentGroup);
-        }
-    }
-
-    public function getGroupSubjects($groupArray) {
-        if (!$groupArray["subgroups"]) {
-            return array_column($groupArray["subjects"], 'code');
-        }
-        $result = [];
-        foreach ($groupArray["subgroups"] as $subgroup) {
-            $subjects = $this->getGroupSubjects($subgroup);
-            $result = array_merge($result, $subjects);
-        }
-        return $result;
     }
 }
 

@@ -6,6 +6,7 @@ import { SubjectInfoProvider } from '../Features/SubjectInfo/SubjectInfoContext'
 import { SubjectPickerProvider } from '../Features/SubjectPicker/SubjectPickerContext';
 import { DragAndDropProvider } from '../Features/DragAndDrop/DragAndDropContext';
 import { ViewModeProvider } from './ViewModeContext';
+import { AddSubjectProvider } from "../Features/AddSubject/AddSubjectContext";
 
 const AppProviders = ({ children, groups, initialPlans, suggestedPlans, subjects, user }) => {
     return (
@@ -16,9 +17,11 @@ const AppProviders = ({ children, groups, initialPlans, suggestedPlans, subjects
                         <ViewModeProvider suggestedPlans={suggestedPlans}>
                             <SubjectInfoProvider>
                                 <SubjectPickerProvider>
-                                    <DragAndDropProvider>
-                                        {children}
-                                    </DragAndDropProvider>
+                                    <AddSubjectProvider user={user}>
+                                        <DragAndDropProvider>
+                                            {children}
+                                        </DragAndDropProvider>
+                                    </AddSubjectProvider>
                                 </SubjectPickerProvider>
                             </SubjectInfoProvider>
                         </ViewModeProvider>
