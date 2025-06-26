@@ -19,6 +19,10 @@ import { useEffect, useState } from 'react';
 
 const SubjectInfoBackground = styled(Modal)(({ theme }) => ({
 	padding: theme.spacing(1),
+	display: 'flex',
+	justifyContent: 'center',
+	alignItems: 'center',
+
 }));
 
 const SubjectInfoContainer = styled('div')(({ theme }) => ({
@@ -30,12 +34,14 @@ const SubjectInfoContainer = styled('div')(({ theme }) => ({
 	borderRadius: '12px',
 	width: '100%',
 	height: '100%',
-
+	
 	padding: theme.spacing(1),
 	gap: theme.spacing(2),
 	[theme.breakpoints.up('sm')]:{
 		padding: theme.spacing(3),
 		gap: theme.spacing(3),
+		maxWidth: "800px",
+		maxHeight: "90vh",
 	}
 }));
 
@@ -67,7 +73,8 @@ const ProgressIndicatorContainer = styled('div')(() => ({
 	height: "100%"
 }));
 
-const loadGraphData = async (rootSubject, setGraphData, addNewSubjectData) => {
+const loadGraphData = async (rootSubject, setGraphData, addNewSubjectData, setIsLoading) => {
+	setIsLoading(true);
 	axios.get(`/api/requirement/${rootSubject}`)
 		.then(response => {
 			addNewSubjectData(response.data.subjectData);
@@ -96,7 +103,12 @@ const loadGraphData = async (rootSubject, setGraphData, addNewSubjectData) => {
 			);
 
 			setGraphData({ nodes: formattedNodes, links: formattedLinks, root: rootSubject });
+			setIsLoading(false);
 		})
+		.catch(error => {
+			console.error('Error loading graph data:', error);
+			setIsLoading(false);
+		});
 };
 
 function SubjectInfoGraph({ nodes, links, root }) {
@@ -109,18 +121,20 @@ function SubjectInfo() {
 	const { subjectInfo, isSubjectInfoModalOpen, closeSubjectInfoModal } = useSubjectInfoContext();
 	const { addNewSubjectData } = useSubjectMapContext();
 
-	const emptyData = { links: [], nodes: [], root: null };
+	const emptyData = { links: new Map(), nodes: new Map(), root: null };
 	const [graphData, setGraphData] = useState(emptyData);
+	const [isLoading, setIsLoading] = useState(false);
 
 	useEffect(() => {
 		if (subjectInfo.code){
-			loadGraphData(subjectInfo.code, setGraphData, addNewSubjectData);
+			loadGraphData(subjectInfo.code, setGraphData, addNewSubjectData, setIsLoading);
 		}
 	}, [subjectInfo]);
 
 	useEffect(() => {
 		if (!isSubjectInfoModalOpen) {
 			setGraphData(emptyData);
+			setIsLoading(false);
 		}
 	}, [isSubjectInfoModalOpen]);
 
@@ -136,7 +150,7 @@ function SubjectInfo() {
 						credits={subjectInfo.credits} />
 					<SubjectInfoText desc={subjectInfo.desc} />
 					<CorseInfoGraphContainer>
-						{graphData.nodes.size > 0 && graphData.root ?
+						{!isLoading && graphData.nodes.size > 0 && graphData.root ?
 							<SubjectInfoGraph nodes={graphData.nodes} links={graphData.links} root={graphData.root} />
 							:
 							<ProgressIndicatorContainer>
