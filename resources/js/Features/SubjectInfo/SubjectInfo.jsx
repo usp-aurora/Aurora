@@ -123,14 +123,11 @@ function SubjectInfo() {
 	const { subjectInfo, isSubjectInfoModalOpen, closeSubjectInfoModal } = useSubjectInfoContext();
 	const { closeSubjectPickerModal, selectedSemesterMobile } = useSubjectPickerContext();
 	const { addNewSubjectData } = useSubjectMapContext();
-	const { plans, commitPlans, checkSubjectConcluded } = usePlansContext();
+	const { commitPlans } = usePlansContext();
 
 	const emptyData = { links: new Map(), nodes: new Map(), root: null };
 	const [graphData, setGraphData] = useState(emptyData);
 	const [isLoading, setIsLoading] = useState(false);
-
-	
-	const isConcluded = checkSubjectConcluded(subjectInfo.code);
 
 	function handleAddSubject() {
 		if(!selectedSemesterMobile){
@@ -211,7 +208,7 @@ function SubjectInfo() {
 						}
 					</CorseInfoGraphContainer>
 					<Stack direction="row" sx={{ display: { xs: 'flex', sm: 'none' } }}>
-						{!isConcluded && (subjectInfo.isPlanned
+						{!subjectInfo.isCompleted && (subjectInfo.isPlanned
 							? <IconWrapper color="error" Icon={DeleteIcon} sx={{ marginLeft: 'auto' }} onClick={handleDeleteSubject} />
 							: <Button color="primary" size="small" sx={{ marginLeft: 'auto' }} onClick={handleAddSubject}> Adicionar </Button>
 						)}

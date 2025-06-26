@@ -15,6 +15,17 @@ function PlansProvider({ children, initialPlans, user }) {
 	const [isSaved, setIsSaved] = useState(true);
 
 	const plansSet = useMemo(() => new Set(plans.flatMap(semester => semester.subjects.map(subject => subject.code))), [plans]);
+	const completedPlansSet = useMemo(
+		() =>
+			new Set(
+				plans.flatMap(semester =>
+					semester.subjects
+						.filter(subject => subject.completed === 1)
+						.map(subject => subject.code)
+				)
+			),
+		[plans]
+	);
 
 	/**
 	 * Updates the plans state locally without modifying history.
@@ -111,10 +122,6 @@ function PlansProvider({ children, initialPlans, user }) {
 		}
 	}, [user, plans, isSaved, lastSavedPlans]);
 
-	function checkSubjectConcluded(subject) {
-		return plans.some(semester => semester.subjects.some(s => s.code === subject && s.completed))
-	};
-
 	useEffect(() => {
 		let intervalId;
 		if (user) {
@@ -147,7 +154,7 @@ function PlansProvider({ children, initialPlans, user }) {
 	}, [savePendingPlans, isSaved, user]);
 
 	return (
-		<PlansContext.Provider value={{ plans, plansSet, updatePlans, commitPlans, restoreCurrentPlans, undo, redo, isSaved, checkSubjectConcluded }}>
+		<PlansContext.Provider value={{ plans, plansSet, completedPlansSet, updatePlans, commitPlans, restoreCurrentPlans, undo, redo, isSaved }}>
 			{children}
 		</PlansContext.Provider>
 	);
