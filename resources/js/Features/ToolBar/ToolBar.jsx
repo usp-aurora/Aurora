@@ -9,7 +9,6 @@ import RedoIcon from '@mui/icons-material/Redo';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
-import Tooltip from '@mui/material/Tooltip';
 
 import IconWrapper from '../../ui/Icons/IconWrapper';
 import { usePlansContext } from '../../Contexts/PlansContext';
@@ -82,7 +81,7 @@ function ToolBar() {
                 </Stack>
                 <StyledText> {isSuggestedPlansView ? "Você está vendo a grade obrigatória recomendada" : "Arraste uma disciplina para adicioná-la ou removê-la do período desejado"} </StyledText>
                 <Stack spacing={1} direction="row">
-                    {!isSaved && <CircularProgress size={20} color="inherit" />}
+                    {!isSaved && user && <CircularProgress size={20} color="inherit" />}
                     <IconWrapper
                         Icon={isSuggestedPlansView ? VisibilityOffOutlinedIcon : VisibilityOutlinedIcon}
                         onClick={toggleSuggestedPlansView}

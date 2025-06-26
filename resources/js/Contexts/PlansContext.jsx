@@ -7,15 +7,7 @@ const SYNC_INTERVAL = 1000;
 const PlansContext = createContext();
 
 function PlansProvider({ children, initialPlans, user }) {
-	const [plans, _setPlans] = useState(() => {
-		if (!user) {
-			const storedPlans = localStorage.getItem('plans');
-			if (storedPlans) {
-				return JSON.parse(storedPlans);
-			}
-		}
-		return initialPlans;
-	});
+	const [plans, _setPlans] = useState(initialPlans);
 
 	const [plansHistory, _setPlansHistory] = useState(initialPlans ? [{ state: initialPlans, action: null }] : []);
 	const [historyPointer, _setHistoryPointer] = useState(initialPlans ? 0 : -1);
@@ -119,10 +111,13 @@ function PlansProvider({ children, initialPlans, user }) {
 	}, [user, plans, isSaved, lastSavedPlans]);
 
 	useEffect(() => {
-		const intervalId = setInterval(savePendingPlans, SYNC_INTERVAL);
+		let intervalId;
+		if (user) {
+			intervalId = setInterval(savePendingPlans, SYNC_INTERVAL);
+		}
 
 		function handleKeyDown(e) {
-			if (e.ctrlKey && e.key === 's') {
+			if (user && e.ctrlKey && e.key === 's') {
 				e.preventDefault();
 				savePendingPlans();
 			}
@@ -140,11 +135,11 @@ function PlansProvider({ children, initialPlans, user }) {
 		
 
 		return () => {
-			clearInterval(intervalId);
+			if (intervalId) clearInterval(intervalId);
 			window.removeEventListener('keydown', handleKeyDown);
 			window.removeEventListener('beforeunload', handleBeforeUnload);
 		};
-	}, [savePendingPlans, isSaved]);
+	}, [savePendingPlans, isSaved, user]);
 
 	return (
 		<PlansContext.Provider value={{ plans, plansSet, updatePlans, commitPlans, restoreCurrentPlans, undo, redo, isSaved }}>
