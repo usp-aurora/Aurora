@@ -22,7 +22,7 @@ function SubjectPickerList() {
     const { groups } = useGroupsContext();
     const { plansSet } = usePlansContext();
     
-    const [expandedCategory, setExpandedCategory] = useState(groups.subgroups.length - 1);
+    const [expandedCategory, setExpandedCategory] = useState(3);
 
     useEffect(() => {
         clearCalculationCache();
