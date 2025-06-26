@@ -30,7 +30,7 @@ Route::middleware('auth')->prefix('api')->group(function () {
     Route::get('user', fn () => response()->json(Auth::user()));
     Route::get('requirement/{subjectCode}', [SubjectController::class, 'getSubjectRequirements']);
     Route::get('subject/exists/{code}', [SubjectController::class, 'exists']);
-    Route::get('subject/{code}', [SubjectController::class, 'getSubjectById']);
+    Route::get('subject/{code}', [SubjectController::class, 'getSubjectWithGroups']);
 
 
     Route::get('groups/{code}', [GroupController::class, 'subjectBelongsToGroup']);

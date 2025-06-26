@@ -204,7 +204,7 @@ class GroupsSeeder extends Seeder
             ],
             [
                 'id' => 29,
-                'title' => "Optativas Eletivas",
+                'title' => "Outras Optativas Eletivas",
                 'Description' => "Disciplinas que não pertencem a nenhuma trilha específica, mas são válidas para o curso como eletivas.", 
                 'parent_group_id' => 1,
                 'color' => 'orange',

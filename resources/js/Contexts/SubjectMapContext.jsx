@@ -15,13 +15,21 @@ function SubjectMapProvider({ children, subjectDataMap: initialMap }) {
 	const changeSubjectGroup = (code, newGroups) => {
 		setSubjectDataMap((prevMap) => {
 			let updatedMap = { ...prevMap };
-			updatedMap[code].groups = newGroups;
+			updatedMap[code].groups = [newGroups];
+			return updatedMap;
+		});
+	}
+
+	const removeSubjectData = (code) => {
+		setSubjectDataMap((prevMap) => {
+			const updatedMap = { ...prevMap };
+			delete updatedMap[code];
 			return updatedMap;
 		});
 	}
 
 	return (
-		<SubjectMapContext.Provider value={{ subjectDataMap, changeSubjectGroup, addNewSubjectData }}>
+		<SubjectMapContext.Provider value={{ subjectDataMap, changeSubjectGroup, addNewSubjectData, removeSubjectData }}>
 			{children}
 		</SubjectMapContext.Provider>
 	);

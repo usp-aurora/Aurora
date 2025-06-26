@@ -4,37 +4,39 @@ const GroupsContext = createContext();
 
 function GroupsProvider({ children, groups: initialGroups }) {
 	const [groups, setGroups] = useState(initialGroups);
-	console.log(groups);
 
-	const findGroupByName = (groupList, groupName) => {
-		for (const group of groupList) {
-			if (group.title === groupName) {
-				return group;
-			}
-			if (group.subgroups && group.subgroups.length > 0) {
-				const found = findGroupByName(group.subgroups, groupName);
+	const findGroupByName = (group, groupName) => {
+		if (group.title === groupName) {
+			return group;
+		}
+		
+		if (group.subgroups && group.subgroups.length > 0) {
+			for (const subgroup of group.subgroups) {
+				const found = findGroupByName(subgroup, groupName);
 				if (found) return found;
 			}
 		}
 		return null;
 	};
 
-	const updateGroupInList = (groupList, targetGroup) => {
-		return groupList.map(group => {
-			if (group.id === targetGroup.id) {
-				return targetGroup;
-			}
-			if (group.subgroups && group.subgroups.length > 0) {
-				return {
-					...group,
-					subgroups: updateGroupInList(group.subgroups, targetGroup)
-				};
-			}
-			return group;
-		});
+	const updateGroupInList = (rootGroup, targetGroup) => {
+		if (rootGroup.id === targetGroup.id) {
+			return targetGroup;
+		}
+		
+		if (rootGroup.subgroups && rootGroup.subgroups.length > 0) {
+			return {
+				...rootGroup,
+				subgroups: rootGroup.subgroups.map(subgroup => 
+					updateGroupInList(subgroup, targetGroup)
+				)
+			};
+		}
+		
+		return rootGroup;
 	};
 
-	const addSubjectToGroup = (groupName, subjectCode) => {
+	const addSubjectToGroup = (subjectCode, groupName) => {
 		const targetGroup = findGroupByName(groups, groupName);
 		if (!targetGroup) {
 			console.error(`Group with name "${groupName}" not found`);
@@ -43,13 +45,13 @@ function GroupsProvider({ children, groups: initialGroups }) {
 
 		const subjectExists = targetGroup.subjects.some(s => s.code === subjectCode);
 		if (subjectExists) {
-			console.warn(`Subject with code "${v}" already exists in group "${groupName}"`);
+			console.warn(`Subject with code "${subjectCode}" already exists in group "${groupName}"`);
 			return false;
 		}
 
 		const updatedGroup = {
 			...targetGroup,
-			subjects: [...targetGroup.subjects, {subjectCode, "mandatory": 0}]
+			subjects: [...targetGroup.subjects, {code: subjectCode, "mandatory": 0}]
 		};
 
 		const updatedGroups = updateGroupInList(groups, updatedGroup);
@@ -57,7 +59,7 @@ function GroupsProvider({ children, groups: initialGroups }) {
 		return true;
 	};
 
-	const removeSubjectFromGroup = (groupName, subjectCode) => {
+	const removeSubjectFromGroup = (subjectCode, groupName) => {
 		const targetGroup = findGroupByName(groups, groupName);
 		if (!targetGroup) {
 			console.error(`Group with name "${groupName}" not found`);
@@ -80,11 +82,56 @@ function GroupsProvider({ children, groups: initialGroups }) {
 		return true;
 	};
 
+	const moveSubjectBetweenGroups = (subjectCode, fromGroupName, toGroupName) => {
+		const fromGroup = findGroupByName(groups, fromGroupName);
+		const toGroup = findGroupByName(groups, toGroupName);
+		
+		if (!fromGroup) {
+			console.error(`Source group with name "${fromGroupName}" not found`);
+			return false;
+		}
+		
+		if (!toGroup) {
+			console.error(`Target group with name "${toGroupName}" not found`);
+			return false;
+		}
+		
+		const subjectIndex = fromGroup.subjects.findIndex(s => s.code === subjectCode);
+		if (subjectIndex === -1) {
+			console.warn(`Subject with code "${subjectCode}" not found in group "${fromGroupName}"`);
+			return false;
+		}
+		
+		const subjectExists = toGroup.subjects.some(s => s.code === subjectCode);
+		if (subjectExists) {
+			console.warn(`Subject with code "${subjectCode}" already exists in group "${toGroupName}"`);
+			return false;
+		}
+		
+		let updatedGroups = groups;
+		
+		const updatedFromGroup = {
+			...fromGroup,
+			subjects: fromGroup.subjects.filter(s => s.code !== subjectCode)
+		};
+		updatedGroups = updateGroupInList(updatedGroups, updatedFromGroup);
+		
+		const updatedToGroup = {
+			...toGroup,
+			subjects: [...toGroup.subjects, {code: subjectCode, mandatory: 0}]
+		};
+		updatedGroups = updateGroupInList(updatedGroups, updatedToGroup);
+		
+		setGroups(updatedGroups);
+		return true;
+	};
+
 	return (
 		<GroupsContext.Provider value={{ 
 			groups, 
 			addSubjectToGroup, 
-			removeSubjectFromGroup 
+			removeSubjectFromGroup,
+			moveSubjectBetweenGroups,
 		}}>
 			{children}
 		</GroupsContext.Provider>

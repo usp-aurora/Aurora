@@ -9,6 +9,10 @@ use App\Http\Controllers\UserAddedSubjectsController;
 
 class SubjectController extends Controller
 {
+    public function getSubjectWithGroups($subjectCode) {
+        return $this->getSubjectsWithGroups([$subjectCode]);
+    }
+
     public function getSubjectsWithGroups($subjectCodes) {
         $subjects = $this->getSubjectsById($subjectCodes);
 
@@ -24,10 +28,6 @@ class SubjectController extends Controller
 		});
         
         return $subjects;
-    }
-    
-    public function getSubjectById($subjectCode) {
-        return $this->getSubjectsById([$subjectCode]);
     }
 
 	public function getSubjectsById($subjectCodes) {
