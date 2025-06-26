@@ -18,20 +18,25 @@ class HomeController extends Controller
 		$planController = new PlanController();
 		$subjectController = new SubjectController();
 		$userController = new UserController();
-        $UserAddedSubjectsController = new UserAddedSubjectsController();
+        $userAddedSubjectsController = new UserAddedSubjectsController();
 
 		list($plansData, $plannedSubjects) = $planController->index();
 		$suggestedPlans = $planController->getSuggestedPlans();
+		
 		$groups = $groupController->loadCourseGroups(1);
-        $groups = $UserAddedSubjectsController->attachUserSubjectsAddedToGroups($groups);
 		
-		$groupsSubjects = $groupController->getGroupSubjects($groups);
-		$userAddedSubjects = $UserAddedSubjectsController->getAllUserAddedSubjects();
-		
-		$mergedSubjects = array_unique(array_merge($plannedSubjects, $groupsSubjects, $userAddedSubjects), SORT_REGULAR);
-		$subjects = $subjectController->getSubjectsWithGroups($mergedSubjects);
-		$user = $userController->index();
+		$userAddedSubjects = $userAddedSubjectsController->getUserAddedSubjects();
+		$plansWithoutGroups = $planController->getPlansWithDefaultGroup();
 
+		$groups = $groupController->attachSubjectsToGroupsMap($groups, $userAddedSubjects);
+		$groups = $groupController->attachSubjectsToGroupsMap($groups, $plansWithoutGroups);
+
+		$groupsSubjectCodes = $groupController->getGroupSubjects($groups);
+		$userAddedSubjectCodes = $userAddedSubjectsController->getUserAddedSubjectCodes();
+		
+		$mergedSubjects = array_unique(array_merge($plannedSubjects, $groupsSubjectCodes, $userAddedSubjectCodes), SORT_REGULAR);
+		$subjects = $subjectController->getSubjectsWithGroups($mergedSubjects);		
+		$user = $userController->index();
 
 		return Inertia::render('Home', [
 			'initialPlans' => $plansData,

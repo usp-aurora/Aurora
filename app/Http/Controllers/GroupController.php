@@ -59,6 +59,31 @@ class GroupController extends Controller {
         return $result;
     }
 
+    // Subjects must be a list like 
+    //  [["subjectCode" => <code>, "groupId" => <groupId>], ...]
+    public function attachSubjectsToGroupsMap($groups, $subjects) {
+        $addSubjectToGroup = function (&$group, $groupId, $subjectCode) use (&$addSubjectToGroup) {
+            if (isset($group['id']) && $group['id'] == $groupId) {
+                if (!in_array($subjectCode, $group['subjects'])) {
+                    $group['subjects'][] = ["code" => $subjectCode, "mandatory" => 0];
+                }
+            }
+            if (isset($group['subgroups'])) {
+                foreach ($group['subgroups'] as &$subgroup) {
+                    $addSubjectToGroup($subgroup, $groupId, $subjectCode);
+                }
+            }
+        };
+
+        foreach ($subjects as $subject) {
+            $groupId = $subject['groupId'];
+            $subjectCode = $subject['subjectCode'];
+            $addSubjectToGroup($groups, $groupId, $subjectCode);
+        }
+        
+        return $groups;
+    }
+
     private function getGroupRoot($groupId){
         $group = Group::where('groups.id', '=', $groupId)
             ->where('groups.id', '=', $groupId)

@@ -124,6 +124,19 @@ class UserAddedSubjectsController extends Controller
         return $groups;
     }
 
+    public function getUserAddedSubjects(){
+        $user = Auth::user();
+        if ($user == null) {
+            return [];
+        }
+        
+        $userSubjects = UserAddedSubject::where('user_id', $user->id)
+            ->select('subject_code as subjectCode', 'group_id as groupId')
+            ->get()
+            ->toArray();
+        return $userSubjects;
+    }
+
     public function getGroup($code)
     {
         $user = Auth::user();
@@ -139,7 +152,7 @@ class UserAddedSubjectsController extends Controller
         return $userSubject ? ["title" => $userSubject->group->title, "color" => $userSubject->group->color] : null;
     }
 
-    public function getAllUserAddedSubjects()
+    public function getUserAddedSubjectCodes()
     {
         $user = Auth::user();
         if ($user == null) {

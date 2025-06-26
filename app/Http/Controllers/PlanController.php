@@ -9,6 +9,8 @@ use Carbon\Carbon;
 use App\Models\Plan;
 use App\Models\Replicado\ReplicadoAcademicRecord;
 use App\Models\SuggestedPlan;
+use App\Models\Group;
+use App\Models\GroupSubject;
 use Illuminate\Support\Facades\Log;
 use function Spatie\LaravelPdf\Support\pdf;
 
@@ -33,6 +35,39 @@ class PlanController extends Controller
     public function getSuggestedPlans()
     {
         return $this->getPlans(True);
+    }
+
+    public function getPlansWithDefaultGroup(){
+        $user = Auth::user();
+        if ($user == null) {
+            return [];
+        }
+        
+        $plans = Plan::where('user_id', $user->id)
+            ->select('subject_code')
+            ->get();
+
+        $defaultGroup = Group::where('title', 'Optativas Livres')->first();
+        if (!$defaultGroup) {
+            return [];
+        }
+        
+        $result = [];
+        
+        foreach ($plans as $plan) {
+            $subjectCode = $plan->subject_code;
+            
+            $belongsToGroup = GroupSubject::where('subject_code', $subjectCode)->exists();
+            
+            if (!$belongsToGroup) {
+                $result[] = [
+                    'subjectCode' => $subjectCode,
+                    'groupId' => $defaultGroup->id
+                ];
+            }
+        }
+
+        return $result;
     }
 
     public function export()

@@ -24,6 +24,16 @@ class SubjectController extends Controller
             if ($userAddedGroup !== null) {
                 $subject['groups'][] = $userAddedGroup;
             }
+
+            if (empty($subject["groups"])) {
+                $subject["groups"] = [
+                    [
+                        'title' => 'Optativas Livres',
+                        'color' => 'cyan'
+                    ]
+                ];
+            }
+
 			return $subject;
 		});
         

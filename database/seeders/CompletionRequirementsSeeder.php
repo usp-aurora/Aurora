@@ -159,6 +159,12 @@ class CompletionRequirementsSeeder extends Seeder
                 'completion_value' => "4",
                 'group_id' => 32
             ],
+            // Livres
+            [
+                'type' => CompletionType::CREDITS,
+                'completion_value' => "24",
+                'group_id' => 33
+            ],
         ];
 
         foreach ($requirements as $requirement) {
