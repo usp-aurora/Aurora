@@ -8,7 +8,12 @@ const SubjectsContainer = ({ containerName, subjects }) => {
 	const { subjectDataMap } = useSubjectMapContext();
 	const { plansSet } = usePlansContext();
 
-	const sortedSubjects = [...subjects].sort((a, b) => a.code.localeCompare(b.code));
+	const sortedSubjects = [...subjects].sort((a, b) => {
+		if (a.mandatory === b.mandatory) {
+			return a.code.localeCompare(b.code);
+		}
+		return a.mandatory ? -1 : 1;
+	});
 
 	return (
 		<CardsGrid>
