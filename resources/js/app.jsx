@@ -1,11 +1,11 @@
 import { createInertiaApp } from '@inertiajs/react'
-import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client'
 import { Global } from '@emotion/react'
 import { ThemeProvider } from '@mui/material/styles';
 
 import globalStyles from './styles/globalStyles'
 import theme from './styles/theme'
+import { pageView } from './analytics';
 
 createInertiaApp({
   resolve: name => {
@@ -23,3 +23,7 @@ createInertiaApp({
     )
   },
 })
+
+window.addEventListener('inertia:finish', (event) => {
+  pageView(event.detail.visit.url);
+});
