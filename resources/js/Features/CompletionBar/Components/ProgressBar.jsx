@@ -76,7 +76,7 @@ const ProgressBar = ({ label, coursed, planned, needed, color}) => {
 		<ProgressBarContainer>
 			<ProgressLabel variant="body2">{label}</ProgressLabel>
 			<BorderLinearProgress variant="buffer" value={coursedPercentage} valueBuffer={plannedPercentage} color={color} />
-			<Tooltip title="concluídas /planejadas / necessárias">
+			<Tooltip title="concluídas / planejadas / necessárias">
 				<ProgressValue variant="caption">{`${coursed} / ${planned} / ${needed}`}</ProgressValue>
 			</Tooltip>
 		</ProgressBarContainer>

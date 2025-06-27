@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { styled } from "@mui/material/styles";
-import { Typography } from "@mui/material";
+import { Tooltip, Typography } from "@mui/material";
 
 import SubjectsContainer from "./SubjectsContainer";
 
@@ -62,8 +62,10 @@ const SubGroup = ({ depth, subgroupData }) => {
 
     return (
         <SubGroupContainer depth={depth}>
-            <SubGroupHeader>
-                <SubGroupTitle>{subgroupData.title}</SubGroupTitle>
+            <SubGroupHeader> 
+                <Tooltip title={!!subgroupData.mandatory ? "Bloco obrigatório" : ""}>
+                    <SubGroupTitle>{subgroupData.title + (!!subgroupData.mandatory ? "*" : "")}</SubGroupTitle>
+                </Tooltip>
                 {completionMetrics.map(metric => {
                     const name = COMPLETION_TYPE_LABELS[metric.name];
                     return (
