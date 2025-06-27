@@ -31,8 +31,8 @@ const LandingPage = () => {
           py: 2,
           bgcolor: 'transparent',
           backdropFilter: 'blur(5px)',
-          paddingLeft: 4,
-          paddingTop: 4,
+          paddingLeft: 2,
+          paddingTop: 2,
           zIndex: 1000,
           mb: {xs: 0, md: 4}
         }}
@@ -58,9 +58,11 @@ const LandingPage = () => {
               pr: { md: 4 },
               textAlign: 'left',
               mb: { xs: 0, md: 0 },
+              width: "100%",
+              backgroundColor: "red"
             }}
           >
-            <Typography variant="h1" sx={{ fontWeight: 'bold', mb: 6, fontSize: '72px', lineHeight: 1 }}>
+            <Typography variant="h1" sx={{ fontWeight: 'bold', mb: 6, fontSize: {xs: '48px', md: '72px'}, lineHeight: 1 }}>
               SEU SEMESTRE <br /> 
               COMEÇA AQUI
             </Typography>

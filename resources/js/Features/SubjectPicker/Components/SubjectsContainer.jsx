@@ -3,6 +3,7 @@ import SortableCard from "../../../ui/Card/SortableCard";
 
 import { useSubjectMapContext } from "../../../Contexts/SubjectMapContext";
 import { usePlansContext } from "../../../Contexts/PlansContext";
+import { useTheme, useMediaQuery } from "@mui/material";
 
 const SubjectsContainer = ({ containerName, subjects }) => {
 	const { subjectDataMap } = useSubjectMapContext();
@@ -18,9 +19,12 @@ const SubjectsContainer = ({ containerName, subjects }) => {
 	return (
 		<CardsGrid>
 			{sortedSubjects.map((subject) => {
-				const isBlocked = plansSet.has(subject.code);
+				const isPlanned = plansSet.has(subject.code);
 				const subjectData = subjectDataMap[subject.code];
 				if(!subjectData) return null;
+
+				const theme = useTheme();
+				const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
 				return (
 					<SortableCard
@@ -28,7 +32,8 @@ const SubjectsContainer = ({ containerName, subjects }) => {
 						id={`${subject.code}@${containerName}`}
 						subjectCode={subject.code}
 						container="subjectPicker"
-						isBlocked={isBlocked}
+						ghost={isPlanned}
+						blockDrag={isMobile}
 						badgeColor="red"
 						showBadge={subject.mandatory}
 						badgeTooltip="Matéria obrigatória"

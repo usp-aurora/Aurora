@@ -11,8 +11,8 @@ const SortableCard = ({
 	id,
 	subjectCode,
 	container,
-	isBlocked,
-	completed,
+	ghost,
+	blockDrag,
 	badgeColor,
 	showBadge,
  	badgeTooltip
@@ -22,22 +22,22 @@ const SortableCard = ({
 	const theme = useTheme(); 
 
 	const handleClick = useCallback(() => {
-		if (!isBlocked) {
+		if (!ghost) {
 			showSubjectInfo(subjectCode);
 		}
-	}, [isBlocked, subjectCode]);
+	}, [ghost, subjectCode]);
 
 	return (
 		<SortableItem
 			id={id}
 			key={subjectCode}
 			itemData={{ code: subjectCode, container: container }}
-			isStatic={isBlocked  || completed}
+			isStatic={ghost  || blockDrag}
 		>
 			<MemoizedSubjectCard
 				subjectCode={subjectCode}
 				onClick={handleClick}
-				ghost={isBlocked && !completed}
+				ghost={ghost}
 				badgeColor={badgeColor}
 				showBadge={showBadge}
 				badgeTooltip={badgeTooltip}

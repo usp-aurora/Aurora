@@ -16,7 +16,7 @@ function SortableItem({ id, children, itemData, isStatic = false }) {
         transition: transition || "opacity 0.3s ease",
         opacity: isDragging ? 0.2 : 1,
         tabIndex: isDraggable ? 0 : -1,
-        touchAction: "none",
+        touchAction: isStatic ? undefined : "none",
     };
 
     const dndProps = isDraggable ? { ...attributes, ...listeners } : {};
