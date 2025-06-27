@@ -19,7 +19,7 @@ function SubjectInfoProvider({ children, subjectInfoStartsOpened = false, initia
 	const [subjectInfo, setSubjectInfo] = useState(initialSubjectInfo);
 	
 	const { subjectDataMap } = useSubjectMapContext();
-    const { plansSet } = usePlansContext();
+    const { plansSet, completedPlansSet } = usePlansContext();
 	
 	const showSubjectInfo = (subjectCode) => {
 		const subjectData = subjectDataMap[subjectCode];
@@ -28,6 +28,7 @@ function SubjectInfoProvider({ children, subjectInfoStartsOpened = false, initia
 		setSubjectInfoModalOpen(true);
 		setSubjectInfo({
 			isPlanned: plansSet.has(subjectCode),
+			isCompleted: completedPlansSet.has(subjectCode),
 			name: subjectData.name,
 			code: subjectCode,
 			tags: subjectData.groups,

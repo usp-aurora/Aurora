@@ -97,7 +97,7 @@ class CompletionRequirementsSeeder extends Seeder
             [
                 'type' => CompletionType::SUBGROUPS,
                 'completion_value' => "5",
-                'group_id' => 18
+                'group_id' => 19
             ],
             [
                 'type' => CompletionType::SUBJECTS,

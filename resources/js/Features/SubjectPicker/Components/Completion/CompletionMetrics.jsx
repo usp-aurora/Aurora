@@ -18,7 +18,7 @@ const StyledMetrics = styled(Typography)(({ theme }) => ({
 }));
 
 
-const CompletionHeader = ({ metrics, ...props }) => {
+const CompletionMetrics = ({ metrics, ...props }) => {
 	return (
 		<TextContainer {...props}>
 			{metrics.map((metric) => {
@@ -34,4 +34,4 @@ const CompletionHeader = ({ metrics, ...props }) => {
 	);
 };
 
-export default CompletionHeader;
+export default CompletionMetrics;

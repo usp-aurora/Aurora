@@ -1,9 +1,6 @@
-import { useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { memo, useCallback } from "react";
 
-import { usePlansContext } from "../../Contexts/PlansContext";
-import { useViewMode } from "../../Contexts/ViewModeContext";
 import SortableItem from "../../Features/DragAndDrop/SortableItem";
 import { useSubjectInfoContext } from "../../Features/SubjectInfo/SubjectInfoContext";
 import SubjectCard from "./SubjectCard";
@@ -18,11 +15,11 @@ const SortableCard = ({
 	completed,
 	badgeColor,
 	showBadge,
+ 	badgeTooltip
 }) => {
 	const { showSubjectInfo } = useSubjectInfoContext();
 
 	const theme = useTheme(); 
-	const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
 	const handleClick = useCallback(() => {
 		if (!isBlocked) {
@@ -35,7 +32,7 @@ const SortableCard = ({
 			id={id}
 			key={subjectCode}
 			itemData={{ code: subjectCode, container: container }}
-			isStatic={isBlocked || isMobile || completed}
+			isStatic={isBlocked  || completed}
 		>
 			<MemoizedSubjectCard
 				subjectCode={subjectCode}
@@ -43,6 +40,7 @@ const SortableCard = ({
 				ghost={isBlocked && !completed}
 				badgeColor={badgeColor}
 				showBadge={showBadge}
+				badgeTooltip={badgeTooltip}
 			/>
 		</SortableItem>
 	);

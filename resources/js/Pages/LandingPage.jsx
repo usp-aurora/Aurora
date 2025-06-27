@@ -8,9 +8,6 @@ import {
   Card,
   CardContent,
 } from '@mui/material';
-import SchoolIcon from '@mui/icons-material/School';
-import BarChartIcon from '@mui/icons-material/BarChart';
-import ExploreIcon from '@mui/icons-material/Explore';
 import Logo from '@/ui/Logo/Logo'; 
 
 import globoImage from '../../images/landing_page/mundo.png';
@@ -28,7 +25,6 @@ const LandingPage = () => {
       <Box
         component="header"
         sx={{
-          position: 'sticky',
           top: 0,
           left: 0,
           width: '100%',
@@ -38,6 +34,7 @@ const LandingPage = () => {
           paddingLeft: 4,
           paddingTop: 4,
           zIndex: 1000,
+          mb: {xs: 0, md: 4}
         }}
       >
         <Logo />

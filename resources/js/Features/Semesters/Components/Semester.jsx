@@ -49,7 +49,6 @@ const SemesterCreditsText = styled(Typography)(({ theme }) => ({
 const SemesterCompletedText = styled(Typography)(({ theme }) => ({
     ...theme.typography.small,
     textTransform: 'none',
-    fontSize: '0.85rem',
     marginRight: 'auto',
     marginLeft: 2,
     
@@ -75,9 +74,8 @@ const Semester = ({
     const { subjectDataMap } = useSubjectMapContext();
     const { isSuggestedPlansView } = useViewMode();
     const { plans, commitPlans } = usePlansContext();
-    const [isExpanded, setExpanded] = useState(true);
-    
     const completed = semesterData.subjects.length > 0 && semesterData.subjects.every((subj) => subj.completed);
+    const [isExpanded, setExpanded] = useState(!completed);
     const { active } = useDndContext();
 
     function toggleExpanded() {
@@ -129,7 +127,7 @@ const Semester = ({
                     {semesterData.semesterId}º Período
                 </SemesterInfoText>
                 {completed &&
-                    <SemesterCompletedText>
+                    <SemesterCompletedText color="green">
                         Semestre já cursado
                     </SemesterCompletedText>
                 }
@@ -157,7 +155,7 @@ const Semester = ({
                 key={semesterData.semesterId}
                 spacing={{ xs: 1, sm: 2 }}
                 disabled={!isExpanded || completed}
-                placeholder={isSuggestedPlansView ? null : <SubjectPlaceholder />}
+                Placeholder={isSuggestedPlansView ? null : <SubjectPlaceholder semesterId={semesterData.semesterId} />}
             >
                 <SortableGrid items={semesterData.subjects}>
                     {semesterData.subjects.map((subject) => {
@@ -176,6 +174,7 @@ const Semester = ({
                                 completed={subject.completed}
                                 showBadge={requiredScheduled}
                                 badgeColor="green"
+                                badgeTooltip="Matéria planejada"
                             />
                         );
                     })}
