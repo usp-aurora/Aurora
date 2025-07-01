@@ -207,7 +207,7 @@ function GraphView({ nodes, links, root, interactive = false, vertical = false, 
 			<GraphTools toggleFullscreen={toggleFullscreen} recenter={() => centerOn(root)} />
 			<GraphBackgroundView twinkling={false} />
 			<LinkContainerView>
-				<filter>
+				<filter id="glow">
 					<feDropShadow dx="0" dy="0" stdDeviation="2" floodColor="white" />
 				</filter>
 				{LinkViews}
