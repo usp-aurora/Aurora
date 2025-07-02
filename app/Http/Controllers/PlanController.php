@@ -175,7 +175,9 @@ class PlanController extends Controller
 
         $groupedPlans = [];
 
-        for ($semester = $plans->min('semester'); $semester <= max($plans->max('semester'), 8); $semester++) {
+        $minSemester = $plans->min('semester') ?? 1;
+        $maxSemester = $plans->max('semester') ?? 8;
+        for ($semester = min($minSemester, 1); $semester <= max($maxSemester, 8); $semester++) {
             $semesterPlans = $plans->filter(fn($plan) => $plan->semester == $semester);
 
             $groupedPlans[] = [
@@ -232,6 +234,7 @@ class PlanController extends Controller
 
         $transferRecords = $records
             ->where('status', "D")->values();
+
         if (!$transferRecords->isEmpty()) {
             $transferKey = "0000.0";
             $completedSemesters = [$transferKey => []];

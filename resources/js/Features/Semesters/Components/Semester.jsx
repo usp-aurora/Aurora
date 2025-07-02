@@ -124,7 +124,7 @@ const Semester = ({
                     </IconButton>  
                 )}
                 <SemesterInfoText>
-                    {semesterData.semesterId == 0 ? 
+                    {semesterData.semesterId === 0 ? 
                         "Matérias aproveitados" :
                         (semesterData.semesterId + "º Período")
                     }
