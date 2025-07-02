@@ -4,6 +4,7 @@ namespace App\Models\Replicado;
 
 use Illuminate\Database\Eloquent\Model;
 use Faker\Factory as Faker;
+use Illuminate\Support\Facades\DB;
 
 class ReplicadoAcademicRecord extends Model
 {
@@ -23,6 +24,7 @@ class ReplicadoAcademicRecord extends Model
                     'coddis AS subject_code',
 					'codtur AS class_code',
                     'codpgm AS program_code',
+                    DB::raw("TRIM(rstfim) AS status"),
                 )
                 ->from('HISTESCOLARGR')
                 ->whereIn('rstfim', ['A', 'D']);
