@@ -164,6 +164,36 @@ class PlanController extends Controller
         }
     }
 
+    private function getPlans($suggestedPlans)
+    {
+        if ($suggestedPlans) {
+            $plans = SuggestedPlan::all();
+        } else {
+            $this->syncWithReplication();
+            $plans = Plan::where('user_id', Auth::user()->id)->get();
+        }
+
+        $groupedPlans = [];
+
+        for ($semester = $plans->min('semester'); $semester <= max($plans->max('semester'), 8); $semester++) {
+            $semesterPlans = $plans->filter(fn($plan) => $plan->semester == $semester);
+
+            $groupedPlans[] = [
+                'semesterId' => $semester,
+                'subjects' => $semesterPlans->map(function ($plan) {
+                    return [
+                        'plan' => $plan->id,
+                        'code' => $plan->subject_code,
+                        'completed' => $plan->completed,
+                    ];
+                })->values()->all(),
+            ];
+        }
+
+        return $groupedPlans;
+    }
+
+
     private function syncWithReplication()
     {
         $user = Auth::user();
@@ -198,14 +228,18 @@ class PlanController extends Controller
         $currentProgram = $records->max('program_code');
         $records = $records->where('program_code', $currentProgram)->values();
 
+        $completedSemesters = [];
+
         $transferRecords = $records
             ->where('status', "D")->values();
-        $transferKey = "0000.0";
-        $completedSemesters = [$transferKey => []];
-        foreach ($transferRecords as $record) {
-            $completedSemesters[$transferKey][] = [
-                'subject_code' => $record->subject_code,
-            ];
+        if (!$transferRecords->isEmpty()) {
+            $transferKey = "0000.0";
+            $completedSemesters = [$transferKey => []];
+            foreach ($transferRecords as $record) {
+                $completedSemesters[$transferKey][] = [
+                    'subject_code' => $record->subject_code,
+                ];
+            }
         }
 
         $takenRecords = $records
@@ -246,35 +280,6 @@ class PlanController extends Controller
         }
 
         return $remappedSemesters;
-    }
-
-    private function getPlans($suggestedPlans)
-    {
-        if ($suggestedPlans) {
-            $plans = SuggestedPlan::all();
-        } else {
-            $this->syncWithReplication();
-            $plans = Plan::where('user_id', Auth::user()->id)->get();
-        }
-
-        $groupedPlans = [];
-
-        for ($semester = $plans->min('semester'); $semester <= max($plans->max('semester'), 8); $semester++) {
-            $semesterPlans = $plans->filter(fn($plan) => $plan->semester == $semester);
-
-            $groupedPlans[] = [
-                'semesterId' => $semester,
-                'subjects' => $semesterPlans->map(function ($plan) {
-                    return [
-                        'plan' => $plan->id,
-                        'code' => $plan->subject_code,
-                        'completed' => $plan->completed,
-                    ];
-                })->values()->all(),
-            ];
-        }
-
-        return $groupedPlans;
     }
 
     private function store($subject_code, $semester, $completed = false)

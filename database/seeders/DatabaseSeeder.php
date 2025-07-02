@@ -19,16 +19,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory()->create([
-            'name' => 'Teste',
-            'email' => 'teste@teste.com',
-            'codpes' => '12345678'
-        ]);
-
         $this->call([
             GroupsSeeder::class,
             SuggestedPlansSeeder::class,
-            PlansSeeder::class,
             GroupSubjectsSeeder::class,
             CompletionRequirementsSeeder::class,
             CoursesSeeder::class,
