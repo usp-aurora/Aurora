@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
 use App\Models\Plan;
 use App\Models\Replicado\ReplicadoAcademicRecord;
 use App\Models\SuggestedPlan;
@@ -37,12 +36,13 @@ class PlanController extends Controller
         return $this->getPlans(True);
     }
 
-    public function getPlansWithDefaultGroup(){
+    public function getPlansWithDefaultGroup()
+    {
         $user = Auth::user();
         if ($user == null) {
             return [];
         }
-        
+
         $plans = Plan::where('user_id', $user->id)
             ->select('subject_code')
             ->get();
@@ -51,14 +51,14 @@ class PlanController extends Controller
         if (!$defaultGroup) {
             return [];
         }
-        
+
         $result = [];
-        
+
         foreach ($plans as $plan) {
             $subjectCode = $plan->subject_code;
-            
+
             $belongsToGroup = GroupSubject::where('subject_code', $subjectCode)->exists();
-            
+
             if (!$belongsToGroup) {
                 $result[] = [
                     'subjectCode' => $subjectCode,
@@ -164,11 +164,43 @@ class PlanController extends Controller
         }
     }
 
+    private function getPlans($suggestedPlans)
+    {
+        if ($suggestedPlans) {
+            $plans = SuggestedPlan::all();
+        } else {
+            $this->syncWithReplication();
+            $plans = Plan::where('user_id', Auth::user()->id)->get();
+        }
+
+        $groupedPlans = [];
+
+        $minSemester = $plans->min('semester') ?? 1;
+        $maxSemester = $plans->max('semester') ?? 8;
+        for ($semester = min($minSemester, 1); $semester <= max($maxSemester, 8); $semester++) {
+            $semesterPlans = $plans->filter(fn($plan) => $plan->semester == $semester);
+
+            $groupedPlans[] = [
+                'semesterId' => $semester,
+                'subjects' => $semesterPlans->map(function ($plan) {
+                    return [
+                        'plan' => $plan->id,
+                        'code' => $plan->subject_code,
+                        'completed' => $plan->completed,
+                    ];
+                })->values()->all(),
+            ];
+        }
+
+        return $groupedPlans;
+    }
+
+
     private function syncWithReplication()
     {
-        $user = auth()->user();
+        $user = Auth::user();
         $completedSemesters = $this->completed($user->codpes);
-
+        
         DB::transaction(function () use ($completedSemesters, $user) {
             foreach ($completedSemesters as $semesterId => $semesterData) {
                 foreach ($semesterData as $subject) {
@@ -176,7 +208,7 @@ class PlanController extends Controller
                         ->where('user_id', $user->id)
                         ->first();
                     if ($savedPlan == null) {
-                        $validatedPlan = $this->store($subject['subject_code'], $semesterId + 1, true);
+                        $validatedPlan = $this->store($subject['subject_code'], $semesterId, true);
                         $validatedPlan->save();
                     } else {
                         $savedPlan->completed = true;
@@ -194,18 +226,29 @@ class PlanController extends Controller
 
     private function completed($nusp)
     {
-        // get the current semester
-        // get only the disciplines from previous semesters
-        $today = Carbon::today()->toDateString();
-        $year = substr($today, 0, 4);
-        $semester = substr($today, 5, 1) < "7" ? "1" : "2";
-
-        $records = ReplicadoAcademicRecord::where("nusp", $nusp)
-            ->get();
+        $records = ReplicadoAcademicRecord::where("nusp", $nusp)->get();
+        $currentProgram = $records->max('program_code');
+        $records = $records->where('program_code', $currentProgram)->values();
 
         $completedSemesters = [];
 
-        foreach ($records as $record) {
+        $transferRecords = $records
+            ->where('status', "D")->values();
+
+        if (!$transferRecords->isEmpty()) {
+            $transferKey = "0000.0";
+            $completedSemesters = [$transferKey => []];
+            foreach ($transferRecords as $record) {
+                $completedSemesters[$transferKey][] = [
+                    'subject_code' => $record->subject_code,
+                ];
+            }
+        }
+
+        $takenRecords = $records
+            ->where('status', "A")->values();
+
+        foreach ($takenRecords as $record) {
             // class_code => year + semester + class number
             $classCode = $record->class_code;
             $year = substr($classCode, 0, 4);
@@ -226,43 +269,20 @@ class PlanController extends Controller
 
         // Remap array keys to sequential integers starting from 1
         $remappedSemesters = [];
-        $counter = 0;
 
+        if($transferRecords->isEmpty()) {
+            $counter = 1;
+        }
+        else {
+            $counter = 0;
+        }
+        
         foreach ($completedSemesters as $semesterKey => $subjects) {
             $remappedSemesters[$counter] = $subjects;
             $counter++;
         }
 
         return $remappedSemesters;
-    }
-
-    private function getPlans($suggestedPlans)
-    {
-        if ($suggestedPlans) {
-            $plans = SuggestedPlan::all();
-        } else {
-            $this->syncWithReplication();
-            $plans = Plan::where('user_id', auth()->user()->id)->get();
-        }
-
-        $groupedPlans = [];
-
-        for ($semester = 1; $semester <= max($plans->max('semester'), 8); $semester++) {
-            $semesterPlans = $plans->filter(fn($plan) => $plan->semester == $semester);
-
-            $groupedPlans[] = [
-                'semesterId' => $semester,
-                'subjects' => $semesterPlans->map(function ($plan) {
-                    return [
-                        'plan' => $plan->id,
-                        'code' => $plan->subject_code,
-                        'completed' => $plan->completed,
-                    ];
-                })->values()->all(),
-            ];
-        }
-
-        return $groupedPlans;
     }
 
     private function store($subject_code, $semester, $completed = false)

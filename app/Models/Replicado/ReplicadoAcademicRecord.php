@@ -4,6 +4,7 @@ namespace App\Models\Replicado;
 
 use Illuminate\Database\Eloquent\Model;
 use Faker\Factory as Faker;
+use Illuminate\Support\Facades\DB;
 
 class ReplicadoAcademicRecord extends Model
 {
@@ -22,9 +23,11 @@ class ReplicadoAcademicRecord extends Model
                     'codpes AS nusp',
                     'coddis AS subject_code',
 					'codtur AS class_code',
+                    'codpgm AS program_code',
+                    DB::raw("TRIM(rstfim) AS status"),
                 )
                 ->from('HISTESCOLARGR')
-				->where('rstfim', '=', 'A');
+                ->whereIn('rstfim', ['A', 'D']);
             }, 'subtable');
         }
 
@@ -44,13 +47,17 @@ class ReplicadoAcademicRecord extends Model
                 'nusp' => $faker->numerify('########'),
                 'subject_code' => $faker->randomElement($letras) . $faker->randomElement($letras) . $faker->randomElement($letras) . '000' . $faker->randomElement($numeros),
                 'class_code' => '20' . $faker->numberBetween(0, 26) . $faker->numberBetween(1, 2) . $faker->numerify('##'),
+                'program_code' => $faker->numberBetween(0, 26),
+                'status' => $faker->randomElement(['A', 'D']),
             ];
         }
 
         $query = collect($fakeData)->map(function ($row) {
             return "SELECT '{$row['nusp']}' as nusp,
                            '{$row['subject_code']}' as subject_code,
-                           '{$row['class_code']}' as class_code";
+                           '{$row['class_code']}' as class_code,
+                           '{$row['program_code']}' as program_code,
+                           '{$row['status']}' as status";
         })->implode(' UNION ALL ');
 
         return $query;
