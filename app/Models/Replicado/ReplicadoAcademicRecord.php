@@ -47,7 +47,8 @@ class ReplicadoAcademicRecord extends Model
                 'nusp' => $faker->numerify('########'),
                 'subject_code' => $faker->randomElement($letras) . $faker->randomElement($letras) . $faker->randomElement($letras) . '000' . $faker->randomElement($numeros),
                 'class_code' => '20' . $faker->numberBetween(0, 26) . $faker->numberBetween(1, 2) . $faker->numerify('##'),
-                'codpgm' => $faker->numberBetween(0, 26),
+                'program_code' => $faker->numberBetween(0, 26),
+                'status' => $faker->randomElement(['A', 'D']),
             ];
         }
 
@@ -55,7 +56,8 @@ class ReplicadoAcademicRecord extends Model
             return "SELECT '{$row['nusp']}' as nusp,
                            '{$row['subject_code']}' as subject_code,
                            '{$row['class_code']}' as class_code,
-                           '{$row['codpgm']}' as program_code";
+                           '{$row['program_code']}' as program_code,
+                           '{$row['status']}' as status";
         })->implode(' UNION ALL ');
 
         return $query;
