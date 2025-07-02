@@ -197,8 +197,9 @@ class PlanController extends Controller
         $year = substr($today, 0, 4);
         $semester = substr($today, 5, 1) < "7" ? "1" : "2";
 
-        $records = ReplicadoAcademicRecord::where("nusp", $nusp)
-            ->get();
+        $records = ReplicadoAcademicRecord::where("nusp", $nusp)->get();
+        $currentProgram = $records->max('program_code');
+        $records = $records->where('program_code', $currentProgram)->values();
 
         $completedSemesters = [];
 

@@ -14,6 +14,7 @@ class ReplicadoAcademicRecordModelTest extends TestCase
 		$this->assertIsNumeric($academicRecord->nusp);
 		$this->assertIsString($academicRecord->subject_code);
 		$this->assertIsNumeric($academicRecord->class_code);
+		$this->assertIsNumeric($academicRecord->program_code);
 	}
 
 	public function test_academic_record_retrieves_fake_data_when_replicado_not_available(): void
