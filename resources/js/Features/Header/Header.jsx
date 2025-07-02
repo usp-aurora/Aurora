@@ -33,14 +33,22 @@ const Header = (props) => {
     const handleLoginRedirect = () => {
         window.location.href = '/login';
     };
+    const handleLogoClick = () => {
+        window.location.href = '/';
+    };
+    
     const theme = useTheme();
     const isAboveSmall = useMediaQuery(theme.breakpoints.up('sm'));
 
     return (
         <Stack gap={2} sx={{ width: "100%", padding: isAboveSmall ? "0px" : "8px" }}>
             <HeaderContainer {...props}>
-
-                <Logo />
+                <Box 
+                    onClick={handleLogoClick}
+                    sx={{ cursor: 'pointer' }}
+                >
+                    <Logo />
+                </Box>
                 <Stack spacing={4} direction="row" alignItems="center">
                     {!user && (
                         <>
@@ -56,9 +64,11 @@ const Header = (props) => {
                 </Stack>
 
             </HeaderContainer>
-            <LoginTextStyle sx={{ display: isAboveSmall ? 'none' : 'block' }}>
-                Você está no modo anônimo. Entre com seu e-mail USP para salvar o progresso
-            </LoginTextStyle>
+            {!user && (
+                <LoginTextStyle sx={{ display: isAboveSmall ? 'none' : 'block' }}>
+                    Você está no modo anônimo. Entre com seu e-mail USP para salvar o progresso
+                </LoginTextStyle>
+            )}
         </Stack>
     );
 };

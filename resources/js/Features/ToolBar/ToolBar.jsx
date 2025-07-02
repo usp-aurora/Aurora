@@ -37,14 +37,6 @@ const StyledText = styled(Typography)(({ theme }) => ({
     }
 }));
 
-const ExportIconWrapper = styled(IconWrapper)(({ theme, disabled }) => ({
-    backgroundColor: disabled ? theme.palette.grey[400] : theme.palette.primary.main,
-    color: disabled ? theme.palette.grey[600] : theme.palette.primary.contrastText,
-    cursor: disabled ? 'not-allowed' : 'pointer',
-    pointerEvents: disabled ? 'none' : 'auto',
-    transition: 'background 0.2s',
-}));
-
 function ToolBar() {
     const { undo, redo, isSaved } = usePlansContext();
     const { isSuggestedPlansView, toggleSuggestedPlansView } = useViewMode();
@@ -89,8 +81,10 @@ function ToolBar() {
                     />
                     <IconWrapper Icon={FileDownloadOutlinedIcon}
                                 onClick={handleExport}
-                                disabled={!user}
-                                toolTipText={user ? "Exportar planejamento" : "Faça login para exportar o planejamento"}
+                                disabled={true}
+                                toolTipText={"Exportar planejamento - Em manutenção"}
+                                // disabled={!user}
+                                // toolTipText={user ? "Exportar planejamento" : "Faça login para exportar o planejamento"}
                                 /> 
                 </Stack>
             </Container>

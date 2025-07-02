@@ -1,5 +1,4 @@
 // LandingPage.jsx
-import React from 'react';
 import {
   Box,
   Container,
@@ -7,8 +6,11 @@ import {
   Button,
   Card,
   CardContent,
+  useTheme,
 } from '@mui/material';
-import Logo from '@/ui/Logo/Logo'; 
+import Logo from '@/ui/Logo/Logo';
+
+import glassmorphismStyle from "../styles/glassmorphism";
 
 import globoImage from '../../images/landing_page/mundo.png';
 import laptopImage from '../../images/landing_page/laptop_lado.png';
@@ -17,8 +19,9 @@ import exemplo2 from '../../images/landing_page/explicacao2.png';
 import exemplo3 from '../../images/landing_page/explicacao3.png';
 import laptopFrente from '../../images/landing_page/laptop_frente.png';
 import Background from '../Features/Background/HomeBackground';
-
 const LandingPage = () => {
+  const theme = useTheme();
+
   return (
     <Box sx={{ overflow: 'hidden', position: 'relative' }}>
       <Background />
@@ -34,7 +37,7 @@ const LandingPage = () => {
           paddingLeft: 2,
           paddingTop: 2,
           zIndex: 1000,
-          mb: {xs: 0, md: 4}
+          mb: { xs: 0, md: 4 }
         }}
       >
         <Logo />
@@ -48,7 +51,7 @@ const LandingPage = () => {
             flexDirection: { xs: 'column', md: 'row' },
             alignItems: 'center',
             justifyContent: 'space-between',
-            mb: { xs: 8, md: 25 },
+            mb: { xs: 8, md: 15 },
           }}
         >
           {/* Texto */}
@@ -62,8 +65,8 @@ const LandingPage = () => {
               backgroundColor: "red"
             }}
           >
-            <Typography variant="h1" sx={{ fontWeight: 'bold', mb: 6, fontSize: {xs: '48px', md: '72px'}, lineHeight: 1 }}>
-              SEU SEMESTRE <br /> 
+            <Typography variant="h1" sx={{ fontWeight: 'bold', mb: 6, fontSize: { xs: '48px', md: '72px' }, lineHeight: 1 }}>
+              SEU SEMESTRE <br />
               COMEÇA AQUI
             </Typography>
             <Typography variant="body1" sx={{ mb: 6, opacity: 0.8, fontSize: '18px', textAlign: 'justify' }}>
@@ -89,7 +92,7 @@ const LandingPage = () => {
               ENTRAR AGORA
             </Button>
             <Typography variant="caption" sx={{ display: 'block', mt: 2, opacity: 0.7, fontSize: '18px' }}>
-              ou comece pelo 
+              ou comece pelo
               <Button
                 variant="text"
                 sx={{
@@ -97,9 +100,9 @@ const LandingPage = () => {
                   textTransform: 'none',
                   fontSize: 'inherit',
                   '& :hover': {
-                    backgroundColor: 'transparent',  
+                    backgroundColor: 'transparent',
                   }
-                }} 
+                }}
                 onClick={() => window.location.href = '/anonymous'}
               >
 
@@ -114,7 +117,7 @@ const LandingPage = () => {
               flex: 1,
               position: 'relative',
               height: { xs: 300, md: 450 },
-              display: { xs: 'none', md: 'flex'}
+              display: { xs: 'none', md: 'flex' }
             }}
           >
             {/* Globo atrás */}
@@ -156,9 +159,9 @@ const LandingPage = () => {
             textAlign: 'center',
           }}
         >
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 4, flexDirection: { xs: 'column', md: 'row' },}}>
-            <Typography variant="h3" sx={{ fontWeight: 'bold', mr: 1,  }}>
-              Planeje seus semestres com 
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 4, flexDirection: { xs: 'column', md: 'row' }, }}>
+            <Typography variant="h3" sx={{ fontWeight: 'bold', mr: 1, }}>
+              Planeje seus semestres com
             </Typography>
             <Logo />
           </Box>
@@ -176,16 +179,16 @@ const LandingPage = () => {
                 desc: 'Arraste as disciplinas entre os períodos para montar seus semestres ideais. Planeje as optativas que fará ao longo do curso para completar uma ou mais ênfases de formação.',
                 img: exemplo1,
                 posH: '50%',
-                posV: '50%',
-                zoom: '150%'
+                posV: '0%',
+                zoom: '100%'
               },
               {
                 title: 'ACOMPANHE O PROGRESSO',
                 desc: 'Veja quantos créditos faltam para alcançar o tão sonhado diploma. Adicione as disciplinas que faltam para atingir a quantidade necessária de créditos.',
                 img: exemplo2,
                 posH: '58%',
-                posV: '3%',
-                zoom: '500%'
+                posV: '45%',
+                zoom: '150%'
               },
               {
                 title: 'EXPLORE POSSIBILIDADES',
@@ -193,15 +196,14 @@ const LandingPage = () => {
                 img: exemplo3,
                 posH: '50%',
                 posV: '50%',
-                zoom: '270%'
+                zoom: '140%'
               },
             ].map((f, i) => (
               <Card
                 key={i}
                 sx={{
+                  ...glassmorphismStyle(theme, "level2"),
                   flex: 1,
-                  bgcolor: 'rgb(194, 220, 245, 0.2)',
-                  boxShadow: 'none',
                   borderRadius: 3,
                   textAlign: 'center',
                   p: 0,
@@ -209,24 +211,24 @@ const LandingPage = () => {
                   flexDirection: 'column',
                 }}
               >
-                <Typography variant="h6" sx={{ fontWeight: 'bold', textAlign: 'justify', px: 2, mt: 2, flex: 1 }}>
+                <Typography variant="h6" sx={{ fontWeight: 'bold', textAlign: 'left', px: 2, mt: 2, flex: 1 }}>
                   {f.title}
                 </Typography>
-                <Typography variant="body2" sx={{ mt: 1, px: 2, opacity: 0.8, textAlign: 'justify', fontSize: '13px', flex: 2 }}>
+                <Typography variant="body2" sx={{ mt: 1, px: 2, opacity: 0.8, textAlign: 'left', fontSize: '13px', flex: 2 }}>
                   {f.desc}
                 </Typography>
-                <CardContent sx={{ px: 2, py: 2, flex: 2}}>
-                <Box
-                  sx ={{
-                    width: '100%',
-                    height: 260,                 // quanto de altura você quer exibir
-                    backgroundImage: `url(${f.img})`,
-                    backgroundRepeat: 'no-repeat',
-                    backgroundPosition: `${f.posH} ${f.posV}`,
-                    backgroundSize: `${f.zoom} auto`, // zoom de 200% na largura; ‘auto’ preserva proporção
-                    borderRadius: 3,
-                  }}
-                />
+                <CardContent sx={{ px: 2, py: 2, flex: 2 }}>
+                  <Box
+                    sx={{
+                      width: '100%',
+                      height: 260,
+                      backgroundImage: `url(${f.img})`,
+                      backgroundRepeat: 'no-repeat',
+                      backgroundPosition: `${f.posH} ${f.posV}`,
+                      backgroundSize: `cover`, // changed to cover to stretch if needed
+                      borderRadius: 3,
+                    }}
+                  />
 
                 </CardContent>
               </Card>
@@ -267,7 +269,7 @@ const LandingPage = () => {
               Sobre o projeto
             </Typography>
             <Typography variant="body1" sx={{ mb: 6, opacity: 0.8, fontSize: '18px', mt: 2, textAlign: 'justify' }}>
-            O sistema Aurora foi criado por estudantes da USP, em sua maioria do curso de Ciência da Computação. O projeto foi desenvolvido em parceria com o Apoio Institucional do IME-USP e com incentivo do Prêmio PIPA 2024 e 2025.
+              O sistema Aurora foi criado por estudantes da USP, em sua maioria do curso de Ciência da Computação. O projeto foi desenvolvido em parceria com o Apoio Institucional do IME-USP e com incentivo do Prêmio PIPA 2024 e 2025.
             </Typography>
             <Button
               variant="contained"
@@ -285,7 +287,7 @@ const LandingPage = () => {
             }}
           >
             <Box
-              sx ={{
+              sx={{
                 display: { xs: 'none', md: 'block' },
                 maxWidth: '100%',
                 height: '60vh',                 // quanto de altura você quer exibir
@@ -294,7 +296,7 @@ const LandingPage = () => {
                 backgroundPosition: `center center`,
                 backgroundSize: `140% auto`, // zoom de 200% na largura; ‘auto’ preserva proporção
                 borderRadius: 3,
-                mb: {xs : 0, md: 8}
+                mb: { xs: 0, md: 8 }
               }}
             />
           </Box>
