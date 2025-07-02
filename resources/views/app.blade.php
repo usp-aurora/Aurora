@@ -24,13 +24,13 @@
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-VQ1NEEVYRJ"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
+
         function gtag() {
             dataLayer.push(arguments);
         }
         gtag('js', new Date());
-        gtag('config', 'G-VQ1NEEVYRJ', {
-          page_path: '{{ request()->getPathInfo() }}'
-        });
+
+        gtag('config', 'G-VQ1NEEVYRJ');
     </script>
 </head>
 
