@@ -1,0 +1,20 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    level: 6
+    paths:
+        - app/
+        - database/
+        - routes/
+    
+    excludePaths:
+        - app/Models/Replicado/*
+        - vendor/*
+        - bootstrap/*
+        - storage/*
+        - public/*
+    
+    ignoreErrors:
+        - '#Call to an undefined method App\\Models\\.*::[a-zA-Z0-9_]+\(\)#'
+        - '#Access to an undefined property App\\Models\\.*::\$[a-zA-Z0-9_]+#'

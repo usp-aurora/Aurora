@@ -7,12 +7,18 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @extends Model<Group>
+ */
 class Group extends Model
 {
     use HasFactory;
     
     protected $table = 'groups';
     
+    /**
+     * @var list<string>
+     */
     protected $fillable = [
         'title',
         'description',
@@ -22,6 +28,7 @@ class Group extends Model
 
     /**
      * Get the parent group
+     * @return BelongsTo<Group, Group>
      */
     public function parent(): BelongsTo
     {
@@ -30,6 +37,7 @@ class Group extends Model
 
     /**
      * Get the subgroups
+     * @return HasMany<Group>
      */
     public function subgroups(): HasMany
     {
@@ -38,6 +46,7 @@ class Group extends Model
 
     /**
      * Get the group subjects
+     * @return HasMany<GroupSubject>
      */
     public function groupSubjects(): HasMany
     {
@@ -46,14 +55,16 @@ class Group extends Model
 
     /**
      * Get the user subjects added
+     * @return HasMany<UserAddedSubject>
      */
     public function userSubjectsAdded(): HasMany
     {
-        return $this->hasMany(UserAddedSubjects::class);
+        return $this->hasMany(UserAddedSubject::class);
     }
 
     /**
      * Get the curriculum
+     * @return HasMany<Curriculum>
      */
     public function curriculum(): HasMany
     {

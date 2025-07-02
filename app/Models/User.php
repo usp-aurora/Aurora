@@ -4,21 +4,28 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
+    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
     use \Spatie\Permission\Traits\HasRoles;
 
+    /**
+     * @var string[]
+     */
     public static $permissoesHierarquia = [
         'admin', // Exemplo de permissões hierárquicas
         'manager',
         'user',
     ];
 
-
+    /**
+     * @var string[]
+     */
     public static $permissoesVinculo = [
         'Admin',
         'Usuario',
@@ -29,7 +36,7 @@ class User extends Authenticatable
     /**
      * The attributes that are mass assignable.
      *
-     * @var array<int, string>
+     * @var list<string>
      */
      
     protected $fillable = [
@@ -41,7 +48,7 @@ class User extends Authenticatable
     /**
      * The attributes that should be hidden for serialization.
      *
-     * @var array<int, string>
+     * @var list<string>
      */
     protected $hidden = [
         'password',
@@ -64,8 +71,8 @@ class User extends Authenticatable
     /**
      * Get the user subjects added
      */
-    public function userSubjectsAdded(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function userSubjectsAdded(): HasMany
     {
-        return $this->hasMany(UserAddedSubjects::class);
+        return $this->hasMany(UserAddedSubject::class);
     }
 }

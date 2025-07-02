@@ -6,12 +6,18 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @extends Model<UserAddedSubject>
+ */
 class UserAddedSubject extends Model
 {
     use HasFactory;
 
     protected $table = 'user_added_subjects';
 
+    /**
+     * @var list<string>
+     */
     protected $fillable = [
         'user_id',
         'group_id',
@@ -19,7 +25,8 @@ class UserAddedSubject extends Model
     ];
 
     /**
-     * Get the user that owns the UserAddedSubjects
+     * Get the user that owns the UserAddedSubject
+     * @return BelongsTo<User, UserAddedSubject>
      */
     public function user(): BelongsTo
     {
@@ -27,7 +34,8 @@ class UserAddedSubject extends Model
     }
 
     /**
-     * Get the group that owns the UserAddedSubjects
+     * Get the group that owns the UserAddedSubject
+     * @return BelongsTo<Group, UserAddedSubject>
      */
     public function group(): BelongsTo
     {

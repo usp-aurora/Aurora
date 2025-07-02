@@ -10,8 +10,8 @@ use Illuminate\Support\Facades\Event;
 class EventServiceProvider extends ServiceProvider
 {
 	/**
-	* @var array
-	*/
+	 * @var array<string, array<int, string>>
+	 */
 	protected $listen = [
 		Registered::class => [
 			SendEmailVerificationNotification::class,

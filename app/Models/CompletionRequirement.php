@@ -7,12 +7,18 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 
+/**
+ * @extends Model<CompletionRequirement>
+ */
 class CompletionRequirement extends Model
 {
     use HasFactory;
     
     protected $table = 'completion_requirements';
     
+    /**
+     * @var list<string>
+     */
     protected $fillable = [
         'type',
         'completion_value',
@@ -21,6 +27,7 @@ class CompletionRequirement extends Model
 
     /**
      * Cast the type attribute to CompletionType enum
+     * @return Attribute<CompletionType|null, CompletionType|string>
      */
     protected function type(): Attribute
     {

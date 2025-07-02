@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Inertia\Inertia;
+use Inertia\Response;
 use Illuminate\Http\Request;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\PlanController;
@@ -12,7 +13,7 @@ use App\Http\Controllers\UserAddedSubjectsController;
 
 class HomeController extends Controller
 {
-    public function index()
+    public function index(): Response
     {
 		$groupController = new GroupController();
 		$planController = new PlanController();

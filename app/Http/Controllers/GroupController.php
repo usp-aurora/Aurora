@@ -7,9 +7,15 @@ use App\Models\Group;
 use App\Models\GroupSubject;
 use App\Models\CompletionRequirement;
 
+use Illuminate\Http\JsonResponse;
+
 class GroupController extends Controller {
 
-    public function getSubjectRootGroups($subject_code){
+    /**
+     * @param string $subject_code
+     * @return array<int, array{title: string, color: string}>
+     */
+    public function getSubjectRootGroups(string $subject_code): array {
         $groups = GroupSubject::where('group_subjects.subject_code', '=', $subject_code)
             ->select(["group_id"])
             ->get();
@@ -27,13 +33,17 @@ class GroupController extends Controller {
         return $groupRoots;
     }
 
-    public function subjectBelongsToGroup($code)
+    public function subjectBelongsToGroup(string $code): JsonResponse
 	{
 		$exists = GroupSubject::where('subject_code', $code)->exists();
 	    return response()->json(['exists' => $exists]);
 	}
 
-    public function loadCourseGroups($curriculum_id)
+    /**
+     * @param int $curriculum_id
+     * @return array<string, mixed>|int
+     */
+    public function loadCourseGroups(int $curriculum_id): array|int
     {
         $curriculum = Curriculum::where('id', '=', $curriculum_id)
             ->select(["group_id"])
@@ -47,7 +57,11 @@ class GroupController extends Controller {
         return ($this->recursiveLoadCourseGroups($rootGroupId));
     }
 
-    public function getGroupSubjects($groupArray) {
+    /**
+     * @param array<string, mixed> $groupArray
+     * @return string[]
+     */
+    public function getGroupSubjects(array $groupArray): array {
         if (!$groupArray["subgroups"]) {
             return array_column($groupArray["subjects"], 'code');
         }
@@ -61,7 +75,12 @@ class GroupController extends Controller {
 
     // Subjects must be a list like 
     //  [["subjectCode" => <code>, "groupId" => <groupId>], ...]
-    public function attachSubjectsToGroupsMap($groups, $subjects) {
+    /**
+     * @param array<string, mixed> $groups
+     * @param array<int, array{subjectCode: string, groupId: int}> $subjects
+     * @return array<string, mixed>
+     */
+    public function attachSubjectsToGroupsMap(array $groups, array $subjects): array {
         $addSubjectToGroup = function (&$group, $groupId, $subjectCode) use (&$addSubjectToGroup) {
             if (isset($group['id']) && $group['id'] == $groupId) {
                 if (!in_array($subjectCode, $group['subjects'])) {
@@ -84,7 +103,7 @@ class GroupController extends Controller {
         return $groups;
     }
 
-    private function getGroupRoot($groupId){
+    private function getGroupRoot(int $groupId): Group {
         $group = Group::where('groups.id', '=', $groupId)
             ->where('groups.id', '=', $groupId)
             ->select(["id", "title", "color", "parent_group_id", "is_course_root"])
@@ -93,7 +112,7 @@ class GroupController extends Controller {
         return $this->getGroupRootRecursive($group);
     }  
 
-    private function getGroupRootRecursive($group){
+    private function getGroupRootRecursive(Group $group): Group {
         $parentGroup = Group::where('groups.id', '=', $group->parent_group_id)
             ->select(["id", "title", "color",  "parent_group_id", "is_course_root"])
             ->first();
@@ -105,7 +124,11 @@ class GroupController extends Controller {
         }
     }
 
-    private function recursiveLoadCourseGroups($groupId)
+    /**
+     * @param int $groupId
+     * @return array<string, mixed>
+     */
+    private function recursiveLoadCourseGroups(int $groupId): array
     {
         $group = Group::where('groups.id', '=', $groupId)
             ->select(["title", "description", "mandatory", "color", "id"])

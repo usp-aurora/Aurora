@@ -22,6 +22,7 @@ enum CompletionType: string
 
     /**
      * Get all valid completion type values
+     * @return string[]
      */
     public static function values(): array
     {
@@ -30,6 +31,7 @@ enum CompletionType: string
 
     /**
      * Get all labels mapped to their values
+     * @return array<string, string>
      */
     public static function labels(): array
     {
