@@ -34,7 +34,6 @@ const StyledButton = styled(MUIButton)(({ theme, color, variant }) => ({
 }));
 
 const Button = ({ children, variant="contained", size="medium", color="primary", ...props }) => {
-	console.log("color", color);
 	return (
 		<StyledButton disableRipple variant={variant} size={size} color={color} {...props}>
 			{children}
