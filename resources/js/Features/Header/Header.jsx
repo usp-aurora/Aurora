@@ -1,7 +1,7 @@
 import { Box, Stack, Typography, useMediaQuery } from '@mui/material';
 import { styled, useTheme } from "@mui/material/styles";
 
-import Button from '../../ui/Buttons/Button';
+import Button from '../../ui/Button/Button';
 import Logo from '../../ui/Logo/Logo';
 import { useAuthContext } from '../../Contexts/AuthContext';
 

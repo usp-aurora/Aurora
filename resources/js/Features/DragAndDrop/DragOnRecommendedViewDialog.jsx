@@ -1,5 +1,5 @@
 import { Typography } from "@mui/material";
-import Button from "../../ui/Buttons/Button";
+import Button from "../../ui/Button/Button";
 import Dialog from "../../ui/Dialog/Dialog";
 
 function DragOnRecommendedViewDialog({ open, onClose }) {

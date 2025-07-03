@@ -30,6 +30,10 @@ const DialogContainer = styled(MUIDialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
     padding: theme.spacing(2),
     paddingTop: 0
+  },
+
+  '& .MuiDialogActions-root': {
+    padding: theme.spacing(2),
   }
 }));
 

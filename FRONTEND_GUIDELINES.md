@@ -67,7 +67,7 @@ Cada pasta dentro de `Features/` representa uma funcionalidade distinta da aplic
 ## Storybook
 
 *   Arquivos do Storybook (`*.stories.js` ou `*.stories.jsx`) **devem** estar localizados na **mesma pasta** que o componente que eles documentam.
-    *   *Exemplo:* `Button.jsx` e `Button.stories.jsx` residem ambos em `Features/ui/Buttons/`.
+    *   *Exemplo:* `Button.jsx` e `Button.stories.jsx` residem ambos em `Features/ui/Button/`.
 
 ## Exportações (`index.js`)
 

@@ -5,7 +5,7 @@ import axios from 'axios';
 
 import glassmorphismStyle from "../../styles/glassmorphism";
 
-import Button from '../../ui/Buttons/Button';
+import Button from '../../ui/Button/Button';
 import SubjectCard from '../../ui/Card/SubjectCard';
 import IconWrapper from '../../ui/Icons/IconWrapper';
 import GraphView from './components/GraphView/GraphView';

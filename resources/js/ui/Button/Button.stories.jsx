@@ -17,7 +17,7 @@ export default {
 		}, 
 		variant: {
 			control: "radio",
-			options: ["contained", "outlined", "text"],
+			options: ["contained", "contained-secondary", "outlined", "text"],
 			description: "Define o tipo de botão",
 		},
 		size: {
@@ -27,7 +27,7 @@ export default {
 		},
 		color: {
 			control: "select",
-			options: ["primary", "error", 'neutral', "white", "black", "red", "yellow", "orange", "brown", "green", "cyan", "purple", "pink"],
+			options: ["blue", "red", 'neutral', "white", "black", "red", "yellow", "orange", "brown", "green", "cyan", "purple", "pink"],
 			description: "Define a cor do botão",
 		},
 		disabled: {

@@ -6,7 +6,7 @@ import Alert from '@mui/material/Alert';
 import { styled } from '@mui/material/styles';
 
 import Dialog from '../../ui/Dialog/Dialog'
-import Button from '../../ui/Buttons/Button';
+import Button from '../../ui/Button/Button';
 import { useAddSubjectContext } from './AddSubjectContext';
 import { useSubjectMapContext } from '../../Contexts/SubjectMapContext';
 import { useAuthContext } from '../../Contexts/AuthContext';

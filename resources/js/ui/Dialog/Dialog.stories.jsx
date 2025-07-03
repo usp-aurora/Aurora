@@ -1,7 +1,7 @@
 import Typography from '@mui/material/Typography';
 import { fn } from '@storybook/test';
 
-import Button from "../Buttons/Button";
+import Button from "../Button/Button";
 import Dialog from './Dialog';
 
 
