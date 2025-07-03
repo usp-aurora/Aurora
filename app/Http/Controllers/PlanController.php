@@ -217,7 +217,7 @@ class PlanController extends Controller
                     }
                 }
 
-                Plan::where('semester', $semesterId + 1)
+                Plan::where('semester', $semesterId)
                     ->where('completed', false)
                     ->where('user_id', $user->id)
                     ->delete();
