@@ -200,7 +200,7 @@ class PlanController extends Controller
     {
         $user = Auth::user();
         $completedSemesters = $this->completed($user->codpes);
-        
+
         DB::transaction(function () use ($completedSemesters, $user) {
             foreach ($completedSemesters as $semesterId => $semesterData) {
                 foreach ($semesterData as $subject) {
@@ -211,6 +211,7 @@ class PlanController extends Controller
                         $validatedPlan = $this->store($subject['subject_code'], $semesterId, true);
                         $validatedPlan->save();
                     } else {
+                        $savedPlan->semester = $semesterId;
                         $savedPlan->completed = true;
                         $savedPlan->save();
                     }
@@ -270,13 +271,12 @@ class PlanController extends Controller
         // Remap array keys to sequential integers starting from 1
         $remappedSemesters = [];
 
-        if($transferRecords->isEmpty()) {
+        if ($transferRecords->isEmpty()) {
             $counter = 1;
-        }
-        else {
+        } else {
             $counter = 0;
         }
-        
+
         foreach ($completedSemesters as $semesterKey => $subjects) {
             $remappedSemesters[$counter] = $subjects;
             $counter++;
