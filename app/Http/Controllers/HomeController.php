@@ -37,7 +37,8 @@ class HomeController extends Controller
 		$mergedSubjects = array_unique(array_merge($plannedSubjects, $groupsSubjectCodes, $userAddedSubjectCodes), SORT_REGULAR);
 		$subjects = $subjectController->getSubjectsWithGroups($mergedSubjects);		
 		$user = $userController->index();
-		$onboarded = $userController->onboarded();
+		$onboarded = $userController->checkAndMarkOnboarded();
+		$versionInfo = $userController->checkAndMarkVersionUpdate();
 
 		return Inertia::render('Home', [
 			'initialPlans' => $plansData,
@@ -46,6 +47,7 @@ class HomeController extends Controller
 			'subjects' => $subjects,
 			'user' => $user,
 			'onboarded' => $onboarded,
+			'versionInfo' => $versionInfo,
 		]);
 	}
 }

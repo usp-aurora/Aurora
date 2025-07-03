@@ -36,6 +36,7 @@ Route::middleware('auth')->prefix('api')->group(function () {
     });
 
     Route::get('user', fn () => response()->json(Auth::user()));
+    Route::post('user/mark-version-seen', [App\Http\Controllers\UserController::class, 'markVersionAsSeen']);
     Route::get('requirement/{subjectCode}', [SubjectController::class, 'getSubjectRequirements']);
     Route::get('subject/exists/{code}', [SubjectController::class, 'exists']);
     Route::get('subject/{code}', [SubjectController::class, 'getSubjectWithGroups']);

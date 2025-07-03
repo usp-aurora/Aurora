@@ -12,7 +12,7 @@ class UserController extends Controller
 		return Auth::user();
 	}
 
-	public function onboarded()
+	public function checkAndMarkOnboarded()
 	{
 		$user = Auth::user();
 		if (!$user) {
@@ -29,5 +29,51 @@ class UserController extends Controller
 		}
 
 		return $onboarded;
+	}
+
+	public function checkAndMarkVersionUpdate()
+	{
+		$user = Auth::user();
+		$versionInfo = $this->getVersionInfo();
+		$currentVersion = $versionInfo['version'];
+		
+		if (!$user) {
+			return [
+				'shouldShowReleaseNotice' => false,
+				'versionInfo' => $versionInfo
+			];
+		}
+
+		$userEntry = User::where('codpes', $user->codpes)->first();
+		$lastSeenVersion = $userEntry->last_seen_version;
+
+		$shouldShowReleaseNotice = is_null($lastSeenVersion) || $lastSeenVersion !== $currentVersion;
+
+		if($shouldShowReleaseNotice){
+			$userEntry->last_seen_version = $currentVersion;
+			$userEntry->save();
+		}
+
+		return [
+			'shouldShowReleaseNotice' => $shouldShowReleaseNotice,
+			'versionInfo' => $versionInfo
+		];
+	}
+
+	private function getVersionInfo()
+	{
+		$versionFile = base_path('version.json');
+		
+		if (!file_exists($versionFile)) {
+			return [
+				'version' => '-1.0.0',
+				'description' => 'Não foi possível carregar informações da versão atual',
+				'releaseDate' => null,
+				'changelog' => []
+			];
+		}
+		
+		$versionContent = file_get_contents($versionFile);
+		return json_decode($versionContent, true);
 	}
 }

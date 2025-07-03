@@ -10,6 +10,7 @@ import AddSubjectDialog from "../Features/AddSubject/AddSubjectDialog"
 import { SubjectPickerDesktop, SubjectPickerMobile } from "../Features/SubjectPicker/";
 import ToolBar from '../Features/ToolBar/ToolBar';
 import Onboarding from "../Features/Onboarding/Onboarding";
+import ReleaseNotice from "../Features/ReleaseNotice/ReleaseNotice";
 
 import AppProviders from "../Contexts/AppProviders";
 
@@ -26,7 +27,7 @@ const ContentContainer = styled(Box)(({ theme }) => ({
     },
 }));
 
-const Home = ({ groups, initialPlans, suggestedPlans, subjects, user, onboarded }) => {
+const Home = ({ groups, initialPlans, suggestedPlans, subjects, user, onboarded, versionInfo }) => {
     const theme = useTheme();
     const isAboveSmall = useMediaQuery(theme.breakpoints.up('sm'));
     return (
@@ -39,6 +40,7 @@ const Home = ({ groups, initialPlans, suggestedPlans, subjects, user, onboarded 
         >   
             <AddSubjectDialog />
             <SubjectInfo />
+            <ReleaseNotice versionInfo={versionInfo}/>
             <Onboarding show={!onboarded}/>
             {!isAboveSmall && <SubjectPickerMobile/>}
             <Background />

@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "description": "Lançamento inicial do Aurora!",
+  "releaseDate": "2025-07-27",
+  "changelog": [
+    "Aplicação inicial publicada",
+    "Planejamento de matérias por semestre",
+    "Acompanhamento de completude do curso e dar trilhas",
+    "Adição de optativas livres",
+	"Visualização do grafo de requisitos das matérias"
+  ]
+}
