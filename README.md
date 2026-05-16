@@ -35,9 +35,9 @@ sudo mariadb
 # No mariadb, cria um database chamado aurora 
 create database aurora; 
 # Cria um usuário chamado aurora com a senha que você escolheu
-`grant all privileges on aurora.* to 'aurora'@'localhost' identified by <sua senha aqui>;
+grant all privileges on aurora.* to 'aurora'@'localhost' identified by <sua senha aqui>;
 # Recarrega todos os privilégios do banco de dados
-flush privileges  
+flush privileges;
 ```
 
 ## Instalando o sistema em Laravel
