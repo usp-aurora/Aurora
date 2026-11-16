@@ -12,7 +12,7 @@ class DatabaseErrorTest extends TestCase
     public static function connections(): array
     {
         return [
-            ['replicado', 'Replicado USP'],
+            ['replicado', 'servidores da USP'],
             ['mysql', 'banco de dados local'],
         ];
     }

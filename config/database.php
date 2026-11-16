@@ -48,13 +48,13 @@ return [
             'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
-                PDO::ATTR_TIMEOUT => 15,
+                PDO::ATTR_TIMEOUT => 5,
             ]) : [],
         ],
 
         'replicado' => [
             'driver' => 'sqlsrv',
-            'login_timeout' => 15,
+            'login_timeout' => 5,
             'host' => env('REPLICADO_HOST'),
             'port' => env('REPLICADO_PORT'),
             'database' => env('REPLICADO_DATABASE'),

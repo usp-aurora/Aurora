@@ -20,11 +20,11 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->render(function (\Illuminate\Database\QueryException $exception, \Illuminate\Http\Request $request) {
             $service = match ($exception->getConnectionName()) {
-                'replicado' => 'Replicado USP',
+                'replicado' => 'servidores da USP',
                 config('database.default') => 'banco de dados local',
                 default => 'banco de dados',
             };
-            $message = "Não foi possível acessar o {$service}. Tente novamente em alguns minutos.";
+            $message = "Não foi possível acessar: {$service}. Tente novamente em alguns minutos.";
 
             if ($request->expectsJson()) {
                 return response()->json(['message' => $message, 'service' => $service], 503);
