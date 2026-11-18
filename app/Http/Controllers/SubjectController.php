@@ -41,7 +41,7 @@ class SubjectController extends Controller
     }
 
 	public function getSubjectsById($subjectCodes) {
-		$subjects = ReplicadoSubject::whereIn('code', $subjectCodes)->get();
+		$subjects = app(\App\Services\SubjectCatalog::class)->get($subjectCodes);
 
 		$transformedSubjects = $subjects->mapWithKeys(function ($subject) {
 			return [
