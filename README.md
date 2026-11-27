@@ -107,3 +107,18 @@ Possivelmente isso é um problema de localização dos arquivos. Verifique se os
 Pode ser que você não tenha adicionado ele ao PATH da sua máquina. Em sistemas operacionais baseados em Debian, verifique se o arquivo composer.phar está em `/usr/local/bin/composer`.
 
 Também é possível rodar o composer a partir do caminho onde o script está instalado. Se ele estiver no diretório onde você está acessando, utilize `php composer.phar install`.
+# Métricas de uso
+
+O Aurora registra eventos de uso na tabela `activity_events` (sem IP nem user agent) para acompanhar o sucesso da plataforma.
+
+- **Usuários ativos por dia (DAU/WAU/MAU)**: o middleware `TrackDailyActivity` grava no máximo um evento `user.active` por usuário por dia (ou `guest.active` por visitante anônimo, identificado só por um hash da sessão). Como o login usa "lembrar-me", contar só logins subestimaria o uso.
+- **Ações no backend**: `user.login`, `user.registered`, `user.logout`, `landing.viewed`, `guest.started`, `app.opened`, `plans.synced`, `plans.exported`, `subject.added`, `subject.removed`.
+- **Ações na interface**: o frontend usa `trackEvent()` de `resources/js/analytics.js`, que envia para `POST /api/metrics/track`. Só os nomes listados em `config/metrics.php` (`client_events`) são aceitos.
+- Os dias são contados no fuso `America/Sao_Paulo` (`METRICS_TIMEZONE`).
+
+## Consultando
+
+- Painel: `/admin/metrics` (e JSON em `/api/metrics/summary?days=30`), liberado para os números USP em `METRICS_ADMINS=1234567,7654321` no `.env`.
+- Terminal: `php artisan metrics:report --days=30` (ou `--json`).
+- Limpeza: `php artisan metrics:prune` apaga eventos mais antigos que `METRICS_RETENTION_DAYS` (padrão 730), agendado semanalmente.
+- Para desligar a coleta: `METRICS_ENABLED=false`.

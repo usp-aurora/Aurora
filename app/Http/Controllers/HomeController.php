@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Inertia\Inertia;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Services\Metrics\Metrics;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\SubjectController;
@@ -12,8 +14,10 @@ use App\Http\Controllers\UserAddedSubjectsController;
 
 class HomeController extends Controller
 {
-    public function index()
+    public function index(Metrics $metrics)
     {
+		$metrics->record(Metrics::APP_OPENED, ['authenticated' => Auth::check()]);
+
 		$groupController = new GroupController();
 		$planController = new PlanController();
 		$subjectController = new SubjectController();

@@ -11,6 +11,7 @@ use App\Models\SuggestedPlan;
 use App\Models\Group;
 use App\Models\GroupSubject;
 use Illuminate\Support\Facades\Log;
+use App\Services\Metrics\Metrics;
 use function Spatie\LaravelPdf\Support\pdf;
 
 class PlanController extends Controller
@@ -103,6 +104,8 @@ class PlanController extends Controller
         $completed_semesters = $chunks->get(0, collect());
         $planned_semesters   = $chunks->get(1, collect());
 
+        app(Metrics::class)->record(Metrics::PLANS_EXPORTED, ['subjects' => $plans->count()]);
+
         return pdf()->view('exportTemplate', [
             'user_name' => "Daiqui Teixeira Inacio",
             'user_code' => 123213123,
@@ -152,6 +155,15 @@ class PlanController extends Controller
                         'action' => 'deleted',
                     ];
                 }
+            }
+
+            $actions = array_count_values(array_column($changedPlans, 'action'));
+            if ($changedPlans) {
+                app(Metrics::class)->record(Metrics::PLANS_SYNCED, [
+                    'created' => $actions['created'] ?? 0,
+                    'updated' => $actions['updated'] ?? 0,
+                    'deleted' => $actions['deleted'] ?? 0,
+                ]);
             }
 
             return response()->json([

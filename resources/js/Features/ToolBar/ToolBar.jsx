@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { styled } from '@mui/material';
 import { Typography } from "@mui/material";
 
@@ -14,6 +14,7 @@ import IconWrapper from '../../ui/Icons/IconWrapper';
 import { usePlansContext } from '../../Contexts/PlansContext';
 import { useViewMode } from '../../Contexts/ViewModeContext';
 import { useAuthContext } from '../../Contexts/AuthContext';
+import { trackEvent } from '../../analytics';
 
 const Container = styled("div")({
     display: "flex",
@@ -38,7 +39,17 @@ const StyledText = styled(Typography)(({ theme }) => ({
 }));
 
 function ToolBar() {
-    const { undo, redo, isSaved } = usePlansContext();
+    const { undo: undoPlans, redo: redoPlans, isSaved } = usePlansContext();
+
+    const undo = useCallback(() => {
+        trackEvent('ui.undo');
+        undoPlans();
+    }, [undoPlans]);
+
+    const redo = useCallback(() => {
+        trackEvent('ui.redo');
+        redoPlans();
+    }, [redoPlans]);
     const { isSuggestedPlansView, toggleSuggestedPlansView } = useViewMode();
     const { user } = useAuthContext();
 
