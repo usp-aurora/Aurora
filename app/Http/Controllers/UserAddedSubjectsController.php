@@ -8,6 +8,7 @@ use App\Models\Group;
 use App\Models\UserAddedSubject;
 use App\Models\Plan;
 use App\Http\Controllers\SubjectController;
+use App\Services\Metrics\Metrics;
 
 class UserAddedSubjectsController extends Controller
 {
@@ -52,6 +53,12 @@ class UserAddedSubjectsController extends Controller
             }
         }
 
+        app(Metrics::class)->record(Metrics::SUBJECT_ADDED, [
+            'subject_code' => $validated['subjectCode'],
+            'group' => $group->title,
+            'moved' => (bool) $existingUserSubject,
+        ], $user);
+
         $subjectController = new SubjectController();
         $subjectData = $subjectController->getSubjectsWithGroups([$validated['subjectCode']]);
 
@@ -82,6 +89,8 @@ class UserAddedSubjectsController extends Controller
                 Plan::where('user_id', $user->id)
                     ->where('subject_code', $validated['subject_code'])
                     ->delete();
+
+                app(Metrics::class)->record(Metrics::SUBJECT_REMOVED, ['subject_code' => $validated['subject_code']], $user);
 
                 return response()->json(['status' => 'success', 'message' => 'Disciplina removida com sucesso do grupo.'], 200);
             } else {

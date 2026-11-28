@@ -9,6 +9,7 @@ use Socialite;
 use App\Models\User;
 use Auth;
 use Illuminate\Http\Request;
+use App\Services\Metrics\Metrics;
 
 class LoginController extends Controller
 {
@@ -28,14 +29,15 @@ class LoginController extends Controller
     }
 
 
-    public function handleProviderCallback()
+    public function handleProviderCallback(Metrics $metrics)
     {
     	$userSenhaUnica = Socialite::driver('senhaunica')->user();
     	
     	
     	$user = User::where('codpes', $userSenhaUnica->codpes)->first();
 
-    	if (is_null($user))
+    	$isNewUser = is_null($user);
+    	if ($isNewUser)
     	{
     		$user = new User;
     		#$user->id = $userSenhaUnica->codpes;
@@ -45,12 +47,22 @@ class LoginController extends Controller
     		$user->save();
     	} 
     	Auth::login($user, true);
+
+    	$user->forceFill(['last_login_at' => now()])->saveQuietly();
+    	if ($isNewUser) {
+    		$metrics->record(Metrics::USER_REGISTERED, [], $user);
+    	}
+    	$metrics->record(Metrics::USER_LOGIN, ['first_login' => $isNewUser], $user);
+
     	return redirect('/app');
     }
     
     
-    public function logout(Request $request)
+    public function logout(Request $request, Metrics $metrics)
     {
+    	if (Auth::check()) {
+    		$metrics->record(Metrics::USER_LOGOUT);
+    	}
     	Auth::logout();
     	return redirect('/');
     }

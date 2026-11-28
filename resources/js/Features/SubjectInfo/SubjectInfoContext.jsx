@@ -1,6 +1,7 @@
 import { createContext, useContext, useState } from 'react';
 import { usePlansContext } from "../../Contexts/PlansContext";
 import { useSubjectMapContext } from "../../Contexts/SubjectMapContext";
+import { trackEvent } from "../../analytics";
 
 
 const SubjectInfoContext = createContext();
@@ -26,6 +27,7 @@ function SubjectInfoProvider({ children, subjectInfoStartsOpened = false, initia
 		if (!subjectData) return;
 
 		setSubjectInfoModalOpen(true);
+		trackEvent('ui.subject_info_opened', { subject_code: subjectCode });
 		setSubjectInfo({
 			isPlanned: plansSet.has(subjectCode),
 			isCompleted: completedPlansSet.has(subjectCode),
