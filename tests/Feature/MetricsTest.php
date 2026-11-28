@@ -120,6 +120,11 @@ class MetricsTest extends TestCase
             ->assertJsonStructure(['headline' => ['dau', 'wau', 'mau', 'stickiness', 'weekly_retention'], 'daily', 'events']);
     }
 
+    public function test_dashboard_redirects_guests_to_login(): void
+    {
+        $this->get('/admin/metrics')->assertRedirect('/login');
+    }
+
     public function test_report_computes_active_users_and_retention(): void
     {
         $metrics = app(Metrics::class);

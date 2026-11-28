@@ -23,7 +23,7 @@ Route::get('/', function (Metrics $metrics) {
     $metrics->record(Metrics::LANDING_VIEWED, ['authenticated' => Auth::check()]);
     return Inertia::render('LandingPage');
 });
-Route::get('login', [LoginController::class, 'redirectToProvider']);
+Route::get('login', [LoginController::class, 'redirectToProvider'])->name('login');
 Route::get('callback', [LoginController::class, 'handleProviderCallback']);
 Route::get('logout', [LoginController::class, 'logout']);
 Route::get('/export', [PlanController::class, 'export']);
