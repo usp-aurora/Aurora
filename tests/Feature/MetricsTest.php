@@ -86,7 +86,8 @@ class MetricsTest extends TestCase
 
         $event = ActivityEvent::where('event', Metrics::PLANS_SYNCED)->firstOrFail();
         $this->assertSame($user->id, $event->user_id);
-        $this->assertSame(['created' => 2, 'updated' => 0, 'deleted' => 0], $event->properties);
+        // MySQL's JSON type does not preserve key order, so compare without it.
+        $this->assertEquals(['created' => 2, 'updated' => 0, 'deleted' => 0], $event->properties);
     }
 
     public function test_client_can_track_allowed_events_only(): void
