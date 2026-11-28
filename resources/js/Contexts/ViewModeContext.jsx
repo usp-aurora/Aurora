@@ -1,4 +1,5 @@
 import { createContext, useContext, useState } from 'react';
+import { trackEvent } from '../analytics';
 
 const ViewModeContext = createContext();
 
@@ -6,6 +7,7 @@ function ViewModeProvider({ children, suggestedPlans }) {
     const [isSuggestedPlansView, setSuggestedPlansView] = useState(false);
 
     const toggleSuggestedPlansView = () => {
+        trackEvent('ui.suggested_view_toggled', { enabled: !isSuggestedPlansView });
         setSuggestedPlansView(prev => !prev);
     };
 

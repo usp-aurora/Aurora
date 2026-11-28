@@ -1,10 +1,15 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import os
+import sys
+
+if __name__ == '__main__' and '--catalog-only' in sys.argv:
+	from catalog import main
+	main()
+	raise SystemExit(0)
 import os.path
 import re
 from pprint import pprint
-import sys
 import aiohttp
 import urllib
 import locale
